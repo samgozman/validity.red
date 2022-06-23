@@ -7,7 +7,7 @@
 			"path": "docs"
 		},
 		{
-			"path": "auth-service"
+			"path": "user-service"
 		},
 		// For the full view of the project
 		{

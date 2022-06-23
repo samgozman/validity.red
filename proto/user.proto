@@ -1,8 +1,8 @@
 syntax = "proto3";
 
-package auth;
+package user;
 
-option go_package = "/auth";
+option go_package = "/user";
 
 message Auth {
 	string email = 1;
@@ -34,6 +34,9 @@ message RegisterResponse {
 
 // Describe the service available methods
 service AuthService {
-	rpc Register(RegisterRequest) returns (RegisterResponse);
 	rpc Login(AuthRequest) returns (AuthResponse);
+}
+
+service UserService {
+	rpc Register(RegisterRequest) returns (RegisterResponse);
 }

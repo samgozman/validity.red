@@ -1,19 +1,24 @@
 package main
 
 import (
-	auth "auth/proto"
 	"context"
 	"fmt"
 	"log"
 	"net"
 	"os"
+	user "user/proto"
 
 	"google.golang.org/grpc"
 )
 
 type AuthServer struct {
 	// Necessary parameter to insure backwards compatibility
-	auth.UnimplementedAuthServiceServer
+	user.UnimplementedAuthServiceServer
+}
+
+type UserServer struct {
+	// Necessary parameter to insure backwards compatibility
+	user.UnimplementedUserServiceServer
 }
 
 var gRpcPort = os.Getenv("GRPC_PORT")
@@ -26,7 +31,8 @@ func (app *Config) gRPCListen() {
 
 	s := grpc.NewServer()
 
-	auth.RegisterAuthServiceServer(s, &AuthServer{})
+	user.RegisterAuthServiceServer(s, &AuthServer{})
+	user.RegisterUserServiceServer(s, &UserServer{})
 
 	log.Printf("GRPC server listening on port %s", gRpcPort)
 
@@ -35,13 +41,13 @@ func (app *Config) gRPCListen() {
 	}
 }
 
-func (l *AuthServer) Register(ctx context.Context, req *auth.RegisterRequest) (*auth.RegisterResponse, error) {
+func (l *UserServer) Register(ctx context.Context, req *user.RegisterRequest) (*user.RegisterResponse, error) {
 	input := req.GetRegisterEntry()
 
 	// register user
 	// return error if exists
 
 	// return response
-	res := &auth.RegisterResponse{Result: fmt.Sprintf("User with email %s registered successfully!", input.Email)}
+	res := &user.RegisterResponse{Result: fmt.Sprintf("User with email %s registered successfully!", input.Email)}
 	return res, nil
 }
