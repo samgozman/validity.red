@@ -6,6 +6,9 @@
 		{
 			"path": "docs"
 		},
+		{
+			"path": "auth-service"
+		},
 		// For the full view of the project
 		{
 			"path": "./"

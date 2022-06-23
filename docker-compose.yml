@@ -13,3 +13,14 @@ services:
     deploy:
       mode: replicated
       replicas: 1
+
+  auth-service:
+    build:
+      context: ./auth-service
+      dockerfile: auth-service.Dockerfile
+    restart: always
+    environment:
+      GRPC_PORT: "50001"
+    deploy:
+      mode: replicated
+      replicas: 1

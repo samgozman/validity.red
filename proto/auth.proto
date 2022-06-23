@@ -1,0 +1,39 @@
+syntax = "proto3";
+
+package auth;
+
+option go_package = "/auth";
+
+message Auth {
+	string email = 1;
+	string password = 2;
+}
+
+message AuthRequest {
+	Auth authEntry = 1;
+}
+
+message AuthResponse {
+	string result = 1;
+	string token = 2;
+}
+
+message Register {
+	string email = 1;
+	string password = 2;
+	// some default preferences (GMT zone, etc.)
+}
+
+message RegisterRequest {
+	Register registerEntry = 1;
+}
+
+message RegisterResponse {
+	string result = 1;
+}
+
+// Describe the service available methods
+service AuthService {
+	rpc Register(RegisterRequest) returns (RegisterResponse);
+	rpc Login(AuthRequest) returns (AuthResponse);
+}
