@@ -21,9 +21,14 @@ down:
 	docker-compose down
 	@echo "Done!"
 
+# build proto files and copy them into services
 grpc_init:
 	@echo "Starting proto files generation..."
 	protoc --go_out=./auth-service --go_opt=paths=source_relative --go-grpc_out=./auth-service --go-grpc_opt=paths=source_relative proto/auth.proto
+	@echo "Remove old broker-service/proto folder"
+	rm -r broker-service/proto || true
+	@echo "Copy pregenerated proto files into broker-service"
+	mkdir broker-service/proto broker-service/proto/auth && cp auth-service/proto/* broker-service/proto/auth
 	@echo "Done!"
 
 ## builds the broker binary as a linux executable
