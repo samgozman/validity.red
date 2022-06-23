@@ -48,6 +48,7 @@ func (app *Config) authRegister(w http.ResponseWriter, authPayload AuthPayload) 
 	conn, err := grpc.Dial(authURL, grpc.WithTransportCredentials(insecure.NewCredentials()), grpc.WithBlock())
 	if err != nil {
 		app.errorJSON(w, err)
+		return
 	}
 	defer conn.Close()
 
