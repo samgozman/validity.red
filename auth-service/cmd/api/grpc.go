@@ -2,6 +2,7 @@ package main
 
 import (
 	auth "auth/proto"
+	"context"
 	"fmt"
 	"log"
 	"net"
@@ -32,4 +33,15 @@ func (app *Config) gRPCListen() {
 	if err := s.Serve(lis); err != nil {
 		log.Fatalf("failed to listen for gRPC: %v", err)
 	}
+}
+
+func (l *AuthServer) Register(ctx context.Context, req *auth.RegisterRequest) (*auth.RegisterResponse, error) {
+	input := req.GetRegisterEntry()
+
+	// register user
+	// return error if exists
+
+	// return response
+	res := &auth.RegisterResponse{Result: fmt.Sprintf("User with email %s registered successfully!", input.Email)}
+	return res, nil
 }
