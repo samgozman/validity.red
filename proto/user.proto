@@ -13,11 +13,6 @@ message AuthRequest {
 	Auth authEntry = 1;
 }
 
-message AuthResponse {
-	string result = 1;
-	string token = 2;
-}
-
 message Register {
 	string email = 1;
 	string password = 2;
@@ -28,15 +23,20 @@ message RegisterRequest {
 	Register registerEntry = 1;
 }
 
-message RegisterResponse {
+message Response {
 	string result = 1;
+}
+
+message RefreshRequest {
+	string token = 1;
 }
 
 // Describe the service available methods
 service AuthService {
-	rpc Login(AuthRequest) returns (AuthResponse);
+	rpc Login(AuthRequest) returns (Response);
+	rpc Refresh(RefreshRequest) returns (Response);
 }
 
 service UserService {
-	rpc Register(RegisterRequest) returns (RegisterResponse);
+	rpc Register(RegisterRequest) returns (Response);
 }

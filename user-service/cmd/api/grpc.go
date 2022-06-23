@@ -41,13 +41,13 @@ func (app *Config) gRPCListen() {
 	}
 }
 
-func (l *UserServer) Register(ctx context.Context, req *user.RegisterRequest) (*user.RegisterResponse, error) {
+func (l *UserServer) Register(ctx context.Context, req *user.RegisterRequest) (*user.Response, error) {
 	input := req.GetRegisterEntry()
 
 	// register user
 	// return error if exists
 
 	// return response
-	res := &user.RegisterResponse{Result: fmt.Sprintf("User with email %s registered successfully!", input.Email)}
+	res := &user.Response{Result: fmt.Sprintf("User with email %s registered successfully!", input.Email)}
 	return res, nil
 }
