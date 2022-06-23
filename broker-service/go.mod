@@ -1,4 +1,4 @@
-module broker
+module github.com/samgozman/validity.red/broker
 
 go 1.18
 

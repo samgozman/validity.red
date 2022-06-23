@@ -23,5 +23,7 @@ func (app *Config) routes() http.Handler {
 	// Simple middleware to test that service is up and running from outside
 	mux.Use(middleware.Heartbeat("/ping"))
 
+	mux.Post("/handle", app.HandleSubmission)
+
 	return mux
 }
