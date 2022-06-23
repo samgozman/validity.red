@@ -1,8 +1,16 @@
 package main
 
 import (
+	"context"
 	"errors"
+	"fmt"
 	"net/http"
+	"os"
+	"time"
+
+	"github.com/samgozman/validity.red/broker/proto/auth"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
 )
 
 type RequestPayload struct {
@@ -33,7 +41,35 @@ func (app *Config) HandleSubmission(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// authRegister temprary stub
+// Call Register method on `auth-service`
 func (app *Config) authRegister(w http.ResponseWriter, authPayload AuthPayload) {
-	app.writeJSON(w, http.StatusAccepted, map[string]string{"message": "registration successful"})
+	// connect to gRPC
+	authURL := fmt.Sprintf("auth-service:%s", os.Getenv("AUTH_GRPC_PORT"))
+	conn, err := grpc.Dial(authURL, grpc.WithTransportCredentials(insecure.NewCredentials()), grpc.WithBlock())
+	if err != nil {
+		app.errorJSON(w, err)
+	}
+	defer conn.Close()
+
+	// create client
+	client := auth.NewAuthServiceClient(conn)
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+	defer cancel()
+
+	// call service
+	res, err := client.Register(ctx, &auth.RegisterRequest{
+		RegisterEntry: &auth.Register{
+			Email:    authPayload.Email,
+			Password: authPayload.Password,
+		},
+	})
+	if err != nil {
+		app.errorJSON(w, err)
+	}
+
+	var payload jsonResponse
+	payload.Error = false
+	payload.Message = res.Result
+
+	app.writeJSON(w, http.StatusAccepted, payload)
 }
