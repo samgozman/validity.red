@@ -1,0 +1,15 @@
+{
+	"folders": [
+		{
+			"path": "broker-service"
+		},
+		{
+			"path": "docs"
+		},
+		// For the full view of the project
+		{
+			"path": "./"
+		},
+	],
+	"settings": {}
+}
