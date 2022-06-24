@@ -5,6 +5,7 @@ import (
 	"os"
 
 	"github.com/samgozman/validity.red/logger/pkg/mongodb"
+	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
@@ -30,6 +31,17 @@ func main() {
 	defer mongodb.Close(ctx, client, cancel)
 
 	database := client.Database(dbname)
+
+	// Create index on field with TTL
+	mod := mongo.IndexModel{
+		Keys: bson.M{"created_at": 1},
+		// Expire after 14 days
+		Options: options.Index().SetExpireAfterSeconds(60 * 60 * 24 * 14),
+	}
+	_, err = database.Collection("logs").Indexes().CreateOne(ctx, mod)
+	if err != nil {
+		panic(err)
+	}
 
 	// Create app
 	app := Config{
