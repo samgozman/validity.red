@@ -3,7 +3,8 @@ package main
 import (
 	"context"
 	"os"
-	"user/pkg/mongodb"
+
+	"github.com/samgozman/validity.red/user/pkg/mongodb"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"

@@ -6,8 +6,9 @@ import (
 	"log"
 	"net"
 	"os"
-	"user/internal/models/user"
-	proto "user/proto"
+
+	"github.com/samgozman/validity.red/user/internal/models/user"
+	proto "github.com/samgozman/validity.red/user/proto"
 
 	"go.mongodb.org/mongo-driver/mongo"
 	"google.golang.org/grpc"

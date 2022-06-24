@@ -1,4 +1,4 @@
-module user
+module github.com/samgozman/validity.red/user
 
 go 1.18
 
