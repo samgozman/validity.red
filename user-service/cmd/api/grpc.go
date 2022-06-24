@@ -6,19 +6,23 @@ import (
 	"log"
 	"net"
 	"os"
-	user "user/proto"
+	"user/internal/models/user"
+	proto "user/proto"
 
+	"go.mongodb.org/mongo-driver/mongo"
 	"google.golang.org/grpc"
 )
 
 type AuthServer struct {
 	// Necessary parameter to insure backwards compatibility
-	user.UnimplementedAuthServiceServer
+	proto.UnimplementedAuthServiceServer
 }
 
 type UserServer struct {
+	ctx context.Context
+	db  *mongo.Database
 	// Necessary parameter to insure backwards compatibility
-	user.UnimplementedUserServiceServer
+	proto.UnimplementedUserServiceServer
 }
 
 var gRpcPort = os.Getenv("GRPC_PORT")
@@ -31,8 +35,11 @@ func (app *Config) gRPCListen() {
 
 	s := grpc.NewServer()
 
-	user.RegisterAuthServiceServer(s, &AuthServer{})
-	user.RegisterUserServiceServer(s, &UserServer{})
+	proto.RegisterAuthServiceServer(s, &AuthServer{})
+	proto.RegisterUserServiceServer(s, &UserServer{
+		ctx: app.ctx,
+		db:  app.db,
+	})
 
 	log.Printf("GRPC server listening on port %s", gRpcPort)
 
@@ -41,13 +48,19 @@ func (app *Config) gRPCListen() {
 	}
 }
 
-func (l *UserServer) Register(ctx context.Context, req *user.RegisterRequest) (*user.Response, error) {
+func (u *UserServer) Register(ctx context.Context, req *proto.RegisterRequest) (*proto.Response, error) {
 	input := req.GetRegisterEntry()
 
 	// register user
+	err := user.InsertOne(u.ctx, u.db, user.User{
+		Email: input.Email,
+	})
 	// return error if exists
+	if err != nil {
+		return nil, err
+	}
 
 	// return response
-	res := &user.Response{Result: fmt.Sprintf("User with email %s registered successfully!", input.Email)}
+	res := &proto.Response{Result: fmt.Sprintf("User with email %s registered successfully!", input.Email)}
 	return res, nil
 }
