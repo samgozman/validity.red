@@ -7,6 +7,9 @@
 			"path": "user-service"
 		},
 		{
+			"path": "logger-service"
+		},
+		{
 			"path": "docs"
 		},
 		{

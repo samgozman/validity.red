@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+package logs;
+
+option go_package = "/logs";
+
+message Log {
+	string service = 1;
+	string message = 3;
+	string error = 4;
+}
+
+message LogRequest {
+	Log logEntry = 1;
+}
+
+message LogResponse {
+	string result = 1;
+}
+
+// Describe the service available methods
+service LogService {
+	rpc LogDebug(LogRequest) returns (LogResponse);
+	rpc LogInfo(LogRequest) returns (LogResponse);
+	rpc LogWarn(LogRequest) returns (LogResponse);
+	rpc LogFatal(LogRequest) returns (LogResponse);
+}

@@ -8,6 +8,7 @@ import (
 	"os"
 	"time"
 
+	"github.com/samgozman/validity.red/broker/proto/logs"
 	"github.com/samgozman/validity.red/broker/proto/user"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
@@ -38,6 +39,10 @@ func (app *Config) HandleSubmission(w http.ResponseWriter, r *http.Request) {
 		app.authRegister(w, requestPayload.Auth)
 	default:
 		app.errorJSON(w, errors.New("invalid action"))
+		go app.logger.LogWarn(&logs.Log{
+			Service: "broker-service",
+			Message: fmt.Sprintf("Invalid action: %s", requestPayload.Action),
+		})
 	}
 }
 
@@ -45,8 +50,16 @@ func (app *Config) HandleSubmission(w http.ResponseWriter, r *http.Request) {
 func (app *Config) authRegister(w http.ResponseWriter, authPayload AuthPayload) {
 	// connect to gRPC
 	authURL := fmt.Sprintf("user-service:%s", os.Getenv("USER_GRPC_PORT"))
-	conn, err := grpc.Dial(authURL, grpc.WithTransportCredentials(insecure.NewCredentials()), grpc.WithBlock())
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+	defer cancel()
+
+	conn, err := grpc.DialContext(ctx, authURL, grpc.WithTransportCredentials(insecure.NewCredentials()), grpc.WithBlock())
 	if err != nil {
+		go app.logger.LogFatal(&logs.Log{
+			Service: "user-service",
+			Message: "Error on connecting to the user-service",
+			Error:   err.Error(),
+		})
 		app.errorJSON(w, err)
 		return
 	}
@@ -54,7 +67,7 @@ func (app *Config) authRegister(w http.ResponseWriter, authPayload AuthPayload) 
 
 	// create client
 	client := user.NewUserServiceClient(conn)
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+	ctx, cancel = context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
 
 	// call service
@@ -65,6 +78,11 @@ func (app *Config) authRegister(w http.ResponseWriter, authPayload AuthPayload) 
 		},
 	})
 	if err != nil {
+		go app.logger.LogWarn(&logs.Log{
+			Service: "user-service",
+			Message: "Error on calling Register method",
+			Error:   err.Error(),
+		})
 		app.errorJSON(w, err)
 		return
 	}
@@ -72,6 +90,11 @@ func (app *Config) authRegister(w http.ResponseWriter, authPayload AuthPayload) 
 	var payload jsonResponse
 	payload.Error = false
 	payload.Message = res.Result
+
+	go app.logger.LogInfo(&logs.Log{
+		Service: "user-service",
+		Message: res.Result,
+	})
 
 	app.writeJSON(w, http.StatusAccepted, payload)
 }

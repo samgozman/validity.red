@@ -7,10 +7,14 @@ import (
 	"os"
 )
 
-type Config struct{}
+type Config struct {
+	logger Logger
+}
 
 func main() {
-	app := Config{}
+	app := Config{
+		logger: Logger{},
+	}
 
 	// define http server
 	srv := &http.Server{
