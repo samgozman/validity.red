@@ -4,10 +4,13 @@
 			"path": "broker-service"
 		},
 		{
+			"path": "user-service"
+		},
+		{
 			"path": "docs"
 		},
 		{
-			"path": "user-service"
+			"path": "proto"
 		},
 		// For the full view of the project
 		{
