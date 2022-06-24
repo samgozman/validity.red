@@ -26,7 +26,7 @@ services:
       - users_mongodb
 
   users_mongodb:
-    image: mongo:latest
+    image: mongo:4.2.21
     ports:
       - "27018:27017"
     environment:
