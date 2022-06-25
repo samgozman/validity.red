@@ -6,8 +6,8 @@ option go_package = "/logs";
 
 message Log {
 	string service = 1;
-	string message = 3;
-	string error = 4;
+	string message = 2;
+	string error = 3;
 }
 
 message LogRequest {
