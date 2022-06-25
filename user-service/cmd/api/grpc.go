@@ -9,8 +9,8 @@ import (
 
 	"github.com/samgozman/validity.red/user/internal/models/user"
 	proto "github.com/samgozman/validity.red/user/proto"
+	"gorm.io/gorm"
 
-	"go.mongodb.org/mongo-driver/mongo"
 	"google.golang.org/grpc"
 )
 
@@ -20,7 +20,7 @@ type AuthServer struct {
 }
 
 type UserServer struct {
-	db *mongo.Database
+	db *gorm.DB
 	// Necessary parameter to insure backwards compatibility
 	proto.UnimplementedUserServiceServer
 }
@@ -51,7 +51,7 @@ func (u *UserServer) Register(ctx context.Context, req *proto.RegisterRequest) (
 	input := req.GetRegisterEntry()
 
 	// register user
-	err := user.InsertOne(ctx, u.db, user.User{
+	err := user.InsertOne(ctx, u.db, &user.User{
 		Email: input.Email,
 	})
 	// return error if exists

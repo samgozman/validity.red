@@ -2,23 +2,59 @@ package user
 
 import (
 	"context"
+	"errors"
+	"html"
+	"strings"
+	"time"
 
-	"go.mongodb.org/mongo-driver/bson/primitive"
-	"go.mongodb.org/mongo-driver/mongo"
+	"github.com/google/uuid"
+	"gorm.io/gorm"
 )
 
 type User struct {
-	ID        primitive.ObjectID  `bson:"_id,omitempty" json:"id,omitempty"`
-	Email     string              `bson:"email,omitempty" json:"email,omitempty"`
-	CreatedAt primitive.Timestamp `bson:"created_at" json:"created_at,omitempty"`
-	UpdatedAt primitive.Timestamp `bson:"updated_at" json:"updated_at,omitempty"`
+	// Id will be set as primaryKey by default
+	ID        uuid.UUID `gorm:"type:uuid" json:"id,omitempty"`
+	Email     string    `gorm:"uniqueIndex" json:"email,omitempty"`
+	CreatedAt time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"created_at,omitempty"`
+	UpdatedAt time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"updated_at,omitempty"`
+}
+
+// Prepare User object before inserting into database
+func (u *User) Prepare() {
+	u.Email = html.EscapeString(strings.TrimSpace(u.Email))
+	u.CreatedAt = time.Now()
+	u.UpdatedAt = time.Now()
+}
+
+// Validate User object before inserting into database
+func (u *User) Validate() error {
+	if u.Email == "" {
+		return errors.New("email required")
+	}
+	// TODO: Validate email to be of valid format
+
+	return nil
+}
+
+func (u *User) BeforeCreate(tx *gorm.DB) error {
+	// Create UUID ID
+	u.ID = uuid.New()
+
+	u.Prepare()
+
+	err := u.Validate()
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 // Insert one User object into database
-func InsertOne(ctx context.Context, db *mongo.Database, user User) error {
-	_, err := db.Collection("users").InsertOne(ctx, user)
-	if err != nil {
-		return err
+func InsertOne(ctx context.Context, db *gorm.DB, u *User) error {
+	res := db.Table("users").Create(&u).WithContext(ctx)
+	if res.Error != nil {
+		return res.Error
 	}
 
 	return nil

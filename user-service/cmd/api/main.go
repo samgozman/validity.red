@@ -1,50 +1,33 @@
 package main
 
 import (
-	"os"
-
-	"github.com/samgozman/validity.red/user/pkg/mongodb"
-
-	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/mongo"
-	"go.mongodb.org/mongo-driver/mongo/options"
+	"github.com/samgozman/validity.red/user/internal/models/user"
+	"gorm.io/driver/postgres"
+	"gorm.io/gorm"
 )
 
 type Config struct {
-	db *mongo.Database
+	db *gorm.DB
 }
 
 func main() {
-	// Start mongodb server
-	dbname := os.Getenv("MONGODB_NAME")
-
-	credential := options.Credential{
-		Username: os.Getenv("MONGO_INITDB_ROOT_USERNAME"),
-		Password: os.Getenv("MONGO_INITDB_ROOT_PASSWORD"),
-	}
-
-	client, ctx, cancel, err := mongodb.Connect("mongodb://users_mongodb/", credential)
+	// Connect to SQL server
+	db, err := gorm.Open(postgres.New(postgres.Config{
+		DSN: getPostgresDSN(),
+	}))
 	if err != nil {
 		panic(err)
 	}
-	defer mongodb.Close(ctx, client, cancel)
 
-	database := client.Database(dbname)
-
-	// Create indexes for users email field
-	// TODO: move it to "models" directory
-	mod := mongo.IndexModel{
-		Keys:    bson.M{"email": 1},
-		Options: options.Index().SetUnique(true),
-	}
-	_, err = database.Collection("users").Indexes().CreateOne(ctx, mod)
+	//Automatic migration for users table
+	err = db.Table("users").AutoMigrate(&user.User{})
 	if err != nil {
 		panic(err)
 	}
 
 	// Create app
 	app := Config{
-		db: database,
+		db: db,
 	}
 
 	// Start gRPC server

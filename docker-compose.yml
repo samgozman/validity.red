@@ -20,11 +20,13 @@ services:
     restart: always
     environment:
       GRPC_PORT: "50001"
-      MONGODB_NAME: users
-      MONGO_INITDB_ROOT_USERNAME: admin
-      MONGO_INITDB_ROOT_PASSWORD: password
+      POSTGRES_HOST: users_postgres
+      POSTGRES_PORT: 5432
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: users
     depends_on:
-      - users_mongodb
+      - users_postgres
     
   logger-service:
     build:
@@ -39,18 +41,6 @@ services:
     depends_on:
       - logger_mongodb
 
-  users_mongodb:
-    image: mongo:4.2.21
-    ports:
-      - "27018:27017"
-    restart: always
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: admin
-      MONGO_INITDB_ROOT_PASSWORD: password
-      MONGO_INITDB_DATABASE: users
-    volumes:
-      - ./user-service/db-data/:/data/db/
-
   logger_mongodb:
     image: mongo:4.2.21
     ports:
@@ -61,4 +51,16 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: password
       MONGO_INITDB_DATABASE: users
     volumes:
-      - ./logger-service/db-data/:/data/db/
+      - ./logger-service/db-data/mongodb/:/data/db/
+
+  users_postgres:
+    image: postgres:14.4
+    restart: always
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: users
+    ports:
+      - 5432:5432
+    volumes:
+      - ./user-service/db-data/postgres/:/var/lib/postgresql/data
