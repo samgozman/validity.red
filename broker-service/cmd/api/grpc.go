@@ -107,3 +107,16 @@ func connectToLogger() (context.Context, logs.LogServiceClient, *grpc.ClientConn
 
 	return ctx, client, conn, cancel, nil
 }
+
+func connectToUserService() (*grpc.ClientConn, error) {
+	// connect to gRPC
+	authURL := fmt.Sprintf("user-service:%s", os.Getenv("USER_GRPC_PORT"))
+	ctxDial, cancelDial := context.WithTimeout(context.Background(), time.Second)
+	defer cancelDial()
+
+	conn, err := grpc.DialContext(ctxDial, authURL, grpc.WithTransportCredentials(insecure.NewCredentials()), grpc.WithBlock())
+	if err != nil {
+		return nil, err
+	}
+	return conn, nil
+}

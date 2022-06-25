@@ -5,13 +5,10 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
-	"os"
 	"time"
 
 	"github.com/samgozman/validity.red/broker/proto/logs"
 	"github.com/samgozman/validity.red/broker/proto/user"
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials/insecure"
 )
 
 type RequestPayload struct {
@@ -51,11 +48,7 @@ func (app *Config) HandleSubmission(w http.ResponseWriter, r *http.Request) {
 // Call Register method on `user-service`
 func (app *Config) authRegister(w http.ResponseWriter, authPayload AuthPayload) {
 	// connect to gRPC
-	authURL := fmt.Sprintf("user-service:%s", os.Getenv("USER_GRPC_PORT"))
-	ctxDial, cancelDial := context.WithTimeout(context.Background(), time.Second)
-	defer cancelDial()
-
-	conn, err := grpc.DialContext(ctxDial, authURL, grpc.WithTransportCredentials(insecure.NewCredentials()), grpc.WithBlock())
+	conn, err := connectToUserService()
 	if err != nil {
 		go app.logger.LogFatal(&logs.Log{
 			Service: "user-service",
@@ -104,11 +97,7 @@ func (app *Config) authRegister(w http.ResponseWriter, authPayload AuthPayload) 
 // Call Login method on `user-service`
 func (app *Config) authLogin(w http.ResponseWriter, authPayload AuthPayload) {
 	// connect to gRPC
-	authURL := fmt.Sprintf("user-service:%s", os.Getenv("USER_GRPC_PORT"))
-	ctxDial, cancelDial := context.WithTimeout(context.Background(), time.Second)
-	defer cancelDial()
-
-	conn, err := grpc.DialContext(ctxDial, authURL, grpc.WithTransportCredentials(insecure.NewCredentials()), grpc.WithBlock())
+	conn, err := connectToUserService()
 	if err != nil {
 		go app.logger.LogFatal(&logs.Log{
 			Service: "user-service",
