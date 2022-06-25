@@ -45,6 +45,10 @@ func Hash(password string) ([]byte, error) {
 	return bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 }
 
+func VerifyPassword(hashedPassword, password string) error {
+	return bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(password))
+}
+
 func (u *User) BeforeCreate(tx *gorm.DB) error {
 	// Create UUID ID
 	u.ID = uuid.New()
@@ -59,7 +63,7 @@ func (u *User) BeforeCreate(tx *gorm.DB) error {
 	return nil
 }
 
-func (u *User) BeforeSave() error {
+func (u *User) BeforeSave(tx *gorm.DB) error {
 	hashedPassword, err := Hash(u.Password)
 	if err != nil {
 		return err
@@ -76,4 +80,14 @@ func InsertOne(ctx context.Context, db *gorm.DB, u *User) error {
 	}
 
 	return nil
+}
+
+// Find one user by email
+func FindOneByEmail(ctx context.Context, db *gorm.DB, u *User) (*User, error) {
+	res := db.Table("users").First(&u, "email = ?", u.Email).WithContext(ctx)
+	if res.Error != nil {
+		return nil, res.Error
+	}
+
+	return u, nil
 }

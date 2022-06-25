@@ -37,6 +37,8 @@ func (app *Config) HandleSubmission(w http.ResponseWriter, r *http.Request) {
 	switch requestPayload.Action {
 	case "AuthRegister":
 		app.authRegister(w, requestPayload.Auth)
+	case "AuthLogin":
+		app.authLogin(w, requestPayload.Auth)
 	default:
 		app.errorJSON(w, errors.New("invalid action"))
 		go app.logger.LogWarn(&logs.Log{
@@ -81,6 +83,59 @@ func (app *Config) authRegister(w http.ResponseWriter, authPayload AuthPayload) 
 		go app.logger.LogWarn(&logs.Log{
 			Service: "user-service",
 			Message: "Error on calling Register method",
+			Error:   err.Error(),
+		})
+		app.errorJSON(w, err)
+		return
+	}
+
+	var payload jsonResponse
+	payload.Error = false
+	payload.Message = res.Result
+
+	go app.logger.LogInfo(&logs.Log{
+		Service: "user-service",
+		Message: res.Result,
+	})
+
+	app.writeJSON(w, http.StatusAccepted, payload)
+}
+
+// Call Login method on `user-service`
+func (app *Config) authLogin(w http.ResponseWriter, authPayload AuthPayload) {
+	// connect to gRPC
+	authURL := fmt.Sprintf("user-service:%s", os.Getenv("USER_GRPC_PORT"))
+	ctxDial, cancelDial := context.WithTimeout(context.Background(), time.Second)
+	defer cancelDial()
+
+	conn, err := grpc.DialContext(ctxDial, authURL, grpc.WithTransportCredentials(insecure.NewCredentials()), grpc.WithBlock())
+	if err != nil {
+		go app.logger.LogFatal(&logs.Log{
+			Service: "user-service",
+			Message: "Error on connecting to the user-service",
+			Error:   err.Error(),
+		})
+		app.errorJSON(w, err)
+		return
+	}
+	defer conn.Close()
+
+	// create client
+	client := user.NewAuthServiceClient(conn)
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+	defer cancel()
+
+	// call service
+	res, err := client.Login(ctx, &user.AuthRequest{
+		AuthEntry: &user.Auth{
+			Email:    authPayload.Email,
+			Password: authPayload.Password,
+		},
+	})
+	if err != nil {
+		go app.logger.LogWarn(&logs.Log{
+			Service: "user-service",
+			Message: "Error on calling Login method",
 			Error:   err.Error(),
 		})
 		app.errorJSON(w, err)
