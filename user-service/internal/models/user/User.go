@@ -7,14 +7,17 @@ import (
 	"strings"
 	"time"
 
+	"github.com/badoux/checkmail"
 	"github.com/google/uuid"
+	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 )
 
 type User struct {
 	// Id will be set as primaryKey by default
 	ID        uuid.UUID `gorm:"type:uuid" json:"id,omitempty"`
-	Email     string    `gorm:"uniqueIndex" json:"email,omitempty"`
+	Email     string    `gorm:"uniqueIndex;size:100;not null;" json:"email,omitempty"`
+	Password  string    `gorm:"size:100;not null;" json:"password"`
 	CreatedAt time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"created_at,omitempty"`
 	UpdatedAt time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"updated_at,omitempty"`
 }
@@ -29,11 +32,17 @@ func (u *User) Prepare() {
 // Validate User object before inserting into database
 func (u *User) Validate() error {
 	if u.Email == "" {
-		return errors.New("email required")
+		return errors.New("email is required")
 	}
-	// TODO: Validate email to be of valid format
+	if err := checkmail.ValidateFormat(u.Email); err != nil {
+		return errors.New("invalid email")
+	}
 
 	return nil
+}
+
+func Hash(password string) ([]byte, error) {
+	return bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 }
 
 func (u *User) BeforeCreate(tx *gorm.DB) error {
@@ -47,6 +56,15 @@ func (u *User) BeforeCreate(tx *gorm.DB) error {
 		return err
 	}
 
+	return nil
+}
+
+func (u *User) BeforeSave() error {
+	hashedPassword, err := Hash(u.Password)
+	if err != nil {
+		return err
+	}
+	u.Password = string(hashedPassword)
 	return nil
 }
 

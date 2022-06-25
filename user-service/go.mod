@@ -11,6 +11,7 @@ require (
 )
 
 require (
+	github.com/badoux/checkmail v1.2.1 // indirect
 	github.com/golang/protobuf v1.5.2 // indirect
 	github.com/jackc/chunkreader/v2 v2.0.1 // indirect
 	github.com/jackc/pgconn v1.12.1 // indirect
