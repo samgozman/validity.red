@@ -20,8 +20,7 @@ type AuthServer struct {
 }
 
 type UserServer struct {
-	ctx context.Context
-	db  *mongo.Database
+	db *mongo.Database
 	// Necessary parameter to insure backwards compatibility
 	proto.UnimplementedUserServiceServer
 }
@@ -38,8 +37,7 @@ func (app *Config) gRPCListen() {
 
 	proto.RegisterAuthServiceServer(s, &AuthServer{})
 	proto.RegisterUserServiceServer(s, &UserServer{
-		ctx: app.ctx,
-		db:  app.db,
+		db: app.db,
 	})
 
 	log.Printf("GRPC server listening on port %s", gRpcPort)
@@ -53,7 +51,7 @@ func (u *UserServer) Register(ctx context.Context, req *proto.RegisterRequest) (
 	input := req.GetRegisterEntry()
 
 	// register user
-	err := user.InsertOne(u.ctx, u.db, user.User{
+	err := user.InsertOne(ctx, u.db, user.User{
 		Email: input.Email,
 	})
 	// return error if exists

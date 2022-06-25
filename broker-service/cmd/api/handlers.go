@@ -50,10 +50,10 @@ func (app *Config) HandleSubmission(w http.ResponseWriter, r *http.Request) {
 func (app *Config) authRegister(w http.ResponseWriter, authPayload AuthPayload) {
 	// connect to gRPC
 	authURL := fmt.Sprintf("user-service:%s", os.Getenv("USER_GRPC_PORT"))
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
-	defer cancel()
+	ctxDial, cancelDial := context.WithTimeout(context.Background(), time.Second)
+	defer cancelDial()
 
-	conn, err := grpc.DialContext(ctx, authURL, grpc.WithTransportCredentials(insecure.NewCredentials()), grpc.WithBlock())
+	conn, err := grpc.DialContext(ctxDial, authURL, grpc.WithTransportCredentials(insecure.NewCredentials()), grpc.WithBlock())
 	if err != nil {
 		go app.logger.LogFatal(&logs.Log{
 			Service: "user-service",
@@ -67,7 +67,7 @@ func (app *Config) authRegister(w http.ResponseWriter, authPayload AuthPayload) 
 
 	// create client
 	client := user.NewUserServiceClient(conn)
-	ctx, cancel = context.WithTimeout(context.Background(), time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
 
 	// call service

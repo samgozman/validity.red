@@ -15,8 +15,7 @@ import (
 )
 
 type LogServer struct {
-	ctx context.Context
-	db  *mongo.Database
+	db *mongo.Database
 	// Necessary parameter to insure backwards compatibility
 	proto.UnimplementedLogServiceServer
 }
@@ -32,8 +31,7 @@ func (app *Config) gRPCListen() {
 	s := grpc.NewServer()
 
 	proto.RegisterLogServiceServer(s, &LogServer{
-		ctx: app.ctx,
-		db:  app.db,
+		db: app.db,
 	})
 
 	log.Printf("GRPC server listening on port %s", gRpcPort)
@@ -43,28 +41,27 @@ func (app *Config) gRPCListen() {
 	}
 }
 
-// TODO: is ctx unused here?
 func (l *LogServer) LogDebug(ctx context.Context, req *proto.LogRequest) (*proto.LogResponse, error) {
-	return logData(l, req, "DEBUG")
+	return logData(ctx, l, req, "DEBUG")
 }
 
 func (l *LogServer) LogInfo(ctx context.Context, req *proto.LogRequest) (*proto.LogResponse, error) {
-	return logData(l, req, "INFO")
+	return logData(ctx, l, req, "INFO")
 }
 
 func (l *LogServer) LogWarn(ctx context.Context, req *proto.LogRequest) (*proto.LogResponse, error) {
-	return logData(l, req, "WARN")
+	return logData(ctx, l, req, "WARN")
 }
 
 func (l *LogServer) LogFatal(ctx context.Context, req *proto.LogRequest) (*proto.LogResponse, error) {
-	return logData(l, req, "FATAL")
+	return logData(ctx, l, req, "FATAL")
 }
 
 // Log everything based on logLevel
-func logData(l *LogServer, req *proto.LogRequest, logLevel string) (*proto.LogResponse, error) {
+func logData(ctx context.Context, l *LogServer, req *proto.LogRequest, logLevel string) (*proto.LogResponse, error) {
 	input := req.GetLogEntry()
 
-	err := logModel.InsertOne(l.ctx, l.db, logModel.Log{
+	err := logModel.InsertOne(ctx, l.db, logModel.Log{
 		Service:  input.Service,
 		LogLevel: logLevel,
 		Message:  input.Message,

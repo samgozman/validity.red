@@ -1,7 +1,6 @@
 package main
 
 import (
-	"context"
 	"os"
 
 	"github.com/samgozman/validity.red/logger/pkg/mongodb"
@@ -11,8 +10,7 @@ import (
 )
 
 type Config struct {
-	ctx context.Context
-	db  *mongo.Database
+	db *mongo.Database
 }
 
 func main() {
@@ -45,8 +43,7 @@ func main() {
 
 	// Create app
 	app := Config{
-		ctx: ctx,
-		db:  database,
+		db: database,
 	}
 
 	app.gRPCListen()
