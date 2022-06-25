@@ -55,7 +55,7 @@ func (app *Config) authRegister(w http.ResponseWriter, authPayload AuthPayload) 
 			Message: "Error on connecting to the user-service",
 			Error:   err.Error(),
 		})
-		app.errorJSON(w, err)
+		app.errorJSON(w, errors.New("service is unavailable. Please try again later"))
 		return
 	}
 	defer conn.Close()
@@ -91,7 +91,7 @@ func (app *Config) authRegister(w http.ResponseWriter, authPayload AuthPayload) 
 		Message: res.Result,
 	})
 
-	app.writeJSON(w, http.StatusAccepted, payload)
+	app.writeJSON(w, http.StatusCreated, payload)
 }
 
 // Call Login method on `user-service`
@@ -104,7 +104,7 @@ func (app *Config) authLogin(w http.ResponseWriter, authPayload AuthPayload) {
 			Message: "Error on connecting to the user-service",
 			Error:   err.Error(),
 		})
-		app.errorJSON(w, err)
+		app.errorJSON(w, errors.New("service is unavailable. Please try again later"))
 		return
 	}
 	defer conn.Close()
@@ -127,7 +127,7 @@ func (app *Config) authLogin(w http.ResponseWriter, authPayload AuthPayload) {
 			Message: "Error on calling Login method",
 			Error:   err.Error(),
 		})
-		app.errorJSON(w, err)
+		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
 
