@@ -13,6 +13,12 @@ message AuthRequest {
 	Auth authEntry = 1;
 }
 
+message AuthResponse {
+	string result = 1;
+	string token = 2;
+	int64 tokenExpiresAt = 3;
+}
+
 message Register {
 	string email = 1;
 	string password = 2;
@@ -33,8 +39,8 @@ message RefreshRequest {
 
 // Describe the service available methods
 service AuthService {
-	rpc Login(AuthRequest) returns (Response);
-	rpc Refresh(RefreshRequest) returns (Response);
+	rpc Login(AuthRequest) returns (AuthResponse);
+	rpc Refresh(RefreshRequest) returns (AuthResponse);
 }
 
 service UserService {

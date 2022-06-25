@@ -69,7 +69,7 @@ func (us *UserServer) Register(ctx context.Context, req *proto.RegisterRequest) 
 	return res, nil
 }
 
-func (us *AuthServer) Login(ctx context.Context, req *proto.AuthRequest) (*proto.Response, error) {
+func (us *AuthServer) Login(ctx context.Context, req *proto.AuthRequest) (*proto.AuthResponse, error) {
 	input := req.GetAuthEntry()
 
 	// find user
@@ -86,10 +86,17 @@ func (us *AuthServer) Login(ctx context.Context, req *proto.AuthRequest) (*proto
 		return nil, err
 	}
 
-	// TODO: create JWT token
-	// TODO: return JWT token
+	// create jwt token
+	jwtToken, expiresAt, err := u.GenerateJwtToken()
+	if err != nil {
+		return nil, err
+	}
 
 	// return response
-	res := &proto.Response{Result: fmt.Sprintf("User with email %s logged in successfully!", input.Email)}
+	res := &proto.AuthResponse{
+		Result:         fmt.Sprintf("User with email %s logged in successfully!", input.Email),
+		Token:          jwtToken,
+		TokenExpiresAt: expiresAt,
+	}
 	return res, nil
 }

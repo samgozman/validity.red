@@ -25,6 +25,7 @@ services:
       POSTGRES_USER: admin
       POSTGRES_PASSWORD: password
       POSTGRES_DB: users
+      JWT_SECRET: someSecretJwtKey
     depends_on:
       - users_postgres
     

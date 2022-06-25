@@ -140,5 +140,12 @@ func (app *Config) authLogin(w http.ResponseWriter, authPayload AuthPayload) {
 		Message: res.Result,
 	})
 
+	// write jwt token
+	http.SetCookie(w, &http.Cookie{
+		Name:    "token",
+		Value:   res.Token,
+		Expires: time.Unix(res.TokenExpiresAt, 0),
+	})
+
 	app.writeJSON(w, http.StatusAccepted, payload)
 }
