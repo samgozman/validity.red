@@ -1,6 +1,7 @@
 BROKER_BINARY=brokerApp
 USER_BINARY=userApp
 LOGGER_BINARY=loggerApp
+DOCUMENT_BINARY=documentApp
 
 ## starts all containers in the background without forcing build
 up:
@@ -9,7 +10,7 @@ up:
 	@echo "Docker images started!"
 
 ## stops docker-compose (if running), builds all projects and starts docker compose
-up_build: grpc_init build_broker build_user build_logger
+up_build: grpc_init build_broker build_user build_logger build_document
 	@echo "Stopping docker images (if running...)"
 	docker-compose down
 	@echo "Building (when required) and starting docker images..."
@@ -45,6 +46,12 @@ build_broker:
 build_user:
 	@echo "Building user binary..."
 	cd ./user-service && env GOOS=linux CGO_ENABLED=0 go build -o ${USER_BINARY} ./cmd/api
+	@echo "Done!"
+
+## builds the document binary as a linux executable
+build_document:
+	@echo "Building document binary..."
+	cd ./document-service && env GOOS=linux CGO_ENABLED=0 go build -o ${DOCUMENT_BINARY} ./cmd/api
 	@echo "Done!"
 
 ## builds the logger binary as a linux executable

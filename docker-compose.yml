@@ -19,7 +19,7 @@ services:
       dockerfile: user-service.Dockerfile
     restart: always
     environment:
-      GRPC_PORT: "50001"
+      GRPC_PORT: 50001
       POSTGRES_HOST: users_postgres
       POSTGRES_PORT: 5432
       POSTGRES_USER: admin
@@ -35,12 +35,27 @@ services:
       dockerfile: logger-service.Dockerfile
     restart: always
     environment:
-      GRPC_PORT: "50002"
+      GRPC_PORT: 50002
       MONGODB_NAME: logs
       MONGO_INITDB_ROOT_USERNAME: admin
       MONGO_INITDB_ROOT_PASSWORD: password
     depends_on:
       - logger_mongodb
+
+  document-service:
+    build:
+      context: ./document-service
+      dockerfile: document-service.Dockerfile
+    restart: always
+    environment:
+      GRPC_PORT: 50003
+      POSTGRES_HOST: document_postgres
+      POSTGRES_PORT: 5433
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: documents
+    depends_on:
+      - document_postgres
 
   logger_mongodb:
     image: mongo:4.2.21
@@ -65,3 +80,15 @@ services:
       - 5432:5432
     volumes:
       - ./user-service/db-data/postgres/:/var/lib/postgresql/data
+
+  document_postgres:
+    image: postgres:14.4
+    restart: always
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: users
+    ports:
+      - 5433:5432
+    volumes:
+      - ./document-service/db-data/postgres/:/var/lib/postgresql/data
