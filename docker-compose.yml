@@ -49,13 +49,13 @@ services:
     restart: always
     environment:
       GRPC_PORT: 50003
-      POSTGRES_HOST: document_postgres
+      POSTGRES_HOST: documents_postgres
       POSTGRES_PORT: 5433
       POSTGRES_USER: admin
       POSTGRES_PASSWORD: password
       POSTGRES_DB: documents
     depends_on:
-      - document_postgres
+      - documents_postgres
 
   logger_mongodb:
     image: mongo:4.2.21
@@ -77,18 +77,24 @@ services:
       POSTGRES_PASSWORD: password
       POSTGRES_DB: users
     ports:
-      - 5432:5432
+      - "5432:5432"
     volumes:
       - ./user-service/db-data/postgres/:/var/lib/postgresql/data
 
-  document_postgres:
+  documents_postgres:
     image: postgres:14.4
     restart: always
     environment:
       POSTGRES_USER: admin
       POSTGRES_PASSWORD: password
-      POSTGRES_DB: users
+      POSTGRES_DB: documents
     ports:
-      - 5433:5432
+      - "5433:5432"
     volumes:
       - ./document-service/db-data/postgres/:/var/lib/postgresql/data
+    expose:
+      - "5433"
+    command: -p 5433
+
+# TODO 1: create separate networks for each service-db pair and for each broker-service pair!
+# TODO 2: remove "expose" and "command" from documents_postgres
