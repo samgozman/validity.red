@@ -15,11 +15,12 @@ import (
 
 type User struct {
 	// Id will be set as primaryKey by default
-	ID        uuid.UUID `gorm:"type:uuid" json:"id,omitempty"`
-	Email     string    `gorm:"uniqueIndex;size:100;not null;" json:"email,omitempty"`
-	Password  string    `gorm:"size:100;not null;" json:"password"`
-	CreatedAt time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"created_at,omitempty"`
-	UpdatedAt time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"updated_at,omitempty"`
+	ID         uuid.UUID `gorm:"type:uuid" json:"id,omitempty"`
+	Email      string    `gorm:"uniqueIndex;size:100;not null;" json:"email,omitempty"`
+	Password   string    `gorm:"size:100;not null;" json:"password"`
+	IsVerified bool      `gorm:"type:bool;default:false;not null;" json:"is_verified"`
+	CreatedAt  time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"created_at,omitempty"`
+	UpdatedAt  time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"updated_at,omitempty"`
 }
 
 // Prepare User object before inserting into database
