@@ -88,6 +88,8 @@ func (app *Config) userRegister(w http.ResponseWriter, registerPayload RegisterP
 		return
 	}
 
+	// TODO: Send verification email
+
 	var payload jsonResponse
 	payload.Error = false
 	payload.Message = res.Result
