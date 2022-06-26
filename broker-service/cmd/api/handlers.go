@@ -12,11 +12,17 @@ import (
 )
 
 type RequestPayload struct {
-	Action string      `json:"action"`
-	Auth   AuthPayload `json:"auth,omitempty"`
+	Action   string          `json:"action"`
+	Auth     AuthPayload     `json:"auth,omitempty"`
+	Register RegisterPayload `json:"register,omitempty"`
 }
 
 type AuthPayload struct {
+	Email    string `json:"email"`
+	Password string `json:"password"`
+}
+
+type RegisterPayload struct {
 	Email    string `json:"email"`
 	Password string `json:"password"`
 }
@@ -33,7 +39,7 @@ func (app *Config) HandleSubmission(w http.ResponseWriter, r *http.Request) {
 
 	switch requestPayload.Action {
 	case "UserRegister":
-		app.userRegister(w, requestPayload.Auth)
+		app.userRegister(w, requestPayload.Register)
 	case "UserLogin":
 		app.userLogin(w, requestPayload.Auth)
 	default:
@@ -46,7 +52,7 @@ func (app *Config) HandleSubmission(w http.ResponseWriter, r *http.Request) {
 }
 
 // Call Register method on `user-service`
-func (app *Config) userRegister(w http.ResponseWriter, authPayload AuthPayload) {
+func (app *Config) userRegister(w http.ResponseWriter, registerPayload RegisterPayload) {
 	// connect to gRPC
 	conn, err := connectToUserService()
 	if err != nil {
@@ -68,8 +74,8 @@ func (app *Config) userRegister(w http.ResponseWriter, authPayload AuthPayload) 
 	// call service
 	res, err := client.Register(ctx, &user.RegisterRequest{
 		RegisterEntry: &user.Register{
-			Email:    authPayload.Email,
-			Password: authPayload.Password,
+			Email:    registerPayload.Email,
+			Password: registerPayload.Password,
 		},
 	})
 	if err != nil {
