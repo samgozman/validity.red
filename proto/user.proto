@@ -33,14 +33,9 @@ message Response {
 	string result = 1;
 }
 
-message RefreshRequest {
-	string token = 1;
-}
-
 // Describe the service available methods
 service AuthService {
 	rpc Login(AuthRequest) returns (AuthResponse);
-	rpc Refresh(RefreshRequest) returns (AuthResponse);
 }
 
 service UserService {
