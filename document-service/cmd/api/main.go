@@ -31,5 +31,5 @@ func main() {
 	}
 
 	// Start gRPC server
-	// app.gRPCListen()
+	app.gRPCListen()
 }
