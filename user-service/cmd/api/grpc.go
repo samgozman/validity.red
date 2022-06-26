@@ -86,6 +86,9 @@ func (us *AuthServer) Login(ctx context.Context, req *proto.AuthRequest) (*proto
 		return nil, err
 	}
 
+	// TODO: Move JWT token handling to the frontend-service
+	// It has nothing to do with the user-service (because it doesn't require any DB interaction)
+
 	// create jwt token
 	jwtToken, expiresAt, err := u.GenerateJwtToken()
 	if err != nil {

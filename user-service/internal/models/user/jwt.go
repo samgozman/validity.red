@@ -16,6 +16,8 @@ type JWTClaims struct {
 	jwt.StandardClaims
 }
 
+// TODO: Move JWT token handling to the frontend-service
+
 // Generates a JWT token for the user
 func (u *User) GenerateJwtToken() (t string, expiresAt int64, err error) {
 	expirationTime := time.Now().Add(validTime).Unix()
