@@ -14,11 +14,11 @@ import (
 type Document struct {
 	ID            uuid.UUID   `gorm:"type:uuid" json:"id,omitempty"`
 	UserID        uuid.UUID   `gorm:"type:uuid;uniqueIndex;not null;" json:"user_id,omitempty"`
-	Type          uint8       `gorm:"type:tinyint;default:0" json:"type,omitempty"` // Type number defined in proto Enum
+	Type          uint        `gorm:"type:uint;default:0" json:"type,omitempty"` // Type number defined in proto Enum
 	Title         string      `gorm:"size:100;not null;" json:"title,omitempty"`
 	Description   string      `gorm:"size:500;not null;" json:"description,omitempty"`
 	ExpiresAt     time.Time   `gorm:"default:0" json:"expires_at,omitempty"`
-	Notifications []time.Time `gorm:"type:time[];default:[]" json:"notifications,omitempty"`
+	Notifications []time.Time `gorm:"type:time[];" json:"notifications,omitempty"`
 	CreatedAt     time.Time   `gorm:"default:CURRENT_TIMESTAMP" json:"created_at,omitempty"`
 	UpdatedAt     time.Time   `gorm:"default:CURRENT_TIMESTAMP" json:"updated_at,omitempty"`
 }
