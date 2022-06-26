@@ -32,10 +32,10 @@ func (app *Config) HandleSubmission(w http.ResponseWriter, r *http.Request) {
 	}
 
 	switch requestPayload.Action {
-	case "AuthRegister":
-		app.authRegister(w, requestPayload.Auth)
-	case "AuthLogin":
-		app.authLogin(w, requestPayload.Auth)
+	case "UserRegister":
+		app.userRegister(w, requestPayload.Auth)
+	case "UserLogin":
+		app.userLogin(w, requestPayload.Auth)
 	default:
 		app.errorJSON(w, errors.New("invalid action"))
 		go app.logger.LogWarn(&logs.Log{
@@ -46,7 +46,7 @@ func (app *Config) HandleSubmission(w http.ResponseWriter, r *http.Request) {
 }
 
 // Call Register method on `user-service`
-func (app *Config) authRegister(w http.ResponseWriter, authPayload AuthPayload) {
+func (app *Config) userRegister(w http.ResponseWriter, authPayload AuthPayload) {
 	// connect to gRPC
 	conn, err := connectToUserService()
 	if err != nil {
@@ -95,7 +95,7 @@ func (app *Config) authRegister(w http.ResponseWriter, authPayload AuthPayload) 
 }
 
 // Call Login method on `user-service`
-func (app *Config) authLogin(w http.ResponseWriter, authPayload AuthPayload) {
+func (app *Config) userLogin(w http.ResponseWriter, authPayload AuthPayload) {
 	// connect to gRPC
 	conn, err := connectToUserService()
 	if err != nil {
