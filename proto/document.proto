@@ -1,0 +1,96 @@
+syntax = "proto3";
+
+import "google/protobuf/timestamp.proto";
+
+package document;
+
+option go_package = "/document";
+
+enum Type {
+	DEFAULT_DOCUMENT = 0;
+	PASSPORT = 1;
+	INTERNAL_PASSPORT = 2;
+	FOREIGN_PASSPORT = 3;
+	IDENTITY_CARD = 4;
+	DRIVER_LICENSE = 5;
+	HUNTING_LICENSE = 6;
+	FIREARMS_LICENSE = 7;
+	MEDICAL_INSURANCE = 8;
+	PROPERTY_INSURANCE = 9;
+	VEHICLE_INSURANCE = 10;
+	PERSONAL_INSURANCE = 11;
+	VISA = 12;
+	STUDENT_VISA = 13;
+	WORK_PERMIT = 14;
+	RESIDENCE_PERMIT = 15;
+	CREDIT_CARD = 16;
+	SERTIFICATE = 17;
+	VACIATION_CERTIFICATE = 18;
+	WARRANTY_CERTIFICATE = 19;
+	OTHER = 20;
+}
+
+message Document {
+	bytes userID = 1;
+	Type type = 2;
+	string title = 3;
+	string description = 4;
+	google.protobuf.Timestamp expiresAt = 5;
+}
+
+message DocumentCreateRequest {
+	Document documentEntry = 1;
+}
+
+message NotificationRequest {
+	bytes documentID = 1;
+	bytes userID = 2;
+}
+
+message NotificationCreateRequest {
+	bytes documentID = 1;
+	bytes userID = 2;
+	repeated google.protobuf.Timestamp notifications = 3;
+}
+
+message DocumentRequest {
+	bytes documentID = 1;
+	bytes userID = 2;
+}
+
+message DocumentsRequest {
+	bytes userID = 2;
+}
+
+message Response {
+	string result = 1;
+}
+
+message ResponseDocument {
+	string result = 1;
+	Document document = 2;
+}
+
+message ResponseDocumentsList {
+	string result = 1;
+	repeated Document documents = 2;
+}
+
+message ResponseNotifications {
+	string result = 1;
+	repeated google.protobuf.Timestamp notifications = 2;
+}
+
+service DocumentService {
+	rpc Create(DocumentCreateRequest) returns (Response);
+	rpc Edit(DocumentCreateRequest) returns (Response);
+	rpc Delete(DocumentRequest) returns (Response);
+	rpc GetOne(DocumentRequest) returns (ResponseDocument);
+	rpc GetAll(DocumentsRequest) returns (ResponseDocumentsList);
+}
+
+service NotificationService {
+	rpc Create(NotificationCreateRequest) returns (Response);
+	rpc Edit(NotificationRequest) returns (Response);
+	rpc GetAll(NotificationRequest) returns (ResponseNotifications);
+}

@@ -28,12 +28,14 @@ grpc_init:
 	@echo "Starting proto files generation..."
 	protoc --go_out=./user-service --go_opt=paths=source_relative --go-grpc_out=./user-service --go-grpc_opt=paths=source_relative proto/user.proto
 	protoc --go_out=./logger-service --go_opt=paths=source_relative --go-grpc_out=./logger-service --go-grpc_opt=paths=source_relative proto/logs.proto
+	protoc --go_out=./document-service --go_opt=paths=source_relative --go-grpc_out=./document-service --go-grpc_opt=paths=source_relative proto/document.proto
 	@echo "Remove old broker-service/proto folder"
 	rm -r broker-service/proto || true
 	@echo "Copy pregenerated proto files into broker-service"
-	mkdir broker-service/proto broker-service/proto/user broker-service/proto/logs
+	mkdir broker-service/proto broker-service/proto/user broker-service/proto/logs broker-service/proto/document
 	cp user-service/proto/* broker-service/proto/user
 	cp logger-service/proto/* broker-service/proto/logs
+	cp document-service/proto/* broker-service/proto/document
 	@echo "Done!"
 
 ## builds the broker binary as a linux executable
