@@ -40,4 +40,6 @@ service AuthService {
 
 service UserService {
 	rpc Register(RegisterRequest) returns (Response);
+	// TODO: change password
+	// TODO: delete user data
 }
