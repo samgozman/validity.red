@@ -55,7 +55,7 @@ func (app *Config) gRPCListen() {
 func (ds *DocumentServer) Create(ctx context.Context, req *proto.DocumentCreateRequest) (*proto.Response, error) {
 	input := req.GetDocumentEntry()
 
-	userID, err := uuid.FromBytes(input.UserID)
+	userID, err := uuid.Parse(input.UserID)
 	if err != nil {
 		return nil, errors.New("invalid user id")
 	}

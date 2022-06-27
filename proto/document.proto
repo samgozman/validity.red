@@ -32,7 +32,7 @@ enum Type {
 }
 
 message Document {
-	bytes userID = 1;
+	string userID = 1;
 	Type type = 2;
 	string title = 3;
 	string description = 4;
