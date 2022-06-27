@@ -115,6 +115,3 @@ networks:
   documents-network:
   users-network:
   logger-network:
-
-# TODO 1: create separate networks for each service-db pair and for each broker-service pair!
-# TODO 2: remove "expose" and "command" from documents_postgres
