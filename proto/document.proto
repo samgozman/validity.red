@@ -27,7 +27,8 @@ enum Type {
 	SERTIFICATE = 17;
 	VACIATION_CERTIFICATE = 18;
 	WARRANTY_CERTIFICATE = 19;
-	OTHER = 20;
+	COUPON = 20;
+	OTHER = 21;
 }
 
 message Document {
