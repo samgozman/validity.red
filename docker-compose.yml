@@ -12,6 +12,8 @@ services:
       BROKER_PORT: "80"
       USER_GRPC_PORT: "50001"
       LOGGER_GRPC_PORT: "50002"
+    networks:
+      - broker-network
 
   user-service:
     build:
@@ -26,6 +28,9 @@ services:
       POSTGRES_PASSWORD: password
       POSTGRES_DB: users
       JWT_SECRET: someSecretJwtKey
+    networks:
+      - broker-network
+      - users-network
     depends_on:
       - users_postgres
     
@@ -39,6 +44,9 @@ services:
       MONGODB_NAME: logs
       MONGO_INITDB_ROOT_USERNAME: admin
       MONGO_INITDB_ROOT_PASSWORD: password
+    networks:
+      - broker-network
+      - logger-network
     depends_on:
       - logger_mongodb
 
@@ -50,10 +58,13 @@ services:
     environment:
       GRPC_PORT: 50003
       POSTGRES_HOST: documents_postgres
-      POSTGRES_PORT: 5433
+      POSTGRES_PORT: 5432
       POSTGRES_USER: admin
       POSTGRES_PASSWORD: password
       POSTGRES_DB: documents
+    networks:
+      - broker-network
+      - documents-network
     depends_on:
       - documents_postgres
 
@@ -66,6 +77,8 @@ services:
       MONGO_INITDB_ROOT_USERNAME: admin
       MONGO_INITDB_ROOT_PASSWORD: password
       MONGO_INITDB_DATABASE: users
+    networks:
+      - logger-network
     volumes:
       - ./logger-service/db-data/mongodb/:/data/db/
 
@@ -80,6 +93,8 @@ services:
       - "5432:5432"
     volumes:
       - ./user-service/db-data/postgres/:/var/lib/postgresql/data
+    networks:
+      - users-network
 
   documents_postgres:
     image: postgres:14.4
@@ -88,13 +103,18 @@ services:
       POSTGRES_USER: admin
       POSTGRES_PASSWORD: password
       POSTGRES_DB: documents
+    networks:
+      - documents-network
     ports:
       - "5433:5432"
     volumes:
       - ./document-service/db-data/postgres/:/var/lib/postgresql/data
-    expose:
-      - "5433"
-    command: -p 5433
+
+networks:
+  broker-network:
+  documents-network:
+  users-network:
+  logger-network:
 
 # TODO 1: create separate networks for each service-db pair and for each broker-service pair!
 # TODO 2: remove "expose" and "command" from documents_postgres
