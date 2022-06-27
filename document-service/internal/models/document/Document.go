@@ -8,13 +8,14 @@ import (
 	"time"
 
 	"github.com/google/uuid"
+	proto "github.com/samgozman/validity.red/document/proto"
 	"gorm.io/gorm"
 )
 
 type Document struct {
 	ID            uuid.UUID   `gorm:"type:uuid" json:"id,omitempty"`
 	UserID        uuid.UUID   `gorm:"type:uuid;uniqueIndex;not null;" json:"user_id,omitempty"`
-	Type          uint        `gorm:"type:uint;default:0" json:"type,omitempty"` // Type number defined in proto Enum
+	Type          proto.Type  `gorm:"type:int;default:0" json:"type,omitempty"`
 	Title         string      `gorm:"size:100;not null;" json:"title,omitempty"`
 	Description   string      `gorm:"size:500;not null;" json:"description,omitempty"`
 	ExpiresAt     time.Time   `gorm:"default:0" json:"expires_at,omitempty"`
