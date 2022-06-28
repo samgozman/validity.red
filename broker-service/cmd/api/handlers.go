@@ -66,26 +66,11 @@ func (app *Config) HandleSubmission(w http.ResponseWriter, r *http.Request) {
 
 // Call Register method on `user-service`
 func (app *Config) userRegister(w http.ResponseWriter, registerPayload RegisterPayload) {
-	// connect to gRPC
-	conn, err := connectToUserService()
-	if err != nil {
-		go app.logger.LogFatal(&logs.Log{
-			Service: "user-service",
-			Message: "Error on connecting to the user-service",
-			Error:   err.Error(),
-		})
-		app.errorJSON(w, errors.New("service is unavailable. Please try again later"))
-		return
-	}
-	defer conn.Close()
-
-	// create client
-	client := user.NewUserServiceClient(conn)
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
 
 	// call service
-	res, err := client.Register(ctx, &user.RegisterRequest{
+	res, err := app.usersClient.userService.Register(ctx, &user.RegisterRequest{
 		RegisterEntry: &user.Register{
 			Email:    registerPayload.Email,
 			Password: registerPayload.Password,
@@ -117,26 +102,11 @@ func (app *Config) userRegister(w http.ResponseWriter, registerPayload RegisterP
 
 // Call Login method on `user-service`
 func (app *Config) userLogin(w http.ResponseWriter, authPayload AuthPayload) {
-	// connect to gRPC
-	conn, err := connectToUserService()
-	if err != nil {
-		go app.logger.LogFatal(&logs.Log{
-			Service: "user-service",
-			Message: "Error on connecting to the user-service",
-			Error:   err.Error(),
-		})
-		app.errorJSON(w, errors.New("service is unavailable. Please try again later"))
-		return
-	}
-	defer conn.Close()
-
-	// create client
-	client := user.NewAuthServiceClient(conn)
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
 
 	// call service
-	res, err := client.Login(ctx, &user.AuthRequest{
+	res, err := app.usersClient.authService.Login(ctx, &user.AuthRequest{
 		AuthEntry: &user.Auth{
 			Email:    authPayload.Email,
 			Password: authPayload.Password,
@@ -173,26 +143,11 @@ func (app *Config) userLogin(w http.ResponseWriter, authPayload AuthPayload) {
 
 // Call Create method on `document-service`
 func (app *Config) documentCreate(w http.ResponseWriter, documentPayload DocumentPayload) {
-	// connect to gRPC
-	conn, err := connectToDocumentService()
-	if err != nil {
-		go app.logger.LogFatal(&logs.Log{
-			Service: "document-service",
-			Message: "Error on connecting to the document-service",
-			Error:   err.Error(),
-		})
-		app.errorJSON(w, errors.New("service is unavailable. Please try again later"))
-		return
-	}
-	defer conn.Close()
-
-	// create client
-	client := document.NewDocumentServiceClient(conn)
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
 
 	// call service
-	res, err := client.Create(ctx, &document.DocumentCreateRequest{
+	res, err := app.documentsClient.documentService.Create(ctx, &document.DocumentCreateRequest{
 		DocumentEntry: &document.Document{
 			// TODO: get user id from jwt token!
 			UserID:      documentPayload.UserID,
