@@ -45,23 +45,23 @@ message DocumentCreateRequest {
 }
 
 message NotificationRequest {
-	bytes documentID = 1;
-	bytes userID = 2;
+	string documentID = 1;
+	string userID = 2;
 }
 
 message NotificationCreateRequest {
-	bytes documentID = 1;
-	bytes userID = 2;
+	string documentID = 1;
+	string userID = 2;
 	repeated google.protobuf.Timestamp notifications = 3;
 }
 
 message DocumentRequest {
-	bytes documentID = 1;
-	bytes userID = 2;
+	string documentID = 1;
+	string userID = 2;
 }
 
 message DocumentsRequest {
-	bytes userID = 2;
+	string userID = 2;
 }
 
 message Response {

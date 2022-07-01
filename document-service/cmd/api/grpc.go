@@ -114,3 +114,32 @@ func (ds *DocumentServer) Edit(ctx context.Context, req *proto.DocumentCreateReq
 	res := &proto.Response{Result: fmt.Sprintf("Document with title '%s' updated successfully!", input.Title)}
 	return res, nil
 }
+
+func (ds *DocumentServer) Delete(ctx context.Context, req *proto.DocumentRequest) (*proto.Response, error) {
+	// Decode values
+	id, err := uuid.Parse(req.GetDocumentID())
+	if err != nil {
+		return nil, errors.New("invalid document id")
+	}
+
+	userID, err := uuid.Parse(req.GetUserID())
+	if err != nil {
+		return nil, errors.New("invalid user id")
+	}
+
+	// delete document
+	d := document.Document{
+		ID:     id,
+		UserID: userID,
+	}
+	err = d.DeleteOne(ctx, ds.db)
+
+	// return error if exists
+	if err != nil {
+		return nil, err
+	}
+
+	// return response
+	res := &proto.Response{Result: fmt.Sprintf("Document with id '%s' deleted successfully!", id)}
+	return res, nil
+}

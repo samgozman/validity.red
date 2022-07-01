@@ -58,6 +58,8 @@ func (app *Config) HandleSubmission(w http.ResponseWriter, r *http.Request) {
 		app.documentCreate(w, requestPayload.Document)
 	case "DocumentEdit":
 		app.documentEdit(w, requestPayload.Document)
+	case "DocumentDelete":
+		app.documentDelete(w, requestPayload.Document)
 	default:
 		app.errorJSON(w, errors.New("invalid action"))
 		go app.logger.LogWarn(&logs.Log{
@@ -219,4 +221,37 @@ func (app *Config) documentEdit(w http.ResponseWriter, documentPayload DocumentP
 	})
 
 	app.writeJSON(w, http.StatusCreated, payload)
+}
+
+// Call Delete method on `document-service`
+func (app *Config) documentDelete(w http.ResponseWriter, documentPayload DocumentPayload) {
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+	defer cancel()
+
+	// call service
+	res, err := app.documentsClient.documentService.Delete(ctx, &document.DocumentRequest{
+		DocumentID: documentPayload.ID,
+		// TODO: get user id from jwt token!
+		UserID: documentPayload.UserID,
+	})
+	if err != nil {
+		go app.logger.LogWarn(&logs.Log{
+			Service: "document-service",
+			Message: "Error on calling Delete method",
+			Error:   err.Error(),
+		})
+		app.errorJSON(w, err)
+		return
+	}
+
+	var payload jsonResponse
+	payload.Error = false
+	payload.Message = res.Result
+
+	go app.logger.LogInfo(&logs.Log{
+		Service: "document-service",
+		Message: res.Result,
+	})
+
+	app.writeJSON(w, http.StatusOK, payload)
 }

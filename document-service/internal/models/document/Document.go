@@ -99,3 +99,25 @@ func (d *Document) UpdateOne(ctx context.Context, db *gorm.DB) error {
 
 	return nil
 }
+
+// TODO: Implement "soft delete" feature
+// TODO: Allow users to restore a document after deletion
+// TODO: Delete documents with DeletedAt timestamp > 14d with CRON job
+// @see: https://gorm.io/docs/delete.html#Soft-Delete
+func (d *Document) DeleteOne(ctx context.Context, db *gorm.DB) error {
+	res := db.
+		WithContext(ctx).
+		Table("documents").
+		Where(&Document{ID: d.ID, UserID: d.UserID}).
+		Delete(&Document{})
+
+	if res.Error != nil {
+		return res.Error
+	}
+
+	if res.RowsAffected == 0 {
+		return errors.New("Document not found or you don't have permission to delete it")
+	}
+
+	return nil
+}
