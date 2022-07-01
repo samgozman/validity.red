@@ -19,7 +19,7 @@ type Document struct {
 	Title         string      `gorm:"size:100;not null;" json:"title,omitempty"`
 	Description   string      `gorm:"size:500;not null;" json:"description,omitempty"`
 	ExpiresAt     time.Time   `gorm:"default:0" json:"expires_at,omitempty"`
-	Notifications []time.Time `gorm:"type:time[];" json:"notifications,omitempty"`
+	Notifications []time.Time `gorm:"type:time[];" json:"notifications,omitempty"` // TODO: Add relation with model Notification
 	CreatedAt     time.Time   `gorm:"default:CURRENT_TIMESTAMP" json:"created_at,omitempty"`
 	UpdatedAt     time.Time   `gorm:"default:CURRENT_TIMESTAMP" json:"updated_at,omitempty"`
 }
@@ -118,6 +118,27 @@ func (d *Document) DeleteOne(ctx context.Context, db *gorm.DB) error {
 	if res.RowsAffected == 0 {
 		return errors.New("Document not found or you don't have permission to delete it")
 	}
+
+	return nil
+}
+
+func (d *Document) FindOne(ctx context.Context, db *gorm.DB) error {
+	res := db.
+		WithContext(ctx).
+		Table("documents").
+		Model(&Document{}).
+		Where(&Document{ID: d.ID, UserID: d.UserID}).
+		First(&d)
+
+	if res.Error != nil {
+		return res.Error
+	}
+
+	if res.RowsAffected == 0 {
+		return errors.New("Document not found or you don't have permission to view it")
+	}
+
+	// TODO: Populate Notifications
 
 	return nil
 }

@@ -60,6 +60,8 @@ func (app *Config) HandleSubmission(w http.ResponseWriter, r *http.Request) {
 		app.documentEdit(w, requestPayload.Document)
 	case "DocumentDelete":
 		app.documentDelete(w, requestPayload.Document)
+	case "DocumentGetOne":
+		app.documentGetOne(w, requestPayload.Document)
 	default:
 		app.errorJSON(w, errors.New("invalid action"))
 		go app.logger.LogWarn(&logs.Log{
@@ -247,6 +249,42 @@ func (app *Config) documentDelete(w http.ResponseWriter, documentPayload Documen
 	var payload jsonResponse
 	payload.Error = false
 	payload.Message = res.Result
+
+	go app.logger.LogInfo(&logs.Log{
+		Service: "document-service",
+		Message: res.Result,
+	})
+
+	app.writeJSON(w, http.StatusOK, payload)
+}
+
+// Call GetOne method on `document-service`
+func (app *Config) documentGetOne(w http.ResponseWriter, documentPayload DocumentPayload) {
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+	defer cancel()
+
+	// call service
+	res, err := app.documentsClient.documentService.GetOne(ctx, &document.DocumentRequest{
+		DocumentID: documentPayload.ID,
+		// TODO: get user id from jwt token!
+		UserID: documentPayload.UserID,
+	})
+	if err != nil {
+		go app.logger.LogWarn(&logs.Log{
+			Service: "document-service",
+			Message: "Error on calling GetOne method",
+			Error:   err.Error(),
+		})
+		app.errorJSON(w, err)
+		return
+	}
+
+	// TODO: Convert ExpiresAt to time.Time
+
+	var payload jsonResponse
+	payload.Error = false
+	payload.Message = res.Result
+	payload.Data = res.Document
 
 	go app.logger.LogInfo(&logs.Log{
 		Service: "document-service",

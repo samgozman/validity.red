@@ -71,6 +71,7 @@ message Response {
 message ResponseDocument {
 	string result = 1;
 	Document document = 2;
+	// TODO: Add Notifications
 }
 
 message ResponseDocumentsList {

@@ -14,6 +14,7 @@ import (
 	"gorm.io/gorm"
 
 	"google.golang.org/grpc"
+	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
 type DocumentServer struct {
@@ -141,5 +142,45 @@ func (ds *DocumentServer) Delete(ctx context.Context, req *proto.DocumentRequest
 
 	// return response
 	res := &proto.Response{Result: fmt.Sprintf("Document with id '%s' deleted successfully!", id)}
+	return res, nil
+}
+
+func (ds *DocumentServer) GetOne(ctx context.Context, req *proto.DocumentRequest) (*proto.ResponseDocument, error) {
+	// Decode values
+	id, err := uuid.Parse(req.GetDocumentID())
+	if err != nil {
+		return nil, errors.New("invalid document id")
+	}
+
+	userID, err := uuid.Parse(req.GetUserID())
+	if err != nil {
+		return nil, errors.New("invalid user id")
+	}
+
+	// Find document
+	d := document.Document{
+		ID:     id,
+		UserID: userID,
+	}
+	err = d.FindOne(ctx, ds.db)
+
+	// return error if exists
+	if err != nil {
+		return nil, err
+	}
+
+	// return response
+	res := &proto.ResponseDocument{
+		Result: fmt.Sprintf("Found Document with title '%s' successfully!", d.Title),
+		Document: &proto.Document{
+			ID:          d.ID.String(),
+			UserID:      d.UserID.String(),
+			Title:       d.Title,
+			Type:        d.Type,
+			Description: d.Description,
+			ExpiresAt:   timestamppb.New(d.ExpiresAt),
+		},
+		// TODO: Add Notifications
+	}
 	return res, nil
 }
