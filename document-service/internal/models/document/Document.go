@@ -14,7 +14,7 @@ import (
 
 type Document struct {
 	ID            uuid.UUID   `gorm:"type:uuid" json:"id,omitempty"`
-	UserID        uuid.UUID   `gorm:"type:uuid;uniqueIndex;not null;" json:"user_id,omitempty"`
+	UserID        uuid.UUID   `gorm:"type:uuid;index;not null;" json:"user_id,omitempty"`
 	Type          proto.Type  `gorm:"type:int;default:0" json:"type,omitempty"`
 	Title         string      `gorm:"size:100;not null;" json:"title,omitempty"`
 	Description   string      `gorm:"size:500;not null;" json:"description,omitempty"`
