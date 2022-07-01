@@ -74,7 +74,7 @@ func (u *User) BeforeSave(tx *gorm.DB) error {
 }
 
 // Insert one User object into database
-func InsertOne(ctx context.Context, db *gorm.DB, u *User) error {
+func (u *User) InsertOne(ctx context.Context, db *gorm.DB) error {
 	res := db.Table("users").Create(&u).WithContext(ctx)
 	if res.Error != nil {
 		return res.Error
@@ -84,7 +84,7 @@ func InsertOne(ctx context.Context, db *gorm.DB, u *User) error {
 }
 
 // Find one user by email
-func FindOneByEmail(ctx context.Context, db *gorm.DB, u *User) (*User, error) {
+func (u *User) FindOneByEmail(ctx context.Context, db *gorm.DB) (*User, error) {
 	res := db.Table("users").First(&u, "email = ?", u.Email).WithContext(ctx)
 	if res.Error != nil {
 		return nil, res.Error

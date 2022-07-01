@@ -55,10 +55,10 @@ func (us *UserServer) Register(ctx context.Context, req *proto.RegisterRequest) 
 	input := req.GetRegisterEntry()
 
 	// register user
-	err := user.InsertOne(ctx, us.db, &user.User{
-		Password: input.Password,
-		Email:    input.Email,
-	})
+	userPayload := user.User{
+		Email: input.Email,
+	}
+	err := userPayload.InsertOne(ctx, us.db)
 	// return error if exists
 	if err != nil {
 		return nil, err
@@ -73,9 +73,10 @@ func (us *AuthServer) Login(ctx context.Context, req *proto.AuthRequest) (*proto
 	input := req.GetAuthEntry()
 
 	// find user
-	u, err := user.FindOneByEmail(ctx, us.db, &user.User{
+	userPayload := user.User{
 		Email: input.Email,
-	})
+	}
+	u, err := userPayload.FindOneByEmail(ctx, us.db)
 	if err != nil {
 		return nil, err
 	}
