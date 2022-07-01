@@ -69,9 +69,32 @@ func (d *Document) BeforeCreate(tx *gorm.DB) error {
 
 // Insert one Document object into database
 func InsertOne(ctx context.Context, db *gorm.DB, d *Document) error {
-	res := db.Table("documents").Create(&d).WithContext(ctx)
+	res := db.WithContext(ctx).Table("documents").Create(&d)
 	if res.Error != nil {
 		return res.Error
+	}
+
+	return nil
+}
+
+func UpdateOne(ctx context.Context, db *gorm.DB, d *Document) error {
+	res := db.
+		WithContext(ctx).
+		Table("documents").
+		Where(&Document{ID: d.ID, UserID: d.UserID}).
+		Updates(&Document{
+			Type:        d.Type,
+			Title:       d.Title,
+			Description: d.Description,
+			ExpiresAt:   d.ExpiresAt,
+		})
+
+	if res.Error != nil {
+		return res.Error
+	}
+
+	if res.RowsAffected == 0 {
+		return errors.New("Document not found or you don't have permission to update it")
 	}
 
 	return nil

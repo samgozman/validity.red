@@ -31,6 +31,7 @@ type RegisterPayload struct {
 }
 
 type DocumentPayload struct {
+	ID          string    `json:"id"`
 	UserID      string    `json:"userId"`
 	Type        int32     `json:"type"`
 	Title       string    `json:"title"`
@@ -55,6 +56,8 @@ func (app *Config) HandleSubmission(w http.ResponseWriter, r *http.Request) {
 		app.userLogin(w, requestPayload.Auth)
 	case "DocumentCreate":
 		app.documentCreate(w, requestPayload.Document)
+	case "DocumentEdit":
+		app.documentEdit(w, requestPayload.Document)
 	default:
 		app.errorJSON(w, errors.New("invalid action"))
 		go app.logger.LogWarn(&logs.Log{
@@ -161,6 +164,45 @@ func (app *Config) documentCreate(w http.ResponseWriter, documentPayload Documen
 		go app.logger.LogWarn(&logs.Log{
 			Service: "document-service",
 			Message: "Error on calling Create method",
+			Error:   err.Error(),
+		})
+		app.errorJSON(w, err)
+		return
+	}
+
+	var payload jsonResponse
+	payload.Error = false
+	payload.Message = res.Result
+
+	go app.logger.LogInfo(&logs.Log{
+		Service: "document-service",
+		Message: res.Result,
+	})
+
+	app.writeJSON(w, http.StatusCreated, payload)
+}
+
+// Call Edit method on `document-service`
+func (app *Config) documentEdit(w http.ResponseWriter, documentPayload DocumentPayload) {
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+	defer cancel()
+
+	// call service
+	res, err := app.documentsClient.documentService.Edit(ctx, &document.DocumentCreateRequest{
+		DocumentEntry: &document.Document{
+			ID: documentPayload.ID,
+			// TODO: get user id from jwt token!
+			UserID:      documentPayload.UserID,
+			Title:       documentPayload.Title,
+			Type:        document.Type(documentPayload.Type),
+			Description: documentPayload.Description,
+			ExpiresAt:   timestamppb.New(documentPayload.ExpiresAt),
+		},
+	})
+	if err != nil {
+		go app.logger.LogWarn(&logs.Log{
+			Service: "document-service",
+			Message: "Error on calling Edit method",
 			Error:   err.Error(),
 		})
 		app.errorJSON(w, err)

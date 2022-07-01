@@ -32,11 +32,12 @@ enum Type {
 }
 
 message Document {
-	string userID = 1;
-	Type type = 2;
-	string title = 3;
-	string description = 4;
-	google.protobuf.Timestamp expiresAt = 5;
+	string ID = 1;
+	string userID = 2;
+	Type type = 3;
+	string title = 4;
+	string description = 5;
+	google.protobuf.Timestamp expiresAt = 6;
 }
 
 message DocumentCreateRequest {
