@@ -61,13 +61,14 @@ func (ds *DocumentServer) Create(ctx context.Context, req *proto.DocumentCreateR
 	}
 
 	// register document
-	err = document.InsertOne(ctx, ds.db, &document.Document{
+	d := document.Document{
 		UserID:      userID,
 		Title:       input.Title,
 		Type:        input.Type,
 		Description: input.Description,
 		ExpiresAt:   input.ExpiresAt.AsTime(),
-	})
+	}
+	err = d.InsertOne(ctx, ds.db)
 
 	// return error if exists
 	if err != nil {
@@ -94,14 +95,15 @@ func (ds *DocumentServer) Edit(ctx context.Context, req *proto.DocumentCreateReq
 	}
 
 	// update document
-	err = document.UpdateOne(ctx, ds.db, &document.Document{
+	d := document.Document{
 		ID:          id,
 		UserID:      userID,
 		Title:       input.Title,
 		Type:        input.Type,
 		Description: input.Description,
 		ExpiresAt:   input.ExpiresAt.AsTime(),
-	})
+	}
+	err = d.UpdateOne(ctx, ds.db)
 
 	// return error if exists
 	if err != nil {

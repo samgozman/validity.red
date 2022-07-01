@@ -68,7 +68,7 @@ func (d *Document) BeforeCreate(tx *gorm.DB) error {
 }
 
 // Insert one Document object into database
-func InsertOne(ctx context.Context, db *gorm.DB, d *Document) error {
+func (d *Document) InsertOne(ctx context.Context, db *gorm.DB) error {
 	res := db.WithContext(ctx).Table("documents").Create(&d)
 	if res.Error != nil {
 		return res.Error
@@ -77,7 +77,7 @@ func InsertOne(ctx context.Context, db *gorm.DB, d *Document) error {
 	return nil
 }
 
-func UpdateOne(ctx context.Context, db *gorm.DB, d *Document) error {
+func (d *Document) UpdateOne(ctx context.Context, db *gorm.DB) error {
 	res := db.
 		WithContext(ctx).
 		Table("documents").
