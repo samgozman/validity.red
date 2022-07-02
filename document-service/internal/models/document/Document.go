@@ -40,14 +40,11 @@ func (d *Document) Validate() error {
 	if d.Title == "" {
 		return errors.New("title is required")
 	}
-	if d.Description == "" {
-		return errors.New("description is required")
-	}
 	if len([]rune(d.Description)) > 500 {
 		return errors.New("description length must be less than 500 characters")
 	}
 	if d.ExpiresAt.IsZero() {
-		return errors.New("expiresAt is required")
+		return errors.New("expires_at is required")
 	}
 
 	return nil
