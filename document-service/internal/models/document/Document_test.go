@@ -117,3 +117,5 @@ func TestDocument_BeforeCreate(t *testing.T) {
 		})
 	}
 }
+
+// TODO: test methods with DB call
