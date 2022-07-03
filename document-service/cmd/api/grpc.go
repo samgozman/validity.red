@@ -184,3 +184,8 @@ func (ds *DocumentServer) GetOne(ctx context.Context, req *proto.DocumentRequest
 	}
 	return res, nil
 }
+
+// TODO: GetAll - get only list of fields: ID, Title, Type, ExpiresAt
+// TODO: CreateNotification - create notification for a given document
+// TODO: EditNotification - attrs: Notification{}, DocumentID, UserID
+// TODO: DeleteNotification - attrs: ID, DocumentID, UserID
