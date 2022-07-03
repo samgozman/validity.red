@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/samgozman/validity.red/document/internal/models/document"
+	"github.com/samgozman/validity.red/document/internal/models/notification"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
@@ -20,7 +21,7 @@ func main() {
 	}
 
 	//Automatic migration for documents table
-	err = db.Table("documents").AutoMigrate(&document.Document{})
+	err = db.AutoMigrate(&document.Document{}, &notification.Notification{})
 	if err != nil {
 		panic(err)
 	}

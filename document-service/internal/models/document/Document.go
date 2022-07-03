@@ -8,20 +8,21 @@ import (
 	"time"
 
 	"github.com/google/uuid"
+	"github.com/samgozman/validity.red/document/internal/models/notification"
 	proto "github.com/samgozman/validity.red/document/proto"
 	"gorm.io/gorm"
 )
 
 type Document struct {
-	ID            uuid.UUID   `gorm:"type:uuid" json:"id,omitempty"`
-	UserID        uuid.UUID   `gorm:"type:uuid;index;not null;" json:"user_id,omitempty"`
-	Type          proto.Type  `gorm:"type:int;default:0" json:"type,omitempty"`
-	Title         string      `gorm:"size:100;not null;" json:"title,omitempty"`
-	Description   string      `gorm:"size:500;not null;" json:"description,omitempty"`
-	ExpiresAt     time.Time   `gorm:"default:0" json:"expires_at,omitempty"`
-	Notifications []time.Time `gorm:"type:time[];" json:"notifications,omitempty"` // TODO: Add relation with model Notification
-	CreatedAt     time.Time   `gorm:"default:CURRENT_TIMESTAMP" json:"created_at,omitempty"`
-	UpdatedAt     time.Time   `gorm:"default:CURRENT_TIMESTAMP" json:"updated_at,omitempty"`
+	ID            uuid.UUID                   `gorm:"primarykey;type:uuid;not null;" json:"id,omitempty"`
+	UserID        uuid.UUID                   `gorm:"type:uuid;index;not null;" json:"user_id,omitempty"`
+	Type          proto.Type                  `gorm:"type:int;default:0" json:"type,omitempty"`
+	Title         string                      `gorm:"size:100;not null;" json:"title,omitempty"`
+	Description   string                      `gorm:"size:500;not null;" json:"description,omitempty"`
+	ExpiresAt     time.Time                   `gorm:"default:0" json:"expires_at,omitempty"`
+	Notifications []notification.Notification `gorm:"foreignKey:DocumentID;constraint:OnUpdate:CASCADE,OnDelete:SET NULL;references:ID" json:"notifications,omitempty"`
+	CreatedAt     time.Time                   `gorm:"default:CURRENT_TIMESTAMP" json:"created_at,omitempty"`
+	UpdatedAt     time.Time                   `gorm:"default:CURRENT_TIMESTAMP" json:"updated_at,omitempty"`
 }
 
 // Prepare Document object before inserting into database
