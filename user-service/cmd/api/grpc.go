@@ -104,3 +104,5 @@ func (us *AuthServer) Login(ctx context.Context, req *proto.AuthRequest) (*proto
 	}
 	return res, nil
 }
+
+// TODO: Edit - edit user info
