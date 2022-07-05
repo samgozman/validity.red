@@ -140,3 +140,19 @@ func (d *Document) FindOne(ctx context.Context, db *gorm.DB) error {
 
 	return nil
 }
+
+// Checks if document is already exists in database
+func (d *Document) Exists(ctx context.Context, db *gorm.DB) (bool, error) {
+	res := db.
+		WithContext(ctx).
+		Exec(
+			"SELECT EXISTS(SELECT 1 FROM documents WHERE id = ? AND user_id = ?)",
+			d.ID,
+			d.UserID,
+		)
+	if res.Error != nil {
+		return false, res.Error
+	}
+
+	return res.RowsAffected > 0, nil
+}

@@ -49,8 +49,6 @@ func (n *Notification) BeforeCreate(tx *gorm.DB) error {
 	return nil
 }
 
-// TODO: Add InsertNotification function (and test it before creating grpc)
-
 // Insert one Notification object into database
 func (n *Notification) InsertOne(ctx context.Context, db *gorm.DB) error {
 	res := db.WithContext(ctx).Table("notifications").Create(&n)

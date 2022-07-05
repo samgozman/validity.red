@@ -202,10 +202,12 @@ func (ds *NotificationServer) Create(ctx context.Context, req *proto.Notificatio
 		ID:     documentID,
 		UserID: userID,
 	}
-	// TODO: Create Exists method so not to fetch anything
-	err = d.FindOne(ctx, ds.db)
+	isDocumentExist, err := d.Exists(ctx, ds.db)
 	if err != nil {
 		return nil, err
+	}
+	if !isDocumentExist {
+		return nil, errors.New("document does not exist")
 	}
 
 	// create notification
