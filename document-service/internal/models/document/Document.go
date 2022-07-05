@@ -143,16 +143,20 @@ func (d *Document) FindOne(ctx context.Context, db *gorm.DB) error {
 
 // Checks if document is already exists in database
 func (d *Document) Exists(ctx context.Context, db *gorm.DB) (bool, error) {
+	var exist struct {
+		Found bool
+	}
 	res := db.
 		WithContext(ctx).
-		Exec(
-			"SELECT EXISTS(SELECT 1 FROM documents WHERE id = ? AND user_id = ?)",
+		Raw(
+			"SELECT EXISTS(SELECT 1 FROM documents WHERE id = ? AND user_id = ?) as found",
 			d.ID,
 			d.UserID,
-		)
+		).
+		Scan(&exist)
 	if res.Error != nil {
 		return false, res.Error
 	}
 
-	return res.RowsAffected > 0, nil
+	return exist.Found, nil
 }
