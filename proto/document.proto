@@ -40,6 +40,12 @@ message Document {
 	google.protobuf.Timestamp expiresAt = 6;
 }
 
+message Notification {
+	string documentID = 1;
+	string userID = 2;
+	google.protobuf.Timestamp date = 3;
+}
+
 message DocumentCreateRequest {
 	Document documentEntry = 1;
 }
@@ -50,9 +56,7 @@ message NotificationRequest {
 }
 
 message NotificationCreateRequest {
-	string documentID = 1;
-	string userID = 2;
-	google.protobuf.Timestamp date = 3;
+	Notification notificationEntry = 1;
 }
 
 message DocumentRequest {

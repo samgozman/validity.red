@@ -187,12 +187,14 @@ func (ds *DocumentServer) GetOne(ctx context.Context, req *proto.DocumentRequest
 }
 
 func (ds *NotificationServer) Create(ctx context.Context, req *proto.NotificationCreateRequest) (*proto.Response, error) {
-	userID, err := uuid.Parse(req.GetUserID())
+	input := req.GetNotificationEntry()
+
+	userID, err := uuid.Parse(input.GetUserID())
 	if err != nil {
 		return nil, errors.New("invalid user id")
 	}
 
-	documentID, err := uuid.Parse(req.GetDocumentID())
+	documentID, err := uuid.Parse(input.GetDocumentID())
 	if err != nil {
 		return nil, errors.New("invalid document_id")
 	}
@@ -213,7 +215,7 @@ func (ds *NotificationServer) Create(ctx context.Context, req *proto.Notificatio
 	// create notification
 	n := notification.Notification{
 		DocumentID: documentID,
-		Date:       req.GetDate().AsTime(),
+		Date:       input.GetDate().AsTime(),
 	}
 	err = n.InsertOne(ctx, ds.db)
 

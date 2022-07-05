@@ -23,7 +23,8 @@ type UsersClient struct {
 }
 
 type DocumentsClient struct {
-	documentService document.DocumentServiceClient
+	documentService     document.DocumentServiceClient
+	notificationService document.NotificationServiceClient
 }
 
 func main() {
@@ -64,7 +65,8 @@ func main() {
 	defer documentServiceConn.Close()
 
 	documentsClient := DocumentsClient{
-		documentService: document.NewDocumentServiceClient(documentServiceConn),
+		documentService:     document.NewDocumentServiceClient(documentServiceConn),
+		notificationService: document.NewNotificationServiceClient(documentServiceConn),
 	}
 	// DOCUMENTS CLIENT SECTION - END //
 
