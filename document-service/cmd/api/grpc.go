@@ -10,6 +10,7 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/samgozman/validity.red/document/internal/models/document"
+	"github.com/samgozman/validity.red/document/internal/models/notification"
 	proto "github.com/samgozman/validity.red/document/proto"
 	"gorm.io/gorm"
 
@@ -185,7 +186,45 @@ func (ds *DocumentServer) GetOne(ctx context.Context, req *proto.DocumentRequest
 	return res, nil
 }
 
+func (ds *NotificationServer) Create(ctx context.Context, req *proto.NotificationCreateRequest) (*proto.Response, error) {
+	userID, err := uuid.Parse(req.GetUserID())
+	if err != nil {
+		return nil, errors.New("invalid user id")
+	}
+
+	documentID, err := uuid.Parse(req.GetDocumentID())
+	if err != nil {
+		return nil, errors.New("invalid document_id")
+	}
+
+	// Check if that document exists
+	d := document.Document{
+		ID:     documentID,
+		UserID: userID,
+	}
+	// TODO: Create Exists method so not to fetch anything
+	err = d.FindOne(ctx, ds.db)
+	if err != nil {
+		return nil, err
+	}
+
+	// create notification
+	n := notification.Notification{
+		DocumentID: documentID,
+		Date:       req.GetDate().AsTime(),
+	}
+	err = n.InsertOne(ctx, ds.db)
+
+	// return error if exists
+	if err != nil {
+		return nil, err
+	}
+
+	// return response
+	res := &proto.Response{Result: fmt.Sprintf("Notification with id '%s' created successfully!", n.ID)}
+	return res, nil
+}
+
 // TODO: GetAll - get only list of fields: ID, Title, Type, ExpiresAt
-// TODO: CreateNotification - create notification for a given document
 // TODO: EditNotification - attrs: Notification{}, DocumentID, UserID
 // TODO: DeleteNotification - attrs: ID, DocumentID, UserID

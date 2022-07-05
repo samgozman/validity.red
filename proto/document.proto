@@ -52,7 +52,7 @@ message NotificationRequest {
 message NotificationCreateRequest {
 	string documentID = 1;
 	string userID = 2;
-	repeated google.protobuf.Timestamp notifications = 3;
+	google.protobuf.Timestamp date = 3;
 }
 
 message DocumentRequest {
@@ -81,7 +81,7 @@ message ResponseDocumentsList {
 
 message ResponseNotifications {
 	string result = 1;
-	repeated google.protobuf.Timestamp notifications = 2;
+	google.protobuf.Timestamp date = 2;
 }
 
 service DocumentService {

@@ -1,6 +1,7 @@
 package notification
 
 import (
+	"context"
 	"errors"
 	"time"
 
@@ -17,32 +18,44 @@ type Notification struct {
 }
 
 // Prepare Notification object before inserting into database
-func (d *Notification) Prepare() {
-	d.CreatedAt = time.Now()
-	d.UpdatedAt = time.Now()
+func (n *Notification) Prepare() {
+	n.CreatedAt = time.Now()
+	n.UpdatedAt = time.Now()
 }
 
 // Validate Notification object before inserting into database
-func (d *Notification) Validate() error {
-	if d.DocumentID == uuid.Nil {
+func (n *Notification) Validate() error {
+	if n.DocumentID == uuid.Nil {
 		return errors.New("document_id is required")
 	}
-	if d.Date.IsZero() {
+	if n.Date.IsZero() {
 		return errors.New("date is required")
 	}
 
 	return nil
 }
 
-func (d *Notification) BeforeCreate(tx *gorm.DB) error {
+func (n *Notification) BeforeCreate(tx *gorm.DB) error {
 	// Create UUID ID
-	d.ID = uuid.New()
+	n.ID = uuid.New()
 
-	d.Prepare()
+	n.Prepare()
 
-	err := d.Validate()
+	err := n.Validate()
 	if err != nil {
 		return err
+	}
+
+	return nil
+}
+
+// TODO: Add InsertNotification function (and test it before creating grpc)
+
+// Insert one Notification object into database
+func (n *Notification) InsertOne(ctx context.Context, db *gorm.DB) error {
+	res := db.WithContext(ctx).Table("notifications").Create(&n)
+	if res.Error != nil {
+		return res.Error
 	}
 
 	return nil
