@@ -11,6 +11,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/samgozman/validity.red/document/internal/models/document"
 	"github.com/samgozman/validity.red/document/internal/models/notification"
+	"github.com/samgozman/validity.red/document/internal/utils"
 	proto "github.com/samgozman/validity.red/document/proto"
 	"gorm.io/gorm"
 
@@ -181,15 +182,16 @@ func (ds *DocumentServer) GetOne(ctx context.Context, req *proto.DocumentRequest
 			Description: d.Description,
 			ExpiresAt:   timestamppb.New(d.ExpiresAt),
 		},
-		// TODO: Add Notifications
+		Notifications: utils.ConvertNotficationsToProtoFormat(&d.Notifications),
 	}
 	return res, nil
 }
 
 func (ds *NotificationServer) Create(ctx context.Context, req *proto.NotificationCreateRequest) (*proto.Response, error) {
 	input := req.GetNotificationEntry()
+	inputId := req.GetUserID()
 
-	userID, err := uuid.Parse(input.GetUserID())
+	userID, err := uuid.Parse(inputId)
 	if err != nil {
 		return nil, errors.New("invalid user id")
 	}

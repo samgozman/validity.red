@@ -289,11 +289,18 @@ func (app *Config) documentGetOne(w http.ResponseWriter, documentPayload Documen
 	}
 
 	// TODO: Convert ExpiresAt to time.Time
+	// TODO: Convert Notification.Data to time.Time
 
 	var payload jsonResponse
 	payload.Error = false
 	payload.Message = res.Result
-	payload.Data = res.Document
+	payload.Data = struct {
+		Document      *document.Document
+		Notifications []*document.Notification
+	}{
+		Document:      res.Document,
+		Notifications: res.Notifications,
+	}
 
 	go app.logger.LogInfo(&logs.Log{
 		Service: "document-service",
@@ -313,9 +320,9 @@ func (app *Config) documentNotificationCreate(w http.ResponseWriter, notificatio
 		NotificationEntry: &document.Notification{
 			DocumentID: notificationPayload.DocumentID,
 			// TODO: get user id from jwt token!
-			UserID: notificationPayload.UserID,
-			Date:   timestamppb.New(notificationPayload.Date),
+			Date: timestamppb.New(notificationPayload.Date),
 		},
+		UserID: notificationPayload.UserID,
 	})
 	if err != nil {
 		go app.logger.LogWarn(&logs.Log{

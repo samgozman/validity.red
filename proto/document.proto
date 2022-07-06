@@ -41,8 +41,8 @@ message Document {
 }
 
 message Notification {
-	string documentID = 1;
-	string userID = 2;
+	string ID = 1;
+	string documentID = 2;
 	google.protobuf.Timestamp date = 3;
 }
 
@@ -57,6 +57,7 @@ message NotificationRequest {
 
 message NotificationCreateRequest {
 	Notification notificationEntry = 1;
+	string userID = 2;
 }
 
 message DocumentRequest {
@@ -75,7 +76,8 @@ message Response {
 message ResponseDocument {
 	string result = 1;
 	Document document = 2;
-	// TODO: Add Notifications
+	// TODO: Move Notification inside document
+	repeated Notification notifications = 3;
 }
 
 message ResponseDocumentsList {

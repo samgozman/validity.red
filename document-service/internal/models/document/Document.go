@@ -120,11 +120,15 @@ func (d *Document) DeleteOne(ctx context.Context, db *gorm.DB) error {
 	return nil
 }
 
+// Find one document and its notifications
 func (d *Document) FindOne(ctx context.Context, db *gorm.DB) error {
 	res := db.
 		WithContext(ctx).
 		Table("documents").
 		Model(&Document{}).
+		// Populate Notifications
+		// TODO: Apply limits, show only 3-5 latest
+		Preload("Notifications").
 		Where(&Document{ID: d.ID, UserID: d.UserID}).
 		First(&d)
 
@@ -135,8 +139,6 @@ func (d *Document) FindOne(ctx context.Context, db *gorm.DB) error {
 	if res.RowsAffected == 0 {
 		return errors.New("Document not found or you don't have permission to view it")
 	}
-
-	// TODO: Populate Notifications
 
 	return nil
 }
