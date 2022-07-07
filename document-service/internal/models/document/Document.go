@@ -92,7 +92,7 @@ func (d *Document) UpdateOne(ctx context.Context, db *gorm.DB) error {
 	}
 
 	if res.RowsAffected == 0 {
-		return errors.New("Document not found or you don't have permission to update it")
+		return errors.New("document not found or you don't have permission to update it")
 	}
 
 	return nil
@@ -114,7 +114,7 @@ func (d *Document) DeleteOne(ctx context.Context, db *gorm.DB) error {
 	}
 
 	if res.RowsAffected == 0 {
-		return errors.New("Document not found or you don't have permission to delete it")
+		return errors.New("document not found or you don't have permission to delete it")
 	}
 
 	return nil
@@ -137,7 +137,7 @@ func (d *Document) FindOne(ctx context.Context, db *gorm.DB) error {
 	}
 
 	if res.RowsAffected == 0 {
-		return errors.New("Document not found or you don't have permission to view it")
+		return errors.New("document not found or you don't have permission to view it")
 	}
 
 	return nil
