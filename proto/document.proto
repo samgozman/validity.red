@@ -51,8 +51,9 @@ message DocumentCreateRequest {
 }
 
 message NotificationRequest {
-	string documentID = 1;
-	string userID = 2;
+	string ID = 1;
+	string documentID = 2;
+	string userID = 3;
 }
 
 message NotificationCreateRequest {
@@ -100,6 +101,6 @@ service DocumentService {
 
 service NotificationService {
 	rpc Create(NotificationCreateRequest) returns (Response);
-	rpc Edit(NotificationRequest) returns (Response);
+	rpc Edit(NotificationCreateRequest) returns (Response);
 	rpc GetAll(NotificationRequest) returns (ResponseNotifications);
 }

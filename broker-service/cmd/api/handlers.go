@@ -41,6 +41,7 @@ type DocumentPayload struct {
 }
 
 type NotificationPayload struct {
+	ID         string    `json:"id"`
 	DocumentID string    `json:"documentId"`
 	UserID     string    `json:"userId"`
 	Date       time.Time `json:"date"`
@@ -69,8 +70,10 @@ func (app *Config) HandleSubmission(w http.ResponseWriter, r *http.Request) {
 		app.documentDelete(w, requestPayload.Document)
 	case "DocumentGetOne":
 		app.documentGetOne(w, requestPayload.Document)
-	case "DocumentNotificationCreate":
+	case "NotificationCreate":
 		app.documentNotificationCreate(w, requestPayload.Notification)
+	case "NotificationEdit":
+		app.documentNotificationEdit(w, requestPayload.Notification)
 	default:
 		app.errorJSON(w, errors.New("invalid action"))
 		go app.logger.LogWarn(&logs.Log{
@@ -319,15 +322,52 @@ func (app *Config) documentNotificationCreate(w http.ResponseWriter, notificatio
 	res, err := app.documentsClient.notificationService.Create(ctx, &document.NotificationCreateRequest{
 		NotificationEntry: &document.Notification{
 			DocumentID: notificationPayload.DocumentID,
-			// TODO: get user id from jwt token!
-			Date: timestamppb.New(notificationPayload.Date),
+			Date:       timestamppb.New(notificationPayload.Date),
 		},
+		// TODO: get user id from jwt token!
 		UserID: notificationPayload.UserID,
 	})
 	if err != nil {
 		go app.logger.LogWarn(&logs.Log{
 			Service: "document-service",
-			Message: "Error on calling Create method",
+			Message: "Error on calling Notification.Create method",
+			Error:   err.Error(),
+		})
+		app.errorJSON(w, err)
+		return
+	}
+
+	var payload jsonResponse
+	payload.Error = false
+	payload.Message = res.Result
+
+	go app.logger.LogInfo(&logs.Log{
+		Service: "document-service",
+		Message: res.Result,
+	})
+
+	app.writeJSON(w, http.StatusCreated, payload)
+}
+
+// Call Edit method on Notification in `document-service`
+func (app *Config) documentNotificationEdit(w http.ResponseWriter, notificationPayload NotificationPayload) {
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+	defer cancel()
+
+	// call service
+	res, err := app.documentsClient.notificationService.Edit(ctx, &document.NotificationCreateRequest{
+		NotificationEntry: &document.Notification{
+			ID:         notificationPayload.ID,
+			DocumentID: notificationPayload.DocumentID,
+			Date:       timestamppb.New(notificationPayload.Date),
+		},
+		// TODO: get user id from jwt token!
+		UserID: notificationPayload.UserID,
+	})
+	if err != nil {
+		go app.logger.LogWarn(&logs.Log{
+			Service: "document-service",
+			Message: "Error on calling Notification.Edit method",
 			Error:   err.Error(),
 		})
 		app.errorJSON(w, err)
