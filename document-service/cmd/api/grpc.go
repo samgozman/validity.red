@@ -279,5 +279,51 @@ func (ds *NotificationServer) Edit(ctx context.Context, req *proto.NotificationC
 	return res, nil
 }
 
+func (ds *NotificationServer) Delete(ctx context.Context, req *proto.NotificationCreateRequest) (*proto.Response, error) {
+	input := req.GetNotificationEntry()
+
+	// Validate input arguments
+	userID, err := uuid.Parse(req.GetUserID())
+	if err != nil {
+		return nil, errors.New("invalid user id")
+	}
+	documentID, err := uuid.Parse(input.GetDocumentID())
+	if err != nil {
+		return nil, errors.New("invalid document_id")
+	}
+	notificationID, err := uuid.Parse(input.GetID())
+	if err != nil {
+		return nil, errors.New("invalid notification id")
+	}
+
+	// Check if that document exists
+	d := document.Document{
+		ID:     documentID,
+		UserID: userID,
+	}
+	isDocumentExist, err := d.Exists(ctx, ds.db)
+	if err != nil {
+		return nil, err
+	}
+	if !isDocumentExist {
+		return nil, errors.New("document does not exist")
+	}
+
+	// delete notification
+	n := notification.Notification{
+		ID:         notificationID,
+		DocumentID: documentID,
+	}
+	err = n.DeleteOne(ctx, ds.db)
+
+	// return error if exists
+	if err != nil {
+		return nil, err
+	}
+
+	// return response
+	res := &proto.Response{Result: fmt.Sprintf("Notification with id '%s' deleted successfully!", n.ID)}
+	return res, nil
+}
+
 // TODO: GetAll - get only list of fields: ID, Title, Type, ExpiresAt
-// TODO: DeleteNotification - attrs: ID, DocumentID, UserID

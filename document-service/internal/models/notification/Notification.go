@@ -78,3 +78,21 @@ func (n *Notification) UpdateOne(ctx context.Context, db *gorm.DB) error {
 
 	return nil
 }
+
+func (n *Notification) DeleteOne(ctx context.Context, db *gorm.DB) error {
+	res := db.
+		WithContext(ctx).
+		Table("notifications").
+		Where(&Notification{ID: n.ID, DocumentID: n.DocumentID}).
+		Delete(&Notification{})
+
+	if res.Error != nil {
+		return res.Error
+	}
+
+	if res.RowsAffected == 0 {
+		return errors.New("notification not found")
+	}
+
+	return nil
+}
