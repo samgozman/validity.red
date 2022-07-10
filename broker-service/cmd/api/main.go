@@ -29,7 +29,16 @@ type DocumentsClient struct {
 
 func main() {
 	// Create logger
-	logger := Logger{}
+	loggerServiceConn, err := connectToService("logger-service", os.Getenv("LOGGER_GRPC_PORT"))
+	if err != nil {
+		log.Fatal(err)
+		return
+	}
+	defer loggerServiceConn.Close()
+	loggerClient := logs.NewLogServiceClient(loggerServiceConn)
+	logger := Logger{
+		client: loggerClient,
+	}
 
 	// ! Move client connections to the separate gorutine
 	// ! which will be trying to reconnect without blocking the main app
