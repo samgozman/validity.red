@@ -108,24 +108,8 @@ func connectToLogger() (context.Context, logs.LogServiceClient, *grpc.ClientConn
 	return ctx, client, conn, cancel, nil
 }
 
-// TODO: Refactor this function to reduce duplications
-
-func connectToUserService() (*grpc.ClientConn, error) {
-	// connect to gRPC
-	url := fmt.Sprintf("user-service:%s", os.Getenv("USER_GRPC_PORT"))
-	ctxDial, cancelDial := context.WithTimeout(context.Background(), time.Second)
-	defer cancelDial()
-
-	conn, err := grpc.DialContext(ctxDial, url, grpc.WithTransportCredentials(insecure.NewCredentials()), grpc.WithBlock())
-	if err != nil {
-		return nil, err
-	}
-	return conn, nil
-}
-
-func connectToDocumentService() (*grpc.ClientConn, error) {
-	// connect to gRPC
-	url := fmt.Sprintf("document-service:%s", os.Getenv("DOCUMENT_GRPC_PORT"))
+func connectToService(name, port string) (*grpc.ClientConn, error) {
+	url := fmt.Sprintf("%s:%s", name, port)
 	ctxDial, cancelDial := context.WithTimeout(context.Background(), time.Second)
 	defer cancelDial()
 

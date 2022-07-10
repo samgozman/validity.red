@@ -35,7 +35,7 @@ func main() {
 	// ! which will be trying to reconnect without blocking the main app
 
 	// USERS CLIENT SECTION - START //
-	userServiceConn, err := connectToUserService()
+	userServiceConn, err := connectToService("user-service", os.Getenv("USER_GRPC_PORT"))
 	if err != nil {
 		go logger.LogFatal(&logs.Log{
 			Service: "user-service",
@@ -53,7 +53,7 @@ func main() {
 	// USERS CLIENT SECTION - END //
 
 	// DOCUMENTS CLIENT SECTION - START //
-	documentServiceConn, err := connectToDocumentService()
+	documentServiceConn, err := connectToService("document-service", os.Getenv("DOCUMENT_GRPC_PORT"))
 	if err != nil {
 		go logger.LogFatal(&logs.Log{
 			Service: "document-service",
