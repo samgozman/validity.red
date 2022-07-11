@@ -35,9 +35,8 @@ func main() {
 		return
 	}
 	defer loggerServiceConn.Close()
-	loggerClient := logs.NewLogServiceClient(loggerServiceConn)
 	logger := Logger{
-		client: loggerClient,
+		client: logs.NewLogServiceClient(loggerServiceConn),
 	}
 
 	// ! Move client connections to the separate gorutine
