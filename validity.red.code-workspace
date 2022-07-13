@@ -13,6 +13,9 @@
 			"path": "logger-service"
 		},
 		{
+			"path": "frontend-service"
+		},
+		{
 			"path": "docs"
 		},
 		{

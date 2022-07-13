@@ -14,3 +14,20 @@ document-service/proto
 user-service/db-data
 logger-service/db-data
 document-service/db-data
+
+# Ignore frontend files
+frontend-service/node_modules
+frontend-service/.DS_Store
+frontend-service/dist
+frontend-service/dist-ssr
+frontend-service/coverage
+
+# Ignore editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
