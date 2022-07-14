@@ -6,8 +6,8 @@ import Footer from "./components/FooterComponent.vue";
 
 <template>
   <div class="flex flex-col h-screen justify-between">
-    <header class="h-auto">
-      <div class="container xl:mx-auto">
+    <header class="h-20">
+      <div class="xl:container xl:mx-auto">
         <NavBar />
       </div>
     </header>
