@@ -1,12 +1,19 @@
 <script setup lang="ts">
 import { RouterView } from "vue-router";
 import NavBar from "./components/NavBar.vue";
+import Footer from "./components/FooterComponent.vue";
 </script>
 
 <template>
-  <header>
-    <NavBar />
-  </header>
-
-  <RouterView />
+  <div class="flex flex-col h-screen justify-between">
+    <header class="h-auto">
+      <div class="container xl:mx-auto">
+        <NavBar />
+      </div>
+    </header>
+    <div class="container xl:mx-auto mb-auto">
+      <RouterView />
+    </div>
+    <Footer />
+  </div>
 </template>

@@ -2,7 +2,6 @@
 import BigButton from "../components/buttons/BigButton.vue";
 </script>
 
-
 <template>
   <main>
     <article class="prose lg:prose-xl">
