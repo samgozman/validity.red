@@ -23,7 +23,7 @@ import NavBarItems from "./NavBarItems.vue";
           </svg>
         </label>
       </div>
-      <a class="btn btn-ghost normal-case text-xl">daisyUI</a>
+      <a class="btn btn-ghost normal-case text-xl">Valitidy.RED</a>
       <ul class="hidden md:flex menu menu-horizontal p-0">
         <NavBarItems />
       </ul>
