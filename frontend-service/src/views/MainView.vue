@@ -6,7 +6,7 @@ import BigButton from "../components/buttons/BigButton.vue";
   <main>
     <div class="hero min-h-screen bg-base-100">
       <div class="hero-content text-center">
-        <div class="max-w-md">
+        <div class="max-w-xl">
           <article class="prose lg:prose-xl mb-10">
             <h1>Main view</h1>
             <p>
