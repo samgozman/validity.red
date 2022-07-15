@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import BigButton from "./buttons/BigButton.vue";
 import NavBarItems from "./NavBarItems.vue";
+import NavBarUserItems from "./NavBarUserItems.vue";
 </script>
 
 <template>
@@ -41,8 +42,7 @@ import NavBarItems from "./NavBarItems.vue";
           tabindex="0"
           class="mt-3 p-2 shadow menu menu-compact dropdown-content bg-base-100 rounded-box w-52"
         >
-          <li><a>Settings</a></li>
-          <li><a>Logout</a></li>
+          <NavBarUserItems />
         </ul>
       </div>
     </div>
