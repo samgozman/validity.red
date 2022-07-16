@@ -23,6 +23,7 @@ const router = createRouter({
       // this generates a separate chunk (Dashboard.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
       component: () => import("../views/DashboardView.vue"),
+      meta: { requiresAuth: true },
     },
     {
       path: "/documents",
@@ -31,6 +32,7 @@ const router = createRouter({
       // this generates a separate chunk (Documents.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
       component: () => import("../views/DocumentsView.vue"),
+      meta: { requiresAuth: true },
     },
     {
       path: "/about",
@@ -38,6 +40,25 @@ const router = createRouter({
       component: AboutView,
     },
   ],
+});
+
+router.beforeEach(async (to, from) => {
+  // check if cookie is exists
+  const cookie = document.cookie.match(
+    new RegExp("(^| )" + "token" + "=([^;]+)")
+  );
+
+  // TODO: check that user object is exists as well
+
+  if (
+    to.meta.requiresAuth &&
+    !cookie &&
+    // Avoid an infinite redirect
+    to.name !== "login"
+  ) {
+    // redirect the user to the login page
+    return { name: "login" };
+  }
 });
 
 export default router;
