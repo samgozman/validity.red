@@ -31,7 +31,7 @@
     <div class="form-control mt-6">
       <button
         class="btn btn-primary"
-        :disabled="password.length < 3"
+        :disabled="password.length < 6 || email.length < 4"
         type="submit"
       >
         Login
