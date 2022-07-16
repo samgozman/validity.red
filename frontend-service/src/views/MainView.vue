@@ -5,7 +5,7 @@ import LogoText from "../components/LogoText.vue";
 
 <template>
   <main>
-    <div class="hero min-h-screen bg-base-100 m-6 rounded-box">
+    <div class="hero min-h-screen bg-base-100 my-6 rounded-box">
       <div class="hero-content text-center">
         <div class="max-w-xl">
           <article class="prose lg:prose-xl mb-10">
