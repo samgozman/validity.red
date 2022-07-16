@@ -4,11 +4,11 @@ import BigButton from "../components/buttons/BigButton.vue";
 
 <template>
   <main>
-    <div class="hero min-h-screen bg-base-100">
+    <div class="hero min-h-screen bg-base-100 m-6 rounded-box">
       <div class="hero-content text-center">
         <div class="max-w-xl">
           <article class="prose lg:prose-xl mb-10">
-            <h1>Main view</h1>
+            <h1>Validity.RED</h1>
             <p>
               Lorem ipsum dolor sit, amet consectetur adipisicing elit. Pariatur
               sunt aliquam amet quaerat provident possimus eius, ex quos odit
