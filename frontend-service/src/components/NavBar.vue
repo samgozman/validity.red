@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import BigButton from "./buttons/BigButton.vue";
+import LogoText from "../components/LogoText.vue";
 import NavBarItems from "./NavBarItems.vue";
 import NavBarUserItems from "./NavBarUserItems.vue";
 </script>
@@ -24,7 +25,7 @@ import NavBarUserItems from "./NavBarUserItems.vue";
           </svg>
         </label>
       </div>
-      <a class="btn btn-ghost normal-case text-xl">Valitidy.RED</a>
+      <a class="btn btn-ghost normal-case text-xl"><LogoText /></a>
       <ul class="hidden md:flex menu menu-horizontal p-0">
         <NavBarItems />
       </ul>
