@@ -5,7 +5,9 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"time"
 
+	"github.com/samgozman/validity.red/broker/internal/token"
 	"github.com/samgozman/validity.red/broker/proto/document"
 	"github.com/samgozman/validity.red/broker/proto/logs"
 	"github.com/samgozman/validity.red/broker/proto/user"
@@ -13,6 +15,7 @@ import (
 
 type Config struct {
 	logger          *Logger
+	token           *token.TokenMaker
 	usersClient     *UsersClient
 	documentsClient *DocumentsClient
 }
@@ -78,8 +81,15 @@ func main() {
 	}
 	// DOCUMENTS CLIENT SECTION - END //
 
+	// Create JWT token maker
+	token := token.TokenMaker{
+		Key:       []byte(os.Getenv("JWT_SECRET")),
+		ValidTime: 10 * time.Minute,
+	}
+
 	app := Config{
 		logger:          &logger,
+		token:           &token,
 		usersClient:     &usersClient,
 		documentsClient: &documentsClient,
 	}

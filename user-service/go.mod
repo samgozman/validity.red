@@ -4,7 +4,6 @@ go 1.18
 
 require (
 	github.com/badoux/checkmail v1.2.1
-	github.com/golang-jwt/jwt v3.2.2+incompatible
 	github.com/google/uuid v1.3.0
 	golang.org/x/crypto v0.0.0-20220622213112-05595931fe9d
 	google.golang.org/grpc v1.47.0

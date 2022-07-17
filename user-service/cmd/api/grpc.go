@@ -87,20 +87,11 @@ func (us *AuthServer) Login(ctx context.Context, req *proto.AuthRequest) (*proto
 		return nil, err
 	}
 
-	// TODO: Move JWT token handling to the frontend-service
-	// It has nothing to do with the user-service (because it doesn't require any DB interaction)
-
-	// create jwt token
-	jwtToken, expiresAt, err := u.GenerateJwtToken()
-	if err != nil {
-		return nil, err
-	}
-
 	// return response
 	res := &proto.AuthResponse{
-		Result:         fmt.Sprintf("User with email %s logged in successfully!", input.Email),
-		Token:          jwtToken,
-		TokenExpiresAt: expiresAt,
+		Result: fmt.Sprintf("User with email %s logged in successfully!", input.Email),
+		// TODO: Return user entity
+		UserId: u.ID.String(),
 	}
 	return res, nil
 }

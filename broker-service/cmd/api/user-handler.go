@@ -76,11 +76,23 @@ func (app *Config) userLogin(w http.ResponseWriter, authPayload AuthPayload) {
 		Message: res.Result,
 	})
 
+	// Generate JWT token
+	token, expiresAt, err := app.token.Generate(res.UserId)
+	if err != nil {
+		go app.logger.LogWarn(&logs.Log{
+			Service: "broker-service",
+			Message: "Error generating JWT token",
+			Error:   err.Error(),
+		})
+		app.errorJSON(w, err, http.StatusInternalServerError)
+		return
+	}
+
 	// write jwt token
 	http.SetCookie(w, &http.Cookie{
 		Name:    "token",
-		Value:   res.Token,
-		Expires: time.Unix(res.TokenExpiresAt, 0),
+		Value:   token,
+		Expires: time.Unix(expiresAt, 0),
 	})
 
 	app.writeJSON(w, http.StatusAccepted, payload)

@@ -15,8 +15,7 @@ message AuthRequest {
 
 message AuthResponse {
 	string result = 1;
-	string token = 2;
-	int64 tokenExpiresAt = 3;
+	string userId = 2;
 }
 
 message Register {
