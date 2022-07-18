@@ -1,9 +1,14 @@
 package token
 
 import (
+	"errors"
 	"time"
 
 	"github.com/golang-jwt/jwt"
+)
+
+var (
+	ErrInvalidToken = errors.New("invalid token")
 )
 
 type TokenMaker struct {
@@ -36,8 +41,25 @@ func (j *TokenMaker) Generate(userIdPayload string) (t string, expiresAt int64, 
 	return tokenString, expirationTime, nil
 }
 
-// func (*JWTToken) Verify(tokenString string) (userId string, e error) {
-// }
+// Verifies a JWT token and returns decoded UserId
+func (j *TokenMaker) Verify(tokenString string) (userId string, e error) {
+	claims := JWTClaims{}
+
+	keyFunc := func(token *jwt.Token) (interface{}, error) {
+		_, ok := token.Method.(*jwt.SigningMethodHMAC)
+		if !ok {
+			return nil, ErrInvalidToken
+		}
+		return j.Key, nil
+	}
+
+	token, err := jwt.ParseWithClaims(tokenString, &claims, keyFunc)
+	if err != nil || !token.Valid || claims.UserID == "" {
+		return "", ErrInvalidToken
+	}
+
+	return claims.UserID, nil
+}
 
 // func (*JWTToken) Refresh(tokenString string) (t string, expiresAt int64, err error) {
 // }
