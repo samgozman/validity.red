@@ -11,7 +11,11 @@ import (
 )
 
 // Call Create method on Notification in `document-service`
-func (app *Config) documentNotificationCreate(w http.ResponseWriter, notificationPayload NotificationPayload) {
+func (app *Config) documentNotificationCreate(
+	w http.ResponseWriter,
+	notificationPayload NotificationPayload,
+	userId string,
+) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
 
@@ -21,8 +25,7 @@ func (app *Config) documentNotificationCreate(w http.ResponseWriter, notificatio
 			DocumentID: notificationPayload.DocumentID,
 			Date:       timestamppb.New(notificationPayload.Date),
 		},
-		// TODO: get user id from jwt token!
-		UserID: notificationPayload.UserID,
+		UserID: userId,
 	})
 	if err != nil {
 		go app.logger.LogWarn(&logs.Log{
@@ -47,7 +50,11 @@ func (app *Config) documentNotificationCreate(w http.ResponseWriter, notificatio
 }
 
 // Call Edit method on Notification in `document-service`
-func (app *Config) documentNotificationEdit(w http.ResponseWriter, notificationPayload NotificationPayload) {
+func (app *Config) documentNotificationEdit(
+	w http.ResponseWriter,
+	notificationPayload NotificationPayload,
+	userId string,
+) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
 
@@ -58,8 +65,7 @@ func (app *Config) documentNotificationEdit(w http.ResponseWriter, notificationP
 			DocumentID: notificationPayload.DocumentID,
 			Date:       timestamppb.New(notificationPayload.Date),
 		},
-		// TODO: get user id from jwt token!
-		UserID: notificationPayload.UserID,
+		UserID: userId,
 	})
 	if err != nil {
 		go app.logger.LogWarn(&logs.Log{
@@ -84,7 +90,11 @@ func (app *Config) documentNotificationEdit(w http.ResponseWriter, notificationP
 }
 
 // Call Delete method on Notification in `document-service`
-func (app *Config) documentNotificationDelete(w http.ResponseWriter, notificationPayload NotificationPayload) {
+func (app *Config) documentNotificationDelete(
+	w http.ResponseWriter,
+	notificationPayload NotificationPayload,
+	userId string,
+) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
 
@@ -94,8 +104,7 @@ func (app *Config) documentNotificationDelete(w http.ResponseWriter, notificatio
 			ID:         notificationPayload.ID,
 			DocumentID: notificationPayload.DocumentID,
 		},
-		// TODO: get user id from jwt token!
-		UserID: notificationPayload.UserID,
+		UserID: userId,
 	})
 	if err != nil {
 		go app.logger.LogWarn(&logs.Log{
