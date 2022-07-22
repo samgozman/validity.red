@@ -56,7 +56,8 @@ func (us *UserServer) Register(ctx context.Context, req *proto.RegisterRequest) 
 
 	// register user
 	userPayload := user.User{
-		Email: input.Email,
+		Email:    input.Email,
+		Password: input.Password,
 	}
 	err := userPayload.InsertOne(ctx, us.db)
 	// return error if exists
