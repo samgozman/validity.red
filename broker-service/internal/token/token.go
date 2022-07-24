@@ -59,6 +59,7 @@ func (j *TokenMaker) Refresh(tokenString string) (t string, expiresAt int64, err
 	}
 
 	// TODO: Ensure that a new token is not issued until enough time has passed
+	// TODO: Return previous token if it's far from expired
 
 	// Create new token with current payload
 	return j.Generate(claims.UserID)
