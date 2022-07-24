@@ -27,3 +27,17 @@ import Footer from "./components/FooterComponent.vue";
     </div>
   </div>
 </template>
+
+<script lang="ts">
+import { defineComponent } from "vue";
+import { RefreshToken } from "./services/RefreshToken";
+
+export default defineComponent({
+  mounted() {
+    // Run token refresh task in background
+    setInterval(async () => {
+      await RefreshToken.call();
+    }, 30000);
+  },
+});
+</script>
