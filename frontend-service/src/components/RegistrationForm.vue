@@ -1,9 +1,5 @@
-<script setup lang="ts">
-import { RouterLink } from "vue-router";
-</script>
-
 <template>
-  <form @submit="login">
+  <form @submit="register" v-if="showForm">
     <div class="form-control">
       <label class="label">
         <span class="label-text">Email</span>
@@ -25,9 +21,6 @@ import { RouterLink } from "vue-router";
         placeholder="password"
         class="input input-bordered"
       />
-      <label class="label">
-        <a href="#" class="label-text-alt link link-hover">Forgot password?</a>
-      </label>
     </div>
     <div v-show="error" class="badge badge-error badge-outline w-full">
       {{ errorMsg }}
@@ -38,12 +31,14 @@ import { RouterLink } from "vue-router";
         :disabled="password.length < 6 || email.length < 4"
         type="submit"
       >
-        Login
+        Sign up
       </button>
     </div>
   </form>
-  <div class="divider">Don't have an account yet?</div>
-  <RouterLink class="btn btn-secondary" to="/register">Sign Up</RouterLink>
+  <span v-else>
+    <p>You have successfully registered!</p>
+    <p>Please click on the confirmation link sent to your email address.</p>
+  </span>
 </template>
 
 <script lang="ts">
@@ -62,15 +57,16 @@ export default defineComponent({
       password: "",
       error: false,
       errorMsg: "",
+      showForm: true,
     };
   },
   methods: {
-    async login(e: Event) {
+    async register(e: Event) {
       e.preventDefault();
 
       const payload = JSON.stringify({
-        action: "UserLogin",
-        auth: {
+        action: "UserRegister",
+        register: {
           email: this.email,
           password: this.password,
         },
@@ -81,8 +77,7 @@ export default defineComponent({
           `http://localhost:8080/handle`,
           payload,
           {
-            // To pass Set-Cookie header
-            withCredentials: true,
+            // TODO: Handle duplicate error
             // Handle 401 error like a normal situation
             validateStatus: (status) =>
               (status >= 200 && status < 300) || status === 401,
@@ -97,9 +92,11 @@ export default defineComponent({
           return;
         }
 
-        // window.localStorage.setItem("userData", JSON.stringify(user));
+        this.showForm = false;
 
-        this.$router.push("/");
+        setTimeout(() => {
+          this.$router.push("/");
+        }, 7000);
       } catch (error) {
         this.error = true;
         this.errorMsg = "An error occurred, please try again";
