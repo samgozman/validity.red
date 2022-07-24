@@ -43,6 +43,9 @@ const router = createRouter({
 });
 
 router.beforeEach(async (to, from) => {
+  // Check for requiresAuth guard
+  if (!to.meta.requiresAuth) return;
+
   // check if cookie is exists
   const cookie = document.cookie.match(
     new RegExp("(^| )" + "token" + "=([^;]+)")
@@ -51,7 +54,6 @@ router.beforeEach(async (to, from) => {
   // TODO: check that user object is exists as well
 
   if (
-    to.meta.requiresAuth &&
     !cookie &&
     // Avoid an infinite redirect
     to.name !== "login"
