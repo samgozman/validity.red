@@ -108,7 +108,7 @@ func (app *Config) userRefreshToken(w http.ResponseWriter, userId string, userTo
 			Message: "Error refreshing JWT token",
 			Error:   err.Error(),
 		})
-		app.errorJSON(w, err, http.StatusInternalServerError)
+		app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
 

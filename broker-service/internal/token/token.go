@@ -44,25 +44,28 @@ func (j *TokenMaker) Generate(userIdPayload string) (t string, expiresAt int64, 
 
 // Verifies a JWT token and returns decoded UserId
 func (j *TokenMaker) Verify(tokenString string) (userId string, e error) {
-	claims := JWTClaims{}
-
-	keyFunc := func(token *jwt.Token) (interface{}, error) {
-		_, ok := token.Method.(*jwt.SigningMethodHMAC)
-		if !ok {
-			return nil, ErrInvalidToken
-		}
-		return j.Key, nil
-	}
-
-	token, err := jwt.ParseWithClaims(tokenString, &claims, keyFunc)
-	if err != nil || !token.Valid || claims.UserID == "" {
-		return "", ErrInvalidToken
+	claims, err := j.parse(tokenString)
+	if err != nil {
+		return "", err
 	}
 
 	return claims.UserID, nil
 }
 
 func (j *TokenMaker) Refresh(tokenString string) (t string, expiresAt int64, err error) {
+	claims, err := j.parse(tokenString)
+	if err != nil {
+		return "", 0, err
+	}
+
+	// TODO: Ensure that a new token is not issued until enough time has passed
+
+	// Create new token with current payload
+	return j.Generate(claims.UserID)
+}
+
+// Parse token string and return decoded JWTClaims
+func (j *TokenMaker) parse(tokenString string) (*JWTClaims, error) {
 	claims := &JWTClaims{}
 
 	keyFunc := func(token *jwt.Token) (interface{}, error) {
@@ -75,13 +78,8 @@ func (j *TokenMaker) Refresh(tokenString string) (t string, expiresAt int64, err
 
 	token, err := jwt.ParseWithClaims(tokenString, claims, keyFunc)
 	if err != nil || !token.Valid || claims.UserID == "" {
-		return "", 0, ErrInvalidToken
+		return &JWTClaims{}, ErrInvalidToken
 	}
 
-	// TODO: Ensure that a new token is not issued until enough time has passed
-
-	// Create new token with current payload
-	return j.Generate(claims.UserID)
+	return claims, nil
 }
-
-// TODO: Split jwt functions into internal methods
