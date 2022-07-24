@@ -58,11 +58,14 @@ func (app *Config) HandleSubmission(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var userId string
+	var (
+		userId string
+		token  *http.Cookie
+	)
 	// Check if requested handler requires authentication
 	if !slices.Contains(WhiteListedHandlers, requestPayload.Action) {
 		// Get token from cookie
-		token, err := r.Cookie("token")
+		token, err = r.Cookie("token")
 		if err != nil {
 			app.errorJSON(w, errors.New("error occured while reading token cookie"), http.StatusUnauthorized)
 			return
@@ -81,6 +84,8 @@ func (app *Config) HandleSubmission(w http.ResponseWriter, r *http.Request) {
 		app.userRegister(w, requestPayload.Register)
 	case "UserLogin":
 		app.userLogin(w, requestPayload.Auth)
+	case "UserRefreshToken":
+		app.userRefreshToken(w, userId, token.Value)
 	case "DocumentCreate":
 		app.documentCreate(w, requestPayload.Document, userId)
 	case "DocumentEdit":

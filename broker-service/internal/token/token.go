@@ -9,6 +9,7 @@ import (
 
 var (
 	ErrInvalidToken = errors.New("invalid token")
+	ErrExpiredToken = errors.New("expired token")
 )
 
 type TokenMaker struct {
@@ -61,7 +62,26 @@ func (j *TokenMaker) Verify(tokenString string) (userId string, e error) {
 	return claims.UserID, nil
 }
 
-// func (*JWTToken) Refresh(tokenString string) (t string, expiresAt int64, err error) {
-// }
+func (j *TokenMaker) Refresh(tokenString string) (t string, expiresAt int64, err error) {
+	claims := &JWTClaims{}
+
+	keyFunc := func(token *jwt.Token) (interface{}, error) {
+		_, ok := token.Method.(*jwt.SigningMethodHMAC)
+		if !ok {
+			return nil, ErrInvalidToken
+		}
+		return j.Key, nil
+	}
+
+	token, err := jwt.ParseWithClaims(tokenString, claims, keyFunc)
+	if err != nil || !token.Valid || claims.UserID == "" {
+		return "", 0, ErrInvalidToken
+	}
+
+	// TODO: Ensure that a new token is not issued until enough time has passed
+
+	// Create new token with current payload
+	return j.Generate(claims.UserID)
+}
 
 // TODO: Split jwt functions into internal methods

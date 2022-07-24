@@ -97,3 +97,31 @@ func (app *Config) userLogin(w http.ResponseWriter, authPayload AuthPayload) {
 
 	app.writeJSON(w, http.StatusAccepted, payload)
 }
+
+// Refresh current user JWT token
+func (app *Config) userRefreshToken(w http.ResponseWriter, userId string, userToken string) {
+	// Refresh JWT token
+	token, expiresAt, err := app.token.Refresh(userToken)
+	if err != nil {
+		go app.logger.LogWarn(&logs.Log{
+			Service: "broker-service",
+			Message: "Error refreshing JWT token",
+			Error:   err.Error(),
+		})
+		app.errorJSON(w, err, http.StatusInternalServerError)
+		return
+	}
+
+	// write jwt token
+	http.SetCookie(w, &http.Cookie{
+		Name:    "token",
+		Value:   token,
+		Expires: time.Unix(expiresAt, 0),
+	})
+
+	var payload jsonResponse
+	payload.Error = false
+	payload.Message = "Token refreshed"
+
+	app.writeJSON(w, http.StatusAccepted, payload)
+}
