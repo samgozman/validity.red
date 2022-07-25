@@ -32,7 +32,7 @@ export class RefreshToken {
     const { error } = res.data;
 
     if (error) {
-      // TODO: Clear token cookie
+      console.error("Token refresh failed!");
       return;
     }
   }
