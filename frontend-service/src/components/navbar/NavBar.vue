@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import BigButton from "./buttons/BigButton.vue";
-import LogoText from "../components/LogoText.vue";
+import BigButton from "../buttons/BigButton.vue";
+import LogoText from "../../components/LogoText.vue";
 import NavBarItems from "./NavBarItems.vue";
 import NavBarUserItems from "./NavBarUserItems.vue";
 </script>
