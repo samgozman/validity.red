@@ -1,13 +1,12 @@
 <script setup lang="ts">
 import { RouterLink } from "vue-router";
+import InputLabel from "./elements/InputLabel.vue";
 </script>
 
 <template>
   <form @submit="login">
     <div class="form-control">
-      <label class="label">
-        <span class="label-text">Email</span>
-      </label>
+      <InputLabel label="Email" />
       <input
         type="email"
         v-model="email"
@@ -16,9 +15,7 @@ import { RouterLink } from "vue-router";
       />
     </div>
     <div class="form-control">
-      <label class="label">
-        <span class="label-text">Password</span>
-      </label>
+      <InputLabel label="Password" />
       <input
         type="password"
         v-model="password"
