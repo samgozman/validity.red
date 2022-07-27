@@ -1,0 +1,116 @@
+package user
+
+import (
+	"testing"
+)
+
+func TestUser_Prepare(t *testing.T) {
+	tests := []struct {
+		name     string
+		user     *User
+		wantUser *User
+	}{
+		{
+			name:     "Trim text",
+			user:     &User{Email: "  test@example.com "},
+			wantUser: &User{Email: "test@example.com"},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			u := &User{
+				ID:         tt.user.ID,
+				Email:      tt.user.Email,
+				Password:   tt.user.Password,
+				IsVerified: tt.user.IsVerified,
+				CreatedAt:  tt.user.CreatedAt,
+				UpdatedAt:  tt.user.UpdatedAt,
+			}
+			u.Prepare()
+			if u.Email != tt.wantUser.Email {
+				t.Errorf("User.Prepare() want T '%v', but get T '%v'", tt.wantUser.Email, u.Email)
+			}
+			if u.CreatedAt.IsZero() || u.UpdatedAt.IsZero() {
+				t.Errorf("User.Prepare() want CreatedAt and UpdatedAt not zero")
+			}
+		})
+	}
+}
+
+func TestUser_Validate(t *testing.T) {
+	tests := []struct {
+		name    string
+		user    *User
+		wantErr bool
+	}{
+		{
+			name:    "fail if email is empty",
+			user:    &User{Email: "", Password: "foopassword"},
+			wantErr: true,
+		},
+		{
+			name:    "fail if is not email",
+			user:    &User{Email: "bonk12345", Password: "foopassword"},
+			wantErr: true,
+		},
+		{
+			name:    "fail if password is empty",
+			user:    &User{Email: "test@example.com", Password: ""},
+			wantErr: true,
+		},
+		{
+			name:    "fail if password is too short",
+			user:    &User{Email: "test@example.com", Password: "bonk"},
+			wantErr: true,
+		},
+		{
+			name:    "should pass",
+			user:    &User{Email: "test@example.com", Password: "foopassword"},
+			wantErr: false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			u := &User{
+				ID:         tt.user.ID,
+				Email:      tt.user.Email,
+				Password:   tt.user.Password,
+				IsVerified: tt.user.IsVerified,
+				CreatedAt:  tt.user.CreatedAt,
+				UpdatedAt:  tt.user.UpdatedAt,
+			}
+			if err := u.Validate(); (err != nil) != tt.wantErr {
+				t.Errorf("User.Validate() error = %v, wantErr %v", err, tt.wantErr)
+			}
+		})
+	}
+}
+
+func TestHash(t *testing.T) {
+	type args struct {
+		password string
+	}
+	tests := []struct {
+		name    string
+		args    args
+		wantErr bool
+	}{
+		{
+			name:    "should pass",
+			args:    args{password: "foopassword"},
+			wantErr: false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, err := Hash(tt.args.password)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("Hash() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if len(got) == 0 && tt.wantErr {
+				t.Errorf("Hash is empty")
+			}
+		})
+	}
+}
