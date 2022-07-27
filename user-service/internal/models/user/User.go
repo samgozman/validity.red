@@ -35,6 +35,12 @@ func (u *User) Validate() error {
 	if u.Email == "" {
 		return errors.New("email is required")
 	}
+	if u.Password == "" {
+		return errors.New("password is required")
+	}
+	if len(u.Password) < 8 {
+		return errors.New("password is too short, must be at least 8 characters")
+	}
 	if err := checkmail.ValidateFormat(u.Email); err != nil {
 		return errors.New("invalid email")
 	}
