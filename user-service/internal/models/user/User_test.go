@@ -162,25 +162,25 @@ func TestUser_BeforeCreate(t *testing.T) {
 
 	tests := []struct {
 		name    string
-		user    User
+		user    *User
 		args    args
 		wantErr bool
 	}{
 		{
 			name:    "should pass",
-			user:    User{Email: "test@example.com", Password: "password"},
+			user:    &User{Email: "test@example.com", Password: "password"},
 			args:    a,
 			wantErr: false,
 		},
 		{
 			name:    "should fail on empty password",
-			user:    User{Email: "test@example.com", Password: ""},
+			user:    &User{Email: "test@example.com", Password: ""},
 			args:    a,
 			wantErr: true,
 		},
 		{
 			name:    "should fail on empty email",
-			user:    User{Email: "", Password: "password"},
+			user:    &User{Email: "", Password: "password"},
 			args:    a,
 			wantErr: true,
 		},
@@ -223,13 +223,13 @@ func TestUser_BeforeSave(t *testing.T) {
 
 	tests := []struct {
 		name    string
-		user    User
+		user    *User
 		args    args
 		wantErr bool
 	}{
 		{
 			name:    "should pass",
-			user:    User{Email: "test@example.com", Password: "password"},
+			user:    &User{Email: "test@example.com", Password: "password"},
 			args:    a,
 			wantErr: false,
 		},
