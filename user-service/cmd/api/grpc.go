@@ -66,7 +66,7 @@ func (us *UserServer) Register(ctx context.Context, req *proto.RegisterRequest) 
 	}
 
 	// return response
-	res := &proto.Response{Result: fmt.Sprintf("User with email %s registered successfully!", input.Email)}
+	res := &proto.Response{Result: fmt.Sprintf("User '%s' registered successfully!", userPayload.ID)}
 	return res, nil
 }
 
@@ -90,7 +90,7 @@ func (us *AuthServer) Login(ctx context.Context, req *proto.AuthRequest) (*proto
 
 	// return response
 	res := &proto.AuthResponse{
-		Result: fmt.Sprintf("User with email %s logged in successfully!", input.Email),
+		Result: fmt.Sprintf("User '%s' logged in successfully!", userPayload.ID),
 		// TODO: Return user entity
 		UserId: u.ID.String(),
 	}

@@ -43,7 +43,7 @@ func (ds *DocumentServer) Create(ctx context.Context, req *proto.DocumentCreateR
 	}
 
 	// return response
-	res := &proto.Response{Result: fmt.Sprintf("Document with title '%s' created successfully!", input.Title)}
+	res := &proto.Response{Result: fmt.Sprintf("User '%s' created document '%s' successfully!", userID, d.ID)}
 	return res, nil
 }
 
@@ -78,7 +78,7 @@ func (ds *DocumentServer) Edit(ctx context.Context, req *proto.DocumentCreateReq
 	}
 
 	// return response
-	res := &proto.Response{Result: fmt.Sprintf("Document with title '%s' updated successfully!", input.Title)}
+	res := &proto.Response{Result: fmt.Sprintf("User '%s' edited document '%s' successfully!", userID, d.ID)}
 	return res, nil
 }
 
@@ -107,7 +107,7 @@ func (ds *DocumentServer) Delete(ctx context.Context, req *proto.DocumentRequest
 	}
 
 	// return response
-	res := &proto.Response{Result: fmt.Sprintf("Document with id '%s' deleted successfully!", id)}
+	res := &proto.Response{Result: fmt.Sprintf("User '%s' deleted document '%s' successfully!", userID, id)}
 	return res, nil
 }
 
@@ -137,7 +137,7 @@ func (ds *DocumentServer) GetOne(ctx context.Context, req *proto.DocumentRequest
 
 	// return response
 	res := &proto.ResponseDocument{
-		Result: fmt.Sprintf("Found Document with title '%s' successfully!", d.Title),
+		Result: fmt.Sprintf("User '%s' found document '%s' successfully!", userID, d.ID),
 		Document: &proto.Document{
 			ID:          d.ID.String(),
 			UserID:      d.UserID.String(),
@@ -183,8 +183,7 @@ func (ds *DocumentServer) GetAll(ctx context.Context, req *proto.DocumentsReques
 
 	// return response
 	res := &proto.ResponseDocumentsList{
-		// TODO: Better to log like "UserId fetched N documents"
-		Result:    "Found documents successfully!",
+		Result:    fmt.Sprintf("User '%s' found %d documents successfully!", userID, len(documents)),
 		Documents: protoDocuments,
 	}
 	return res, nil

@@ -58,7 +58,7 @@ func (ds *NotificationServer) Create(ctx context.Context, req *proto.Notificatio
 	}
 
 	// return response
-	res := &proto.Response{Result: fmt.Sprintf("Notification with id '%s' created successfully!", n.ID)}
+	res := &proto.Response{Result: fmt.Sprintf("User '%s' created notification '%s' successfully!", userID, n.ID)}
 	return res, nil
 }
 
@@ -106,7 +106,7 @@ func (ds *NotificationServer) Edit(ctx context.Context, req *proto.NotificationC
 	}
 
 	// return response
-	res := &proto.Response{Result: fmt.Sprintf("Notification with id '%s' updated successfully!", n.ID)}
+	res := &proto.Response{Result: fmt.Sprintf("User '%s' edited notification '%s' successfully!", userID, n.ID)}
 	return res, nil
 }
 
@@ -153,6 +153,6 @@ func (ds *NotificationServer) Delete(ctx context.Context, req *proto.Notificatio
 	}
 
 	// return response
-	res := &proto.Response{Result: fmt.Sprintf("Notification with id '%s' deleted successfully!", n.ID)}
+	res := &proto.Response{Result: fmt.Sprintf("User '%s' deleted notification with id '%s' successfully!", userID, n.ID)}
 	return res, nil
 }
