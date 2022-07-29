@@ -150,3 +150,42 @@ func (ds *DocumentServer) GetOne(ctx context.Context, req *proto.DocumentRequest
 	}
 	return res, nil
 }
+
+func (ds *DocumentServer) GetAll(ctx context.Context, req *proto.DocumentsRequest) (*proto.ResponseDocumentsList, error) {
+	userID, err := uuid.Parse(req.GetUserID())
+	if err != nil {
+		return nil, errors.New("invalid user id")
+	}
+
+	d := document.Document{
+		UserID: userID,
+	}
+
+	// Find all documents
+	documents, err := d.FindAll(ctx, ds.db)
+
+	// return error if exists
+	if err != nil {
+		return nil, err
+	}
+
+	// Transform documents to proto format
+	protoDocuments := make([]*proto.Document, len(documents))
+	for i, d := range documents {
+		protoDocuments[i] = &proto.Document{
+			ID:          d.ID.String(),
+			Title:       d.Title,
+			Type:        d.Type,
+			Description: d.Description,
+			ExpiresAt:   timestamppb.New(d.ExpiresAt),
+		}
+	}
+
+	// return response
+	res := &proto.ResponseDocumentsList{
+		// TODO: Better to log like "UserId fetched N documents"
+		Result:    "Found documents successfully!",
+		Documents: protoDocuments,
+	}
+	return res, nil
+}

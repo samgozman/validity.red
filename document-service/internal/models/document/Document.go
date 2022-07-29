@@ -162,3 +162,25 @@ func (d *Document) Exists(ctx context.Context, db *gorm.DB) (bool, error) {
 
 	return exist.Found, nil
 }
+
+// Find all documents by UserID
+func (d *Document) FindAll(ctx context.Context, db *gorm.DB) ([]Document, error) {
+	var documents []Document
+
+	res := db.
+		WithContext(ctx).
+		Table("documents").
+		Model(&Document{}).
+		Where(&Document{UserID: d.UserID}).
+		Find(&documents)
+
+	if res.Error != nil {
+		return nil, res.Error
+	}
+
+	if res.RowsAffected == 0 {
+		return nil, errors.New("documents not found")
+	}
+
+	return documents, nil
+}

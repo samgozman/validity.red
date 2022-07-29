@@ -174,3 +174,45 @@ func (app *Config) documentGetOne(
 
 	app.writeJSON(w, http.StatusOK, payload)
 }
+
+// Call GetAll method on `document-service`
+func (app *Config) documentGetAll(
+	w http.ResponseWriter,
+	userId string,
+) {
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+	defer cancel()
+
+	// call service
+	res, err := app.documentsClient.documentService.GetAll(ctx, &document.DocumentsRequest{
+		UserID: userId,
+	})
+	if err != nil {
+		go app.logger.LogWarn(&logs.Log{
+			Service: "document-service",
+			Message: "Error on calling GetOne method",
+			Error:   err.Error(),
+		})
+		app.errorJSON(w, err)
+		return
+	}
+
+	// TODO: Convert ExpiresAt to time.Time
+	// TODO: Convert Notification.Data to time.Time
+
+	var payload jsonResponse
+	payload.Error = false
+	payload.Message = res.Result
+	payload.Data = struct {
+		Documents []*document.Document
+	}{
+		Documents: res.Documents,
+	}
+
+	go app.logger.LogInfo(&logs.Log{
+		Service: "document-service",
+		Message: res.Result,
+	})
+
+	app.writeJSON(w, http.StatusOK, payload)
+}

@@ -61,7 +61,7 @@ message DocumentRequest {
 }
 
 message DocumentsRequest {
-	string userID = 2;
+	string userID = 1;
 }
 
 message Response {

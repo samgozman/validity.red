@@ -94,6 +94,8 @@ func (app *Config) HandleSubmission(w http.ResponseWriter, r *http.Request) {
 		app.documentDelete(w, requestPayload.Document, userId)
 	case "DocumentGetOne":
 		app.documentGetOne(w, requestPayload.Document, userId)
+	case "DocumentGetAll":
+		app.documentGetAll(w, userId)
 	case "NotificationCreate":
 		app.documentNotificationCreate(w, requestPayload.Notification, userId)
 	case "NotificationEdit":
