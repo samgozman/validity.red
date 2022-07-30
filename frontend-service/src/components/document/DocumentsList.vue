@@ -16,17 +16,8 @@ import DocumentListItem from "./DocumentListItem.vue";
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import axios from "axios";
-
+import { DocumentService } from "./DocumentService";
 import type { IDocument } from "./interfaces/IDocument";
-
-interface DocumentGetAllResponse {
-  error: boolean;
-  message: string;
-  data: {
-    documents: IDocument[];
-  };
-}
 
 interface VueData {
   documents: IDocument[];
@@ -44,32 +35,9 @@ export default defineComponent({
   },
   methods: {
     async refresh() {
-      const payload = JSON.stringify({
-        action: "DocumentGetAll",
-      });
-
       try {
-        const res = await axios.post<DocumentGetAllResponse>(
-          `http://localhost:8080/handle`,
-          payload,
-          {
-            // To pass Set-Cookie header
-            withCredentials: true,
-            // Handle 401 error like a normal situation
-            validateStatus: (status) =>
-              (status >= 200 && status < 300) || status === 401,
-          }
-        );
-
-        const { error, message, data } = res.data;
-
-        if (error) {
-          this.error = true;
-          this.errorMsg = message;
-          return;
-        }
-
-        this.documents = data.documents;
+        const documents = await DocumentService.getAll();
+        this.documents = documents;
       } catch (error) {
         this.error = true;
         this.errorMsg = "An error occurred, please try again";

@@ -1,3 +1,4 @@
+deleteOne
 <script setup lang="ts">
 import { defineProps } from "vue";
 import type { IDocument } from "./interfaces/IDocument";
@@ -26,42 +27,13 @@ defineProps<{
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import axios from "axios";
-
-interface DocumentDeleteResponse {
-  error: boolean;
-  message: string;
-}
+import { DocumentService } from "./DocumentService";
 
 export default defineComponent({
   methods: {
     async deleteDocument() {
-      const payload = JSON.stringify({
-        action: "DocumentDelete",
-        document: {
-          id: this.document.ID,
-        },
-      });
-
       try {
-        const res = await axios.post<DocumentDeleteResponse>(
-          `http://localhost:8080/handle`,
-          payload,
-          {
-            // To pass Set-Cookie header
-            withCredentials: true,
-            // Handle 401 error like a normal situation
-            validateStatus: (status) =>
-              (status >= 200 && status < 300) || status === 401,
-          }
-        );
-
-        const { error, message } = res.data;
-
-        if (error) {
-          throw new Error(message);
-        }
-
+        await DocumentService.deleteOne(this.document.ID);
         this.$router.push("/documents");
       } catch (error) {
         // TODO: push error to errors handler (display errors it in the UI)
