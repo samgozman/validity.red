@@ -160,11 +160,11 @@ func (app *Config) documentGetOne(
 	payload.Error = false
 	payload.Message = res.Result
 	payload.Data = struct {
-		Document      *document.Document
-		Notifications []*document.Notification
+		document      *document.Document
+		notifications []*document.Notification
 	}{
-		Document:      res.Document,
-		Notifications: res.Notifications,
+		document:      res.Document,
+		notifications: res.Notifications,
 	}
 
 	go app.logger.LogInfo(&logs.Log{
@@ -204,9 +204,9 @@ func (app *Config) documentGetAll(
 	payload.Error = false
 	payload.Message = res.Result
 	payload.Data = struct {
-		Documents []*document.Document
+		documents []*document.Document
 	}{
-		Documents: res.Documents,
+		documents: res.Documents,
 	}
 
 	go app.logger.LogInfo(&logs.Log{
