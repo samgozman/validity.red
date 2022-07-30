@@ -23,10 +23,7 @@ defineProps<{
         <a :href="deleteAncor" class="btn btn-sm btn-square">d</a>
       </div>
     </div>
-    <ConfirmDeleteModal
-      :modalId="deleteModalId"
-      :documentTitle="document.title"
-    />
+    <ConfirmDeleteModal :modalId="deleteModalId" :document="document" />
   </div>
 </template>
 
