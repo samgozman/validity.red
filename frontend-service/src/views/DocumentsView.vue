@@ -1,8 +1,9 @@
+<script setup lang="ts">
+import DocumentsList from "@/components/document/DocumentsList.vue";
+</script>
+
 <template>
   <main>
-    <article class="prose lg:prose-xl">
-      <h2>Documents view</h2>
-      <p>Some text</p>
-    </article>
+    <DocumentsList />
   </main>
 </template>
