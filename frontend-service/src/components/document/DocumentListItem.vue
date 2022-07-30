@@ -21,12 +21,12 @@ defineProps<{
         <button class="btn btn-sm btn-square btn-primary">v</button>
         <!-- TODO: call delete method after pop-up confirmation -->
         <a :href="deleteAncor" class="btn btn-sm btn-square">d</a>
-        <ConfirmDeleteModal
-          :modalId="deleteModalId"
-          :documentTitle="document.title"
-        />
       </div>
     </div>
+    <ConfirmDeleteModal
+      :modalId="deleteModalId"
+      :documentTitle="document.title"
+    />
   </div>
 </template>
 
