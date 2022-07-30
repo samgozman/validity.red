@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import InputLabel from "./elements/InputLabel.vue";
+import InputLabel from "../elements/InputLabel.vue";
 </script>
 
 <template>
