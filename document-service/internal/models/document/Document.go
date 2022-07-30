@@ -11,6 +11,7 @@ import (
 	"github.com/samgozman/validity.red/document/internal/models/notification"
 	proto "github.com/samgozman/validity.red/document/proto"
 	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 )
 
 type Document struct {
@@ -106,8 +107,9 @@ func (d *Document) DeleteOne(ctx context.Context, db *gorm.DB) error {
 	res := db.
 		WithContext(ctx).
 		Table("documents").
-		Where(&Document{ID: d.ID, UserID: d.UserID}).
-		Delete(&Document{})
+		// Delete all associations also
+		Select(clause.Associations).
+		Delete(&Document{ID: d.ID, UserID: d.UserID})
 
 	if res.Error != nil {
 		return res.Error
