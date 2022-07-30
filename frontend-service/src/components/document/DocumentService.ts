@@ -1,10 +1,5 @@
-import { QueryMaker } from "@/services/QueryMaker";
+import { QueryMaker, type IResponse } from "@/services/QueryMaker";
 import type { IDocument } from "./interfaces/IDocument";
-
-interface IResponse {
-  error: boolean;
-  message: string;
-}
 
 interface DocumentGetAllResponse extends IResponse {
   data: {
@@ -26,7 +21,7 @@ export class DocumentService {
       },
     });
 
-    const res = await QueryMaker.post<IResponse>(payload);
+    const res = await QueryMaker.post(payload);
     const { error, message } = res.data;
 
     if (error) {
