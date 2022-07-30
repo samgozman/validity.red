@@ -15,7 +15,9 @@ defineProps<{
         <strong>{{ document.title }}</strong> ?
       </p>
       <div class="modal-action">
-        <a href="#" class="btn btn-primary" @click="deleteDocument">Confirm</a>
+        <a href="#" class="btn btn-primary" @click.prevent="deleteDocument"
+          >Confirm</a
+        >
         <a href="#" class="btn">Close</a>
       </div>
     </div>
@@ -33,9 +35,7 @@ interface DocumentDeleteResponse {
 
 export default defineComponent({
   methods: {
-    async deleteDocument(e: Event) {
-      e.preventDefault();
-
+    async deleteDocument() {
       const payload = JSON.stringify({
         action: "DocumentDelete",
         document: {
@@ -63,8 +63,6 @@ export default defineComponent({
         }
 
         this.$router.push("/documents");
-        // TODO: Do not reload the page. Find a better solution!
-        this.$router.go(0);
       } catch (error) {
         // TODO: push error to errors handler (display errors it in the UI)
         console.error("An error occurred, please try again", error);
