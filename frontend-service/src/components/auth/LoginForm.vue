@@ -45,12 +45,7 @@ import InputLabel from "../elements/InputLabel.vue";
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import axios from "axios";
-
-interface AuthResponse {
-  error: boolean;
-  message: string;
-}
+import { AuthService } from "./AuthService";
 
 export default defineComponent({
   data() {
@@ -63,37 +58,13 @@ export default defineComponent({
   },
   methods: {
     async login() {
-      const payload = JSON.stringify({
-        action: "UserLogin",
-        auth: {
+      try {
+        await AuthService.userLogin({
           email: this.email,
           password: this.password,
-        },
-      });
-
-      try {
-        const res = await axios.post<AuthResponse>(
-          `http://localhost:8080/handle`,
-          payload,
-          {
-            // To pass Set-Cookie header
-            withCredentials: true,
-            // Handle 401 error like a normal situation
-            validateStatus: (status) =>
-              (status >= 200 && status < 300) || status === 401,
-          }
-        );
-
-        const { error, message } = res.data;
-
-        if (error) {
-          this.error = true;
-          this.errorMsg = message;
-          return;
-        }
+        });
 
         // window.localStorage.setItem("userData", JSON.stringify(user));
-
         this.$router.push("/");
       } catch (error) {
         this.error = true;

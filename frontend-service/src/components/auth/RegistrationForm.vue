@@ -43,12 +43,7 @@ import InputLabel from "../elements/InputLabel.vue";
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import axios from "axios";
-
-interface AuthResponse {
-  error: boolean;
-  message: string;
-}
+import { AuthService } from "./AuthService";
 
 export default defineComponent({
   data() {
@@ -64,36 +59,13 @@ export default defineComponent({
     async register(e: Event) {
       e.preventDefault();
 
-      const payload = JSON.stringify({
-        action: "UserRegister",
-        register: {
+      try {
+        await AuthService.userLogin({
           email: this.email,
           password: this.password,
-        },
-      });
-
-      try {
-        const res = await axios.post<AuthResponse>(
-          `http://localhost:8080/handle`,
-          payload,
-          {
-            // TODO: Handle duplicate error
-            // Handle 401 error like a normal situation
-            validateStatus: (status) =>
-              (status >= 200 && status < 300) || status === 401,
-          }
-        );
-
-        const { error, message } = res.data;
-
-        if (error) {
-          this.error = true;
-          this.errorMsg = message;
-          return;
-        }
+        });
 
         this.showForm = false;
-
         setTimeout(() => {
           this.$router.push("/");
         }, 7000);
