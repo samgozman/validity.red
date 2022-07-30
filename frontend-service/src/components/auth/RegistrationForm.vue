@@ -3,7 +3,7 @@ import InputLabel from "../elements/InputLabel.vue";
 </script>
 
 <template>
-  <form @submit="register" v-if="showForm">
+  <form @submit.prevent="register" v-if="showForm">
     <div class="form-control">
       <InputLabel label="Email" />
       <input
@@ -56,9 +56,7 @@ export default defineComponent({
     };
   },
   methods: {
-    async register(e: Event) {
-      e.preventDefault();
-
+    async register() {
       try {
         await AuthService.userLogin({
           email: this.email,
