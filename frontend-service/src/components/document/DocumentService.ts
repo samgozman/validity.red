@@ -1,4 +1,4 @@
-import axios, { type AxiosResponse } from "axios";
+import { QueryMaker } from "@/services/QueryMaker";
 import type { IDocument } from "./interfaces/IDocument";
 
 interface IResponse {
@@ -26,7 +26,7 @@ export class DocumentService {
       },
     });
 
-    const res = await this.post<IResponse>(payload);
+    const res = await QueryMaker.post<IResponse>(payload);
     const { error, message } = res.data;
 
     if (error) {
@@ -43,7 +43,7 @@ export class DocumentService {
       action: "DocumentGetAll",
     });
 
-    const res = await this.post<DocumentGetAllResponse>(payload);
+    const res = await QueryMaker.post<DocumentGetAllResponse>(payload);
     const { error, message, data } = res.data;
 
     if (error) {
@@ -51,20 +51,5 @@ export class DocumentService {
     }
 
     return data.documents;
-  }
-
-  /**
-   * Send POST query to the handler API
-   * @param payload Stringified JSON payload
-   * @returns
-   */
-  private static async post<T>(payload: string): Promise<AxiosResponse<T>> {
-    return axios.post<T>(`http://localhost:8080/handle`, payload, {
-      // To pass Set-Cookie header
-      withCredentials: true,
-      // Handle 401 error like a normal situation
-      validateStatus: (status) =>
-        (status >= 200 && status < 300) || status === 401,
-    });
   }
 }

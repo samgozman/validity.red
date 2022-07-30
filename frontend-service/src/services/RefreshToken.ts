@@ -1,4 +1,4 @@
-import axios from "axios";
+import { QueryMaker } from "@/services/QueryMaker";
 
 interface RefreshResponse {
   error: boolean;
@@ -17,21 +17,9 @@ export class RefreshToken {
       action: "UserRefreshToken",
     });
 
-    const res = await axios.post<RefreshResponse>(
-      `http://localhost:8080/handle`,
-      payload,
-      {
-        // To pass Set-Cookie header
-        withCredentials: true,
-        // Handle 401 error like a normal situation
-        validateStatus: (status) =>
-          (status >= 200 && status < 300) || status === 401,
-      }
-    );
-
-    const { error } = res.data;
-
-    if (error) {
+    try {
+      await QueryMaker.post<RefreshResponse>(payload);
+    } catch (error) {
       console.error("Token refresh failed!");
       return;
     }
