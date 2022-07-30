@@ -4,7 +4,7 @@ import InputLabel from "../elements/InputLabel.vue";
 </script>
 
 <template>
-  <form @submit="login">
+  <form @submit.prevent="login">
     <div class="form-control">
       <InputLabel label="Email" />
       <input
@@ -62,9 +62,7 @@ export default defineComponent({
     };
   },
   methods: {
-    async login(e: Event) {
-      e.preventDefault();
-
+    async login() {
       const payload = JSON.stringify({
         action: "UserLogin",
         auth: {
