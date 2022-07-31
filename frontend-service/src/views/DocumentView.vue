@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import DocumentPageCard from "@/components/document/DocumentPageCard.vue";
+import DocumentFullBlock from "@/components/document/DocumentFullBlock.vue";
 </script>
 
 <template>
   <main>
-    <DocumentPageCard />
+    <DocumentFullBlock />
   </main>
 </template>
