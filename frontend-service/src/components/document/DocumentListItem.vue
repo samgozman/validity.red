@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { defineProps } from "vue";
+import { RouterLink } from "vue-router";
 import type { IDocument } from "./interfaces/IDocument";
 import ConfirmDeleteModal from "./ConfirmDeleteModal.vue";
 defineProps<{
@@ -18,7 +19,12 @@ defineProps<{
         <p class="text-base-content text-opacity-40">01.01.1970</p>
       </div>
       <div class="flex space-x-2 flex-0">
-        <button class="btn btn-sm btn-square btn-primary">v</button>
+        <RouterLink
+          :to="documentLink"
+          class="btn btn-sm btn-square btn-primary"
+        >
+          v
+        </RouterLink>
         <!-- TODO: call delete method after pop-up confirmation -->
         <a :href="deleteAncor" class="btn btn-sm btn-square">d</a>
       </div>
@@ -35,12 +41,14 @@ export default defineComponent({
     return {
       deleteAncor: "",
       deleteModalId: "",
+      documentLink: "",
     };
   },
   methods: {
     setContext() {
       this.deleteAncor = `#delete-${this.document.ID}`;
       this.deleteModalId = `delete-${this.document.ID}`;
+      this.documentLink = `documents/${this.document.ID}`;
     },
   },
   beforeMount() {

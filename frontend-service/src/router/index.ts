@@ -41,6 +41,15 @@ const router = createRouter({
       meta: { requiresAuth: true },
     },
     {
+      path: "/documents/:id",
+      name: "document",
+      // route level code-splitting
+      // this generates a separate chunk (Documents.[hash].js) for this route
+      // which is lazy-loaded when the route is visited.
+      component: () => import("../views/DocumentView.vue"),
+      meta: { requiresAuth: true },
+    },
+    {
       path: "/about",
       name: "about",
       component: AboutView,
