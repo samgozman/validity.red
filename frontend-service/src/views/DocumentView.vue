@@ -1,5 +1,9 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import DocumentPageCard from "@/components/document/DocumentPageCard.vue";
+</script>
 
 <template>
-  <main></main>
+  <main>
+    <DocumentPageCard />
+  </main>
 </template>

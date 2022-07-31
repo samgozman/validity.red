@@ -1,10 +1,20 @@
 import { QueryMaker, type IResponse } from "@/services/QueryMaker";
 import type { IDocument } from "./interfaces/IDocument";
+import type { INotification } from "./interfaces/INotification";
 
 interface DocumentGetAllResponse extends IResponse {
   data: {
     documents: IDocument[];
   };
+}
+
+interface DocumentWithNotifications {
+  document: IDocument;
+  notifications: INotification[];
+}
+
+interface DocumentGetOneResponse extends IResponse {
+  data: DocumentWithNotifications;
 }
 
 export class DocumentService {
@@ -46,5 +56,25 @@ export class DocumentService {
     }
 
     return data.documents;
+  }
+
+  public static async getOne(
+    documentId: string
+  ): Promise<DocumentWithNotifications> {
+    const payload = JSON.stringify({
+      action: "DocumentGetOne",
+      document: {
+        id: documentId,
+      },
+    });
+
+    const res = await QueryMaker.post<DocumentGetOneResponse>(payload);
+    const { error, message, data } = res.data;
+
+    if (error) {
+      throw new Error(message);
+    }
+
+    return data;
   }
 }
