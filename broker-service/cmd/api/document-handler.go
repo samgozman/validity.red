@@ -160,7 +160,7 @@ func (app *Config) documentGetOne(
 	payload.Error = false
 	payload.Message = res.Result
 	payload.Data = struct {
-		Document      *document.Document       `json:"documents"`
+		Document      *document.Document       `json:"document"`
 		Notifications []*document.Notification `json:"notifications"`
 	}{
 		Document:      res.Document,
