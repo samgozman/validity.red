@@ -4,7 +4,7 @@ import DocumentListItem from "./DocumentListItem.vue";
 
 <template>
   <div
-    class="grid grid-cols-1 gap-6 lg:p-10 xl:grid-cols-3 lg:bg-base-200 rounded-box"
+    class="grid grid-cols-1 gap-6 py-6 lg:p-10 xl:grid-cols-3 lg:bg-base-200 rounded-box"
   >
     <DocumentListItem
       v-for="document in documents"
