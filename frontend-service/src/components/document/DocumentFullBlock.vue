@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import DocumentCard from "./DocumentCard.vue";
 import NotificationsCard from "./NotificationsCard.vue";
+import DocumentBreadcrumbs from "./DocumentBreadcrumbs.vue";
 </script>
 
 <template>
+  <DocumentBreadcrumbs :title="document.title || ''" class="lg:px-10 pt-7" />
   <div
-    class="grid grid-cols-1 gap-6 lg:p-10 xl:grid-cols-3 lg:bg-base-200 rounded-box"
+    class="grid grid-cols-1 gap-6 py-5 lg:px-10 xl:grid-cols-3 lg:bg-base-200 rounded-box"
   >
     <DocumentCard :document="document" />
     <NotificationsCard :notifications="notifications" />
