@@ -2,7 +2,7 @@
 import { defineProps } from "vue";
 import { RouterLink } from "vue-router";
 import type { IDocument } from "./interfaces/IDocument";
-import ConfirmDeleteModal from "./ConfirmDeleteModal.vue";
+import DocumentDeleteModal from "./DocumentDeleteModal.vue";
 defineProps<{
   document: IDocument;
 }>();
@@ -29,7 +29,7 @@ defineProps<{
         <a :href="deleteAncor" class="btn btn-sm btn-square">d</a>
       </div>
     </div>
-    <ConfirmDeleteModal :modalId="deleteModalId" :document="document" />
+    <DocumentDeleteModal :modalId="deleteModalId" :document="document" />
   </div>
 </template>
 
