@@ -29,14 +29,22 @@ defineProps<{
         <a :href="deleteAncor" class="btn btn-sm btn-square">d</a>
       </div>
     </div>
-    <DocumentDeleteModal :modalId="deleteModalId" :document="document" />
+    <DocumentDeleteModal
+      :modalId="deleteModalId"
+      :document="document"
+      @delete-document-event="deleteDocument"
+    />
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue";
+import { DocumentService } from "./DocumentService";
 
 export default defineComponent({
+  components: {
+    DocumentDeleteModal,
+  },
   data() {
     return {
       deleteAncor: "",
@@ -49,6 +57,17 @@ export default defineComponent({
       this.deleteAncor = `#delete-${this.document.ID}`;
       this.deleteModalId = `delete-${this.document.ID}`;
       this.documentLink = `documents/${this.document.ID}`;
+    },
+    async deleteDocument() {
+      try {
+        await DocumentService.deleteOne(this.document.ID);
+        this.$router.push("/documents");
+        this.$emit("refreshDocumentsEvent");
+      } catch (error) {
+        // TODO: push error to errors handler (display errors it in the UI)
+        console.error("An error occurred, please try again", error);
+        // TODO: Push error to Sentry
+      }
     },
   },
   beforeMount() {

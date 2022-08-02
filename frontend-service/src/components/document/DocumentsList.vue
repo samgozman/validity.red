@@ -10,6 +10,7 @@ import DocumentListItem from "./DocumentListItem.vue";
       v-for="document in documents"
       v-bind:key="document.ID"
       v-bind:document="document"
+      @refresh-documents-event="refresh"
     />
   </div>
 </template>
