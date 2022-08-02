@@ -102,6 +102,8 @@ func (app *Config) HandleSubmission(w http.ResponseWriter, r *http.Request) {
 		app.documentNotificationEdit(w, requestPayload.Notification, userId)
 	case "NotificationDelete":
 		app.documentNotificationDelete(w, requestPayload.Notification, userId)
+	case "NotificationGetAll":
+		app.documentNotificationGetAll(w, requestPayload.Notification, userId)
 	default:
 		app.errorJSON(w, errors.New("invalid action"))
 		go app.logger.LogWarn(&logs.Log{

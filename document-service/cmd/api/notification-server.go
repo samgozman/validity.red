@@ -9,6 +9,7 @@ import (
 	"github.com/samgozman/validity.red/document/internal/models/document"
 	"github.com/samgozman/validity.red/document/internal/models/notification"
 	proto "github.com/samgozman/validity.red/document/proto"
+	"google.golang.org/protobuf/types/known/timestamppb"
 	"gorm.io/gorm"
 )
 
@@ -154,5 +155,64 @@ func (ds *NotificationServer) Delete(ctx context.Context, req *proto.Notificatio
 
 	// return response
 	res := &proto.Response{Result: fmt.Sprintf("User '%s' deleted notification with id '%s' successfully!", userID, n.ID)}
+	return res, nil
+}
+
+// TODO: Refactor validators to reduce code duplication
+func (ds *NotificationServer) GetAll(
+	ctx context.Context,
+	req *proto.NotificationsRequest,
+) (*proto.ResponseNotificationsList, error) {
+
+	// Validate input arguments
+	userID, err := uuid.Parse(req.GetUserID())
+	if err != nil {
+		return nil, errors.New("invalid user id")
+	}
+	documentID, err := uuid.Parse(req.GetDocumentID())
+	if err != nil {
+		return nil, errors.New("invalid document_id")
+	}
+
+	// Check if that document exists
+	d := document.Document{
+		ID:     documentID,
+		UserID: userID,
+	}
+	isDocumentExist, err := d.Exists(ctx, ds.db)
+	if err != nil {
+		return nil, err
+	}
+	if !isDocumentExist {
+		return nil, errors.New("document does not exist")
+	}
+
+	// Find all notifications
+	n := notification.Notification{
+		ID: documentID,
+	}
+	notifications, err := n.FindAll(ctx, ds.db)
+
+	// return error if exists
+	if err != nil {
+		return nil, err
+	}
+
+	// Transform notifications to proto format
+	protoNotifications := make([]*proto.Notification, len(notifications))
+	for i, nt := range notifications {
+		protoNotifications[i] = &proto.Notification{
+			ID: nt.ID.String(),
+			// ? Do we need to return document_id ?
+			DocumentID: nt.DocumentID.String(),
+			Date:       timestamppb.New(nt.Date),
+		}
+	}
+
+	// return response
+	res := &proto.ResponseNotificationsList{
+		Result:        fmt.Sprintf("User '%s' found %d notifications successfully!", userID, len(notifications)),
+		Notifications: protoNotifications,
+	}
 	return res, nil
 }

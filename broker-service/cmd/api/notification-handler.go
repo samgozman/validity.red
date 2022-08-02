@@ -127,3 +127,44 @@ func (app *Config) documentNotificationDelete(
 
 	app.writeJSON(w, http.StatusCreated, payload)
 }
+
+// Call GetAll method on Notification in `document-service`
+func (app *Config) documentNotificationGetAll(
+	w http.ResponseWriter,
+	notificationPayload NotificationPayload,
+	userId string,
+) {
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+	defer cancel()
+
+	// call service
+	res, err := app.documentsClient.notificationService.GetAll(ctx, &document.NotificationsRequest{
+		DocumentID: notificationPayload.DocumentID,
+		UserID:     userId,
+	})
+	if err != nil {
+		go app.logger.LogWarn(&logs.Log{
+			Service: "document-service",
+			Message: "Error on calling Notification.GetAll method",
+			Error:   err.Error(),
+		})
+		app.errorJSON(w, err)
+		return
+	}
+
+	var payload jsonResponse
+	payload.Error = false
+	payload.Message = res.Result
+	payload.Data = struct {
+		Notifications []*document.Notification `json:"notifications"`
+	}{
+		Notifications: res.Notifications,
+	}
+
+	go app.logger.LogInfo(&logs.Log{
+		Service: "document-service",
+		Message: res.Result,
+	})
+
+	app.writeJSON(w, http.StatusCreated, payload)
+}

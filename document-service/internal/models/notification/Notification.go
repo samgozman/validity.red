@@ -96,3 +96,24 @@ func (n *Notification) DeleteOne(ctx context.Context, db *gorm.DB) error {
 
 	return nil
 }
+
+func (n *Notification) FindAll(ctx context.Context, db *gorm.DB) ([]Notification, error) {
+	var notifications []Notification
+
+	res := db.
+		WithContext(ctx).
+		Table("notifications").
+		Model(&Notification{}).
+		Where(&Notification{DocumentID: n.DocumentID}).
+		Find(&notifications)
+
+	if res.Error != nil {
+		return nil, res.Error
+	}
+
+	if res.RowsAffected == 0 {
+		return nil, errors.New("notifications not found")
+	}
+
+	return notifications, nil
+}

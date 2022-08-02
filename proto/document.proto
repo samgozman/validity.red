@@ -64,6 +64,16 @@ message DocumentsRequest {
 	string userID = 1;
 }
 
+message NotificationsRequest {
+	string userID = 1;
+	string documentID = 2;
+}
+
+message ResponseNotificationsList {
+	string result = 1;
+	repeated Notification notifications = 2;
+}
+
 message Response {
 	string result = 1;
 }
@@ -97,4 +107,5 @@ service NotificationService {
 	rpc Create(NotificationCreateRequest) returns (Response);
 	rpc Edit(NotificationCreateRequest) returns (Response);
 	rpc Delete(NotificationCreateRequest) returns (Response);
+	rpc GetAll(NotificationsRequest) returns (ResponseNotificationsList);
 }
