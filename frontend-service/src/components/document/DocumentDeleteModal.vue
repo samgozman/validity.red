@@ -30,7 +30,7 @@ import { defineComponent } from "vue";
 
 export default defineComponent({
   methods: {
-    async clickConfirm() {
+    clickConfirm() {
       this.$emit("deleteDocumentEvent");
     },
   },
