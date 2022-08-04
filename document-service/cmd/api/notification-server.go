@@ -189,7 +189,7 @@ func (ds *NotificationServer) GetAll(
 
 	// Find all notifications
 	n := notification.Notification{
-		ID: documentID,
+		DocumentID: documentID,
 	}
 	notifications, err := n.FindAll(ctx, ds.db)
 
