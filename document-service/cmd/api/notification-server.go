@@ -8,8 +8,8 @@ import (
 	"github.com/google/uuid"
 	"github.com/samgozman/validity.red/document/internal/models/document"
 	"github.com/samgozman/validity.red/document/internal/models/notification"
+	"github.com/samgozman/validity.red/document/internal/utils"
 	proto "github.com/samgozman/validity.red/document/proto"
-	"google.golang.org/protobuf/types/known/timestamppb"
 	"gorm.io/gorm"
 )
 
@@ -198,21 +198,10 @@ func (ds *NotificationServer) GetAll(
 		return nil, err
 	}
 
-	// Transform notifications to proto format
-	protoNotifications := make([]*proto.Notification, len(notifications))
-	for i, nt := range notifications {
-		protoNotifications[i] = &proto.Notification{
-			ID: nt.ID.String(),
-			// ? Do we need to return document_id ?
-			DocumentID: nt.DocumentID.String(),
-			Date:       timestamppb.New(nt.Date),
-		}
-	}
-
 	// return response
 	res := &proto.ResponseNotificationsList{
 		Result:        fmt.Sprintf("User '%s' found %d notifications successfully!", userID, len(notifications)),
-		Notifications: protoNotifications,
+		Notifications: utils.ConvertNotficationsToProtoFormat(&notifications),
 	}
 	return res, nil
 }
