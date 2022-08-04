@@ -111,9 +111,5 @@ func (n *Notification) FindAll(ctx context.Context, db *gorm.DB) ([]Notification
 		return nil, res.Error
 	}
 
-	if res.RowsAffected == 0 {
-		return nil, errors.New("notifications not found")
-	}
-
 	return notifications, nil
 }

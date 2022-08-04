@@ -52,6 +52,6 @@ export class NotificationService {
       throw new Error(message);
     }
 
-    return data.notifications;
+    return data.notifications || [];
   }
 }
