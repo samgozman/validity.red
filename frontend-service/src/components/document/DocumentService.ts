@@ -1,6 +1,5 @@
 import { QueryMaker, type IResponse } from "@/services/QueryMaker";
 import type { IDocument } from "./interfaces/IDocument";
-import type { INotification } from "./interfaces/INotification";
 
 interface DocumentGetAllResponse extends IResponse {
   data: {
@@ -8,13 +7,10 @@ interface DocumentGetAllResponse extends IResponse {
   };
 }
 
-interface DocumentWithNotifications {
-  document: IDocument;
-  notifications: INotification[];
-}
-
 interface DocumentGetOneResponse extends IResponse {
-  data: DocumentWithNotifications;
+  data: {
+    document: IDocument;
+  };
 }
 
 export class DocumentService {
@@ -58,9 +54,7 @@ export class DocumentService {
     return data.documents;
   }
 
-  public static async getOne(
-    documentId: string
-  ): Promise<DocumentWithNotifications> {
+  public static async getOne(documentId: string): Promise<IDocument> {
     const payload = JSON.stringify({
       action: "DocumentGetOne",
       document: {
@@ -75,6 +69,6 @@ export class DocumentService {
       throw new Error(message);
     }
 
-    return data;
+    return data.document;
   }
 }

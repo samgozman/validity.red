@@ -4,6 +4,7 @@ import NotificationItem from "./NotificationItem.vue";
 import type { INotification } from "./interfaces/INotification";
 defineProps<{
   notifications: INotification[];
+  documentId: string;
 }>();
 </script>
 
@@ -16,9 +17,10 @@ defineProps<{
       </p>
       <div>
         <NotificationItem
-          v-for="notification in notifications"
+          v-for:="notification in notifications"
           v-bind:key="notification.ID"
           v-bind:notification="notification"
+          @refresh-notifications-event="refreshNotificationsEmit"
         />
       </div>
       <div class="justify-center space-x-2 card-actions">
@@ -27,3 +29,15 @@ defineProps<{
     </div>
   </div>
 </template>
+
+<script lang="ts">
+import { defineComponent } from "vue";
+
+export default defineComponent({
+  methods: {
+    refreshNotificationsEmit() {
+      this.$emit("refreshNotificationsEvent");
+    },
+  },
+});
+</script>
