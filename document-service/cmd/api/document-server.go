@@ -7,7 +7,6 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/samgozman/validity.red/document/internal/models/document"
-	"github.com/samgozman/validity.red/document/internal/utils"
 	proto "github.com/samgozman/validity.red/document/proto"
 	"google.golang.org/protobuf/types/known/timestamppb"
 	"gorm.io/gorm"
@@ -146,7 +145,6 @@ func (ds *DocumentServer) GetOne(ctx context.Context, req *proto.DocumentRequest
 			Description: d.Description,
 			ExpiresAt:   timestamppb.New(d.ExpiresAt),
 		},
-		Notifications: utils.ConvertNotficationsToProtoFormat(&d.Notifications),
 	}
 	return res, nil
 }

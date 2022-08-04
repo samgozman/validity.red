@@ -122,15 +122,12 @@ func (d *Document) DeleteOne(ctx context.Context, db *gorm.DB) error {
 	return nil
 }
 
-// Find one document and its notifications
+// Find one document
 func (d *Document) FindOne(ctx context.Context, db *gorm.DB) error {
 	res := db.
 		WithContext(ctx).
 		Table("documents").
 		Model(&Document{}).
-		// Populate Notifications
-		// TODO: Apply limits, show only 3-5 latest
-		Preload("Notifications").
 		Where(&Document{ID: d.ID, UserID: d.UserID}).
 		First(&d)
 

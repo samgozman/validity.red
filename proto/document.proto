@@ -81,8 +81,6 @@ message Response {
 message ResponseDocument {
 	string result = 1;
 	Document document = 2;
-	// TODO: Move Notification inside document
-	repeated Notification notifications = 3;
 }
 
 message ResponseDocumentsList {

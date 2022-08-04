@@ -154,17 +154,13 @@ func (app *Config) documentGetOne(
 	}
 
 	// TODO: Convert ExpiresAt to time.Time
-	// TODO: Convert Notification.Data to time.Time
-
 	var payload jsonResponse
 	payload.Error = false
 	payload.Message = res.Result
 	payload.Data = struct {
-		Document      *document.Document       `json:"document"`
-		Notifications []*document.Notification `json:"notifications"`
+		Document *document.Document `json:"document"`
 	}{
-		Document:      res.Document,
-		Notifications: res.Notifications,
+		Document: res.Document,
 	}
 
 	go app.logger.LogInfo(&logs.Log{
