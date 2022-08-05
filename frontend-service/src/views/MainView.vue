@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import BigButton from "../components/buttons/BigButton.vue";
 import LogoText from "../components/LogoText.vue";
 import FullScreenHeroVue from "../components/layout/FullScreenHero.vue";
 </script>
@@ -17,7 +16,7 @@ import FullScreenHeroVue from "../components/layout/FullScreenHero.vue";
             reiciendis quo aliquid nemo?
           </p>
         </article>
-        <BigButton msg="Some button" />
+        <button class="btn">Some button</button>
       </div>
     </FullScreenHeroVue>
   </main>
