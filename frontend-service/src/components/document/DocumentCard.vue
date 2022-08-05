@@ -25,7 +25,7 @@ defineProps<{
     <ModalConfirmation
       :modalId="deleteModalId"
       message="Are you sure that you want to delete this document:"
-      :actionName="document.title"
+      :actionName="document.title || ''"
       @confirmEvent="deleteDocument"
     />
   </div>
