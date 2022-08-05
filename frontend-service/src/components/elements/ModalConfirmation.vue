@@ -1,10 +1,10 @@
 deleteOne
 <script setup lang="ts">
 import { defineProps } from "vue";
-import type { INotification } from "./interfaces/INotification";
 defineProps<{
   modalId: string;
-  notification: INotification;
+  message: string;
+  actionName: string;
 }>();
 </script>
 
@@ -12,8 +12,8 @@ defineProps<{
   <div v-bind:id="modalId" class="modal">
     <div class="modal-box">
       <p>
-        Are you sure that you want to delete this notification:
-        <strong>{{ notification.date }}</strong> ?
+        {{ message }}
+        <strong>{{ actionName }}</strong> ?
       </p>
       <div class="modal-action">
         <a href="#" class="btn btn-primary" @click.prevent="clickConfirm"
@@ -31,7 +31,7 @@ import { defineComponent } from "vue";
 export default defineComponent({
   methods: {
     clickConfirm() {
-      this.$emit("deleteNotificationEvent");
+      this.$emit("confirmEvent");
     },
   },
 });

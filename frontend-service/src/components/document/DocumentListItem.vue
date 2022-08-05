@@ -2,7 +2,7 @@
 import { defineProps } from "vue";
 import { RouterLink } from "vue-router";
 import type { IDocument } from "./interfaces/IDocument";
-import DocumentDeleteModal from "./DocumentDeleteModal.vue";
+import ModalConfirmation from "../elements/ModalConfirmation.vue";
 defineProps<{
   document: IDocument;
 }>();
@@ -29,10 +29,11 @@ defineProps<{
         <a :href="deleteAncor" class="btn btn-sm btn-square">d</a>
       </div>
     </div>
-    <DocumentDeleteModal
+    <ModalConfirmation
       :modalId="deleteModalId"
-      :document="document"
-      @delete-document-event="deleteDocument"
+      message="Are you sure that you want to delete this document:"
+      :actionName="document.title"
+      @confirmEvent="deleteDocument"
     />
   </div>
 </template>
@@ -42,9 +43,6 @@ import { defineComponent } from "vue";
 import { DocumentService } from "./DocumentService";
 
 export default defineComponent({
-  components: {
-    DocumentDeleteModal,
-  },
   data() {
     return {
       deleteAncor: "",

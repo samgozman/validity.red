@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { defineProps } from "vue";
-import NotificationDeleteModal from "./NotificationDeleteModal.vue";
+import ModalConfirmation from "../elements/ModalConfirmation.vue";
 import type { INotification } from "./interfaces/INotification";
 defineProps<{
   notification: INotification;
@@ -17,10 +17,11 @@ defineProps<{
     >
       {{ notification.date }}
     </div>
-    <NotificationDeleteModal
+    <ModalConfirmation
       :modalId="deleteModalId"
-      :notification="notification"
-      @delete-notification-event="deleteNotification"
+      message="Are you sure that you want to delete this notification:"
+      :actionName="String(notification.date)"
+      @confirmEvent="deleteNotification"
     />
   </div>
 </template>
