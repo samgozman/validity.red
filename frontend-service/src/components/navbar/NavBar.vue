@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { RouterLink } from "vue-router";
 import LogoText from "../../components/LogoText.vue";
 import NavBarItems from "./NavBarItems.vue";
 import NavBarUserItems from "./NavBarUserItems.vue";
@@ -31,7 +32,7 @@ import NavBarUserItems from "./NavBarUserItems.vue";
     </div>
     <div class="navbar-center"></div>
     <div class="navbar-end">
-      <button class="btn mr-3">+ Add new</button>
+      <RouterLink class="btn mr-3" to="/documents/create">+ Add new</RouterLink>
       <div class="dropdown dropdown-end">
         <label tabindex="0" class="btn btn-ghost btn-circle avatar">
           <div class="w-10 rounded-full">
