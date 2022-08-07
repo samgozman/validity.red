@@ -29,11 +29,11 @@
       >
         <div class="card-body">
           <h2 class="card-title">Document settings</h2>
-          <select class="select select-bordered w-full">
+          <select class="select select-bordered w-full" v-model="type">
             <option disabled selected>Select document type</option>
-            <option>Type 1</option>
-            <option>Type 2</option>
-            <option>Type 3</option>
+            <option v-for="(option, index) in typeOptions" v-bind:key="index">
+              {{ option }}
+            </option>
           </select>
           <div class="divider">Expires at</div>
           <label class="input-group">
@@ -103,9 +103,10 @@ export default defineComponent({
     return {
       title: "",
       description: "",
-      type: "",
+      type: "Select document type",
       expiresAt: "",
       createDefaultNotification: true,
+      typeOptions: ["Type 1", "Type 2", "Type 3"],
       error: false,
       errorMsg: "",
     };
@@ -145,6 +146,7 @@ export default defineComponent({
         // 0. Clear the error message
         this.error = false;
         this.errorMsg = "";
+
         // 1. Validate form inputs
         if (this.isEmpty(this.title, "Title is required!")) return;
         if (this.isLonger(this.title, 100, "Title is too long!")) return;
@@ -154,14 +156,18 @@ export default defineComponent({
         if (this.isEmpty(this.expiresAt, "Expiration date is required!"))
           return;
         if (this.isExpired(this.expiresAt)) return;
+
         // 2. Create document and get its id
         const expirationDate = new Date(Date.parse(this.expiresAt));
+        const typeIndex = this.typeOptions.indexOf(this.type);
+        const documentType = typeIndex === -1 ? 0 : typeIndex;
         const documentId = await DocumentService.createOne({
           title: this.title,
           description: this.description,
-          type: Number(this.type),
+          type: documentType,
           expiresAt: expirationDate,
         });
+
         // 3. Create default notification if needed
         if (this.createDefaultNotification) {
           await NotificationService.createOne({
@@ -169,6 +175,7 @@ export default defineComponent({
             documentId: documentId,
           });
         }
+
         // 4. Redirect to document page
         this.$router.push({
           name: "document",
