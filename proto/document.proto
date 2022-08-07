@@ -83,6 +83,11 @@ message ResponseDocument {
 	Document document = 2;
 }
 
+message ResponseDocumentCreate {
+	string result = 1;
+	string documentId = 2;
+}
+
 message ResponseDocumentsList {
 	string result = 1;
 	repeated Document documents = 2;
@@ -94,7 +99,7 @@ message ResponseNotifications {
 }
 
 service DocumentService {
-	rpc Create(DocumentCreateRequest) returns (Response);
+	rpc Create(DocumentCreateRequest) returns (ResponseDocumentCreate);
 	rpc Edit(DocumentCreateRequest) returns (Response);
 	rpc Delete(DocumentRequest) returns (Response);
 	rpc GetOne(DocumentRequest) returns (ResponseDocument);

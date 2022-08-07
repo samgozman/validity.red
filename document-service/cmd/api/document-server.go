@@ -18,7 +18,7 @@ type DocumentServer struct {
 	proto.UnimplementedDocumentServiceServer
 }
 
-func (ds *DocumentServer) Create(ctx context.Context, req *proto.DocumentCreateRequest) (*proto.Response, error) {
+func (ds *DocumentServer) Create(ctx context.Context, req *proto.DocumentCreateRequest) (*proto.ResponseDocumentCreate, error) {
 	input := req.GetDocumentEntry()
 
 	userID, err := uuid.Parse(input.UserID)
@@ -42,7 +42,10 @@ func (ds *DocumentServer) Create(ctx context.Context, req *proto.DocumentCreateR
 	}
 
 	// return response
-	res := &proto.Response{Result: fmt.Sprintf("User '%s' created document '%s' successfully!", userID, d.ID)}
+	res := &proto.ResponseDocumentCreate{
+		Result:     fmt.Sprintf("User '%s' created document '%s' successfully!", userID, d.ID),
+		DocumentId: d.ID.String(),
+	}
 	return res, nil
 }
 

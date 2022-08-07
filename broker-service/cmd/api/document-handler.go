@@ -42,6 +42,11 @@ func (app *Config) documentCreate(
 	var payload jsonResponse
 	payload.Error = false
 	payload.Message = res.Result
+	payload.Data = struct {
+		DocumentId string `json:"documentId"`
+	}{
+		DocumentId: res.DocumentId,
+	}
 
 	go app.logger.LogInfo(&logs.Log{
 		Service: "document-service",
