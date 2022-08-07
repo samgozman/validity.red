@@ -13,6 +13,19 @@ interface DocumentGetOneResponse extends IResponse {
   };
 }
 
+interface DocumentCreateResponse extends IResponse {
+  data: {
+    documentId: string;
+  };
+}
+
+interface DocumentPayload {
+  type: number;
+  title: string;
+  description: string;
+  expiresAt: Date;
+}
+
 export class DocumentService {
   /**
    * Delete document and all its associated notifications
@@ -70,5 +83,21 @@ export class DocumentService {
     }
 
     return data.document;
+  }
+
+  public static async createOne(document: DocumentPayload): Promise<string> {
+    const payload = JSON.stringify({
+      action: "DocumentCreate",
+      document,
+    });
+
+    const res = await QueryMaker.post<DocumentCreateResponse>(payload);
+    const { error, message, data } = res.data;
+
+    if (error) {
+      throw new Error(message);
+    }
+
+    return data.documentId;
   }
 }

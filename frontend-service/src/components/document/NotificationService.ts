@@ -12,6 +12,11 @@ interface NotificationGetAllResponse extends IResponse {
   };
 }
 
+interface NotificationPayload {
+  date: Date;
+  documentId: string;
+}
+
 export class NotificationService {
   /**
    * Delete notification object
@@ -53,5 +58,25 @@ export class NotificationService {
     }
 
     return data.notifications || [];
+  }
+
+  /**
+   * Create notification object
+   * @param notification
+   */
+  public static async createOne(
+    notification: NotificationPayload
+  ): Promise<void> {
+    const payload = JSON.stringify({
+      action: "NotificationCreate",
+      notification,
+    });
+
+    const res = await QueryMaker.post(payload);
+    const { error, message } = res.data;
+
+    if (error) {
+      throw new Error(message);
+    }
   }
 }

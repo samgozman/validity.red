@@ -75,7 +75,12 @@
           <div class="form-control">
             <label class="label cursor-pointer">
               <span class="label-text">Add default notification?</span>
-              <input type="checkbox" class="toggle toggle-primary" checked />
+              <input
+                type="checkbox"
+                class="toggle toggle-primary"
+                v-model="createDefaultNotification"
+                checked
+              />
             </label>
           </div>
           <button class="btn btn-primary" type="submit">Save</button>
@@ -90,6 +95,8 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
+import { DocumentService } from "./DocumentService";
+import { NotificationService } from "./NotificationService";
 
 export default defineComponent({
   data() {
@@ -98,6 +105,7 @@ export default defineComponent({
       description: "",
       type: "",
       expiresAt: "",
+      createDefaultNotification: true,
       error: false,
       errorMsg: "",
     };
@@ -147,10 +155,25 @@ export default defineComponent({
           return;
         if (this.isExpired(this.expiresAt)) return;
         // 2. Create document and get its id
-        // 3. Validate on errors
-        // 4. Create default notification if needed
-        // 5. Validate on errors
-        // 6. Redirect to document page
+        const expirationDate = new Date(Date.parse(this.expiresAt));
+        const documentId = await DocumentService.createOne({
+          title: this.title,
+          description: this.description,
+          type: Number(this.type),
+          expiresAt: expirationDate,
+        });
+        // 3. Create default notification if needed
+        if (this.createDefaultNotification) {
+          await NotificationService.createOne({
+            date: expirationDate,
+            documentId: documentId,
+          });
+        }
+        // 4. Redirect to document page
+        this.$router.push({
+          name: "document",
+          params: { id: documentId },
+        });
       } catch (error) {
         this.error = true;
         this.errorMsg = "An error occurred, please try again";
