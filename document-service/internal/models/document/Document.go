@@ -42,6 +42,9 @@ func (d *Document) Validate() error {
 	if d.Title == "" {
 		return errors.New("title is required")
 	}
+	if len([]rune(d.Title)) > 100 {
+		return errors.New("title length must be less than 100 characters")
+	}
 	if len([]rune(d.Description)) > 500 {
 		return errors.New("description length must be less than 500 characters")
 	}
