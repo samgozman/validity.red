@@ -5,7 +5,8 @@ interface IDocumentType {
 
 export class DocumentType {
   // TODO: Decode it from `document.proto::Type` if possible
-  private static types = new Map<number, IDocumentType>([
+  /** Document types map */
+  public static types = new Map<number, IDocumentType>([
     [0, { name: "Document", iconStyle: "" }],
     [1, { name: "Passport", iconStyle: "" }],
     [2, { name: "Internal passport", iconStyle: "" }],

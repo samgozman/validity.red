@@ -31,8 +31,11 @@
           <h2 class="card-title">Document settings</h2>
           <select class="select select-bordered w-full" v-model="type">
             <option disabled selected>Select document type</option>
-            <option v-for="(option, index) in typeOptions" v-bind:key="index">
-              {{ option }}
+            <option
+              v-for="(option, index) in typeOptions.values()"
+              v-bind:key="index"
+            >
+              {{ option.name }}
             </option>
           </select>
           <div class="divider">Expires at</div>
@@ -97,6 +100,7 @@
 import { defineComponent } from "vue";
 import { DocumentService } from "./DocumentService";
 import { NotificationService } from "./NotificationService";
+import { DocumentType } from "./DocumentType";
 
 export default defineComponent({
   data() {
@@ -106,7 +110,7 @@ export default defineComponent({
       type: "Select document type",
       expiresAt: "",
       createDefaultNotification: true,
-      typeOptions: ["Type 1", "Type 2", "Type 3"],
+      typeOptions: DocumentType.types,
       error: false,
       errorMsg: "",
     };
@@ -159,7 +163,9 @@ export default defineComponent({
 
         // 2. Create document and get its id
         const expirationDate = new Date(Date.parse(this.expiresAt));
-        const typeIndex = this.typeOptions.indexOf(this.type);
+        const typeIndex = [...this.typeOptions.values()]
+          .map((d) => d.name)
+          .indexOf(this.type);
         const documentType = typeIndex === -1 ? 0 : typeIndex;
         const documentId = await DocumentService.createOne({
           title: this.title,
