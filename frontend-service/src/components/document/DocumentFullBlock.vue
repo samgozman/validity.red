@@ -2,6 +2,7 @@
 import DocumentCard from "./DocumentCard.vue";
 import NotificationsCard from "./NotificationsCard.vue";
 import DocumentBreadcrumbs from "./DocumentBreadcrumbs.vue";
+import ExpirationCard from "./ExpirationCard.vue";
 </script>
 
 <template>
@@ -13,8 +14,12 @@ import DocumentBreadcrumbs from "./DocumentBreadcrumbs.vue";
       :document="document"
       class="card col-span-1 row-span-3 xl:col-span-2"
     />
+    <ExpirationCard
+      :expiresAt="document.expiresAt"
+      class="card col-span-1 row-span-1"
+    />
     <NotificationsCard
-      class="card col-span-1 row-span-3"
+      class="card col-span-1 row-span-2"
       :notifications="notifications"
       :documentId="documentId"
       @refresh-notifications-event="fetchNotifications"
