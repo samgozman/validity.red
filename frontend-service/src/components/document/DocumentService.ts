@@ -82,6 +82,11 @@ export class DocumentService {
       throw new Error(message);
     }
 
+    // Short date format
+    data.document.expiresAt = new Date(data.document.expiresAt)
+      .toISOString()
+      .substring(0, 10);
+
     return data.document;
   }
 

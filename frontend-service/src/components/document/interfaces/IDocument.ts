@@ -3,8 +3,5 @@ export interface IDocument {
   title: string;
   description: string;
   type: number;
-  // TODO: Refactor to use a date object
-  expiresAt: {
-    seconds: number;
-  };
+  expiresAt: string;
 }

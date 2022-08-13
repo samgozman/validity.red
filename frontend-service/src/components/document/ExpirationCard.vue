@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import { defineProps } from "vue";
 defineProps<{
-  // TODO: Replace with date format
-  expiresAt: any;
+  expiresAt: string;
 }>();
 </script>
 

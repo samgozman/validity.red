@@ -40,10 +40,27 @@ message Document {
 	google.protobuf.Timestamp expiresAt = 6;
 }
 
+// Message for document exported as JSON format with lesser types
+message DocumentJSON {
+	string ID = 1;
+	string userID = 2;
+	Type type = 3;
+	string title = 4;
+	string description = 5;
+	string expiresAt = 6;
+}
+
 message Notification {
 	string ID = 1;
 	string documentID = 2;
 	google.protobuf.Timestamp date = 3;
+}
+
+// Message for notification exported as JSON format with lesser types
+message NotificationJSON {
+	string ID = 1;
+	string documentID = 2;
+	string date = 3;
 }
 
 message DocumentCreateRequest {

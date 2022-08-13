@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/samgozman/validity.red/broker/internal/utils"
 	"github.com/samgozman/validity.red/broker/proto/document"
 	"github.com/samgozman/validity.red/broker/proto/logs"
 	"google.golang.org/protobuf/types/known/timestamppb"
@@ -163,9 +164,16 @@ func (app *Config) documentGetOne(
 	payload.Error = false
 	payload.Message = res.Result
 	payload.Data = struct {
-		Document *document.Document `json:"document"`
+		Document *document.DocumentJSON `json:"document"`
 	}{
-		Document: res.Document,
+		Document: &document.DocumentJSON{
+			ID:          res.Document.ID,
+			UserID:      res.Document.UserID,
+			Title:       res.Document.Title,
+			Type:        res.Document.Type,
+			Description: res.Document.Description,
+			ExpiresAt:   utils.ParseProtobufDateToString(res.Document.ExpiresAt),
+		},
 	}
 
 	go app.logger.LogInfo(&logs.Log{

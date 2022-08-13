@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/samgozman/validity.red/broker/internal/utils"
 	"github.com/samgozman/validity.red/broker/proto/document"
 	"github.com/samgozman/validity.red/broker/proto/logs"
 	"google.golang.org/protobuf/types/known/timestamppb"
@@ -156,9 +157,9 @@ func (app *Config) documentNotificationGetAll(
 	payload.Error = false
 	payload.Message = res.Result
 	payload.Data = struct {
-		Notifications []*document.Notification `json:"notifications"`
+		Notifications []*document.NotificationJSON `json:"notifications"`
 	}{
-		Notifications: res.Notifications,
+		Notifications: utils.ConvertNotficationsToJSON(res.Notifications),
 	}
 
 	go app.logger.LogInfo(&logs.Log{

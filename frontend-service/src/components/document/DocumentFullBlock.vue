@@ -15,7 +15,7 @@ import ExpirationCard from "./ExpirationCard.vue";
       class="card col-span-1 row-span-3 xl:col-span-2"
     />
     <ExpirationCard
-      :expiresAt="document.expiresAt"
+      :expiresAt="document.expiresAt || ''"
       class="card col-span-1 row-span-1"
     />
     <NotificationsCard
