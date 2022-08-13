@@ -9,7 +9,7 @@ defineProps<{
 </script>
 
 <template>
-  <div class="card col-span-1 row-span-3 shadow-lg xl:col-span-2 bg-base-100">
+  <div class="card shadow-lg bg-base-100">
     <div class="card-body">
       <h2 class="my-4 text-4xl font-bold card-title">{{ document.title }}</h2>
       <div class="mb-4 space-x-2 card-actions">

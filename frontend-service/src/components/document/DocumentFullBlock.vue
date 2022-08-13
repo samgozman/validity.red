@@ -9,8 +9,12 @@ import DocumentBreadcrumbs from "./DocumentBreadcrumbs.vue";
   <div
     class="grid grid-cols-1 gap-6 py-5 lg:px-10 xl:grid-cols-3 lg:bg-base-200 rounded-box"
   >
-    <DocumentCard :document="document" />
+    <DocumentCard
+      :document="document"
+      class="card col-span-1 row-span-3 xl:col-span-2"
+    />
     <NotificationsCard
+      class="card col-span-1 row-span-3"
       :notifications="notifications"
       :documentId="documentId"
       @refresh-notifications-event="fetchNotifications"
