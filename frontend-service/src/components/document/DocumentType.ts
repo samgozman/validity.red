@@ -31,7 +31,13 @@ export class DocumentType {
     [21, { name: "Other", iconStyle: "" }],
   ]);
 
-  public static decodeType(typeId: number): IDocumentType {
-    return this.types.get(typeId) || { name: "Unknown", iconStyle: "" };
+  public static getName(typeId = 0): string {
+    const t = this.types.get(typeId);
+    return t ? t.name : "Unknown";
+  }
+
+  public static getIconStyle(typeId = 0): string {
+    const t = this.types.get(typeId);
+    return t ? t.iconStyle : "";
   }
 }
