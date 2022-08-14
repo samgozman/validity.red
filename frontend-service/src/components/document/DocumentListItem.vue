@@ -9,10 +9,16 @@ defineProps<{
 </script>
 
 <template>
-  <div class="card shadow-lg compact side bg-base-100">
+  <div
+    class="card shadow-lg compact side bg-base-100"
+    @mouseover="isHovering = true"
+    @mouseout="isHovering = false"
+  >
     <div class="flex-row items-center space-x-4 card-body">
       <div class="flex-1">
-        <h2 class="card-title text-primary">{{ document.title }}</h2>
+        <RouterLink :to="documentLink" class="card-title text-primary">{{
+          document.title
+        }}</RouterLink>
         <p class="text-base-content text-opacity-80">
           {{ document.description }}
         </p>
@@ -20,13 +26,7 @@ defineProps<{
           {{ document.expiresAt }}
         </p>
       </div>
-      <div class="flex space-x-2 flex-0">
-        <RouterLink
-          :to="documentLink"
-          class="btn btn-sm btn-circle btn-primary"
-        >
-          <ion-icon name="eye-outline" class="text-xl"></ion-icon>
-        </RouterLink>
+      <div class="flex space-x-2 flex-0" :class="{ 'opacity-0': !isHovering }">
         <a :href="deleteAncor" class="btn btn-sm btn-circle">
           <ion-icon name="trash-outline" class="text-xl"></ion-icon>
         </a>
@@ -48,6 +48,7 @@ import { DocumentService } from "./DocumentService";
 export default defineComponent({
   data() {
     return {
+      isHovering: false,
       deleteAncor: "",
       deleteModalId: "",
       documentLink: "",
