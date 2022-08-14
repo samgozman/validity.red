@@ -16,7 +16,9 @@ defineProps<{
         <p class="text-base-content text-opacity-80">
           {{ document.description }}
         </p>
-        <p class="text-base-content text-opacity-40">01.01.1970</p>
+        <p class="text-base-content text-opacity-40">
+          {{ document.expiresAt }}
+        </p>
       </div>
       <div class="flex space-x-2 flex-0">
         <RouterLink

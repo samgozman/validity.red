@@ -64,6 +64,11 @@ export class DocumentService {
       throw new Error(message);
     }
 
+    // Short date format
+    for (const d of data.documents) {
+      d.expiresAt = this.getDate(d.expiresAt);
+    }
+
     return data.documents;
   }
 
@@ -83,9 +88,7 @@ export class DocumentService {
     }
 
     // Short date format
-    data.document.expiresAt = new Date(data.document.expiresAt)
-      .toISOString()
-      .substring(0, 10);
+    data.document.expiresAt = this.getDate(data.document.expiresAt);
 
     return data.document;
   }
@@ -104,5 +107,14 @@ export class DocumentService {
     }
 
     return data.documentId;
+  }
+
+  /**
+   * Return date in YYYY-MM-DD format
+   * @param dateStr
+   * @returns
+   */
+  private static getDate(dateStr: string): string {
+    return new Date(dateStr).toISOString().substring(0, 10);
   }
 }

@@ -213,9 +213,9 @@ func (app *Config) documentGetAll(
 	payload.Error = false
 	payload.Message = res.Result
 	payload.Data = struct {
-		Documents []*document.Document `json:"documents"`
+		Documents []*document.DocumentJSON `json:"documents"`
 	}{
-		Documents: res.Documents,
+		Documents: utils.ConvertDocumentsToJSON(res.Documents),
 	}
 
 	go app.logger.LogInfo(&logs.Log{

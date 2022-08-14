@@ -23,3 +23,19 @@ func ConvertNotficationsToJSON(ns []*document.Notification) []*document.Notifica
 
 	return njs
 }
+
+func ConvertDocumentsToJSON(ds []*document.Document) []*document.DocumentJSON {
+	var djs []*document.DocumentJSON
+	for _, d := range ds {
+		djs = append(djs, &document.DocumentJSON{
+			ID:          d.ID,
+			UserID:      d.UserID,
+			Title:       d.Title,
+			Type:        d.Type,
+			Description: d.Description,
+			ExpiresAt:   ParseProtobufDateToString(d.ExpiresAt),
+		})
+	}
+
+	return djs
+}
