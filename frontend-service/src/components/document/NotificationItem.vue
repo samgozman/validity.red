@@ -15,12 +15,12 @@ defineProps<{
     <div
       class="grid w-full h-10 rounded bg-primary text-primary-content place-content-center my-1"
     >
-      {{ notification.date }}
+      {{ dateWithTZ }}
     </div>
     <ModalConfirmation
       :modalId="deleteModalId"
       message="Are you sure that you want to delete this notification:"
-      :actionName="String(notification.date)"
+      :actionName="dateWithTZ"
       @confirmEvent="deleteNotification"
     />
   </div>
@@ -33,6 +33,9 @@ import { NotificationService } from "./NotificationService";
 export default defineComponent({
   data() {
     return {
+      dateWithTZ: new Date(this.notification.date).toLocaleString("en-GB", {
+        timeZoneName: "short",
+      }),
       deleteAncor: "",
       deleteModalId: "",
     };
