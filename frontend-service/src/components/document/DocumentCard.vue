@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { defineProps } from "vue";
+import { RouterLink } from "vue-router";
 import ModalConfirmation from "../elements/ModalConfirmation.vue";
 import type { IDocument } from "./interfaces/IDocument";
 import { DocumentType } from "./DocumentType";
@@ -25,7 +26,12 @@ defineProps<{
         {{ document.description }}
       </p>
       <div class="justify-end space-x-2 card-actions">
-        <button class="btn btn-primary">Edit</button>
+        <RouterLink
+          :to="`/documents/${document.ID}/edit`"
+          class="btn btn-primary"
+          :v-model="document.ID"
+          >Edit</RouterLink
+        >
         <a :href="deleteAncor" class="btn">Delete</a>
       </div>
     </div>
@@ -45,8 +51,8 @@ import { DocumentService } from "./DocumentService";
 export default defineComponent({
   data() {
     return {
-      deleteAncor: `#delete-document`,
-      deleteModalId: `delete-document`,
+      deleteAncor: "#delete-document",
+      deleteModalId: "delete-document",
     };
   },
   methods: {

@@ -20,6 +20,8 @@ interface DocumentCreateResponse extends IResponse {
 }
 
 interface DocumentPayload {
+  /** (optional) for document edit */
+  id?: string;
   type: number;
   title: string;
   description: string;
@@ -107,6 +109,20 @@ export class DocumentService {
     }
 
     return data.documentId;
+  }
+
+  public static async updateOne(document: DocumentPayload): Promise<void> {
+    const payload = JSON.stringify({
+      action: "DocumentEdit",
+      document,
+    });
+
+    const res = await QueryMaker.post<DocumentCreateResponse>(payload);
+    const { error, message } = res.data;
+
+    if (error) {
+      throw new Error(message);
+    }
   }
 
   /**

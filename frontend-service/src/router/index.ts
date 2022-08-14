@@ -50,6 +50,12 @@ const router = createRouter({
       meta: { requiresAuth: true },
     },
     {
+      path: "/documents/:id/edit",
+      name: "document-edit",
+      component: () => import("@/views/DocumentCreateView.vue"),
+      meta: { requiresAuth: true },
+    },
+    {
       path: "/about",
       name: "about",
       component: AboutView,

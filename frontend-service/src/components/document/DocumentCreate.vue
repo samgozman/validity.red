@@ -80,6 +80,7 @@
             <label class="label cursor-pointer">
               <span class="label-text">Add default notification?</span>
               <input
+                v-if="!isEditMode"
                 type="checkbox"
                 class="toggle toggle-primary"
                 v-model="createDefaultNotification"
@@ -113,6 +114,9 @@ export default defineComponent({
       expiresAt: "",
       createDefaultNotification: true,
       typeOptions: DocumentType.types,
+      documentTypeId: 0,
+      isEditMode: false,
+      documentId: "",
       error: false,
       errorMsg: "",
     };
@@ -147,6 +151,23 @@ export default defineComponent({
         return false;
       }
     },
+    async createDocument(expirationDate: Date) {
+      this.documentId = await DocumentService.createOne({
+        title: this.title,
+        description: this.description,
+        type: this.documentTypeId,
+        expiresAt: expirationDate,
+      });
+    },
+    async updateDocument(expirationDate: Date) {
+      await DocumentService.updateOne({
+        id: this.documentId,
+        title: this.title,
+        description: this.description,
+        type: this.documentTypeId,
+        expiresAt: expirationDate,
+      });
+    },
     async submit() {
       try {
         // 0. Clear the error message
@@ -163,31 +184,31 @@ export default defineComponent({
           return;
         if (this.isExpired(this.expiresAt)) return;
 
-        // 2. Create document and get its id
         const expirationDate = new Date(Date.parse(this.expiresAt));
         const typeIndex = [...this.typeOptions.values()]
           .map((d) => d.name)
           .indexOf(this.type);
-        const documentType = typeIndex === -1 ? 0 : typeIndex;
-        const documentId = await DocumentService.createOne({
-          title: this.title,
-          description: this.description,
-          type: documentType,
-          expiresAt: expirationDate,
-        });
+        this.documentTypeId = typeIndex === -1 ? 0 : typeIndex;
 
-        // 3. Create default notification if needed
-        if (this.createDefaultNotification) {
-          await NotificationService.createOne({
-            date: expirationDate,
-            documentId: documentId,
-          });
+        if (!this.isEditMode) {
+          // 2. Create document and get its id
+          await this.createDocument(expirationDate);
+          // 3. Create default notification if needed
+          if (this.createDefaultNotification) {
+            await NotificationService.createOne({
+              date: expirationDate,
+              documentId: this.documentId,
+            });
+          }
+        } else {
+          // If it is the edit mode, we only need to update the document
+          await this.updateDocument(expirationDate);
         }
 
         // 4. Redirect to document page
         this.$router.push({
           name: "document",
-          params: { id: documentId },
+          params: { id: this.documentId },
         });
       } catch (error) {
         this.error = true;
@@ -195,6 +216,30 @@ export default defineComponent({
         // TODO: Push error to Sentry
       }
     },
+  },
+  async beforeMount() {
+    if (this.$route.params.id) {
+      this.createDefaultNotification = false;
+      this.isEditMode = true;
+      this.documentId =
+        typeof this.$route.params.id === "string" ? this.$route.params.id : "";
+    }
+
+    if (this.isEditMode) {
+      try {
+        const document = await DocumentService.getOne(this.documentId);
+        this.title = document.title;
+        this.description = document.description;
+        this.type = DocumentType.getName(document.type);
+        this.expiresAt = new Date(document.expiresAt)
+          .toISOString()
+          .split("T")[0];
+      } catch (error) {
+        this.error = true;
+        this.errorMsg = "An error occurred, please try again";
+        // TODO: Push error to Sentry
+      }
+    }
   },
 });
 </script>
