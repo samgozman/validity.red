@@ -42,6 +42,7 @@
           <label class="input-group">
             <input
               type="date"
+              :min="minDate"
               class="input input-bordered w-full"
               v-model="expiresAt"
             />
@@ -108,6 +109,7 @@ export default defineComponent({
       title: "",
       description: "",
       type: "Select document type",
+      minDate: new Date().toISOString().split("T")[0],
       expiresAt: "",
       createDefaultNotification: true,
       typeOptions: DocumentType.types,
