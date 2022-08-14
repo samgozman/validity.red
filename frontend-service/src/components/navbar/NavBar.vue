@@ -32,7 +32,9 @@ import NavBarUserItems from "./NavBarUserItems.vue";
     </div>
     <div class="navbar-center"></div>
     <div class="navbar-end">
-      <RouterLink class="btn mr-3" to="/documents/create">+ Add new</RouterLink>
+      <RouterLink class="btn mr-3" to="/documents/create">
+        <ion-icon name="add-outline" class="text-xl mr-1"></ion-icon> Add new
+      </RouterLink>
       <div class="dropdown dropdown-end">
         <label tabindex="0" class="btn btn-ghost btn-circle avatar">
           <div class="w-10 rounded-full">

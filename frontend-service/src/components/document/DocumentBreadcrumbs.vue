@@ -11,9 +11,15 @@ defineProps<{
   <div class="text-sm breadcrumbs">
     <ul>
       <li>
-        <RouterLink to="/documents">Documents</RouterLink>
+        <RouterLink to="/documents">
+          <ion-icon name="documents-outline" class="mr-1"></ion-icon>
+          Documents
+        </RouterLink>
       </li>
-      <li>{{ title }}</li>
+      <li>
+        <ion-icon name="document-text-outline" class="mr-1"></ion-icon>
+        {{ title }}
+      </li>
     </ul>
   </div>
 </template>

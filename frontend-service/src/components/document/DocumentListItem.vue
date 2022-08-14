@@ -21,12 +21,13 @@ defineProps<{
       <div class="flex space-x-2 flex-0">
         <RouterLink
           :to="documentLink"
-          class="btn btn-sm btn-square btn-primary"
+          class="btn btn-sm btn-circle btn-primary"
         >
-          v
+          <ion-icon name="eye-outline" class="text-xl"></ion-icon>
         </RouterLink>
-        <!-- TODO: call delete method after pop-up confirmation -->
-        <a :href="deleteAncor" class="btn btn-sm btn-square">d</a>
+        <a :href="deleteAncor" class="btn btn-sm btn-circle">
+          <ion-icon name="trash-outline" class="text-xl"></ion-icon>
+        </a>
       </div>
     </div>
     <ModalConfirmation

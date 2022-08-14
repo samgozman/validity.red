@@ -11,7 +11,10 @@ defineProps<{
 <template>
   <div class="card shadow-lg bg-base-100">
     <div class="card-body">
-      <h2 class="my-4 text-xl font-bold card-title">Notifications</h2>
+      <h2 class="my-4 text-xl font-bold card-title">
+        <ion-icon name="notifications-outline" class="align-middle"></ion-icon>
+        Notifications
+      </h2>
       <p v-if="notifications.length === 0" class="text-center my-5">
         Add notifications..
       </p>
@@ -39,10 +42,10 @@ defineProps<{
                 v-model="inputTime"
               />
               <button class="btn btn-square btn-primary" type="submit">
-                A
+                <ion-icon name="checkmark-sharp" class="text-xl"></ion-icon>
               </button>
               <button class="btn btn-square" @click="closeFromClicked">
-                X
+                <ion-icon name="close-sharp" class="text-xl"></ion-icon>
               </button>
             </div>
           </div>
@@ -53,7 +56,7 @@ defineProps<{
         class="justify-center space-x-2 card-actions"
       >
         <button class="btn btn-primary btn-circle" @click="addButtonClicked">
-          +
+          <ion-icon name="add-outline" class="text-xl"></ion-icon>
         </button>
       </div>
       <div v-show="error" class="badge badge-error badge-outline w-full">

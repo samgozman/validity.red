@@ -10,7 +10,9 @@ defineProps<{
 <template>
   <div class="indicator w-full">
     <div class="indicator-item indicator-middle indicator-end">
-      <a :href="deleteAncor" class="btn btn-xs btn-accent btn-circle">X</a>
+      <a :href="deleteAncor" class="btn btn-xs btn-accent btn-circle">
+        <ion-icon name="close-outline" class="text-lg"></ion-icon>
+      </a>
     </div>
     <div
       class="grid w-full h-10 rounded bg-primary text-primary-content place-content-center my-1"
