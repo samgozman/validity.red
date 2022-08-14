@@ -3,6 +3,7 @@ import { defineProps } from "vue";
 import { RouterLink } from "vue-router";
 import type { IDocument } from "./interfaces/IDocument";
 import ModalConfirmation from "../elements/ModalConfirmation.vue";
+import { DocumentType } from "./DocumentType";
 defineProps<{
   document: IDocument;
 }>();
@@ -16,9 +17,13 @@ defineProps<{
   >
     <div class="flex-row items-center space-x-4 card-body">
       <div class="flex-1">
-        <RouterLink :to="documentLink" class="card-title text-primary">{{
-          document.title
-        }}</RouterLink>
+        <RouterLink :to="documentLink" class="card-title text-primary">
+          <ion-icon
+            :name="DocumentType.getIconStyle(document.type)"
+            class="text-base-content"
+          ></ion-icon>
+          {{ document.title }}
+        </RouterLink>
         <p class="text-base-content text-opacity-80">
           {{ document.description }}
         </p>
