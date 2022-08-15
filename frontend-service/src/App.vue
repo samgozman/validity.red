@@ -6,7 +6,7 @@ import Footer from "./components/FooterComponent.vue";
 </script>
 
 <template>
-  <div class="drawer bg-base-200">
+  <div class="drawer h-screen bg-base-200">
     <input id="left-sidebar" type="checkbox" class="drawer-toggle" />
     <div class="drawer-content flex flex-col">
       <header class="bg-base-100">
@@ -14,7 +14,7 @@ import Footer from "./components/FooterComponent.vue";
           <NavBar />
         </div>
       </header>
-      <div class="container sm:mx-auto mb-auto px-6">
+      <div class="container sm:mx-auto grow px-6">
         <RouterView />
       </div>
       <Footer />
