@@ -6,11 +6,36 @@
     </div>
     <div>
       <div class="grid grid-flow-col gap-4">
-        <ion-icon name="logo-github" class="text-2xl"></ion-icon>
-        <ion-icon name="logo-linkedin" class="text-2xl"></ion-icon>
-        <ion-icon name="logo-paypal" class="text-2xl"></ion-icon>
-        <ion-icon name="beer-outline" class="text-2xl"></ion-icon>
+        <a v-for:="button in socialButtons" :href="button.link" target="_blank">
+          <ion-icon :name="button.icon" class="text-2xl"></ion-icon>
+        </a>
       </div>
     </div>
   </footer>
 </template>
+
+<script lang="ts">
+import { defineComponent } from "vue";
+
+export default defineComponent({
+  data() {
+    return {
+      socialButtons: [
+        {
+          link: "https://github.com/samgozman/validity.red",
+          icon: "logo-github",
+        },
+        {
+          link: "https://www.linkedin.com/in/samgozman/",
+          icon: "logo-linkedin",
+        },
+        { link: "https://paypal.me/sgozman", icon: "logo-paypal" },
+        { link: "https://ko-fi.com/samgozman", icon: "beer-outline" },
+      ] as {
+        icon: string;
+        link: string;
+      }[],
+    };
+  },
+});
+</script>
