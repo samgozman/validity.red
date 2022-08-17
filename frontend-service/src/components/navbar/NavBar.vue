@@ -32,18 +32,16 @@ import NavBarUserItems from "./NavBarUserItems.vue";
     </div>
     <div class="navbar-center"></div>
     <div class="navbar-end">
-      <RouterLink class="btn mr-3" to="/documents/create">
+      <RouterLink class="btn mr-4 rounded-full" to="/documents/create">
         <ion-icon name="add-outline" class="text-xl mr-1"></ion-icon> Add new
       </RouterLink>
-      <div class="dropdown dropdown-end">
-        <label tabindex="0" class="btn btn-ghost btn-circle avatar">
-          <div class="w-10 rounded-full">
-            <img src="https://placeimg.com/80/80/people" />
-          </div>
+      <div class="dropdown dropdown-end mr-4">
+        <label tabindex="0" class="btn btn-neutral btn-circle">
+          <ion-icon name="person-circle-outline" class="text-4xl"></ion-icon>
         </label>
         <ul
           tabindex="0"
-          class="mt-3 p-2 shadow menu menu-compact dropdown-content bg-base-100 rounded-box w-52"
+          class="mt-3 p-2 shadow menu menu-compact dropdown-content bg-base-100 rounded-box w-48"
         >
           <NavBarUserItems />
         </ul>
