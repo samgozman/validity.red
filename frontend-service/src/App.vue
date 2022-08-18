@@ -14,9 +14,7 @@ import Footer from "./components/FooterComponent.vue";
           <NavBar />
         </div>
       </header>
-      <div class="container sm:mx-auto grow px-6">
-        <RouterView />
-      </div>
+      <RouterView />
       <Footer />
     </div>
     <div class="drawer-side">

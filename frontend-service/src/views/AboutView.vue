@@ -1,8 +1,12 @@
+<script setup lang="ts">
+import StandardContainer from "@/components/layout/StandardContainer.vue";
+</script>
+
 <template>
-  <main>
+  <StandardContainer>
     <article class="prose lg:prose-xl">
       <h2>About view</h2>
       <p>Some text</p>
     </article>
-  </main>
+  </StandardContainer>
 </template>

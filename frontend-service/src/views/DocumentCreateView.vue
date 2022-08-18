@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import DocumentCreate from "@/components/document/DocumentCreate.vue";
+import StandardContainer from "@/components/layout/StandardContainer.vue";
 </script>
 
 <template>
-  <main>
+  <StandardContainer>
     <DocumentCreate />
-  </main>
+  </StandardContainer>
 </template>

@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import LogoText from "../components/LogoText.vue";
 import FullScreenHeroVue from "../components/layout/FullScreenHero.vue";
+import StandardContainer from "@/components/layout/StandardContainer.vue";
 </script>
 
 <template>
-  <main>
+  <StandardContainer>
     <FullScreenHeroVue>
       <div class="max-w-xl">
         <article class="prose lg:prose-xl mb-10">
@@ -19,5 +20,5 @@ import FullScreenHeroVue from "../components/layout/FullScreenHero.vue";
         <button class="btn">Some button</button>
       </div>
     </FullScreenHeroVue>
-  </main>
+  </StandardContainer>
 </template>

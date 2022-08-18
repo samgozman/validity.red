@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import LoginForm from "../components/auth/LoginForm.vue";
+import StandardContainer from "@/components/layout/StandardContainer.vue";
 </script>
 
 <template>
-  <main>
+  <StandardContainer>
     <div class="hero min-h-screen bg-base-200">
       <div class="hero-content flex-col lg:flex-row-reverse">
         <div class="text-center lg:text-left">
@@ -21,5 +22,5 @@ import LoginForm from "../components/auth/LoginForm.vue";
         </div>
       </div>
     </div>
-  </main>
+  </StandardContainer>
 </template>
