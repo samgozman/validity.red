@@ -76,11 +76,10 @@
         class="card col-span-1 row-span-1 shadow-lg lg:col-span-1 bg-base-100"
       >
         <div class="card-body">
-          <div class="form-control">
+          <div v-if="!isEditMode" class="form-control">
             <label class="label cursor-pointer">
               <span class="label-text">Add default notification?</span>
               <input
-                v-if="!isEditMode"
                 type="checkbox"
                 class="toggle toggle-primary"
                 v-model="createDefaultNotification"
