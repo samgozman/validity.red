@@ -1,7 +1,7 @@
 <template>
-  <div class="min-h-screen w-full grid grid-cols-1 content-between">
+  <div class="w-full grid grid-cols-1 content-end lg:content-between">
     <div class="flex flex-wrap items-center py-10 lg:pt-24 2xl:pt-32 px-4">
-      <div class="text-center w-full lg:w-[60%] xl:w-[50%] min-h-full mx-auto">
+      <div class="text-center w-full lg:w-[60%] xl:w-[50%] mx-auto">
         <slot />
       </div>
     </div>
