@@ -11,7 +11,7 @@ defineProps<{
 
 <template>
   <div
-    class="card shadow-lg compact side bg-base-100"
+    class="card shadow-lg compact bg-base-100"
     @mouseover="isHovering = true"
     @mouseout="isHovering = false"
   >
