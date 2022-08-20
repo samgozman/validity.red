@@ -3,6 +3,7 @@ import { RouterLink } from "vue-router";
 import MainPageAppHero from "@/components/layout/MainPageAppHero.vue";
 import FeaturesRow from "@/components/elements/FeaturesRow.vue";
 import LeadingParagraph from "@/components/layout/LeadingParagraph.vue";
+import LogoText from "@/components/LogoText.vue";
 </script>
 
 <template>
@@ -147,8 +148,8 @@ import LeadingParagraph from "@/components/layout/LeadingParagraph.vue";
               us.
             </LeadingParagraph>
             <LeadingParagraph class="pb-6">
-              Join the <strong>Validity.RED</strong> and never forget to update
-              documents on time again!
+              Join the <LogoText /> and never forget to update documents on time
+              again!
             </LeadingParagraph>
             <RouterLink to="/register" class="btn btn-primary btn-wide btn-lg">
               Get Started
