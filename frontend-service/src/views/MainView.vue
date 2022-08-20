@@ -128,27 +128,25 @@ import LeadingParagraph from "@/components/layout/LeadingParagraph.vue";
       />
     </div>
 
-    <div class="grid grid-cols-5 py-6 px-3 sm:pt-24">
-      <div
-        class="col-span-5 xl:col-start-2 xl:col-span-3 card shadow-lg bg-base-100"
-      >
+    <div class="grid grid-cols-1 py-6 px-3 sm:px-0 sm:pt-24">
+      <div class="card shadow-lg bg-base-100">
         <div class="card-body items-center text-center justify-center">
-          <div>
-            <h1 class="text-3xl sm:text-4xl md:text-5xl text-dark font-bold">
+          <div class="xl:max-w-[60%]">
+            <h3 class="text-2xl sm:text-3xl md:text-4xl text-dark font-bold">
               Start managing expiration dates!
-            </h1>
-            <LeadingParagraph class="py-6 text-justify">
+            </h3>
+            <LeadingParagraph class="py-6">
               Has it ever happened to you that when you were going abroad, and
               your visa ran out? You decided to rent a car, but your driver's
               license ran out a week ago? Or your health insurance ended at the
               most inopportune moment and your bank card also expired as well?
               And all of a sudden!
             </LeadingParagraph>
-            <LeadingParagraph class="pb-6 text-justify">
+            <LeadingParagraph class="pb-6">
               Sounds like a nightmare! Something similar has happened to all of
               us.
             </LeadingParagraph>
-            <LeadingParagraph class="pb-6 text-justify">
+            <LeadingParagraph class="pb-6">
               Join the <strong>Validity.RED</strong> and never forget to update
               documents on time again!
             </LeadingParagraph>
