@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { RouterView } from "vue-router";
-import NavBar from "./components/navbar/NavBar.vue";
-import NavBarItems from "./components/navbar/NavBarItems.vue";
-import Footer from "./components/FooterComponent.vue";
+import { navbarItems } from "@/components/navbar/items";
+import NavBar from "@/components/navbar/NavBar.vue";
+import NavBarItems from "@/components/navbar/NavBarItems.vue";
+import Footer from "@/components/FooterComponent.vue";
 </script>
 
 <template>
@@ -20,7 +21,7 @@ import Footer from "./components/FooterComponent.vue";
     <div class="drawer-side">
       <label for="left-sidebar" class="drawer-overlay"></label>
       <ul class="menu p-4 overflow-y-auto w-80 bg-base-100">
-        <NavBarItems />
+        <NavBarItems :items="navbarItems" />
       </ul>
     </div>
   </div>

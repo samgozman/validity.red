@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { RouterLink } from "vue-router";
-import LogoText from "../../components/LogoText.vue";
+import { navbarItems, navbarItemsUser } from "@/components/navbar/items";
+import LogoText from "@/components/LogoText.vue";
 import NavBarItems from "./NavBarItems.vue";
-import NavBarUserItems from "./NavBarUserItems.vue";
 </script>
 
 <template>
@@ -27,7 +27,7 @@ import NavBarUserItems from "./NavBarUserItems.vue";
       </div>
       <a class="btn btn-ghost normal-case text-xl"><LogoText /></a>
       <ul class="hidden md:flex menu menu-horizontal p-0">
-        <NavBarItems />
+        <NavBarItems :items="navbarItems" />
       </ul>
     </div>
     <div class="navbar-center"></div>
@@ -43,7 +43,7 @@ import NavBarUserItems from "./NavBarUserItems.vue";
           tabindex="0"
           class="mt-3 p-2 shadow menu menu-compact dropdown-content bg-base-100 rounded-box w-48"
         >
-          <NavBarUserItems />
+          <NavBarItems :items="navbarItemsUser" />
         </ul>
       </div>
     </div>
