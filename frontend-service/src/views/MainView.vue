@@ -2,6 +2,7 @@
 import { RouterLink } from "vue-router";
 import MainPageAppHero from "@/components/layout/MainPageAppHero.vue";
 import FeaturesRow from "@/components/elements/FeaturesRow.vue";
+import LeadingParagraph from "@/components/layout/LeadingParagraph.vue";
 </script>
 
 <template>
@@ -48,9 +49,7 @@ import FeaturesRow from "@/components/elements/FeaturesRow.vue";
       </MainPageAppHero>
     </div>
   </main>
-  <div
-    class="container sm:mx-auto grow sm:min-h-[calc(100%-12rem)] py-6 sm:py-24"
-  >
+  <div class="container sm:mx-auto grow py-6 sm:py-24">
     <!-- Main features -->
     <div class="pb-6 px-3">
       <span class="font-semibold text-lg text-primary mb-2 block">
@@ -59,14 +58,47 @@ import FeaturesRow from "@/components/elements/FeaturesRow.vue";
       <h2 class="font-bold text-3xl sm:text-4xl md:text-5xl text-dark mb-4">
         Main Features of Validity.RED
       </h2>
-      <p
-        class="text-lg sm:text-xl leading-relaxed sm:leading-relaxed text-body-color"
-      >
-        Lorem ipsum dolor sit amet consectetur, adipisicing elit. Temporibus
-        alias praesentium quas sint iste tempora modi voluptate placeat. Facere
-        accusamus sequi voluptatibus tempore earum aut minus ipsum pariatur ipsa
-        eum.
-      </p>
+
+      <br />
+      <LeadingParagraph class="xl:max-w-[60%]">
+        Track the expiration dates of your documents with ease in a simple and
+        intuitive interface! <br />
+        Create multiple notifications for each document. Sync reminders with
+        your calendar and never forget to update your documents on time!
+      </LeadingParagraph>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
+      <FeaturesRow
+        :rowsData="[
+          {
+            headline: 'Manage documents',
+            text: 'Track the expiration dates of documents in one place. A large selection of document categories!',
+            iconStyle: 'file-tray-full-outline',
+          },
+          {
+            headline: 'Create notifications',
+            text: `Create multiple notifications to make sure you don't miss it. It's easy and handy!`,
+            iconStyle: 'alarm-outline',
+          },
+          {
+            headline: 'Sync with calendar',
+            text: 'Our most favorite feature: Sync notifications with your calendar. Track reminders in the familiar UI.',
+            iconStyle: 'calendar-outline',
+          },
+          {
+            headline: 'Handy dashboard',
+            text: 'See upcoming expiration dates, statistics and more on a easy-to-use dashboard.',
+            iconStyle: 'speedometer-outline',
+          },
+        ]"
+      />
+    </div>
+
+    <div class="pt-12 px-3">
+      <h2 class="font-bold text-xl sm:text-2xl md:text-3xl text-dark mb-4">
+        What Makes us Better
+      </h2>
     </div>
 
     <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
@@ -94,6 +126,38 @@ import FeaturesRow from "@/components/elements/FeaturesRow.vue";
           },
         ]"
       />
+    </div>
+
+    <div class="grid grid-cols-5 py-6 px-3 sm:pt-24">
+      <div
+        class="col-span-5 xl:col-start-2 xl:col-span-3 card shadow-lg bg-base-100"
+      >
+        <div class="card-body items-center text-center justify-center">
+          <div>
+            <h1 class="text-3xl sm:text-4xl md:text-5xl text-dark font-bold">
+              Start managing expiration dates!
+            </h1>
+            <LeadingParagraph class="py-6 text-justify">
+              Has it ever happened to you that when you were going abroad, and
+              your visa ran out? You decided to rent a car, but your driver's
+              license ran out a week ago? Or your health insurance ended at the
+              most inopportune moment and your bank card also expired as well?
+              And all of a sudden!
+            </LeadingParagraph>
+            <LeadingParagraph class="pb-6 text-justify">
+              Sounds like a nightmare! Something similar has happened to all of
+              us.
+            </LeadingParagraph>
+            <LeadingParagraph class="pb-6 text-justify">
+              Join the <strong>Validity.RED</strong> and never forget to update
+              documents on time again!
+            </LeadingParagraph>
+            <RouterLink to="/register" class="btn btn-primary btn-wide btn-lg">
+              Get Started
+            </RouterLink>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
