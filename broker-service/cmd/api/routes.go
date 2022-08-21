@@ -1,29 +1,34 @@
 package main
 
 import (
-	"net/http"
-
-	"github.com/go-chi/chi"
-	"github.com/go-chi/chi/middleware"
-	"github.com/go-chi/cors"
+	"github.com/gin-contrib/cors"
+	"github.com/gin-gonic/gin"
 )
 
-func (app *Config) routes() http.Handler {
-	mux := chi.NewRouter()
+func (app *Config) routes() *gin.Engine {
+	g := gin.Default()
 
-	mux.Use((cors.Handler(cors.Options{
-		AllowedOrigins:   []string{"https://*", "http://*"},
-		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
-		AllowedHeaders:   []string{"Accept", "Authorization", "Content-Type", "X-CSRF-Token"},
-		ExposedHeaders:   []string{"Link"},
+	g.Use(cors.New(cors.Config{
+		AllowOrigins:     []string{"https://*", "http://*"},
+		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+		AllowHeaders:     []string{"Accept", "Authorization", "Content-Type", "X-CSRF-Token"},
+		ExposeHeaders:    []string{"Link"},
 		AllowCredentials: true,
 		MaxAge:           300,
-	})))
+	}))
 
-	// Simple middleware to test that service is up and running from outside
-	mux.Use(middleware.Heartbeat("/ping"))
+	handler := g.Group("/handle")
+	handler.Use(app.AuthGuard())
+	{
+		handler.POST("/", app.HandleSubmission)
+	}
 
-	mux.Post("/handle", app.HandleSubmission)
+	// Auth routes
+	auth := g.Group("/auth")
+	{
+		auth.POST("/login", app.userLogin)
+		auth.POST("/register", app.userRegister)
+	}
 
-	return mux
+	return g
 }

@@ -2,13 +2,10 @@ package main
 
 import (
 	"errors"
-	"fmt"
 	"net/http"
 	"time"
 
-	"golang.org/x/exp/slices"
-
-	"github.com/samgozman/validity.red/broker/proto/logs"
+	"github.com/gin-gonic/gin"
 )
 
 type RequestPayload struct {
@@ -44,71 +41,40 @@ type NotificationPayload struct {
 }
 
 var (
-	// Handlers that doesn't require authentication
-	WhiteListedHandlers = []string{"UserRegister", "UserLogin"}
+	ErrInvalidAction = errors.New("invalid action")
 )
 
 // Single point to communicate with services
-func (app *Config) HandleSubmission(w http.ResponseWriter, r *http.Request) {
+func (app *Config) HandleSubmission(c *gin.Context) {
 	var requestPayload RequestPayload
 
-	err := app.readJSON(w, r, &requestPayload)
-	if err != nil {
-		app.errorJSON(w, err)
+	if err := c.ShouldBindJSON(&requestPayload); err != nil {
+		c.AbortWithError(http.StatusBadRequest, err)
 		return
 	}
 
-	var (
-		userId string
-		token  *http.Cookie
-	)
-	// Check if requested handler requires authentication
-	if !slices.Contains(WhiteListedHandlers, requestPayload.Action) {
-		// Get token from cookie
-		token, err = r.Cookie("token")
-		if err != nil {
-			app.errorJSON(w, errors.New("error occured while reading token cookie"), http.StatusUnauthorized)
-			return
-		}
-
-		// Verify token and decode UserId from it
-		userId, err = app.token.Verify(token.Value)
-		if err != nil {
-			app.errorJSON(w, err, http.StatusUnauthorized)
-			return
-		}
-	}
-
 	switch requestPayload.Action {
-	case "UserRegister":
-		app.userRegister(w, requestPayload.Register)
-	case "UserLogin":
-		app.userLogin(w, requestPayload.Auth)
 	case "UserRefreshToken":
-		app.userRefreshToken(w, userId, token.Value)
+		app.userRefreshToken(c)
 	case "DocumentCreate":
-		app.documentCreate(w, requestPayload.Document, userId)
+		app.documentCreate(c, requestPayload.Document)
 	case "DocumentEdit":
-		app.documentEdit(w, requestPayload.Document, userId)
+		app.documentEdit(c, requestPayload.Document)
 	case "DocumentDelete":
-		app.documentDelete(w, requestPayload.Document, userId)
+		app.documentDelete(c, requestPayload.Document)
 	case "DocumentGetOne":
-		app.documentGetOne(w, requestPayload.Document, userId)
+		app.documentGetOne(c, requestPayload.Document)
 	case "DocumentGetAll":
-		app.documentGetAll(w, userId)
+		app.documentGetAll(c)
 	case "NotificationCreate":
-		app.documentNotificationCreate(w, requestPayload.Notification, userId)
+		app.documentNotificationCreate(c, requestPayload.Notification)
 	case "NotificationEdit":
-		app.documentNotificationEdit(w, requestPayload.Notification, userId)
+		app.documentNotificationEdit(c, requestPayload.Notification)
 	case "NotificationDelete":
-		app.documentNotificationDelete(w, requestPayload.Notification, userId)
+		app.documentNotificationDelete(c, requestPayload.Notification)
 	case "NotificationGetAll":
-		app.documentNotificationGetAll(w, requestPayload.Notification, userId)
+		app.documentNotificationGetAll(c, requestPayload.Notification)
 	default:
-		app.errorJSON(w, errors.New("invalid action"))
-		go app.logger.LogWarn(&logs.Log{
-			Service: "broker-service",
-			Message: fmt.Sprintf("Invalid action: %s", requestPayload.Action),
-		})
+		c.AbortWithError(http.StatusBadRequest, ErrInvalidAction)
 	}
 }

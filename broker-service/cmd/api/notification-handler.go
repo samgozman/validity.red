@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/gin-gonic/gin"
 	"github.com/samgozman/validity.red/broker/internal/utils"
 	"github.com/samgozman/validity.red/broker/proto/document"
 	"github.com/samgozman/validity.red/broker/proto/logs"
@@ -13,12 +14,16 @@ import (
 
 // Call Create method on Notification in `document-service`
 func (app *Config) documentNotificationCreate(
-	w http.ResponseWriter,
+	c *gin.Context,
 	notificationPayload NotificationPayload,
-	userId string,
 ) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
+
+	// get userId from context
+	userId, _ := c.Get("UserId")
+
+	var payload jsonResponse
 
 	// call service
 	res, err := app.documentsClient.notificationService.Create(ctx, &document.NotificationCreateRequest{
@@ -26,7 +31,7 @@ func (app *Config) documentNotificationCreate(
 			DocumentID: notificationPayload.DocumentID,
 			Date:       timestamppb.New(notificationPayload.Date),
 		},
-		UserID: userId,
+		UserID: userId.(string),
 	})
 	if err != nil {
 		go app.logger.LogWarn(&logs.Log{
@@ -34,11 +39,12 @@ func (app *Config) documentNotificationCreate(
 			Message: "Error on calling Notification.Create method",
 			Error:   err.Error(),
 		})
-		app.errorJSON(w, err)
+		payload.Error = true
+		payload.Message = err.Error()
+		c.JSON(http.StatusBadRequest, payload)
 		return
 	}
 
-	var payload jsonResponse
 	payload.Error = false
 	payload.Message = res.Result
 
@@ -47,17 +53,21 @@ func (app *Config) documentNotificationCreate(
 		Message: res.Result,
 	})
 
-	app.writeJSON(w, http.StatusCreated, payload)
+	c.JSON(http.StatusCreated, payload)
 }
 
 // Call Edit method on Notification in `document-service`
 func (app *Config) documentNotificationEdit(
-	w http.ResponseWriter,
+	c *gin.Context,
 	notificationPayload NotificationPayload,
-	userId string,
 ) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
+
+	// get userId from context
+	userId, _ := c.Get("UserId")
+
+	var payload jsonResponse
 
 	// call service
 	res, err := app.documentsClient.notificationService.Edit(ctx, &document.NotificationCreateRequest{
@@ -66,7 +76,7 @@ func (app *Config) documentNotificationEdit(
 			DocumentID: notificationPayload.DocumentID,
 			Date:       timestamppb.New(notificationPayload.Date),
 		},
-		UserID: userId,
+		UserID: userId.(string),
 	})
 	if err != nil {
 		go app.logger.LogWarn(&logs.Log{
@@ -74,11 +84,12 @@ func (app *Config) documentNotificationEdit(
 			Message: "Error on calling Notification.Edit method",
 			Error:   err.Error(),
 		})
-		app.errorJSON(w, err)
+		payload.Error = true
+		payload.Message = err.Error()
+		c.JSON(http.StatusBadRequest, payload)
 		return
 	}
 
-	var payload jsonResponse
 	payload.Error = false
 	payload.Message = res.Result
 
@@ -87,17 +98,21 @@ func (app *Config) documentNotificationEdit(
 		Message: res.Result,
 	})
 
-	app.writeJSON(w, http.StatusCreated, payload)
+	c.JSON(http.StatusCreated, payload)
 }
 
 // Call Delete method on Notification in `document-service`
 func (app *Config) documentNotificationDelete(
-	w http.ResponseWriter,
+	c *gin.Context,
 	notificationPayload NotificationPayload,
-	userId string,
 ) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
+
+	// get userId from context
+	userId, _ := c.Get("UserId")
+
+	var payload jsonResponse
 
 	// call service
 	res, err := app.documentsClient.notificationService.Delete(ctx, &document.NotificationCreateRequest{
@@ -105,7 +120,7 @@ func (app *Config) documentNotificationDelete(
 			ID:         notificationPayload.ID,
 			DocumentID: notificationPayload.DocumentID,
 		},
-		UserID: userId,
+		UserID: userId.(string),
 	})
 	if err != nil {
 		go app.logger.LogWarn(&logs.Log{
@@ -113,11 +128,12 @@ func (app *Config) documentNotificationDelete(
 			Message: "Error on calling Notification.Delete method",
 			Error:   err.Error(),
 		})
-		app.errorJSON(w, err)
+		payload.Error = true
+		payload.Message = err.Error()
+		c.JSON(http.StatusBadRequest, payload)
 		return
 	}
 
-	var payload jsonResponse
 	payload.Error = false
 	payload.Message = res.Result
 
@@ -126,22 +142,26 @@ func (app *Config) documentNotificationDelete(
 		Message: res.Result,
 	})
 
-	app.writeJSON(w, http.StatusCreated, payload)
+	c.JSON(http.StatusOK, payload)
 }
 
 // Call GetAll method on Notification in `document-service`
 func (app *Config) documentNotificationGetAll(
-	w http.ResponseWriter,
+	c *gin.Context,
 	notificationPayload NotificationPayload,
-	userId string,
 ) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
 
+	// get userId from context
+	userId, _ := c.Get("UserId")
+
+	var payload jsonResponse
+
 	// call service
 	res, err := app.documentsClient.notificationService.GetAll(ctx, &document.NotificationsRequest{
 		DocumentID: notificationPayload.DocumentID,
-		UserID:     userId,
+		UserID:     userId.(string),
 	})
 	if err != nil {
 		go app.logger.LogWarn(&logs.Log{
@@ -149,11 +169,12 @@ func (app *Config) documentNotificationGetAll(
 			Message: "Error on calling Notification.GetAll method",
 			Error:   err.Error(),
 		})
-		app.errorJSON(w, err)
+		payload.Error = true
+		payload.Message = err.Error()
+		c.JSON(http.StatusBadRequest, payload)
 		return
 	}
 
-	var payload jsonResponse
 	payload.Error = false
 	payload.Message = res.Result
 	payload.Data = struct {
@@ -167,5 +188,5 @@ func (app *Config) documentNotificationGetAll(
 		Message: res.Result,
 	})
 
-	app.writeJSON(w, http.StatusCreated, payload)
+	c.JSON(http.StatusOK, payload)
 }

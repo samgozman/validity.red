@@ -3,9 +3,7 @@ package main
 import (
 	"fmt"
 	"log"
-	"net/http"
 	"os"
-	"time"
 
 	"github.com/samgozman/validity.red/broker/internal/token"
 	"github.com/samgozman/validity.red/broker/proto/document"
@@ -83,8 +81,9 @@ func main() {
 
 	// Create JWT token maker
 	token := token.TokenMaker{
-		Key:       []byte(os.Getenv("JWT_SECRET")),
-		ValidTime: 10 * time.Minute,
+		Key: []byte(os.Getenv("JWT_SECRET")),
+		// 10 minutes 10 * 60
+		MaxAge: 10 * 60,
 	}
 
 	app := Config{
@@ -94,14 +93,8 @@ func main() {
 		documentsClient: &documentsClient,
 	}
 
-	// define http server
-	srv := &http.Server{
-		Addr:    fmt.Sprintf(":%s", os.Getenv("BROKER_PORT")),
-		Handler: app.routes(),
-	}
-
-	// start http server
-	err = srv.ListenAndServe()
+	router := app.routes()
+	err = router.Run(fmt.Sprintf(":%s", os.Getenv("BROKER_PORT")))
 	if err != nil {
 		log.Panic(err)
 	}

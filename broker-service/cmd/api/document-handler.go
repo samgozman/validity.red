@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/gin-gonic/gin"
 	"github.com/samgozman/validity.red/broker/internal/utils"
 	"github.com/samgozman/validity.red/broker/proto/document"
 	"github.com/samgozman/validity.red/broker/proto/logs"
@@ -13,17 +14,21 @@ import (
 
 // Call Create method on `document-service`
 func (app *Config) documentCreate(
-	w http.ResponseWriter,
+	c *gin.Context,
 	documentPayload DocumentPayload,
-	userId string,
 ) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
 
+	// get userId from context
+	userId, _ := c.Get("UserId")
+
+	var payload jsonResponse
+
 	// call service
 	res, err := app.documentsClient.documentService.Create(ctx, &document.DocumentCreateRequest{
 		DocumentEntry: &document.Document{
-			UserID:      userId,
+			UserID:      userId.(string),
 			Title:       documentPayload.Title,
 			Type:        document.Type(documentPayload.Type),
 			Description: documentPayload.Description,
@@ -36,11 +41,13 @@ func (app *Config) documentCreate(
 			Message: "Error on calling Create method",
 			Error:   err.Error(),
 		})
-		app.errorJSON(w, err)
+
+		payload.Error = true
+		payload.Message = err.Error()
+		c.JSON(http.StatusBadRequest, payload)
 		return
 	}
 
-	var payload jsonResponse
 	payload.Error = false
 	payload.Message = res.Result
 	payload.Data = struct {
@@ -54,23 +61,27 @@ func (app *Config) documentCreate(
 		Message: res.Result,
 	})
 
-	app.writeJSON(w, http.StatusCreated, payload)
+	c.JSON(http.StatusCreated, payload)
 }
 
 // Call Edit method on `document-service`
 func (app *Config) documentEdit(
-	w http.ResponseWriter,
+	c *gin.Context,
 	documentPayload DocumentPayload,
-	userId string,
 ) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
+
+	// get userId from context
+	userId, _ := c.Get("UserId")
+
+	var payload jsonResponse
 
 	// call service
 	res, err := app.documentsClient.documentService.Edit(ctx, &document.DocumentCreateRequest{
 		DocumentEntry: &document.Document{
 			ID:          documentPayload.ID,
-			UserID:      userId,
+			UserID:      userId.(string),
 			Title:       documentPayload.Title,
 			Type:        document.Type(documentPayload.Type),
 			Description: documentPayload.Description,
@@ -83,11 +94,14 @@ func (app *Config) documentEdit(
 			Message: "Error on calling Edit method",
 			Error:   err.Error(),
 		})
-		app.errorJSON(w, err)
+
+		payload.Error = true
+		payload.Message = err.Error()
+
+		c.JSON(http.StatusBadRequest, payload)
 		return
 	}
 
-	var payload jsonResponse
 	payload.Error = false
 	payload.Message = res.Result
 
@@ -96,22 +110,26 @@ func (app *Config) documentEdit(
 		Message: res.Result,
 	})
 
-	app.writeJSON(w, http.StatusCreated, payload)
+	c.JSON(http.StatusCreated, payload)
 }
 
 // Call Delete method on `document-service`
 func (app *Config) documentDelete(
-	w http.ResponseWriter,
+	c *gin.Context,
 	documentPayload DocumentPayload,
-	userId string,
 ) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
 
+	// get userId from context
+	userId, _ := c.Get("UserId")
+
+	var payload jsonResponse
+
 	// call service
 	res, err := app.documentsClient.documentService.Delete(ctx, &document.DocumentRequest{
 		DocumentID: documentPayload.ID,
-		UserID:     userId,
+		UserID:     userId.(string),
 	})
 	if err != nil {
 		go app.logger.LogWarn(&logs.Log{
@@ -119,11 +137,14 @@ func (app *Config) documentDelete(
 			Message: "Error on calling Delete method",
 			Error:   err.Error(),
 		})
-		app.errorJSON(w, err)
+
+		payload.Error = true
+		payload.Message = err.Error()
+
+		c.JSON(http.StatusBadRequest, payload)
 		return
 	}
 
-	var payload jsonResponse
 	payload.Error = false
 	payload.Message = res.Result
 
@@ -132,22 +153,26 @@ func (app *Config) documentDelete(
 		Message: res.Result,
 	})
 
-	app.writeJSON(w, http.StatusOK, payload)
+	c.JSON(http.StatusOK, payload)
 }
 
 // Call GetOne method on `document-service`
 func (app *Config) documentGetOne(
-	w http.ResponseWriter,
+	c *gin.Context,
 	documentPayload DocumentPayload,
-	userId string,
 ) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
 
+	// get userId from context
+	userId, _ := c.Get("UserId")
+
+	var payload jsonResponse
+
 	// call service
 	res, err := app.documentsClient.documentService.GetOne(ctx, &document.DocumentRequest{
 		DocumentID: documentPayload.ID,
-		UserID:     userId,
+		UserID:     userId.(string),
 	})
 	if err != nil {
 		go app.logger.LogWarn(&logs.Log{
@@ -155,12 +180,14 @@ func (app *Config) documentGetOne(
 			Message: "Error on calling GetOne method",
 			Error:   err.Error(),
 		})
-		app.errorJSON(w, err)
+
+		payload.Error = true
+		payload.Message = err.Error()
+
+		c.JSON(http.StatusBadRequest, payload)
 		return
 	}
 
-	// TODO: Convert ExpiresAt to time.Time
-	var payload jsonResponse
 	payload.Error = false
 	payload.Message = res.Result
 	payload.Data = struct {
@@ -181,20 +208,22 @@ func (app *Config) documentGetOne(
 		Message: res.Result,
 	})
 
-	app.writeJSON(w, http.StatusOK, payload)
+	c.JSON(http.StatusOK, payload)
 }
 
 // Call GetAll method on `document-service`
-func (app *Config) documentGetAll(
-	w http.ResponseWriter,
-	userId string,
-) {
+func (app *Config) documentGetAll(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
 
+	// get userId from context
+	userId, _ := c.Get("UserId")
+
+	var payload jsonResponse
+
 	// call service
 	res, err := app.documentsClient.documentService.GetAll(ctx, &document.DocumentsRequest{
-		UserID: userId,
+		UserID: userId.(string),
 	})
 	if err != nil {
 		go app.logger.LogWarn(&logs.Log{
@@ -202,14 +231,14 @@ func (app *Config) documentGetAll(
 			Message: "Error on calling GetOne method",
 			Error:   err.Error(),
 		})
-		app.errorJSON(w, err)
+
+		payload.Error = true
+		payload.Message = err.Error()
+
+		c.JSON(http.StatusBadRequest, payload)
 		return
 	}
 
-	// TODO: Convert ExpiresAt to time.Time
-	// TODO: Convert Notification.Data to time.Time
-
-	var payload jsonResponse
 	payload.Error = false
 	payload.Message = res.Result
 	payload.Data = struct {
@@ -223,5 +252,5 @@ func (app *Config) documentGetAll(
 		Message: res.Result,
 	})
 
-	app.writeJSON(w, http.StatusOK, payload)
+	c.JSON(http.StatusOK, payload)
 }

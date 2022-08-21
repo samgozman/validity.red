@@ -5,20 +5,32 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/gin-gonic/gin"
 	"github.com/samgozman/validity.red/broker/proto/logs"
 	"github.com/samgozman/validity.red/broker/proto/user"
 )
 
 // Call Register method on `user-service`
-func (app *Config) userRegister(w http.ResponseWriter, registerPayload RegisterPayload) {
+func (app *Config) userRegister(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
+
+	var payload jsonResponse
+
+	// TODO: Move to the helpers. Make it a generic
+	var requestPayload RequestPayload
+	if err := c.ShouldBindJSON(&requestPayload); err != nil {
+		payload.Error = true
+		payload.Message = err.Error()
+		c.JSON(http.StatusBadRequest, payload)
+		return
+	}
 
 	// call service
 	res, err := app.usersClient.userService.Register(ctx, &user.RegisterRequest{
 		RegisterEntry: &user.Register{
-			Email:    registerPayload.Email,
-			Password: registerPayload.Password,
+			Email:    requestPayload.Register.Email,
+			Password: requestPayload.Register.Password,
 		},
 	})
 	if err != nil {
@@ -27,13 +39,14 @@ func (app *Config) userRegister(w http.ResponseWriter, registerPayload RegisterP
 			Message: "Error on calling Register method",
 			Error:   err.Error(),
 		})
-		app.errorJSON(w, err)
+		payload.Error = true
+		payload.Message = err.Error()
+		c.JSON(http.StatusBadRequest, payload)
 		return
 	}
 
 	// TODO: Send verification email
 
-	var payload jsonResponse
 	payload.Error = false
 	payload.Message = res.Result
 
@@ -42,19 +55,30 @@ func (app *Config) userRegister(w http.ResponseWriter, registerPayload RegisterP
 		Message: res.Result,
 	})
 
-	app.writeJSON(w, http.StatusCreated, payload)
+	c.JSON(http.StatusCreated, payload)
 }
 
 // Call Login method on `user-service`
-func (app *Config) userLogin(w http.ResponseWriter, authPayload AuthPayload) {
+func (app *Config) userLogin(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
+
+	var payload jsonResponse
+
+	// TODO: Move to the helpers. Make it a generic
+	var requestPayload RequestPayload
+	if err := c.ShouldBindJSON(&requestPayload); err != nil {
+		payload.Error = true
+		payload.Message = err.Error()
+		c.JSON(http.StatusBadRequest, payload)
+		return
+	}
 
 	// call service
 	res, err := app.usersClient.authService.Login(ctx, &user.AuthRequest{
 		AuthEntry: &user.Auth{
-			Email:    authPayload.Email,
-			Password: authPayload.Password,
+			Email:    requestPayload.Auth.Email,
+			Password: requestPayload.Auth.Password,
 		},
 	})
 	if err != nil {
@@ -63,11 +87,12 @@ func (app *Config) userLogin(w http.ResponseWriter, authPayload AuthPayload) {
 			Message: "Error on calling Login method",
 			Error:   err.Error(),
 		})
-		app.errorJSON(w, err, http.StatusUnauthorized)
+		payload.Error = true
+		payload.Message = err.Error()
+		c.JSON(http.StatusUnauthorized, payload)
 		return
 	}
 
-	var payload jsonResponse
 	payload.Error = false
 	payload.Message = res.Result
 
@@ -77,51 +102,50 @@ func (app *Config) userLogin(w http.ResponseWriter, authPayload AuthPayload) {
 	})
 
 	// Generate JWT token
-	token, expiresAt, err := app.token.Generate(res.UserId)
+	token, err := app.token.Generate(res.UserId)
 	if err != nil {
 		go app.logger.LogWarn(&logs.Log{
 			Service: "broker-service",
 			Message: "Error generating JWT token",
 			Error:   err.Error(),
 		})
-		app.errorJSON(w, err, http.StatusInternalServerError)
+		payload.Error = true
+		payload.Message = err.Error()
+		c.JSON(http.StatusInternalServerError, payload)
 		return
 	}
 
 	// write jwt token
-	http.SetCookie(w, &http.Cookie{
-		Name:    "token",
-		Value:   token,
-		Expires: time.Unix(expiresAt, 0),
-	})
+	c.SetCookie("token", token, app.token.MaxAge, "/", "", false, false)
 
-	app.writeJSON(w, http.StatusAccepted, payload)
+	c.JSON(http.StatusAccepted, payload)
 }
 
 // Refresh current user JWT token
-func (app *Config) userRefreshToken(w http.ResponseWriter, userId string, userToken string) {
+func (app *Config) userRefreshToken(c *gin.Context) {
+	// get token from context
+	tk, _ := c.Get("Token")
+
+	var payload jsonResponse
+
 	// Refresh JWT token
-	token, expiresAt, err := app.token.Refresh(userToken)
+	token, err := app.token.Refresh(tk.(string))
 	if err != nil {
 		go app.logger.LogWarn(&logs.Log{
 			Service: "broker-service",
 			Message: "Error refreshing JWT token",
 			Error:   err.Error(),
 		})
-		app.errorJSON(w, err, http.StatusUnauthorized)
+		payload.Error = true
+		payload.Message = err.Error()
+		c.JSON(http.StatusUnauthorized, payload)
 		return
 	}
 
-	// write jwt token
-	http.SetCookie(w, &http.Cookie{
-		Name:    "token",
-		Value:   token,
-		Expires: time.Unix(expiresAt, 0),
-	})
+	c.SetCookie("token", token, app.token.MaxAge, "/", "", false, false)
 
-	var payload jsonResponse
 	payload.Error = false
 	payload.Message = "Token refreshed"
 
-	app.writeJSON(w, http.StatusAccepted, payload)
+	c.JSON(http.StatusAccepted, payload)
 }
