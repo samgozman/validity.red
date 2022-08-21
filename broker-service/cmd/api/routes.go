@@ -18,13 +18,28 @@ func (app *Config) routes() *gin.Engine {
 		AllowWildcard:    true,
 	}))
 
-	handler := g.Group("/handle")
-	handler.Use(app.AuthGuard())
+	documents := g.Group("/documents")
+	documents.Use(app.AuthGuard())
 	{
-		handler.POST("", app.HandleSubmission)
+		documents.GET("", app.documentGetAll)
+		documents.GET("/:documentId", app.documentGetOne)
+		documents.GET("/:documentId/notifications", app.documentNotificationGetAll)
+		documents.POST("/:documentId/notifications/create", app.documentNotificationCreate)
+		documents.DELETE("/:documentId/notifications/delete/:id", app.documentNotificationDelete)
+		documents.PATCH("/:documentId/notifications/edit/:id", app.documentNotificationEdit)
+		documents.POST("/create", app.documentCreate)
+		// TODO: edit/:id
+		documents.PATCH("/edit", app.documentEdit)
+		documents.DELETE("/:documentId/delete", app.documentDelete)
 	}
 
-	// Auth routes
+	user := g.Group("/user")
+	user.Use(app.AuthGuard())
+	{
+		user.GET("/token/refresh", app.userRefreshToken)
+	}
+
+	// Auth routes (without auth guard)
 	auth := g.Group("/auth")
 	{
 		auth.POST("/login", app.userLogin)

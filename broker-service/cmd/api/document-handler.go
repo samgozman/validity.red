@@ -12,11 +12,23 @@ import (
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
+type DocumentCreate struct {
+	Type        int32     `json:"type"`
+	Title       string    `json:"title" binding:"required"`
+	Description string    `json:"description"`
+	ExpiresAt   time.Time `json:"expiresAt" binding:"required"`
+}
+
+type DocumentEdit struct {
+	ID          string    `json:"id" binding:"required"`
+	Type        int32     `json:"type"`
+	Title       string    `json:"title" binding:"required"`
+	Description string    `json:"description"`
+	ExpiresAt   time.Time `json:"expiresAt" binding:"required"`
+}
+
 // Call Create method on `document-service`
-func (app *Config) documentCreate(
-	c *gin.Context,
-	documentPayload DocumentPayload,
-) {
+func (app *Config) documentCreate(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
 
@@ -24,6 +36,7 @@ func (app *Config) documentCreate(
 	userId, _ := c.Get("UserId")
 
 	var payload jsonResponse
+	documentPayload := decodeJSON[DocumentCreate](c)
 
 	// call service
 	res, err := app.documentsClient.documentService.Create(ctx, &document.DocumentCreateRequest{
@@ -65,10 +78,7 @@ func (app *Config) documentCreate(
 }
 
 // Call Edit method on `document-service`
-func (app *Config) documentEdit(
-	c *gin.Context,
-	documentPayload DocumentPayload,
-) {
+func (app *Config) documentEdit(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
 
@@ -76,6 +86,7 @@ func (app *Config) documentEdit(
 	userId, _ := c.Get("UserId")
 
 	var payload jsonResponse
+	documentPayload := decodeJSON[DocumentEdit](c)
 
 	// call service
 	res, err := app.documentsClient.documentService.Edit(ctx, &document.DocumentCreateRequest{
@@ -114,21 +125,20 @@ func (app *Config) documentEdit(
 }
 
 // Call Delete method on `document-service`
-func (app *Config) documentDelete(
-	c *gin.Context,
-	documentPayload DocumentPayload,
-) {
+func (app *Config) documentDelete(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
 
 	// get userId from context
 	userId, _ := c.Get("UserId")
+	// get documentId from param :documentId
+	documentId := c.Param("documentId")
 
 	var payload jsonResponse
 
 	// call service
 	res, err := app.documentsClient.documentService.Delete(ctx, &document.DocumentRequest{
-		DocumentID: documentPayload.ID,
+		DocumentID: documentId,
 		UserID:     userId.(string),
 	})
 	if err != nil {
@@ -157,21 +167,20 @@ func (app *Config) documentDelete(
 }
 
 // Call GetOne method on `document-service`
-func (app *Config) documentGetOne(
-	c *gin.Context,
-	documentPayload DocumentPayload,
-) {
+func (app *Config) documentGetOne(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
 
 	// get userId from context
 	userId, _ := c.Get("UserId")
+	// get documentId from param :documentId
+	documentId := c.Param("documentId")
 
 	var payload jsonResponse
 
 	// call service
 	res, err := app.documentsClient.documentService.GetOne(ctx, &document.DocumentRequest{
-		DocumentID: documentPayload.ID,
+		DocumentID: documentId,
 		UserID:     userId.(string),
 	})
 	if err != nil {

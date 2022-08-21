@@ -10,19 +10,29 @@ import (
 	"github.com/samgozman/validity.red/broker/proto/user"
 )
 
+type AuthPayload struct {
+	Email    string `json:"email"`
+	Password string `json:"password"`
+}
+
+type RegisterPayload struct {
+	Email    string `json:"email"`
+	Password string `json:"password"`
+}
+
 // Call Register method on `user-service`
 func (app *Config) userRegister(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
 
 	var payload jsonResponse
-	requestPayload := decodeJSON[RequestPayload](c)
+	requestPayload := decodeJSON[RegisterPayload](c)
 
 	// call service
 	res, err := app.usersClient.userService.Register(ctx, &user.RegisterRequest{
 		RegisterEntry: &user.Register{
-			Email:    requestPayload.Register.Email,
-			Password: requestPayload.Register.Password,
+			Email:    requestPayload.Email,
+			Password: requestPayload.Password,
 		},
 	})
 	if err != nil {
@@ -56,13 +66,13 @@ func (app *Config) userLogin(c *gin.Context) {
 	defer cancel()
 
 	var payload jsonResponse
-	requestPayload := decodeJSON[RequestPayload](c)
+	requestPayload := decodeJSON[AuthPayload](c)
 
 	// call service
 	res, err := app.usersClient.authService.Login(ctx, &user.AuthRequest{
 		AuthEntry: &user.Auth{
-			Email:    requestPayload.Auth.Email,
-			Password: requestPayload.Auth.Password,
+			Email:    requestPayload.Email,
+			Password: requestPayload.Password,
 		},
 	})
 	if err != nil {

@@ -12,23 +12,26 @@ import (
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
+type NotificationPayload struct {
+	Date time.Time `json:"date" binding:"required"`
+}
+
 // Call Create method on Notification in `document-service`
-func (app *Config) documentNotificationCreate(
-	c *gin.Context,
-	notificationPayload NotificationPayload,
-) {
+func (app *Config) documentNotificationCreate(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
 
 	// get userId from context
 	userId, _ := c.Get("UserId")
+	documentId := c.Param("documentId")
+	notificationPayload := decodeJSON[NotificationPayload](c)
 
 	var payload jsonResponse
 
 	// call service
 	res, err := app.documentsClient.notificationService.Create(ctx, &document.NotificationCreateRequest{
 		NotificationEntry: &document.Notification{
-			DocumentID: notificationPayload.DocumentID,
+			DocumentID: documentId,
 			Date:       timestamppb.New(notificationPayload.Date),
 		},
 		UserID: userId.(string),
@@ -57,23 +60,23 @@ func (app *Config) documentNotificationCreate(
 }
 
 // Call Edit method on Notification in `document-service`
-func (app *Config) documentNotificationEdit(
-	c *gin.Context,
-	notificationPayload NotificationPayload,
-) {
+func (app *Config) documentNotificationEdit(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
 
 	// get userId from context
 	userId, _ := c.Get("UserId")
+	documentId := c.Param("documentId")
+	id := c.Param("id")
+	notificationPayload := decodeJSON[NotificationPayload](c)
 
 	var payload jsonResponse
 
 	// call service
 	res, err := app.documentsClient.notificationService.Edit(ctx, &document.NotificationCreateRequest{
 		NotificationEntry: &document.Notification{
-			ID:         notificationPayload.ID,
-			DocumentID: notificationPayload.DocumentID,
+			ID:         id,
+			DocumentID: documentId,
 			Date:       timestamppb.New(notificationPayload.Date),
 		},
 		UserID: userId.(string),
@@ -102,23 +105,22 @@ func (app *Config) documentNotificationEdit(
 }
 
 // Call Delete method on Notification in `document-service`
-func (app *Config) documentNotificationDelete(
-	c *gin.Context,
-	notificationPayload NotificationPayload,
-) {
+func (app *Config) documentNotificationDelete(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
 
 	// get userId from context
 	userId, _ := c.Get("UserId")
+	documentId := c.Param("documentId")
+	id := c.Param("id")
 
 	var payload jsonResponse
 
 	// call service
 	res, err := app.documentsClient.notificationService.Delete(ctx, &document.NotificationCreateRequest{
 		NotificationEntry: &document.Notification{
-			ID:         notificationPayload.ID,
-			DocumentID: notificationPayload.DocumentID,
+			ID:         id,
+			DocumentID: documentId,
 		},
 		UserID: userId.(string),
 	})
@@ -146,21 +148,19 @@ func (app *Config) documentNotificationDelete(
 }
 
 // Call GetAll method on Notification in `document-service`
-func (app *Config) documentNotificationGetAll(
-	c *gin.Context,
-	notificationPayload NotificationPayload,
-) {
+func (app *Config) documentNotificationGetAll(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
 
 	// get userId from context
 	userId, _ := c.Get("UserId")
+	documentId := c.Param("documentId")
 
 	var payload jsonResponse
 
 	// call service
 	res, err := app.documentsClient.notificationService.GetAll(ctx, &document.NotificationsRequest{
-		DocumentID: notificationPayload.DocumentID,
+		DocumentID: documentId,
 		UserID:     userId.(string),
 	})
 	if err != nil {
