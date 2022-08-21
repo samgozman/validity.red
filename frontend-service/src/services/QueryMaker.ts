@@ -9,12 +9,16 @@ export class QueryMaker {
   /**
    * Send POST query to the handler API
    * @param payload Stringified JSON payload
+   * @param route API route, like '/auth/login'
    * @returns
    */
   public static async post<T = IResponse>(
-    payload: string
+    payload: string,
+    route = "/handle"
   ): Promise<AxiosResponse<T>> {
-    return axios.post<T>("http://localhost:8080/handle", payload, {
+    // TODO: Get URL from ENV
+    const url = "http://localhost:8080" + route;
+    return axios.post<T>(url, payload, {
       // To pass Set-Cookie header
       withCredentials: true,
       // Handle 401 error like a normal situation

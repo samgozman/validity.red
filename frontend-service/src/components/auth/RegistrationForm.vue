@@ -58,7 +58,7 @@ export default defineComponent({
   methods: {
     async register() {
       try {
-        await AuthService.userLogin({
+        await AuthService.userRegister({
           email: this.email,
           password: this.password,
         });

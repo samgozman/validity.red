@@ -19,7 +19,7 @@ export class AuthService {
       },
     });
 
-    const res = await QueryMaker.post(payload);
+    const res = await QueryMaker.post(payload, "/auth/login");
     const { error, message } = res.data;
 
     if (error) {
@@ -37,13 +37,13 @@ export class AuthService {
   ): Promise<void> {
     const payload = JSON.stringify({
       action: "UserRegister",
-      auth: {
+      register: {
         email: credentials.email,
         password: credentials.password,
       },
     });
 
-    const res = await QueryMaker.post(payload);
+    const res = await QueryMaker.post(payload, "/auth/register");
     const { error, message } = res.data;
 
     if (error) {
