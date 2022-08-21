@@ -15,12 +15,13 @@ func (app *Config) routes() *gin.Engine {
 		ExposeHeaders:    []string{"Link"},
 		AllowCredentials: true,
 		MaxAge:           300,
+		AllowWildcard:    true,
 	}))
 
 	handler := g.Group("/handle")
 	handler.Use(app.AuthGuard())
 	{
-		handler.POST("/", app.HandleSubmission)
+		handler.POST("", app.HandleSubmission)
 	}
 
 	// Auth routes
