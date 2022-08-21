@@ -46,12 +46,7 @@ var (
 
 // Single point to communicate with services
 func (app *Config) HandleSubmission(c *gin.Context) {
-	var requestPayload RequestPayload
-
-	if err := c.ShouldBindJSON(&requestPayload); err != nil {
-		c.AbortWithError(http.StatusBadRequest, err)
-		return
-	}
+	requestPayload := decodeJSON[RequestPayload](c)
 
 	switch requestPayload.Action {
 	case "UserRefreshToken":

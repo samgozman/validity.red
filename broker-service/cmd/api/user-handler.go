@@ -16,15 +16,7 @@ func (app *Config) userRegister(c *gin.Context) {
 	defer cancel()
 
 	var payload jsonResponse
-
-	// TODO: Move to the helpers. Make it a generic
-	var requestPayload RequestPayload
-	if err := c.ShouldBindJSON(&requestPayload); err != nil {
-		payload.Error = true
-		payload.Message = err.Error()
-		c.JSON(http.StatusBadRequest, payload)
-		return
-	}
+	requestPayload := decodeJSON[RequestPayload](c)
 
 	// call service
 	res, err := app.usersClient.userService.Register(ctx, &user.RegisterRequest{
@@ -64,15 +56,7 @@ func (app *Config) userLogin(c *gin.Context) {
 	defer cancel()
 
 	var payload jsonResponse
-
-	// TODO: Move to the helpers. Make it a generic
-	var requestPayload RequestPayload
-	if err := c.ShouldBindJSON(&requestPayload); err != nil {
-		payload.Error = true
-		payload.Message = err.Error()
-		c.JSON(http.StatusBadRequest, payload)
-		return
-	}
+	requestPayload := decodeJSON[RequestPayload](c)
 
 	// call service
 	res, err := app.usersClient.authService.Login(ctx, &user.AuthRequest{
