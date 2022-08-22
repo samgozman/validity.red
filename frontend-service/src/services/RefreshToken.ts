@@ -1,10 +1,5 @@
 import { QueryMaker } from "@/services/QueryMaker";
 
-interface RefreshResponse {
-  error: boolean;
-  message: string;
-}
-
 /**
  * Refresh JWT token
  */
@@ -13,12 +8,8 @@ export class RefreshToken {
     const token = this.getCookie("token");
     if (!token) return;
 
-    const payload = JSON.stringify({
-      action: "UserRefreshToken",
-    });
-
     try {
-      await QueryMaker.post<RefreshResponse>(payload);
+      await new QueryMaker({ route: "/user/token/refresh" }).get();
     } catch (error) {
       console.error("Token refresh failed!");
       return;

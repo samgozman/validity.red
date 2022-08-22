@@ -1,29 +1,47 @@
-import axios, { type AxiosResponse } from "axios";
+import axios, { type AxiosRequestConfig, type AxiosResponse } from "axios";
 
 export interface IResponse {
   error: boolean;
   message: string;
 }
 
+interface IQueryMakerParams {
+  /** API route, like '/auth/login' */
+  route: string;
+  /** Stringified JSON payload for POST/PATCH */
+  payload?: string;
+}
+
 export class QueryMaker {
-  /**
-   * Send POST query to the handler API
-   * @param payload Stringified JSON payload
-   * @param route API route, like '/auth/login'
-   * @returns
-   */
-  public static async post<T = IResponse>(
-    payload: string,
-    route = "/handle"
-  ): Promise<AxiosResponse<T>> {
-    // TODO: Get URL from ENV
-    const url = "http://localhost:8080" + route;
-    return axios.post<T>(url, payload, {
-      // To pass Set-Cookie header
-      withCredentials: true,
-      // Handle 401 error like a normal situation
-      validateStatus: (status) =>
-        (status >= 200 && status < 300) || status === 401,
-    });
+  // TODO: Get URL from ENV
+  private readonly baseUrl = "http://localhost:8080";
+  private readonly routeUrl: string;
+  private readonly axiosConfig: AxiosRequestConfig<unknown> = {
+    // To pass Set-Cookie header
+    withCredentials: true,
+    // Handle 401 error like a normal situation
+    validateStatus: (status) =>
+      (status >= 200 && status < 300) || status === 401,
+  };
+
+  constructor(public readonly params: IQueryMakerParams) {
+    this.routeUrl = this.baseUrl + this.params.route;
+    // TODO: set query params
+  }
+
+  public async post<T = IResponse>(): Promise<AxiosResponse<T>> {
+    return axios.post<T>(this.routeUrl, this.params.payload, this.axiosConfig);
+  }
+
+  public async patch<T = IResponse>() {
+    return axios.patch<T>(this.routeUrl, this.params.payload, this.axiosConfig);
+  }
+
+  public async delete<T = IResponse>() {
+    return axios.delete<T>(this.routeUrl, this.axiosConfig);
+  }
+
+  public async get<T = IResponse>() {
+    return axios.get<T>(this.routeUrl, this.axiosConfig);
   }
 }

@@ -25,12 +25,9 @@ export class NotificationService {
   public static async deleteOne(
     params: NotificationDeletePayload
   ): Promise<void> {
-    const payload = JSON.stringify({
-      action: "NotificationDelete",
-      notification: params,
-    });
-
-    const res = await QueryMaker.post(payload);
+    const res = await new QueryMaker({
+      route: `/documents/${params.documentId}/notifications/delete/${params.id}`,
+    }).delete();
     const { error, message } = res.data;
 
     if (error) {
@@ -43,14 +40,9 @@ export class NotificationService {
    * @returns
    */
   public static async getAll(documentId: string): Promise<INotification[]> {
-    const payload = JSON.stringify({
-      action: "NotificationGetAll",
-      notification: {
-        documentId,
-      },
-    });
-
-    const res = await QueryMaker.post<NotificationGetAllResponse>(payload);
+    const res = await new QueryMaker({
+      route: `/documents/${documentId}/notifications`,
+    }).get<NotificationGetAllResponse>();
     const { error, message, data } = res.data;
 
     if (error) {
@@ -67,12 +59,12 @@ export class NotificationService {
   public static async createOne(
     notification: NotificationPayload
   ): Promise<void> {
-    const payload = JSON.stringify({
-      action: "NotificationCreate",
-      notification,
-    });
+    const payload = JSON.stringify({ date: notification.date });
 
-    const res = await QueryMaker.post(payload);
+    const res = await new QueryMaker({
+      route: `/documents/${notification.documentId}/notifications/create`,
+      payload,
+    }).post<NotificationGetAllResponse>();
     const { error, message } = res.data;
 
     if (error) {

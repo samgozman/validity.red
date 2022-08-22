@@ -35,14 +35,9 @@ export class DocumentService {
    * @returns
    */
   public static async deleteOne(documentId: string): Promise<void> {
-    const payload = JSON.stringify({
-      action: "DocumentDelete",
-      document: {
-        id: documentId,
-      },
-    });
-
-    const res = await QueryMaker.post(payload);
+    const res = await new QueryMaker({
+      route: `/documents/${documentId}/delete`,
+    }).delete();
     const { error, message } = res.data;
 
     if (error) {
@@ -55,11 +50,9 @@ export class DocumentService {
    * @returns Array of documents
    */
   public static async getAll(): Promise<IDocument[]> {
-    const payload = JSON.stringify({
-      action: "DocumentGetAll",
-    });
-
-    const res = await QueryMaker.post<DocumentGetAllResponse>(payload);
+    const res = await new QueryMaker({
+      route: "/documents",
+    }).get<DocumentGetAllResponse>();
     const { error, message, data } = res.data;
 
     if (error) {
@@ -75,14 +68,9 @@ export class DocumentService {
   }
 
   public static async getOne(documentId: string): Promise<IDocument> {
-    const payload = JSON.stringify({
-      action: "DocumentGetOne",
-      document: {
-        id: documentId,
-      },
-    });
-
-    const res = await QueryMaker.post<DocumentGetOneResponse>(payload);
+    const res = await new QueryMaker({
+      route: `/documents/${documentId}`,
+    }).get<DocumentGetOneResponse>();
     const { error, message, data } = res.data;
 
     if (error) {
@@ -96,12 +84,12 @@ export class DocumentService {
   }
 
   public static async createOne(document: DocumentPayload): Promise<string> {
-    const payload = JSON.stringify({
-      action: "DocumentCreate",
-      document,
-    });
+    const payload = JSON.stringify(document);
 
-    const res = await QueryMaker.post<DocumentCreateResponse>(payload);
+    const res = await new QueryMaker({
+      route: "/documents/create",
+      payload,
+    }).post<DocumentCreateResponse>();
     const { error, message, data } = res.data;
 
     if (error) {
@@ -112,12 +100,12 @@ export class DocumentService {
   }
 
   public static async updateOne(document: DocumentPayload): Promise<void> {
-    const payload = JSON.stringify({
-      action: "DocumentEdit",
-      document,
-    });
+    const payload = JSON.stringify(document);
 
-    const res = await QueryMaker.post<DocumentCreateResponse>(payload);
+    const res = await new QueryMaker({
+      route: "/documents/edit",
+      payload,
+    }).patch<DocumentCreateResponse>();
     const { error, message } = res.data;
 
     if (error) {

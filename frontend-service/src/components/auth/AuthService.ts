@@ -12,14 +12,11 @@ export class AuthService {
    */
   public static async userLogin(credentials: AuthCredentials): Promise<void> {
     const payload = JSON.stringify({
-      action: "UserLogin",
-      auth: {
-        email: credentials.email,
-        password: credentials.password,
-      },
+      email: credentials.email,
+      password: credentials.password,
     });
 
-    const res = await QueryMaker.post(payload, "/auth/login");
+    const res = await new QueryMaker({ route: "/auth/login", payload }).post();
     const { error, message } = res.data;
 
     if (error) {
@@ -36,14 +33,14 @@ export class AuthService {
     credentials: AuthCredentials
   ): Promise<void> {
     const payload = JSON.stringify({
-      action: "UserRegister",
-      register: {
-        email: credentials.email,
-        password: credentials.password,
-      },
+      email: credentials.email,
+      password: credentials.password,
     });
 
-    const res = await QueryMaker.post(payload, "/auth/register");
+    const res = await new QueryMaker({
+      route: "/auth/register",
+      payload,
+    }).post();
     const { error, message } = res.data;
 
     if (error) {
