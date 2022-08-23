@@ -9,10 +9,10 @@ func (app *Config) routes() *gin.Engine {
 	g := gin.Default()
 
 	g.Use(cors.New(cors.Config{
+		// TODO: Set to validity.red domains
 		AllowOrigins:     []string{"https://*", "http://*"},
 		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"},
-		AllowHeaders:     []string{"Accept", "Authorization", "Content-Type", "X-CSRF-Token"},
-		ExposeHeaders:    []string{"Link"},
+		AllowHeaders:     []string{"Authorization", "Content-Type"},
 		AllowCredentials: true,
 		MaxAge:           300,
 		AllowWildcard:    true,
