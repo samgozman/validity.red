@@ -22,7 +22,7 @@ func TestDocument_Prepare(t *testing.T) {
 		{
 			name:     "Escape html",
 			document: &Document{Title: "<script>alert('Title 1');</script>", Description: "des"},
-			wantDoc:  &Document{Title: "&lt;script&gt;alert(&#39;Title 1&#39;);&lt;/script&gt;", Description: "des"},
+			wantDoc:  &Document{Title: "\\<script\\>alert\\('Title 1'\\)\\;\\<\\/script\\>", Description: "des"},
 		},
 	}
 	for _, tt := range tests {

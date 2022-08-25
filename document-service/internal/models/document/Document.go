@@ -3,7 +3,7 @@ package document
 import (
 	"context"
 	"errors"
-	"html"
+	"regexp"
 	"strings"
 	"time"
 
@@ -28,8 +28,9 @@ type Document struct {
 
 // Prepare Document object before inserting into database
 func (d *Document) Prepare() {
-	d.Title = html.EscapeString(strings.TrimSpace(d.Title))
-	d.Description = html.EscapeString(strings.TrimSpace(d.Description))
+	escapeCharacters := regexp.MustCompile(`(?m)<|>|\(|\)|;|\\|\/`)
+	d.Title = escapeCharacters.ReplaceAllString(strings.TrimSpace(d.Title), "\\$0")
+	d.Description = escapeCharacters.ReplaceAllString(strings.TrimSpace(d.Description), "\\$0")
 	d.CreatedAt = time.Now()
 	d.UpdatedAt = time.Now()
 }
