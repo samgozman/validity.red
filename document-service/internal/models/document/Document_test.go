@@ -20,9 +20,9 @@ func TestDocument_Prepare(t *testing.T) {
 			wantDoc:  &Document{Title: "title 1", Description: "des"},
 		},
 		{
-			name:     "Escape html",
-			document: &Document{Title: "<script>alert('Title 1');</script>", Description: "des"},
-			wantDoc:  &Document{Title: "\\<script\\>alert\\('Title 1'\\)\\;\\<\\/script\\>", Description: "des"},
+			name:     "Escape special characters",
+			document: &Document{Title: "<script>alert('Title 1');</script>", Description: "call(des)"},
+			wantDoc:  &Document{Title: "\\<script\\>alert\\('Title 1'\\)\\;\\<\\/script\\>", Description: "call\\(des\\)"},
 		},
 	}
 	for _, tt := range tests {
