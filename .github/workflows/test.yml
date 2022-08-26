@@ -24,6 +24,7 @@ jobs:
 
   unit_test_go:
     name: Run Go unit tests
+    runs-on: ubuntu-latest
     steps:
       - name: Test document-service
         working-directory: ./document-service
