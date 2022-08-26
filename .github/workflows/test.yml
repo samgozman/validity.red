@@ -9,6 +9,7 @@ on:
 jobs:
 
   build:
+    name: Build services
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
@@ -21,6 +22,8 @@ jobs:
     - name: Build go services
       run: make build
 
+  unit_test_go:
+    name: Run Go unit tests
     - name: Test document-service
       working-directory: ./document-service
       run: go test -v ./...
