@@ -24,3 +24,15 @@ jobs:
     - name: Test document-service
       working-directory: ./document-service
       run: go test -v ./...
+
+    - name: Test user-service
+      working-directory: ./user-service
+      run: go test -v ./...
+
+    - name: Test logger-service
+      working-directory: ./logger-service
+      run: go test -v ./...
+
+    - name: Test broker-service
+      working-directory: ./broker-service
+      run: go test -v ./...
