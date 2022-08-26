@@ -9,8 +9,11 @@ up:
 	docker-compose up -d
 	@echo "Docker images started!"
 
+## Build go binaries
+build: build_broker build_user build_logger build_document
+
 ## stops docker-compose (if running), builds all projects and starts docker compose
-up_build: grpc_init build_broker build_user build_logger build_document
+up_build: grpc_init build
 	@echo "Stopping docker images (if running...)"
 	docker-compose down
 	@echo "Building (when required) and starting docker images..."
