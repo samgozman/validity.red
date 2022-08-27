@@ -9,11 +9,10 @@ import (
 	"github.com/samgozman/validity.red/document/internal/models/document"
 	proto "github.com/samgozman/validity.red/document/proto"
 	"google.golang.org/protobuf/types/known/timestamppb"
-	"gorm.io/gorm"
 )
 
 type DocumentServer struct {
-	db *gorm.DB
+	App *Config
 	// Necessary parameter to insure backwards compatibility
 	proto.UnimplementedDocumentServiceServer
 }
@@ -34,7 +33,7 @@ func (ds *DocumentServer) Create(ctx context.Context, req *proto.DocumentCreateR
 		Description: input.Description,
 		ExpiresAt:   input.ExpiresAt.AsTime(),
 	}
-	err = d.InsertOne(ctx, ds.db)
+	err = ds.App.Documents.InsertOne(ctx, &d)
 
 	// return error if exists
 	if err != nil {
@@ -72,7 +71,7 @@ func (ds *DocumentServer) Edit(ctx context.Context, req *proto.DocumentCreateReq
 		Description: input.Description,
 		ExpiresAt:   input.ExpiresAt.AsTime(),
 	}
-	err = d.UpdateOne(ctx, ds.db)
+	err = ds.App.Documents.UpdateOne(ctx, &d)
 
 	// return error if exists
 	if err != nil {
@@ -101,7 +100,7 @@ func (ds *DocumentServer) Delete(ctx context.Context, req *proto.DocumentRequest
 		ID:     id,
 		UserID: userID,
 	}
-	err = d.DeleteOne(ctx, ds.db)
+	err = ds.App.Documents.DeleteOne(ctx, &d)
 
 	// return error if exists
 	if err != nil {
@@ -130,7 +129,7 @@ func (ds *DocumentServer) GetOne(ctx context.Context, req *proto.DocumentRequest
 		ID:     id,
 		UserID: userID,
 	}
-	err = d.FindOne(ctx, ds.db)
+	err = ds.App.Documents.FindOne(ctx, &d)
 
 	// return error if exists
 	if err != nil {
@@ -158,12 +157,8 @@ func (ds *DocumentServer) GetAll(ctx context.Context, req *proto.DocumentsReques
 		return nil, errors.New("invalid user id")
 	}
 
-	d := document.Document{
-		UserID: userID,
-	}
-
 	// Find all documents
-	documents, err := d.FindAll(ctx, ds.db)
+	documents, err := ds.App.Documents.FindAll(ctx, userID)
 
 	// return error if exists
 	if err != nil {

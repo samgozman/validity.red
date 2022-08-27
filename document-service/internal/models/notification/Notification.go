@@ -9,6 +9,16 @@ import (
 	"gorm.io/gorm"
 )
 
+type NotificationDB struct {
+	Conn *gorm.DB
+}
+
+func NewNotificationDB(db *gorm.DB) *NotificationDB {
+	return &NotificationDB{
+		Conn: db.Table("notifications"),
+	}
+}
+
 type Notification struct {
 	ID         uuid.UUID `gorm:"primarykey;type:uuid;not null;" json:"id,omitempty"`
 	DocumentID uuid.UUID `gorm:"type:uuid;index;not null;" json:"document_id,omitempty"`
@@ -50,8 +60,8 @@ func (n *Notification) BeforeCreate(tx *gorm.DB) error {
 }
 
 // Insert one Notification object into database
-func (n *Notification) InsertOne(ctx context.Context, db *gorm.DB) error {
-	res := db.WithContext(ctx).Table("notifications").Create(&n)
+func (db *NotificationDB) InsertOne(ctx context.Context, n *Notification) error {
+	res := db.Conn.WithContext(ctx).Create(&n)
 	if res.Error != nil {
 		return res.Error
 	}
@@ -59,10 +69,9 @@ func (n *Notification) InsertOne(ctx context.Context, db *gorm.DB) error {
 	return nil
 }
 
-func (n *Notification) UpdateOne(ctx context.Context, db *gorm.DB) error {
-	res := db.
+func (db *NotificationDB) UpdateOne(ctx context.Context, n *Notification) error {
+	res := db.Conn.
 		WithContext(ctx).
-		Table("notifications").
 		Where(&Notification{ID: n.ID, DocumentID: n.DocumentID}).
 		Updates(&Notification{
 			Date: n.Date,
@@ -79,10 +88,9 @@ func (n *Notification) UpdateOne(ctx context.Context, db *gorm.DB) error {
 	return nil
 }
 
-func (n *Notification) DeleteOne(ctx context.Context, db *gorm.DB) error {
-	res := db.
+func (db *NotificationDB) DeleteOne(ctx context.Context, n *Notification) error {
+	res := db.Conn.
 		WithContext(ctx).
-		Table("notifications").
 		Where(&Notification{ID: n.ID, DocumentID: n.DocumentID}).
 		Delete(&Notification{})
 
@@ -97,14 +105,13 @@ func (n *Notification) DeleteOne(ctx context.Context, db *gorm.DB) error {
 	return nil
 }
 
-func (n *Notification) FindAll(ctx context.Context, db *gorm.DB) ([]Notification, error) {
+func (db *NotificationDB) FindAll(ctx context.Context, documentID uuid.UUID) ([]Notification, error) {
 	var notifications []Notification
 
-	res := db.
+	res := db.Conn.
 		WithContext(ctx).
-		Table("notifications").
 		Model(&Notification{}).
-		Where(&Notification{DocumentID: n.DocumentID}).
+		Where(&Notification{DocumentID: documentID}).
 		Find(&notifications)
 
 	if res.Error != nil {

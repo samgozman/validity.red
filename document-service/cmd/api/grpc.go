@@ -22,10 +22,10 @@ func (app *Config) gRPCListen() {
 	s := grpc.NewServer()
 
 	proto.RegisterDocumentServiceServer(s, &DocumentServer{
-		db: app.db,
+		App: app,
 	})
 	proto.RegisterNotificationServiceServer(s, &NotificationServer{
-		db: app.db,
+		App: app,
 	})
 
 	log.Printf("GRPC server listening on port %s", gRpcPort)

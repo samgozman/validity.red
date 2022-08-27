@@ -10,11 +10,10 @@ import (
 	"github.com/samgozman/validity.red/document/internal/models/notification"
 	"github.com/samgozman/validity.red/document/internal/utils"
 	proto "github.com/samgozman/validity.red/document/proto"
-	"gorm.io/gorm"
 )
 
 type NotificationServer struct {
-	db *gorm.DB
+	App *Config
 	// Necessary parameter to insure backwards compatibility
 	proto.UnimplementedNotificationServiceServer
 }
@@ -38,7 +37,7 @@ func (ds *NotificationServer) Create(ctx context.Context, req *proto.Notificatio
 		ID:     documentID,
 		UserID: userID,
 	}
-	isDocumentExist, err := d.Exists(ctx, ds.db)
+	isDocumentExist, err := ds.App.Documents.Exists(ctx, &d)
 	if err != nil {
 		return nil, err
 	}
@@ -51,7 +50,7 @@ func (ds *NotificationServer) Create(ctx context.Context, req *proto.Notificatio
 		DocumentID: documentID,
 		Date:       input.GetDate().AsTime(),
 	}
-	err = n.InsertOne(ctx, ds.db)
+	err = ds.App.Notifications.InsertOne(ctx, &n)
 
 	// return error if exists
 	if err != nil {
@@ -85,7 +84,7 @@ func (ds *NotificationServer) Edit(ctx context.Context, req *proto.NotificationC
 		ID:     documentID,
 		UserID: userID,
 	}
-	isDocumentExist, err := d.Exists(ctx, ds.db)
+	isDocumentExist, err := ds.App.Documents.Exists(ctx, &d)
 	if err != nil {
 		return nil, err
 	}
@@ -99,7 +98,7 @@ func (ds *NotificationServer) Edit(ctx context.Context, req *proto.NotificationC
 		DocumentID: documentID,
 		Date:       input.GetDate().AsTime(),
 	}
-	err = n.UpdateOne(ctx, ds.db)
+	err = ds.App.Notifications.UpdateOne(ctx, &n)
 
 	// return error if exists
 	if err != nil {
@@ -133,7 +132,7 @@ func (ds *NotificationServer) Delete(ctx context.Context, req *proto.Notificatio
 		ID:     documentID,
 		UserID: userID,
 	}
-	isDocumentExist, err := d.Exists(ctx, ds.db)
+	isDocumentExist, err := ds.App.Documents.Exists(ctx, &d)
 	if err != nil {
 		return nil, err
 	}
@@ -146,7 +145,7 @@ func (ds *NotificationServer) Delete(ctx context.Context, req *proto.Notificatio
 		ID:         notificationID,
 		DocumentID: documentID,
 	}
-	err = n.DeleteOne(ctx, ds.db)
+	err = ds.App.Notifications.DeleteOne(ctx, &n)
 
 	// return error if exists
 	if err != nil {
@@ -179,7 +178,7 @@ func (ds *NotificationServer) GetAll(
 		ID:     documentID,
 		UserID: userID,
 	}
-	isDocumentExist, err := d.Exists(ctx, ds.db)
+	isDocumentExist, err := ds.App.Documents.Exists(ctx, &d)
 	if err != nil {
 		return nil, err
 	}
@@ -188,10 +187,7 @@ func (ds *NotificationServer) GetAll(
 	}
 
 	// Find all notifications
-	n := notification.Notification{
-		DocumentID: documentID,
-	}
-	notifications, err := n.FindAll(ctx, ds.db)
+	notifications, err := ds.App.Notifications.FindAll(ctx, documentID)
 
 	// return error if exists
 	if err != nil {

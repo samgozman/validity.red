@@ -14,6 +14,16 @@ import (
 	"gorm.io/gorm/clause"
 )
 
+type DocumentDB struct {
+	Conn *gorm.DB
+}
+
+func NewDocumentDB(db *gorm.DB) *DocumentDB {
+	return &DocumentDB{
+		Conn: db.Table("documents"),
+	}
+}
+
 type Document struct {
 	ID            uuid.UUID                   `gorm:"primarykey;type:uuid;not null;" json:"id,omitempty"`
 	UserID        uuid.UUID                   `gorm:"type:uuid;index;not null;" json:"user_id,omitempty"`
@@ -71,8 +81,8 @@ func (d *Document) BeforeCreate(tx *gorm.DB) error {
 }
 
 // Insert one Document object into database
-func (d *Document) InsertOne(ctx context.Context, db *gorm.DB) error {
-	res := db.WithContext(ctx).Table("documents").Create(&d)
+func (db *DocumentDB) InsertOne(ctx context.Context, d *Document) error {
+	res := db.Conn.WithContext(ctx).Create(&d)
 	if res.Error != nil {
 		return res.Error
 	}
@@ -80,10 +90,9 @@ func (d *Document) InsertOne(ctx context.Context, db *gorm.DB) error {
 	return nil
 }
 
-func (d *Document) UpdateOne(ctx context.Context, db *gorm.DB) error {
-	res := db.
+func (db *DocumentDB) UpdateOne(ctx context.Context, d *Document) error {
+	res := db.Conn.
 		WithContext(ctx).
-		Table("documents").
 		Where(&Document{ID: d.ID, UserID: d.UserID}).
 		Updates(&Document{
 			Type:        d.Type,
@@ -107,10 +116,9 @@ func (d *Document) UpdateOne(ctx context.Context, db *gorm.DB) error {
 // TODO: Allow users to restore a document after deletion
 // TODO: Delete documents with DeletedAt timestamp > 14d with CRON job
 // @see: https://gorm.io/docs/delete.html#Soft-Delete
-func (d *Document) DeleteOne(ctx context.Context, db *gorm.DB) error {
-	res := db.
+func (db *DocumentDB) DeleteOne(ctx context.Context, d *Document) error {
+	res := db.Conn.
 		WithContext(ctx).
-		Table("documents").
 		// Delete all associations also
 		Select(clause.Associations).
 		Delete(&Document{ID: d.ID, UserID: d.UserID})
@@ -127,10 +135,9 @@ func (d *Document) DeleteOne(ctx context.Context, db *gorm.DB) error {
 }
 
 // Find one document
-func (d *Document) FindOne(ctx context.Context, db *gorm.DB) error {
-	res := db.
+func (db *DocumentDB) FindOne(ctx context.Context, d *Document) error {
+	res := db.Conn.
 		WithContext(ctx).
-		Table("documents").
 		Model(&Document{}).
 		Where(&Document{ID: d.ID, UserID: d.UserID}).
 		First(&d)
@@ -147,11 +154,11 @@ func (d *Document) FindOne(ctx context.Context, db *gorm.DB) error {
 }
 
 // Checks if document is already exists in database
-func (d *Document) Exists(ctx context.Context, db *gorm.DB) (bool, error) {
+func (db *DocumentDB) Exists(ctx context.Context, d *Document) (bool, error) {
 	var exist struct {
 		Found bool
 	}
-	res := db.
+	res := db.Conn.
 		WithContext(ctx).
 		Raw(
 			"SELECT EXISTS(SELECT 1 FROM documents WHERE id = ? AND user_id = ?) as found",
@@ -167,14 +174,13 @@ func (d *Document) Exists(ctx context.Context, db *gorm.DB) (bool, error) {
 }
 
 // Find all documents by UserID
-func (d *Document) FindAll(ctx context.Context, db *gorm.DB) ([]Document, error) {
+func (db *DocumentDB) FindAll(ctx context.Context, userId uuid.UUID) ([]Document, error) {
 	var documents []Document
 
-	res := db.
+	res := db.Conn.
 		WithContext(ctx).
-		Table("documents").
 		Model(&Document{}).
-		Where(&Document{UserID: d.UserID}).
+		Where(&Document{UserID: userId}).
 		Find(&documents)
 
 	if res.Error != nil {
