@@ -36,13 +36,13 @@ func main() {
 }
 
 func connectToDB() *gorm.DB {
-	var counts int64
+	var counts uint8
 	for {
 		connection, err := gorm.Open(postgres.New(postgres.Config{
 			DSN: getPostgresDSN(),
 		}))
 		if err != nil {
-			log.Println("Postgres not yet ready ...")
+			log.Println("Postgres not yet ready...")
 			counts++
 		} else {
 			log.Println("Connected to Postgres!")
@@ -54,7 +54,7 @@ func connectToDB() *gorm.DB {
 			return nil
 		}
 
-		log.Println("Backing off for three seconds....")
+		log.Println("Backing off for three seconds...")
 		time.Sleep(3 * time.Second)
 		continue
 	}
