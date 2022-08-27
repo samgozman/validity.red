@@ -4,13 +4,13 @@ import (
 	"os"
 	"testing"
 
-	"github.com/samgozman/validity.red/user/internal/models/user"
+	"github.com/samgozman/validity.red/user/mocks"
 )
 
 var testApp Config
 
 func TestMain(m *testing.M) {
-	repo := user.NewPostgresTestRepository(nil)
+	repo := mocks.NewPostgresTestRepository(nil)
 	testApp.Repo = repo
 	os.Exit(m.Run())
 }

@@ -1,10 +1,11 @@
-package user
+package mocks
 
 import (
 	"context"
 	"time"
 
 	"github.com/google/uuid"
+	"github.com/samgozman/validity.red/user/internal/models/user"
 	"gorm.io/gorm"
 )
 
@@ -19,15 +20,15 @@ func NewPostgresTestRepository(db *gorm.DB) *PostgresTestRepository {
 }
 
 // Insert one User object into database
-func (u *PostgresTestRepository) InsertOne(ctx context.Context, user *User) error {
+func (u *PostgresTestRepository) InsertOne(ctx context.Context, user *user.User) error {
 	user.ID, _ = uuid.Parse("434377cf-7509-4cc0-9895-0afa683f0e56")
 	return nil
 }
 
 // Find one user by email
-func (u *PostgresTestRepository) FindOneByEmail(ctx context.Context, email string) (*User, error) {
+func (u *PostgresTestRepository) FindOneByEmail(ctx context.Context, email string) (*user.User, error) {
 	userId, _ := uuid.Parse("434377cf-7509-4cc0-9895-0afa683f0e56")
-	user := &User{
+	user := &user.User{
 		ID:         userId,
 		Email:      "me@example.com",
 		Password:   "",
