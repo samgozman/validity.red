@@ -13,6 +13,16 @@ import (
 	"gorm.io/gorm"
 )
 
+type PostgresRepository struct {
+	Conn *gorm.DB
+}
+
+func NewPostgresRepository(db *gorm.DB) *PostgresRepository {
+	return &PostgresRepository{
+		Conn: db,
+	}
+}
+
 type User struct {
 	// Id will be set as primaryKey by default
 	ID         uuid.UUID `gorm:"type:uuid" json:"id,omitempty"`
@@ -24,24 +34,24 @@ type User struct {
 }
 
 // Prepare User object before inserting into database
-func (u *User) Prepare() {
-	u.Email = html.EscapeString(strings.TrimSpace(u.Email))
-	u.CreatedAt = time.Now()
-	u.UpdatedAt = time.Now()
+func (user *User) Prepare() {
+	user.Email = html.EscapeString(strings.TrimSpace(user.Email))
+	user.CreatedAt = time.Now()
+	user.UpdatedAt = time.Now()
 }
 
 // Validate User object before inserting into database
-func (u *User) Validate() error {
-	if u.Email == "" {
+func (user *User) Validate() error {
+	if user.Email == "" {
 		return errors.New("email is required")
 	}
-	if u.Password == "" {
+	if user.Password == "" {
 		return errors.New("password is required")
 	}
-	if len(u.Password) < 8 {
+	if len(user.Password) < 8 {
 		return errors.New("password is too short, must be at least 8 characters")
 	}
-	if err := checkmail.ValidateFormat(u.Email); err != nil {
+	if err := checkmail.ValidateFormat(user.Email); err != nil {
 		return errors.New("invalid email")
 	}
 
@@ -56,13 +66,13 @@ func VerifyPassword(hashedPassword, password string) error {
 	return bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(password))
 }
 
-func (u *User) BeforeCreate(tx *gorm.DB) error {
+func (user *User) BeforeCreate(tx *gorm.DB) error {
 	// Create UUID ID
-	u.ID = uuid.New()
+	user.ID = uuid.New()
 
-	u.Prepare()
+	user.Prepare()
 
-	err := u.Validate()
+	err := user.Validate()
 	if err != nil {
 		return err
 	}
@@ -70,18 +80,18 @@ func (u *User) BeforeCreate(tx *gorm.DB) error {
 	return nil
 }
 
-func (u *User) BeforeSave(tx *gorm.DB) error {
-	hashedPassword, err := Hash(u.Password)
+func (user *User) BeforeSave(tx *gorm.DB) error {
+	hashedPassword, err := Hash(user.Password)
 	if err != nil {
 		return err
 	}
-	u.Password = string(hashedPassword)
+	user.Password = string(hashedPassword)
 	return nil
 }
 
 // Insert one User object into database
-func (u *User) InsertOne(ctx context.Context, db *gorm.DB) error {
-	res := db.Table("users").Create(&u).WithContext(ctx)
+func (u *PostgresRepository) InsertOne(ctx context.Context, user *User) error {
+	res := u.Conn.Table("users").Create(&user).WithContext(ctx)
 	if res.Error != nil {
 		return res.Error
 	}
@@ -90,11 +100,12 @@ func (u *User) InsertOne(ctx context.Context, db *gorm.DB) error {
 }
 
 // Find one user by email
-func (u *User) FindOneByEmail(ctx context.Context, db *gorm.DB) (*User, error) {
-	res := db.Table("users").First(&u, "email = ?", u.Email).WithContext(ctx)
+func (u *PostgresRepository) FindOneByEmail(ctx context.Context, email string) (*User, error) {
+	user := &User{}
+	res := u.Conn.Table("users").First(&user, "email = ?", email).WithContext(ctx)
 	if res.Error != nil {
 		return nil, res.Error
 	}
 
-	return u, nil
+	return user, nil
 }

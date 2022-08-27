@@ -10,19 +10,18 @@ import (
 	"github.com/samgozman/validity.red/user/internal/models/user"
 	proto "github.com/samgozman/validity.red/user/proto"
 	"golang.org/x/crypto/bcrypt"
-	"gorm.io/gorm"
 
 	"google.golang.org/grpc"
 )
 
 type AuthServer struct {
-	db *gorm.DB
+	App *Config
 	// Necessary parameter to insure backwards compatibility
 	proto.UnimplementedAuthServiceServer
 }
 
 type UserServer struct {
-	db *gorm.DB
+	App *Config
 	// Necessary parameter to insure backwards compatibility
 	proto.UnimplementedUserServiceServer
 }
@@ -38,10 +37,10 @@ func (app *Config) gRPCListen() {
 	s := grpc.NewServer()
 
 	proto.RegisterAuthServiceServer(s, &AuthServer{
-		db: app.db,
+		App: app,
 	})
 	proto.RegisterUserServiceServer(s, &UserServer{
-		db: app.db,
+		App: app,
 	})
 
 	log.Printf("GRPC server listening on port %s", gRpcPort)
@@ -59,7 +58,7 @@ func (us *UserServer) Register(ctx context.Context, req *proto.RegisterRequest) 
 		Email:    input.Email,
 		Password: input.Password,
 	}
-	err := userPayload.InsertOne(ctx, us.db)
+	err := us.App.Repo.InsertOne(ctx, &userPayload)
 	// return error if exists
 	if err != nil {
 		return nil, err
@@ -74,10 +73,7 @@ func (us *AuthServer) Login(ctx context.Context, req *proto.AuthRequest) (*proto
 	input := req.GetAuthEntry()
 
 	// find user
-	userPayload := user.User{
-		Email: input.Email,
-	}
-	u, err := userPayload.FindOneByEmail(ctx, us.db)
+	u, err := us.App.Repo.FindOneByEmail(ctx, input.Email)
 	if err != nil {
 		return nil, err
 	}
@@ -90,7 +86,7 @@ func (us *AuthServer) Login(ctx context.Context, req *proto.AuthRequest) (*proto
 
 	// return response
 	res := &proto.AuthResponse{
-		Result: fmt.Sprintf("User '%s' logged in successfully!", userPayload.ID),
+		Result: fmt.Sprintf("User '%s' logged in successfully!", u.ID),
 		// TODO: Return user entity
 		UserId: u.ID.String(),
 	}

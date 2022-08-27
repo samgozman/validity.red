@@ -10,7 +10,7 @@ import (
 )
 
 type Config struct {
-	db *gorm.DB
+	Repo user.UserRepository
 }
 
 func main() {
@@ -27,9 +27,8 @@ func main() {
 	}
 
 	// Create app
-	app := Config{
-		db: db,
-	}
+	app := Config{}
+	app.setupRepo(db)
 
 	// Start gRPC server
 	// go app.gRPCListen()
@@ -59,4 +58,9 @@ func connectToDB() *gorm.DB {
 		time.Sleep(3 * time.Second)
 		continue
 	}
+}
+
+func (app *Config) setupRepo(conn *gorm.DB) {
+	db := user.NewPostgresRepository(conn)
+	app.Repo = db
 }
