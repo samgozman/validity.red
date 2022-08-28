@@ -191,3 +191,34 @@ func TestPKCS5UnPadding(t *testing.T) {
 		})
 	}
 }
+
+func TestGenerateRandomIV(t *testing.T) {
+	type args struct {
+		length uint
+	}
+	tests := []struct {
+		name    string
+		args    args
+		want    int
+		wantErr bool
+	}{
+		{
+			name:    "should generate random bytes",
+			args:    args{length: 16},
+			want:    16,
+			wantErr: false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, err := GenerateRandomIV(tt.args.length)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("GenerateRandomIV() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if len(got) != tt.want {
+				t.Errorf("GenerateRandomIV() = %v, want %v", len(got), tt.want)
+			}
+		})
+	}
+}

@@ -4,8 +4,10 @@ import (
 	"bytes"
 	"crypto/aes"
 	"crypto/cipher"
+	"crypto/rand"
 	"encoding/hex"
 	"errors"
+	"fmt"
 )
 
 var (
@@ -73,4 +75,18 @@ func PKCS5UnPadding(src []byte) []byte {
 	length := len(src)
 	unpadding := int(src[length-1])
 	return src[:(length - unpadding)]
+}
+
+// Generate pseudorandom IV bytes array
+func GenerateRandomIV(length uint) ([]byte, error) {
+	b := make([]byte, length)
+	_, err := rand.Read(b)
+
+	if err != nil {
+		return nil, err
+	}
+
+	fmt.Println(b)
+
+	return b, nil
 }
