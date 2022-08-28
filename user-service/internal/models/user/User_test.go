@@ -66,6 +66,14 @@ func TestUser_Validate(t *testing.T) {
 			wantErr: true,
 		},
 		{
+			name: "fail if password is too long",
+			user: &User{
+				Email:    "test@example.com",
+				Password: "168601827c50b37054f4e565dbf4050a6bd854bc91650280539cca45bae1fb2f1",
+			},
+			wantErr: true,
+		},
+		{
 			name:    "should pass",
 			user:    &User{Email: "test@example.com", Password: "foopassword"},
 			wantErr: false,
