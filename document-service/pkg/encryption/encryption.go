@@ -7,7 +7,6 @@ import (
 	"crypto/rand"
 	"encoding/hex"
 	"errors"
-	"fmt"
 )
 
 var (
@@ -85,8 +84,6 @@ func GenerateRandomIV(length uint) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-
-	fmt.Println(b)
 
 	return b, nil
 }
