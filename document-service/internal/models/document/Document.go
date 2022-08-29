@@ -45,8 +45,6 @@ func (d *Document) Prepare() {
 	escapeCharacters := regexp.MustCompile(`(?m)<|>|\(|\)|;|\\|\/`)
 	d.Title = escapeCharacters.ReplaceAllString(strings.TrimSpace(d.Title), "\\$0")
 	d.Description = escapeCharacters.ReplaceAllString(strings.TrimSpace(d.Description), "\\$0")
-	d.CreatedAt = time.Now()
-	d.UpdatedAt = time.Now()
 }
 
 // Validate Document object before inserting into database
@@ -136,6 +134,19 @@ func (d *Document) BeforeCreate(tx *gorm.DB) error {
 	}
 
 	err = d.Encrypt()
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (d *Document) BeforeUpdate(tx *gorm.DB) error {
+	d.Prepare()
+
+	// TODO: Add validation for update event
+
+	err := d.Encrypt()
 	if err != nil {
 		return err
 	}
