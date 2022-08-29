@@ -13,21 +13,24 @@ var (
 	ErrWrongIVSize = errors.New("iv length must equal block size")
 )
 
+const BlockSize = aes.BlockSize
+
 // Encrypt "text" string with AES
 //
 // "key" - should be the AES key, either 16, 24, or 32 bytes to select AES-128, AES-192, or AES-256.
 //
-// "iv" - len(iv) should equal aes.BlockSize (default: 16). IV stads for Initialization vector.
+// "iv" - len(iv) should equal BlockSize (default: 16). IV stads for Initialization vector.
 // IV should be randomly generated for each encryption.
 // IV are used to ensure that the same value encrypted N times, will not always result in the same encrypted value.
 func EncryptAES(key []byte, iv []byte, text string) (string, error) {
+	if BlockSize != len(iv) {
+		return "", ErrWrongIVSize
+	}
+
 	bytesText := PKCS5Padding([]byte(text), len(text))
 	block, err := aes.NewCipher(key)
 	if err != nil {
 		return "", err
-	}
-	if block.BlockSize() != len(iv) {
-		return "", ErrWrongIVSize
 	}
 
 	ciphertext := make([]byte, len(bytesText))
@@ -40,20 +43,22 @@ func EncryptAES(key []byte, iv []byte, text string) (string, error) {
 //
 // "key" - should be the AES key, either 16, 24, or 32 bytes to select AES-128, AES-192, or AES-256.
 //
-// "iv" - len(iv) should equal aes.BlockSize (default: 16). IV stads for Initialization vector.
+// "iv" - len(iv) should equal BlockSize (default: 16). IV stads for Initialization vector.
 // IV should be randomly generated for each encryption.
 // IV are used to ensure that the same value encrypted N times, will not always result in the same encrypted value.
 func DecryptAES(key []byte, iv []byte, cipherText string) (string, error) {
+	if BlockSize != len(iv) {
+		return "", ErrWrongIVSize
+	}
+
 	cipherTextDecoded, err := hex.DecodeString(cipherText)
 	if err != nil {
 		return "", err
 	}
+
 	block, err := aes.NewCipher(key)
 	if err != nil {
 		return "", err
-	}
-	if block.BlockSize() != len(iv) {
-		return "", ErrWrongIVSize
 	}
 
 	mode := cipher.NewCBCDecrypter(block, iv)
@@ -64,7 +69,7 @@ func DecryptAES(key []byte, iv []byte, cipherText string) (string, error) {
 // Add padding bytes for the message to transform
 // it into multiple 8-byte blocks.
 func PKCS5Padding(src []byte, after int) []byte {
-	padding := aes.BlockSize - len(src)%aes.BlockSize
+	padding := BlockSize - len(src)%BlockSize
 	padtext := bytes.Repeat([]byte{byte(padding)}, padding)
 	return append(src, padtext...)
 }
