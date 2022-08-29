@@ -34,9 +34,6 @@ func TestDocument_Prepare(t *testing.T) {
 					tt.wantDoc.Title, tt.wantDoc.Description, tt.document.Title, tt.document.Description,
 				)
 			}
-			if tt.document.CreatedAt.IsZero() || tt.document.UpdatedAt.IsZero() {
-				t.Errorf("Document.Prepare() want CreatedAt and UpdatedAt not zero")
-			}
 		})
 	}
 }
@@ -87,6 +84,9 @@ func TestDocument_BeforeCreate(t *testing.T) {
 	type args struct {
 		tx *gorm.DB
 	}
+
+	EncryptionKey = []byte("8dHWTNSAsGaaD7JbqVubF1aWVWGJYF3q")
+
 	tests := []struct {
 		name     string
 		document Document

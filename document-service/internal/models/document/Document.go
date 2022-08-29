@@ -16,6 +16,10 @@ import (
 	"gorm.io/gorm/clause"
 )
 
+var (
+	EncryptionKey = []byte(os.Getenv("ENCRYPTION_KEY"))
+)
+
 type DocumentDB struct {
 	Conn *gorm.DB
 }
@@ -70,8 +74,6 @@ func (d *Document) Validate() error {
 
 // Encrypt document title and description
 func (d *Document) Encrypt() error {
-	key := os.Getenv("ENCRYPTION_KEY")
-
 	iv_title, err := encryption.GenerateRandomIV(encryption.BlockSize)
 	if err != nil {
 		return err
@@ -82,12 +84,12 @@ func (d *Document) Encrypt() error {
 		return err
 	}
 
-	encryptedTitle, err := encryption.EncryptAES([]byte(key), iv_title, d.Title)
+	encryptedTitle, err := encryption.EncryptAES(EncryptionKey, iv_title, d.Title)
 	if err != nil {
 		return err
 	}
 
-	encryptedDesc, err := encryption.EncryptAES([]byte(key), iv_description, d.Description)
+	encryptedDesc, err := encryption.EncryptAES(EncryptionKey, iv_description, d.Description)
 	if err != nil {
 		return err
 	}
@@ -101,10 +103,8 @@ func (d *Document) Encrypt() error {
 }
 
 func (d *Document) Decrypt() error {
-	key := os.Getenv("ENCRYPTION_KEY")
-
 	if d.IV_Title != nil {
-		title, err := encryption.DecryptAES([]byte(key), d.IV_Title, d.Title)
+		title, err := encryption.DecryptAES(EncryptionKey, d.IV_Title, d.Title)
 		if err != nil {
 			return err
 		}
@@ -112,7 +112,7 @@ func (d *Document) Decrypt() error {
 	}
 
 	if d.IV_Description != nil {
-		desc, err := encryption.DecryptAES([]byte(key), d.IV_Description, d.Description)
+		desc, err := encryption.DecryptAES(EncryptionKey, d.IV_Description, d.Description)
 		if err != nil {
 			return err
 		}
