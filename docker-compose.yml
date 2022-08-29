@@ -63,6 +63,7 @@ services:
       POSTGRES_USER: admin
       POSTGRES_PASSWORD: password
       POSTGRES_DB: documents
+      ENCRYPTION_KEY: 8dHWTNSAsGaaD7JbqVubF1aWVWGJYF3q
     networks:
       - broker-network
       - documents-network

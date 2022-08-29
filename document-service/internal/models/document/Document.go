@@ -3,12 +3,14 @@ package document
 import (
 	"context"
 	"errors"
+	"os"
 	"regexp"
 	"strings"
 	"time"
 
 	"github.com/google/uuid"
 	"github.com/samgozman/validity.red/document/internal/models/notification"
+	"github.com/samgozman/validity.red/document/pkg/encryption"
 	proto "github.com/samgozman/validity.red/document/proto"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
@@ -25,15 +27,17 @@ func NewDocumentDB(db *gorm.DB) *DocumentDB {
 }
 
 type Document struct {
-	ID            uuid.UUID                   `gorm:"primarykey;type:uuid;not null;" json:"id,omitempty"`
-	UserID        uuid.UUID                   `gorm:"type:uuid;index;not null;" json:"user_id,omitempty"`
-	Type          proto.Type                  `gorm:"type:int;default:0" json:"type,omitempty"`
-	Title         string                      `gorm:"size:100;not null;" json:"title,omitempty"`
-	Description   string                      `gorm:"size:500;not null;" json:"description,omitempty"`
-	ExpiresAt     time.Time                   `gorm:"default:0" json:"expires_at,omitempty"`
-	Notifications []notification.Notification `gorm:"foreignKey:DocumentID;constraint:OnUpdate:CASCADE,OnDelete:SET NULL;references:ID" json:"notifications,omitempty"`
-	CreatedAt     time.Time                   `gorm:"default:CURRENT_TIMESTAMP" json:"created_at,omitempty"`
-	UpdatedAt     time.Time                   `gorm:"default:CURRENT_TIMESTAMP" json:"updated_at,omitempty"`
+	ID             uuid.UUID                   `gorm:"primarykey;type:uuid;not null;" json:"id,omitempty"`
+	UserID         uuid.UUID                   `gorm:"type:uuid;index;not null;" json:"user_id,omitempty"`
+	Type           proto.Type                  `gorm:"type:int;default:0" json:"type,omitempty"`
+	Title          string                      `gorm:"not null;" json:"title,omitempty"`
+	Description    string                      `gorm:"" json:"description,omitempty"`
+	IV_Title       []byte                      `gorm:"size:16;" json:"iv_title,omitempty"`
+	IV_Description []byte                      `gorm:"size:16;" json:"iv_description,omitempty"`
+	ExpiresAt      time.Time                   `gorm:"default:0" json:"expires_at,omitempty"`
+	Notifications  []notification.Notification `gorm:"foreignKey:DocumentID;constraint:OnUpdate:CASCADE,OnDelete:SET NULL;references:ID" json:"notifications,omitempty"`
+	CreatedAt      time.Time                   `gorm:"default:CURRENT_TIMESTAMP" json:"created_at,omitempty"`
+	UpdatedAt      time.Time                   `gorm:"default:CURRENT_TIMESTAMP" json:"updated_at,omitempty"`
 }
 
 // Prepare Document object before inserting into database
@@ -66,6 +70,60 @@ func (d *Document) Validate() error {
 	return nil
 }
 
+// Encrypt document title and description
+func (d *Document) Encrypt() error {
+	key := os.Getenv("ENCRYPTION_KEY")
+
+	iv_title, err := encryption.GenerateRandomIV(encryption.BlockSize)
+	if err != nil {
+		return err
+	}
+	// TODO: Do not encrypt description if it is empty
+	iv_description, err := encryption.GenerateRandomIV(encryption.BlockSize)
+	if err != nil {
+		return err
+	}
+
+	encryptedTitle, err := encryption.EncryptAES([]byte(key), iv_title, d.Title)
+	if err != nil {
+		return err
+	}
+
+	encryptedDesc, err := encryption.EncryptAES([]byte(key), iv_description, d.Description)
+	if err != nil {
+		return err
+	}
+
+	d.Title = string(encryptedTitle)
+	d.Description = string(encryptedDesc)
+	d.IV_Title = iv_title
+	d.IV_Description = iv_description
+
+	return nil
+}
+
+func (d *Document) Decrypt() error {
+	key := os.Getenv("ENCRYPTION_KEY")
+
+	if d.IV_Title != nil {
+		title, err := encryption.DecryptAES([]byte(key), d.IV_Title, d.Title)
+		if err != nil {
+			return err
+		}
+		d.Title = string(title)
+	}
+
+	if d.IV_Description != nil {
+		desc, err := encryption.DecryptAES([]byte(key), d.IV_Description, d.Description)
+		if err != nil {
+			return err
+		}
+		d.Description = string(desc)
+	}
+
+	return nil
+}
+
 func (d *Document) BeforeCreate(tx *gorm.DB) error {
 	// Create UUID ID
 	d.ID = uuid.New()
@@ -73,6 +131,20 @@ func (d *Document) BeforeCreate(tx *gorm.DB) error {
 	d.Prepare()
 
 	err := d.Validate()
+	if err != nil {
+		return err
+	}
+
+	err = d.Encrypt()
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (d *Document) AfterFind(tx *gorm.DB) error {
+	err := d.Decrypt()
 	if err != nil {
 		return err
 	}
