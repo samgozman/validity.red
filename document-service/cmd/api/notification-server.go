@@ -12,6 +12,13 @@ import (
 	proto "github.com/samgozman/validity.red/document/proto"
 )
 
+var (
+	ErrInvalidUserId         = errors.New("invalid user id")
+	ErrInvalidDocumentId     = errors.New("invalid document_id")
+	ErrInvalidNotificationId = errors.New("invalid notification_id")
+	ErrDocumentNotFound      = errors.New("document does not exist")
+)
+
 type NotificationServer struct {
 	App *Config
 	// Necessary parameter to insure backwards compatibility
@@ -24,12 +31,12 @@ func (ds *NotificationServer) Create(ctx context.Context, req *proto.Notificatio
 
 	userID, err := uuid.Parse(inputId)
 	if err != nil {
-		return nil, errors.New("invalid user id")
+		return nil, ErrInvalidUserId
 	}
 
 	documentID, err := uuid.Parse(input.GetDocumentID())
 	if err != nil {
-		return nil, errors.New("invalid document_id")
+		return nil, ErrInvalidDocumentId
 	}
 
 	// Check if that document exists
@@ -42,7 +49,7 @@ func (ds *NotificationServer) Create(ctx context.Context, req *proto.Notificatio
 		return nil, err
 	}
 	if !isDocumentExist {
-		return nil, errors.New("document does not exist")
+		return nil, ErrDocumentNotFound
 	}
 
 	// create notification
@@ -68,15 +75,15 @@ func (ds *NotificationServer) Edit(ctx context.Context, req *proto.NotificationC
 	// Validate input arguments
 	userID, err := uuid.Parse(req.GetUserID())
 	if err != nil {
-		return nil, errors.New("invalid user id")
+		return nil, ErrInvalidUserId
 	}
 	documentID, err := uuid.Parse(input.GetDocumentID())
 	if err != nil {
-		return nil, errors.New("invalid document_id")
+		return nil, ErrInvalidDocumentId
 	}
 	notificationID, err := uuid.Parse(input.GetID())
 	if err != nil {
-		return nil, errors.New("invalid notification id")
+		return nil, ErrInvalidNotificationId
 	}
 
 	// Check if that document exists
@@ -89,7 +96,7 @@ func (ds *NotificationServer) Edit(ctx context.Context, req *proto.NotificationC
 		return nil, err
 	}
 	if !isDocumentExist {
-		return nil, errors.New("document does not exist")
+		return nil, ErrDocumentNotFound
 	}
 
 	// update notification
@@ -116,15 +123,15 @@ func (ds *NotificationServer) Delete(ctx context.Context, req *proto.Notificatio
 	// Validate input arguments
 	userID, err := uuid.Parse(req.GetUserID())
 	if err != nil {
-		return nil, errors.New("invalid user id")
+		return nil, ErrInvalidUserId
 	}
 	documentID, err := uuid.Parse(input.GetDocumentID())
 	if err != nil {
-		return nil, errors.New("invalid document_id")
+		return nil, ErrInvalidDocumentId
 	}
 	notificationID, err := uuid.Parse(input.GetID())
 	if err != nil {
-		return nil, errors.New("invalid notification id")
+		return nil, ErrInvalidNotificationId
 	}
 
 	// Check if that document exists
@@ -137,7 +144,7 @@ func (ds *NotificationServer) Delete(ctx context.Context, req *proto.Notificatio
 		return nil, err
 	}
 	if !isDocumentExist {
-		return nil, errors.New("document does not exist")
+		return nil, ErrDocumentNotFound
 	}
 
 	// delete notification
@@ -166,11 +173,11 @@ func (ds *NotificationServer) GetAll(
 	// Validate input arguments
 	userID, err := uuid.Parse(req.GetUserID())
 	if err != nil {
-		return nil, errors.New("invalid user id")
+		return nil, ErrInvalidUserId
 	}
 	documentID, err := uuid.Parse(req.GetDocumentID())
 	if err != nil {
-		return nil, errors.New("invalid document_id")
+		return nil, ErrInvalidDocumentId
 	}
 
 	// Check if that document exists
@@ -183,7 +190,7 @@ func (ds *NotificationServer) GetAll(
 		return nil, err
 	}
 	if !isDocumentExist {
-		return nil, errors.New("document does not exist")
+		return nil, ErrDocumentNotFound
 	}
 
 	// Find all notifications
