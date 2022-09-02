@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"errors"
 	"fmt"
 
 	"github.com/google/uuid"
@@ -10,13 +9,6 @@ import (
 	"github.com/samgozman/validity.red/document/internal/models/notification"
 	"github.com/samgozman/validity.red/document/internal/utils"
 	proto "github.com/samgozman/validity.red/document/proto"
-)
-
-var (
-	ErrInvalidUserId         = errors.New("invalid user id")
-	ErrInvalidDocumentId     = errors.New("invalid document_id")
-	ErrInvalidNotificationId = errors.New("invalid notification_id")
-	ErrDocumentNotFound      = errors.New("document does not exist")
 )
 
 type NotificationServer struct {

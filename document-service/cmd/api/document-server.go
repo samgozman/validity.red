@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"errors"
 	"fmt"
 
 	"github.com/google/uuid"
@@ -22,7 +21,7 @@ func (ds *DocumentServer) Create(ctx context.Context, req *proto.DocumentCreateR
 
 	userID, err := uuid.Parse(input.UserID)
 	if err != nil {
-		return nil, errors.New("invalid user id")
+		return nil, ErrInvalidUserId
 	}
 
 	// register document
@@ -54,12 +53,12 @@ func (ds *DocumentServer) Edit(ctx context.Context, req *proto.DocumentCreateReq
 	// Decode values
 	id, err := uuid.Parse(input.ID)
 	if err != nil {
-		return nil, errors.New("invalid document id")
+		return nil, ErrInvalidDocumentId
 	}
 
 	userID, err := uuid.Parse(input.UserID)
 	if err != nil {
-		return nil, errors.New("invalid user id")
+		return nil, ErrInvalidUserId
 	}
 
 	// update document
@@ -87,12 +86,12 @@ func (ds *DocumentServer) Delete(ctx context.Context, req *proto.DocumentRequest
 	// Decode values
 	id, err := uuid.Parse(req.GetDocumentID())
 	if err != nil {
-		return nil, errors.New("invalid document id")
+		return nil, ErrInvalidDocumentId
 	}
 
 	userID, err := uuid.Parse(req.GetUserID())
 	if err != nil {
-		return nil, errors.New("invalid user id")
+		return nil, ErrInvalidUserId
 	}
 
 	// delete document
@@ -116,12 +115,12 @@ func (ds *DocumentServer) GetOne(ctx context.Context, req *proto.DocumentRequest
 	// Decode values
 	id, err := uuid.Parse(req.GetDocumentID())
 	if err != nil {
-		return nil, errors.New("invalid document id")
+		return nil, ErrInvalidDocumentId
 	}
 
 	userID, err := uuid.Parse(req.GetUserID())
 	if err != nil {
-		return nil, errors.New("invalid user id")
+		return nil, ErrInvalidUserId
 	}
 
 	// Find document
@@ -154,7 +153,7 @@ func (ds *DocumentServer) GetOne(ctx context.Context, req *proto.DocumentRequest
 func (ds *DocumentServer) GetAll(ctx context.Context, req *proto.DocumentsRequest) (*proto.ResponseDocumentsList, error) {
 	userID, err := uuid.Parse(req.GetUserID())
 	if err != nil {
-		return nil, errors.New("invalid user id")
+		return nil, ErrInvalidUserId
 	}
 
 	// Find all documents
