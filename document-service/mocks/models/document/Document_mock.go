@@ -36,6 +36,9 @@ func (db *DocumentDBTest) FindOne(ctx context.Context, d *document.Document) err
 
 // Checks if document is already exists in database
 func (db *DocumentDBTest) Exists(ctx context.Context, d *document.Document) (bool, error) {
+	if d.ID.String() != "434377cf-7509-4cc0-9895-0afa683f0e56" {
+		return false, nil
+	}
 	return true, nil
 }
 
