@@ -5,6 +5,7 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/samgozman/validity.red/document/internal/models/document"
+	proto "github.com/samgozman/validity.red/document/proto"
 	"gorm.io/gorm"
 )
 
@@ -47,4 +48,13 @@ func (db *DocumentDBTest) FindAll(ctx context.Context, userId uuid.UUID) ([]docu
 	var documents []document.Document
 
 	return documents, nil
+}
+
+func (db *DocumentDBTest) Count(ctx context.Context, userId uuid.UUID) (int64, error) {
+	return 0, nil
+}
+
+func (db *DocumentDBTest) CountTypes(ctx context.Context, userId uuid.UUID) ([]*proto.DocumentTypesCount, error) {
+	var types []*proto.DocumentTypesCount
+	return types, nil
 }

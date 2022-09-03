@@ -50,6 +50,11 @@ message DocumentJSON {
 	string expiresAt = 6;
 }
 
+message DocumentTypesCount {
+	int32 type = 1;
+	int64 count = 2;
+}
+
 message Notification {
 	string ID = 1;
 	string documentID = 2;
@@ -95,6 +100,12 @@ message Response {
 	string result = 1;
 }
 
+message ResponseDocumentsStatistics {
+	string result = 1;
+	int64 total = 2;
+	repeated DocumentTypesCount types = 3;
+}
+
 message ResponseDocument {
 	string result = 1;
 	Document document = 2;
@@ -121,6 +132,7 @@ service DocumentService {
 	rpc Delete(DocumentRequest) returns (Response);
 	rpc GetOne(DocumentRequest) returns (ResponseDocument);
 	rpc GetAll(DocumentsRequest) returns (ResponseDocumentsList);
+	rpc GetUserStatistics(DocumentsRequest) returns (ResponseDocumentsStatistics);
 }
 
 service NotificationService {

@@ -183,3 +183,29 @@ func (ds *DocumentServer) GetAll(ctx context.Context, req *proto.DocumentsReques
 	}
 	return res, nil
 }
+
+func (ds *DocumentServer) GetUserStatistics(
+	ctx context.Context,
+	req *proto.DocumentsRequest,
+) (*proto.ResponseDocumentsStatistics, error) {
+	userID, err := uuid.Parse(req.GetUserID())
+	if err != nil {
+		return nil, ErrInvalidUserId
+	}
+
+	total, err := ds.App.Documents.Count(ctx, userID)
+	if err != nil {
+		return nil, err
+	}
+
+	types, err := ds.App.Documents.CountTypes(context.Background(), userID)
+	if err != nil {
+		return nil, err
+	}
+
+	return &proto.ResponseDocumentsStatistics{
+		Result: fmt.Sprintf("User '%s' get documents statistics successfully!", userID),
+		Total:  total,
+		Types:  types,
+	}, nil
+}

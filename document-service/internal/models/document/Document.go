@@ -276,3 +276,38 @@ func (db *DocumentDB) FindAll(ctx context.Context, userId uuid.UUID) ([]Document
 
 	return documents, nil
 }
+
+// Count user documents
+func (db *DocumentDB) Count(ctx context.Context, userId uuid.UUID) (int64, error) {
+	var count int64
+
+	res := db.Conn.
+		WithContext(ctx).
+		Model(&Document{}).
+		Where(&Document{UserID: userId}).
+		Count(&count)
+
+	if res.Error != nil {
+		return 0, res.Error
+	}
+
+	return count, nil
+}
+
+// Get count for all used document types
+func (db *DocumentDB) CountTypes(ctx context.Context, userId uuid.UUID) ([]*proto.DocumentTypesCount, error) {
+	var types []*proto.DocumentTypesCount
+	res := db.Conn.
+		WithContext(ctx).
+		Raw(
+			"SELECT type, COUNT(*) FROM documents WHERE user_id = ? GROUP BY type",
+			userId,
+		).
+		Scan(&types)
+
+	if res.Error != nil {
+		return nil, res.Error
+	}
+
+	return types, nil
+}
