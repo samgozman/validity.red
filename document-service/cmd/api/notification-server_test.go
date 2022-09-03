@@ -239,7 +239,7 @@ func TestNotificationServer_Edit(t *testing.T) {
 				return
 			}
 			if tt.wantErr && !errors.Is(err, tt.errorMsg) {
-				t.Errorf("NotificationServer.Create() wrong error msg = %v, want %v", err.Error(), tt.errorMsg.Error())
+				t.Errorf("NotificationServer.Edit() wrong error msg = %v, want %v", err.Error(), tt.errorMsg.Error())
 				return
 			}
 			if !reflect.DeepEqual(got, tt.want) {
@@ -367,7 +367,7 @@ func TestNotificationServer_Delete(t *testing.T) {
 				return
 			}
 			if tt.wantErr && !errors.Is(err, tt.errorMsg) {
-				t.Errorf("NotificationServer.Create() wrong error msg = %v, want %v", err.Error(), tt.errorMsg.Error())
+				t.Errorf("NotificationServer.Delete() wrong error msg = %v, want %v", err.Error(), tt.errorMsg.Error())
 				return
 			}
 			if !reflect.DeepEqual(got, tt.want) {
@@ -472,7 +472,7 @@ func TestNotificationServer_GetAll(t *testing.T) {
 				return
 			}
 			if tt.wantErr && !errors.Is(err, tt.errorMsg) {
-				t.Errorf("NotificationServer.Create() wrong error msg = %v, want %v", err.Error(), tt.errorMsg.Error())
+				t.Errorf("NotificationServer.GetAll() wrong error msg = %v, want %v", err.Error(), tt.errorMsg.Error())
 				return
 			}
 			if !tt.wantErr && got.Result != tt.want.Result {
