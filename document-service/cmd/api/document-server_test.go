@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"reflect"
 	"testing"
@@ -37,11 +38,12 @@ func TestDocumentServer_Create(t *testing.T) {
 	}
 
 	tests := []struct {
-		name    string
-		fields  fields
-		args    args
-		want    *proto.ResponseDocumentCreate
-		wantErr bool
+		name     string
+		fields   fields
+		args     args
+		want     *proto.ResponseDocumentCreate
+		wantErr  bool
+		errorMsg error
 	}{
 		{
 			name:   "should create document",
@@ -53,7 +55,20 @@ func TestDocumentServer_Create(t *testing.T) {
 			want:    okRes,
 			wantErr: false,
 		},
-		// TODO: Add test for wrong arguments
+		{
+			name:   "should fail if userId is incorrect",
+			fields: fields{App: &testApp},
+			args: args{
+				ctx: context.Background(),
+				req: &proto.DocumentCreateRequest{
+					DocumentEntry: &proto.Document{
+						UserID: "justWrongId",
+					},
+				},
+			},
+			wantErr:  true,
+			errorMsg: ErrInvalidUserId,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -64,6 +79,10 @@ func TestDocumentServer_Create(t *testing.T) {
 			got, err := ds.Create(tt.args.ctx, tt.args.req)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("DocumentServer.Create() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if tt.wantErr && !errors.Is(err, tt.errorMsg) {
+				t.Errorf("DocumentServer.Create() wrong error msg = %v, want %v", err.Error(), tt.errorMsg.Error())
 				return
 			}
 			if !reflect.DeepEqual(got, tt.want) {
@@ -100,11 +119,12 @@ func TestDocumentServer_Edit(t *testing.T) {
 	}
 
 	tests := []struct {
-		name    string
-		fields  fields
-		args    args
-		want    *proto.Response
-		wantErr bool
+		name     string
+		fields   fields
+		args     args
+		want     *proto.Response
+		wantErr  bool
+		errorMsg error
 	}{
 		{
 			name:   "should edit document",
@@ -116,7 +136,36 @@ func TestDocumentServer_Edit(t *testing.T) {
 			want:    okRes,
 			wantErr: false,
 		},
-		// TODO: Add tests for error cases
+		{
+			name:   "should fail if userId is incorrect",
+			fields: fields{App: &testApp},
+			args: args{
+				ctx: context.Background(),
+				req: &proto.DocumentCreateRequest{
+					DocumentEntry: &proto.Document{
+						UserID: "justWrongId",
+						ID:     "465fef9a-da94-4106-a7b2-83f1f0c2240c",
+					},
+				},
+			},
+			wantErr:  true,
+			errorMsg: ErrInvalidUserId,
+		},
+		{
+			name:   "should fail if documentId is incorrect",
+			fields: fields{App: &testApp},
+			args: args{
+				ctx: context.Background(),
+				req: &proto.DocumentCreateRequest{
+					DocumentEntry: &proto.Document{
+						UserID: "7df12006-b31c-441b-9063-a01ba884b77d",
+						ID:     "justWrongId",
+					},
+				},
+			},
+			wantErr:  true,
+			errorMsg: ErrInvalidDocumentId,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -127,6 +176,10 @@ func TestDocumentServer_Edit(t *testing.T) {
 			got, err := ds.Edit(tt.args.ctx, tt.args.req)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("DocumentServer.Edit() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if tt.wantErr && !errors.Is(err, tt.errorMsg) {
+				t.Errorf("DocumentServer.Edit() wrong error msg = %v, want %v", err.Error(), tt.errorMsg.Error())
 				return
 			}
 			if !reflect.DeepEqual(got, tt.want) {
@@ -160,11 +213,12 @@ func TestDocumentServer_Delete(t *testing.T) {
 	}
 
 	tests := []struct {
-		name    string
-		fields  fields
-		args    args
-		want    *proto.Response
-		wantErr bool
+		name     string
+		fields   fields
+		args     args
+		want     *proto.Response
+		wantErr  bool
+		errorMsg error
 	}{
 		{
 			name:   "should delete document",
@@ -176,7 +230,32 @@ func TestDocumentServer_Delete(t *testing.T) {
 			want:    okRes,
 			wantErr: false,
 		},
-		// TODO: Add tests for error cases
+		{
+			name:   "should fail if userId is incorrect",
+			fields: fields{App: &testApp},
+			args: args{
+				ctx: context.Background(),
+				req: &proto.DocumentRequest{
+					DocumentID: "a09f7658-19f7-4854-ab1d-e1052fa2ecce",
+					UserID:     "justWrongId",
+				},
+			},
+			wantErr:  true,
+			errorMsg: ErrInvalidUserId,
+		},
+		{
+			name:   "should fail if documentId is incorrect",
+			fields: fields{App: &testApp},
+			args: args{
+				ctx: context.Background(),
+				req: &proto.DocumentRequest{
+					DocumentID: "justWrongId",
+					UserID:     "76193e99-7451-408a-91b8-215761414775",
+				},
+			},
+			wantErr:  true,
+			errorMsg: ErrInvalidDocumentId,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -187,6 +266,10 @@ func TestDocumentServer_Delete(t *testing.T) {
 			got, err := ds.Delete(tt.args.ctx, tt.args.req)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("DocumentServer.Delete() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if tt.wantErr && !errors.Is(err, tt.errorMsg) {
+				t.Errorf("DocumentServer.Delete() wrong error msg = %v, want %v", err.Error(), tt.errorMsg.Error())
 				return
 			}
 			if !reflect.DeepEqual(got, tt.want) {
@@ -227,11 +310,12 @@ func TestDocumentServer_GetOne(t *testing.T) {
 	}
 
 	tests := []struct {
-		name    string
-		fields  fields
-		args    args
-		want    *proto.ResponseDocument
-		wantErr bool
+		name     string
+		fields   fields
+		args     args
+		want     *proto.ResponseDocument
+		wantErr  bool
+		errorMsg error
 	}{
 		{
 			name:   "should find document",
@@ -243,7 +327,32 @@ func TestDocumentServer_GetOne(t *testing.T) {
 			want:    okRes,
 			wantErr: false,
 		},
-		// TODO: Add tests for error cases
+		{
+			name:   "should fail if userId is incorrect",
+			fields: fields{App: &testApp},
+			args: args{
+				ctx: context.Background(),
+				req: &proto.DocumentRequest{
+					DocumentID: "a09f7658-19f7-4854-ab1d-e1052fa2ecce",
+					UserID:     "justWrongId",
+				},
+			},
+			wantErr:  true,
+			errorMsg: ErrInvalidUserId,
+		},
+		{
+			name:   "should fail if documentId is incorrect",
+			fields: fields{App: &testApp},
+			args: args{
+				ctx: context.Background(),
+				req: &proto.DocumentRequest{
+					DocumentID: "justWrongId",
+					UserID:     "76193e99-7451-408a-91b8-215761414775",
+				},
+			},
+			wantErr:  true,
+			errorMsg: ErrInvalidDocumentId,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -254,6 +363,10 @@ func TestDocumentServer_GetOne(t *testing.T) {
 			got, err := ds.GetOne(tt.args.ctx, tt.args.req)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("DocumentServer.GetOne() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if tt.wantErr && !errors.Is(err, tt.errorMsg) {
+				t.Errorf("DocumentServer.GetOne() wrong error msg = %v, want %v", err.Error(), tt.errorMsg.Error())
 				return
 			}
 			if !reflect.DeepEqual(got, tt.want) {
@@ -287,11 +400,12 @@ func TestDocumentServer_GetAll(t *testing.T) {
 	}
 
 	tests := []struct {
-		name    string
-		fields  fields
-		args    args
-		want    *proto.ResponseDocumentsList
-		wantErr bool
+		name     string
+		fields   fields
+		args     args
+		want     *proto.ResponseDocumentsList
+		wantErr  bool
+		errorMsg error
 	}{
 		{
 			name:   "should find all documents",
@@ -303,7 +417,18 @@ func TestDocumentServer_GetAll(t *testing.T) {
 			want:    okRes,
 			wantErr: false,
 		},
-		// TODO: Add tests for error cases
+		{
+			name:   "should fail if userId is incorrect",
+			fields: fields{App: &testApp},
+			args: args{
+				ctx: context.Background(),
+				req: &proto.DocumentsRequest{
+					UserID: "justWrongId",
+				},
+			},
+			wantErr:  true,
+			errorMsg: ErrInvalidUserId,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -314,6 +439,10 @@ func TestDocumentServer_GetAll(t *testing.T) {
 			got, err := ds.GetAll(tt.args.ctx, tt.args.req)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("DocumentServer.GetAll() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if tt.wantErr && !errors.Is(err, tt.errorMsg) {
+				t.Errorf("DocumentServer.GetOne() wrong error msg = %v, want %v", err.Error(), tt.errorMsg.Error())
 				return
 			}
 			if !reflect.DeepEqual(got, tt.want) {
