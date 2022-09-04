@@ -100,6 +100,11 @@ message Response {
 	string result = 1;
 }
 
+message ResponseCount {
+	string result = 1;
+	int64 count = 2;
+}
+
 message ResponseDocumentsStatistics {
 	string result = 1;
 	int64 total = 2;
@@ -140,4 +145,5 @@ service NotificationService {
 	rpc Edit(NotificationCreateRequest) returns (Response);
 	rpc Delete(NotificationCreateRequest) returns (Response);
 	rpc GetAll(NotificationsRequest) returns (ResponseNotificationsList);
+	rpc Count(NotificationsRequest) returns (ResponseCount);
 }

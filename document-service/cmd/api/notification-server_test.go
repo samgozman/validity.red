@@ -7,6 +7,7 @@ import (
 	"reflect"
 	"testing"
 
+	"github.com/google/uuid"
 	proto "github.com/samgozman/validity.red/document/proto"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
@@ -482,6 +483,204 @@ func TestNotificationServer_GetAll(t *testing.T) {
 			// if !reflect.DeepEqual(got, tt.want) {
 			// 	t.Errorf("NotificationServer.GetAll() = %v, want %v", got, tt.want)
 			// }
+		})
+	}
+}
+
+func TestNotificationServer_Count(t *testing.T) {
+	type fields struct {
+		App                                    *Config
+		UnimplementedNotificationServiceServer proto.UnimplementedNotificationServiceServer
+	}
+	type args struct {
+		ctx context.Context
+		req *proto.NotificationsRequest
+	}
+
+	okReq := &proto.NotificationsRequest{
+		DocumentID: "434377cf-7509-4cc0-9895-0afa683f0e56",
+		UserID:     "458c9061-5262-48b7-9b87-e47fa64d654c",
+	}
+
+	okRes := &proto.ResponseCount{
+		Result: fmt.Sprintf(
+			"User '%s' received notifications count for the '%s' document",
+			okReq.UserID,
+			okReq.DocumentID,
+		),
+	}
+
+	tests := []struct {
+		name     string
+		fields   fields
+		args     args
+		want     *proto.ResponseCount
+		wantErr  bool
+		errorMsg error
+	}{
+		{
+			name:   "should count all notifications",
+			fields: fields{App: &testApp},
+			args: args{
+				ctx: context.Background(),
+				req: okReq,
+			},
+			want:    okRes,
+			wantErr: false,
+		},
+		{
+			name:   "should fail if userId is incorrect",
+			fields: fields{App: &testApp},
+			args: args{
+				ctx: context.Background(),
+				req: &proto.NotificationsRequest{
+					DocumentID: "434377cf-7509-4cc0-9895-0afa683f0e56",
+					UserID:     "wrongId",
+				},
+			},
+			wantErr:  true,
+			errorMsg: ErrInvalidUserId,
+		},
+		{
+			name:   "should fail if documentId is incorrect",
+			fields: fields{App: &testApp},
+			args: args{
+				ctx: context.Background(),
+				req: &proto.NotificationsRequest{
+					DocumentID: "wrongId",
+					UserID:     "458c9061-5262-48b7-9b87-e47fa64d654c",
+				},
+			},
+			wantErr:  true,
+			errorMsg: ErrInvalidDocumentId,
+		},
+		{
+			name:   "should fail if documentId is not exists",
+			fields: fields{App: &testApp},
+			args: args{
+				ctx: context.Background(),
+				req: &proto.NotificationsRequest{
+					DocumentID: "00000000-0000-0000-0000-000000000000",
+					UserID:     "458c9061-5262-48b7-9b87-e47fa64d654c",
+				},
+			},
+			wantErr:  true,
+			errorMsg: ErrDocumentNotFound,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			ds := &NotificationServer{
+				App:                                    tt.fields.App,
+				UnimplementedNotificationServiceServer: tt.fields.UnimplementedNotificationServiceServer,
+			}
+			got, err := ds.Count(tt.args.ctx, tt.args.req)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("NotificationServer.Count() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if tt.wantErr && !errors.Is(err, tt.errorMsg) {
+				t.Errorf("NotificationServer.Count() wrong error msg = %v, want %v", err.Error(), tt.errorMsg.Error())
+				return
+			}
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("NotificationServer.Count() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestNotificationServer_checkInputsAndDocumentExistence(t *testing.T) {
+	type fields struct {
+		App                                    *Config
+		UnimplementedNotificationServiceServer proto.UnimplementedNotificationServiceServer
+	}
+	type args struct {
+		ctx context.Context
+		uID string
+		dID string
+	}
+
+	dID, _ := uuid.Parse("434377cf-7509-4cc0-9895-0afa683f0e56")
+	uID, _ := uuid.Parse("458c9061-5262-48b7-9b87-e47fa64d654c")
+	d404, _ := uuid.Parse("45d4202d-d7ee-4d48-a4ac-f81b9448b1d9")
+
+	tests := []struct {
+		name           string
+		fields         fields
+		args           args
+		wantUserID     uuid.UUID
+		wantDocumentID uuid.UUID
+		wantErr        bool
+		errorMsg       error
+	}{
+		{
+			name:   "should pass",
+			fields: fields{App: &testApp},
+			args: args{
+				ctx: context.Background(),
+				dID: dID.String(),
+				uID: uID.String(),
+			},
+			wantUserID:     uID,
+			wantDocumentID: dID,
+			wantErr:        false,
+		},
+		{
+			name:   "should fail if userId is invalid",
+			fields: fields{App: &testApp},
+			args: args{
+				ctx: context.Background(),
+				dID: dID.String(),
+				uID: "wrongUID",
+			},
+			wantErr:  true,
+			errorMsg: ErrInvalidUserId,
+		},
+		{
+			name:   "should fail if documentId is invalid",
+			fields: fields{App: &testApp},
+			args: args{
+				ctx: context.Background(),
+				dID: "wrongUID",
+				uID: uID.String(),
+			},
+			wantErr:  true,
+			errorMsg: ErrInvalidDocumentId,
+		},
+		{
+			name:   "should fail if document is not found",
+			fields: fields{App: &testApp},
+			args: args{
+				ctx: context.Background(),
+				dID: d404.String(),
+				uID: uID.String(),
+			},
+			wantErr:  true,
+			errorMsg: ErrDocumentNotFound,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			ds := &NotificationServer{
+				App:                                    tt.fields.App,
+				UnimplementedNotificationServiceServer: tt.fields.UnimplementedNotificationServiceServer,
+			}
+			gotUserID, gotDocumentID, err := ds.checkInputsAndDocumentExistence(tt.args.ctx, tt.args.uID, tt.args.dID)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("NotificationServer.checkInputsAndDocumentExistence() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !reflect.DeepEqual(gotUserID, tt.wantUserID) {
+				t.Errorf("NotificationServer.checkInputsAndDocumentExistence() gotUserID = %v, want %v", gotUserID, tt.wantUserID)
+			}
+			if tt.wantErr && !errors.Is(err, tt.errorMsg) {
+				t.Errorf("NotificationServer.checkInputsAndDocumentExistence() wrong error msg = %v, want %v", err.Error(), tt.errorMsg.Error())
+				return
+			}
+			if !reflect.DeepEqual(gotDocumentID, tt.wantDocumentID) {
+				t.Errorf("NotificationServer.checkInputsAndDocumentExistence() gotDocumentID = %v, want %v", gotDocumentID, tt.wantDocumentID)
+			}
 		})
 	}
 }
