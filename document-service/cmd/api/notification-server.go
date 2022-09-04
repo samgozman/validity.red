@@ -164,11 +164,11 @@ func (ds *NotificationServer) checkInputsAndDocumentExistence(
 	// Validate input arguments
 	userID, err := uuid.Parse(uID)
 	if err != nil {
-		return uuid.UUID{}, uuid.UUID{}, ErrInvalidUserId
+		return uuid.Nil, uuid.Nil, ErrInvalidUserId
 	}
 	documentID, err = uuid.Parse(dID)
 	if err != nil {
-		return uuid.UUID{}, uuid.UUID{}, ErrInvalidDocumentId
+		return uuid.Nil, uuid.Nil, ErrInvalidDocumentId
 	}
 
 	// Check if that document exists
@@ -178,10 +178,10 @@ func (ds *NotificationServer) checkInputsAndDocumentExistence(
 	}
 	isDocumentExist, err := ds.App.Documents.Exists(ctx, &d)
 	if err != nil {
-		return uuid.UUID{}, uuid.UUID{}, err
+		return uuid.Nil, uuid.Nil, err
 	}
 	if !isDocumentExist {
-		return uuid.UUID{}, uuid.UUID{}, ErrDocumentNotFound
+		return uuid.Nil, uuid.Nil, ErrDocumentNotFound
 	}
 
 	return userID, documentID, nil
