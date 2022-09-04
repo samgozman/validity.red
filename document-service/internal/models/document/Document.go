@@ -297,6 +297,7 @@ func (db *DocumentDB) Count(ctx context.Context, userId uuid.UUID) (int64, error
 // Get count for all used document types
 func (db *DocumentDB) CountTypes(ctx context.Context, userId uuid.UUID) ([]*proto.DocumentTypesCount, error) {
 	var types []*proto.DocumentTypesCount
+	// TODO: Refactor in gorm ORM style if possible
 	res := db.Conn.
 		WithContext(ctx).
 		Raw(
@@ -311,3 +312,5 @@ func (db *DocumentDB) CountTypes(ctx context.Context, userId uuid.UUID) ([]*prot
 
 	return types, nil
 }
+
+// TODO: Find top 5 documents sorted by expiration date
