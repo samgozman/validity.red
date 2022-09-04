@@ -120,3 +120,22 @@ func (db *NotificationDB) FindAll(ctx context.Context, documentID uuid.UUID) ([]
 
 	return notifications, nil
 }
+
+// Count notifications for a given document
+func (db *NotificationDB) Count(ctx context.Context, documentID uuid.UUID) (int64, error) {
+	var count int64
+
+	res := db.Conn.
+		WithContext(ctx).
+		Model(&Notification{}).
+		Where(&Notification{DocumentID: documentID}).
+		Count(&count)
+
+	if res.Error != nil {
+		return 0, res.Error
+	}
+
+	return count, nil
+}
+
+// TODO: Find top 5 latest notifications sorted by Date

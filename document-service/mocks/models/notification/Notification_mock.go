@@ -34,3 +34,7 @@ func (db *NotificationDBTest) FindAll(ctx context.Context, documentID uuid.UUID)
 	var notifications []notification.Notification
 	return notifications, nil
 }
+
+func (db *NotificationDBTest) Count(ctx context.Context, documentID uuid.UUID) (int64, error) {
+	return 0, nil
+}
