@@ -18,7 +18,7 @@ frontend-service/coverage
 
 # Ignore editor directories and files
 .vscode/*
-!.vscode/extensions.json
+*/.vscode/*
 .idea
 *.suo
 *.ntvs*
