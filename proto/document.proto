@@ -109,6 +109,7 @@ message ResponseDocumentsStatistics {
 	string result = 1;
 	int64 total = 2;
 	repeated DocumentTypesCount types = 3;
+	repeated Document latestDocuments = 4;
 }
 
 message ResponseDocument {

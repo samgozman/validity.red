@@ -58,3 +58,8 @@ func (db *DocumentDBTest) CountTypes(ctx context.Context, userId uuid.UUID) ([]*
 	var types []*proto.DocumentTypesCount
 	return types, nil
 }
+
+func (db *DocumentDBTest) FindLatest(ctx context.Context, userId uuid.UUID, limit int) ([]document.Document, error) {
+	var documents []document.Document
+	return documents, nil
+}

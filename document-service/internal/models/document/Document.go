@@ -270,6 +270,7 @@ func (db *DocumentDB) FindAll(ctx context.Context, userId uuid.UUID) ([]Document
 		return nil, res.Error
 	}
 
+	// TODO: Remove this error, just return an empty array
 	if res.RowsAffected == 0 {
 		return nil, errors.New("documents not found")
 	}
@@ -313,4 +314,22 @@ func (db *DocumentDB) CountTypes(ctx context.Context, userId uuid.UUID) ([]*prot
 	return types, nil
 }
 
-// TODO: Find top 5 documents sorted by expiration date
+// Find top N latest documents sorted by expiration date
+func (db *DocumentDB) FindLatest(ctx context.Context, userId uuid.UUID, limit int) ([]Document, error) {
+	var documents []Document
+
+	// TODO: Specify attributes to fetch
+	res := db.Conn.
+		WithContext(ctx).
+		Model(&Document{}).
+		Where(&Document{UserID: userId}).
+		Order("expires_at DESC").
+		Limit(limit).
+		Find(&documents)
+
+	if res.Error != nil {
+		return nil, res.Error
+	}
+
+	return documents, nil
+}

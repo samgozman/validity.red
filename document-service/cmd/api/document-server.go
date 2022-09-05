@@ -6,6 +6,7 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/samgozman/validity.red/document/internal/models/document"
+	"github.com/samgozman/validity.red/document/internal/utils"
 	proto "github.com/samgozman/validity.red/document/proto"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
@@ -164,22 +165,10 @@ func (ds *DocumentServer) GetAll(ctx context.Context, req *proto.DocumentsReques
 		return nil, err
 	}
 
-	// Transform documents to proto format
-	protoDocuments := make([]*proto.Document, len(documents))
-	for i, d := range documents {
-		protoDocuments[i] = &proto.Document{
-			ID:          d.ID.String(),
-			Title:       d.Title,
-			Type:        d.Type,
-			Description: d.Description,
-			ExpiresAt:   timestamppb.New(d.ExpiresAt),
-		}
-	}
-
 	// return response
 	res := &proto.ResponseDocumentsList{
 		Result:    fmt.Sprintf("User '%s' found %d documents successfully!", userID, len(documents)),
-		Documents: protoDocuments,
+		Documents: utils.ConvertDocumentsToProtoFormat(&documents),
 	}
 	return res, nil
 }
@@ -203,9 +192,15 @@ func (ds *DocumentServer) GetUserStatistics(
 		return nil, err
 	}
 
+	latest, err := ds.App.Documents.FindLatest(ctx, userID, 5)
+	if err != nil {
+		return nil, err
+	}
+
 	return &proto.ResponseDocumentsStatistics{
-		Result: fmt.Sprintf("User '%s' get documents statistics successfully!", userID),
-		Total:  total,
-		Types:  types,
+		Result:          fmt.Sprintf("User '%s' get documents statistics successfully!", userID),
+		Total:           total,
+		Types:           types,
+		LatestDocuments: utils.ConvertDocumentsToProtoFormat(&latest),
 	}, nil
 }
