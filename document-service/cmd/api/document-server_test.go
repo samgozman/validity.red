@@ -396,7 +396,6 @@ func TestDocumentServer_GetAll(t *testing.T) {
 			okReq.UserID,
 			0,
 		),
-		Documents: []*proto.Document{},
 	}
 
 	tests := []struct {
