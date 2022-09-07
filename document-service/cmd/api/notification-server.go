@@ -139,7 +139,7 @@ func (ds *NotificationServer) Count(
 		return nil, err
 	}
 
-	count, err := ds.App.Notifications.Count(ctx, documentID)
+	count, err := ds.App.Notifications.Count(ctx, []uuid.UUID{documentID})
 	if err != nil {
 		return nil, err
 	}

@@ -121,14 +121,16 @@ func (db *NotificationDB) FindAll(ctx context.Context, documentID uuid.UUID) ([]
 	return notifications, nil
 }
 
-// Count notifications for a given document
-func (db *NotificationDB) Count(ctx context.Context, documentID uuid.UUID) (int64, error) {
+// Count notifications for a given documents
+func (db *NotificationDB) Count(ctx context.Context, documentIDs []uuid.UUID) (int64, error) {
 	var count int64
 
 	res := db.Conn.
 		WithContext(ctx).
 		Model(&Notification{}).
-		Where(&Notification{DocumentID: documentID}).
+		// Because Associations.Count do not work as expected (allways zero)
+		// TODO: Can be replaced with raw SQL query (to not to call db twice)
+		Where("document_id IN ?", documentIDs).
 		Count(&count)
 
 	if res.Error != nil {
@@ -137,5 +139,3 @@ func (db *NotificationDB) Count(ctx context.Context, documentID uuid.UUID) (int6
 
 	return count, nil
 }
-
-// TODO: Find top 5 latest notifications sorted by Date
