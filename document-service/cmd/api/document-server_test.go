@@ -524,3 +524,77 @@ func TestDocumentServer_GetUserStatistics(t *testing.T) {
 		})
 	}
 }
+
+func TestDocumentServer_GetIDs(t *testing.T) {
+	type fields struct {
+		App                                *Config
+		UnimplementedDocumentServiceServer proto.UnimplementedDocumentServiceServer
+	}
+	type args struct {
+		ctx context.Context
+		req *proto.DocumentsRequest
+	}
+
+	okReq := &proto.DocumentsRequest{
+		UserID: "458c9061-5262-48b7-9b87-e47fa64d654c",
+	}
+
+	okRes := &proto.ResponseIDs{
+		Result: fmt.Sprintf(
+			"User '%s' get all his documents IDs!",
+			okReq.UserID,
+		),
+	}
+
+	tests := []struct {
+		name     string
+		fields   fields
+		args     args
+		want     *proto.ResponseIDs
+		wantErr  bool
+		errorMsg error
+	}{
+		{
+			name:   "should find all IDs",
+			fields: fields{App: &testApp},
+			args: args{
+				ctx: context.Background(),
+				req: okReq,
+			},
+			want:    okRes,
+			wantErr: false,
+		},
+		{
+			name:   "should fail if userId is incorrect",
+			fields: fields{App: &testApp},
+			args: args{
+				ctx: context.Background(),
+				req: &proto.DocumentsRequest{
+					UserID: "justWrongId",
+				},
+			},
+			wantErr:  true,
+			errorMsg: ErrInvalidUserId,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			ds := &DocumentServer{
+				App:                                tt.fields.App,
+				UnimplementedDocumentServiceServer: tt.fields.UnimplementedDocumentServiceServer,
+			}
+			got, err := ds.GetIDs(tt.args.ctx, tt.args.req)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("DocumentServer.GetIDs() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if tt.wantErr && !errors.Is(err, tt.errorMsg) {
+				t.Errorf("DocumentServer.GetIDs() wrong error msg = %v, want %v", err.Error(), tt.errorMsg.Error())
+				return
+			}
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("DocumentServer.GetIDs() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}

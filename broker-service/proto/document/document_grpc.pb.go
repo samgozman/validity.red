@@ -28,6 +28,7 @@ type DocumentServiceClient interface {
 	GetOne(ctx context.Context, in *DocumentRequest, opts ...grpc.CallOption) (*ResponseDocument, error)
 	GetAll(ctx context.Context, in *DocumentsRequest, opts ...grpc.CallOption) (*ResponseDocumentsList, error)
 	GetUserStatistics(ctx context.Context, in *DocumentsRequest, opts ...grpc.CallOption) (*ResponseDocumentsStatistics, error)
+	GetIDs(ctx context.Context, in *DocumentsRequest, opts ...grpc.CallOption) (*ResponseIDs, error)
 }
 
 type documentServiceClient struct {
@@ -92,6 +93,15 @@ func (c *documentServiceClient) GetUserStatistics(ctx context.Context, in *Docum
 	return out, nil
 }
 
+func (c *documentServiceClient) GetIDs(ctx context.Context, in *DocumentsRequest, opts ...grpc.CallOption) (*ResponseIDs, error) {
+	out := new(ResponseIDs)
+	err := c.cc.Invoke(ctx, "/document.DocumentService/GetIDs", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // DocumentServiceServer is the server API for DocumentService service.
 // All implementations must embed UnimplementedDocumentServiceServer
 // for forward compatibility
@@ -102,6 +112,7 @@ type DocumentServiceServer interface {
 	GetOne(context.Context, *DocumentRequest) (*ResponseDocument, error)
 	GetAll(context.Context, *DocumentsRequest) (*ResponseDocumentsList, error)
 	GetUserStatistics(context.Context, *DocumentsRequest) (*ResponseDocumentsStatistics, error)
+	GetIDs(context.Context, *DocumentsRequest) (*ResponseIDs, error)
 	mustEmbedUnimplementedDocumentServiceServer()
 }
 
@@ -126,6 +137,9 @@ func (UnimplementedDocumentServiceServer) GetAll(context.Context, *DocumentsRequ
 }
 func (UnimplementedDocumentServiceServer) GetUserStatistics(context.Context, *DocumentsRequest) (*ResponseDocumentsStatistics, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetUserStatistics not implemented")
+}
+func (UnimplementedDocumentServiceServer) GetIDs(context.Context, *DocumentsRequest) (*ResponseIDs, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetIDs not implemented")
 }
 func (UnimplementedDocumentServiceServer) mustEmbedUnimplementedDocumentServiceServer() {}
 
@@ -248,6 +262,24 @@ func _DocumentService_GetUserStatistics_Handler(srv interface{}, ctx context.Con
 	return interceptor(ctx, in, info, handler)
 }
 
+func _DocumentService_GetIDs_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DocumentsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DocumentServiceServer).GetIDs(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/document.DocumentService/GetIDs",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DocumentServiceServer).GetIDs(ctx, req.(*DocumentsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // DocumentService_ServiceDesc is the grpc.ServiceDesc for DocumentService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -278,6 +310,10 @@ var DocumentService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetUserStatistics",
 			Handler:    _DocumentService_GetUserStatistics_Handler,
+		},
+		{
+			MethodName: "GetIDs",
+			Handler:    _DocumentService_GetIDs_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
