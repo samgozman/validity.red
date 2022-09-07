@@ -17,4 +17,5 @@ type DocumentRepository interface {
 	Count(ctx context.Context, userId uuid.UUID) (int64, error)
 	CountTypes(ctx context.Context, userId uuid.UUID) ([]*proto.DocumentTypesCount, error)
 	FindLatest(ctx context.Context, userId uuid.UUID, limit int) ([]Document, error)
+	FindIDs(ctx context.Context, userId uuid.UUID) ([]uuid.UUID, error)
 }

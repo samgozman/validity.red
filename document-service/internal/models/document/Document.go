@@ -333,3 +333,27 @@ func (db *DocumentDB) FindLatest(ctx context.Context, userId uuid.UUID, limit in
 
 	return documents, nil
 }
+
+// Find all documents ids for a given user
+func (db *DocumentDB) FindIDs(ctx context.Context, userId uuid.UUID) ([]uuid.UUID, error) {
+	var idsObj []struct {
+		ID uuid.UUID
+	}
+
+	res := db.Conn.
+		Select("id").
+		Where(&Document{UserID: userId}).
+		Scan(&idsObj)
+
+	if res.Error != nil {
+		return nil, res.Error
+	}
+
+	var ids []uuid.UUID
+
+	for _, e := range idsObj {
+		ids = append(ids, e.ID)
+	}
+
+	return ids, nil
+}

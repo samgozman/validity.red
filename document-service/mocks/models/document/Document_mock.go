@@ -63,3 +63,8 @@ func (db *DocumentDBTest) FindLatest(ctx context.Context, userId uuid.UUID, limi
 	var documents []document.Document
 	return documents, nil
 }
+
+func (db *DocumentDBTest) FindIDs(ctx context.Context, userId uuid.UUID) ([]uuid.UUID, error) {
+	var ids []uuid.UUID
+	return ids, nil
+}
