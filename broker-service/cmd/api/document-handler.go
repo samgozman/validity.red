@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"net/http"
 	"time"
 
@@ -237,7 +238,7 @@ func (app *Config) documentGetAll(c *gin.Context) {
 	if err != nil {
 		go app.logger.LogWarn(&logs.Log{
 			Service: "document-service",
-			Message: "Error on calling GetOne method",
+			Message: "Error on calling GetAll method",
 			Error:   err.Error(),
 		})
 
@@ -259,6 +260,98 @@ func (app *Config) documentGetAll(c *gin.Context) {
 	go app.logger.LogInfo(&logs.Log{
 		Service: "document-service",
 		Message: res.Result,
+	})
+
+	c.JSON(http.StatusOK, payload)
+}
+
+// TODO: Cache this route
+func (app *Config) documentGetStatistics(c *gin.Context) {
+	ctx, cancel := context.WithTimeout(context.Background(), 2*time.Second)
+	defer cancel()
+
+	// get userId from context
+	userId, _ := c.Get("UserId")
+
+	var payload jsonResponse
+	var statistics struct {
+		TotalDocuments     int64                          `json:"totalDocuments"`
+		TotalNotifications int64                          `json:"totalNotifications"`
+		UsedTypes          []*document.DocumentTypesCount `json:"usedTypes"`
+		LatestDocuments    []*document.Document           `json:"latestDocuments"`
+	}
+
+	// call services
+	getStats, err := app.documentsClient.documentService.GetUserStatistics(ctx, &document.DocumentsRequest{
+		UserID: userId.(string),
+	})
+	if err != nil {
+		go app.logger.LogWarn(&logs.Log{
+			Service: "document-service",
+			Message: "Error on calling GetOne method with GetUserStatistics",
+			Error:   err.Error(),
+		})
+
+		payload.Error = true
+		payload.Message = err.Error()
+
+		c.JSON(http.StatusBadRequest, payload)
+		return
+	}
+
+	statistics.TotalDocuments = getStats.Total
+	statistics.LatestDocuments = getStats.LatestDocuments
+	statistics.UsedTypes = getStats.Types
+
+	getIDs, err := app.documentsClient.documentService.GetIDs(ctx, &document.DocumentsRequest{
+		UserID: userId.(string),
+	})
+	if err != nil {
+		go app.logger.LogWarn(&logs.Log{
+			Service: "document-service",
+			Message: "Error on calling GetOne method with GetIDs",
+			Error:   err.Error(),
+		})
+
+		payload.Error = true
+		payload.Message = err.Error()
+
+		c.JSON(http.StatusBadRequest, payload)
+		return
+	}
+
+	if len(getIDs.Ids) == 0 {
+		statistics.TotalNotifications = 0
+	} else {
+		totalNotificationsCount, err := app.documentsClient.notificationService.Count(ctx, &document.NotificationsRequest{
+			UserID:      userId.(string),
+			DocumentIDs: getIDs.Ids,
+		})
+		if err != nil {
+			go app.logger.LogWarn(&logs.Log{
+				Service: "document-service",
+				Message: "Error on calling GetOne method with Count",
+				Error:   err.Error(),
+			})
+
+			payload.Error = true
+			payload.Message = err.Error()
+
+			c.JSON(http.StatusBadRequest, payload)
+			return
+		}
+
+		statistics.TotalNotifications = totalNotificationsCount.Count
+	}
+
+	msg := fmt.Sprintf("User '%s' successfully called documentGetStatistics method", userId.(string))
+	payload.Error = false
+	payload.Message = msg
+	payload.Data = statistics
+
+	go app.logger.LogInfo(&logs.Log{
+		Service: "document-service",
+		Message: msg,
 	})
 
 	c.JSON(http.StatusOK, payload)

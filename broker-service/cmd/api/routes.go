@@ -31,6 +31,7 @@ func (app *Config) routes() *gin.Engine {
 		// TODO: edit/:id
 		documents.PATCH("/edit", app.documentEdit)
 		documents.DELETE("/:documentId/delete", app.documentDelete)
+		documents.GET("/statistics", app.documentGetStatistics)
 	}
 
 	user := g.Group("/user")
