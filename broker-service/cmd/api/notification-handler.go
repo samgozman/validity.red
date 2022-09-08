@@ -160,8 +160,8 @@ func (app *Config) documentNotificationGetAll(c *gin.Context) {
 
 	// call service
 	res, err := app.documentsClient.notificationService.GetAll(ctx, &document.NotificationsRequest{
-		DocumentID: documentId,
-		UserID:     userId.(string),
+		DocumentIDs: []string{documentId},
+		UserID:      userId.(string),
 	})
 	if err != nil {
 		go app.logger.LogWarn(&logs.Log{
