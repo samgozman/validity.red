@@ -328,7 +328,7 @@ type NotificationServiceClient interface {
 	Edit(ctx context.Context, in *NotificationCreateRequest, opts ...grpc.CallOption) (*Response, error)
 	Delete(ctx context.Context, in *NotificationCreateRequest, opts ...grpc.CallOption) (*Response, error)
 	GetAll(ctx context.Context, in *NotificationsRequest, opts ...grpc.CallOption) (*ResponseNotificationsList, error)
-	Count(ctx context.Context, in *NotificationsRequest, opts ...grpc.CallOption) (*ResponseCount, error)
+	Count(ctx context.Context, in *NotificationsCountRequest, opts ...grpc.CallOption) (*ResponseCount, error)
 }
 
 type notificationServiceClient struct {
@@ -375,7 +375,7 @@ func (c *notificationServiceClient) GetAll(ctx context.Context, in *Notification
 	return out, nil
 }
 
-func (c *notificationServiceClient) Count(ctx context.Context, in *NotificationsRequest, opts ...grpc.CallOption) (*ResponseCount, error) {
+func (c *notificationServiceClient) Count(ctx context.Context, in *NotificationsCountRequest, opts ...grpc.CallOption) (*ResponseCount, error) {
 	out := new(ResponseCount)
 	err := c.cc.Invoke(ctx, "/document.NotificationService/Count", in, out, opts...)
 	if err != nil {
@@ -392,7 +392,7 @@ type NotificationServiceServer interface {
 	Edit(context.Context, *NotificationCreateRequest) (*Response, error)
 	Delete(context.Context, *NotificationCreateRequest) (*Response, error)
 	GetAll(context.Context, *NotificationsRequest) (*ResponseNotificationsList, error)
-	Count(context.Context, *NotificationsRequest) (*ResponseCount, error)
+	Count(context.Context, *NotificationsCountRequest) (*ResponseCount, error)
 	mustEmbedUnimplementedNotificationServiceServer()
 }
 
@@ -412,7 +412,7 @@ func (UnimplementedNotificationServiceServer) Delete(context.Context, *Notificat
 func (UnimplementedNotificationServiceServer) GetAll(context.Context, *NotificationsRequest) (*ResponseNotificationsList, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetAll not implemented")
 }
-func (UnimplementedNotificationServiceServer) Count(context.Context, *NotificationsRequest) (*ResponseCount, error) {
+func (UnimplementedNotificationServiceServer) Count(context.Context, *NotificationsCountRequest) (*ResponseCount, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Count not implemented")
 }
 func (UnimplementedNotificationServiceServer) mustEmbedUnimplementedNotificationServiceServer() {}
@@ -501,7 +501,7 @@ func _NotificationService_GetAll_Handler(srv interface{}, ctx context.Context, d
 }
 
 func _NotificationService_Count_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(NotificationsRequest)
+	in := new(NotificationsCountRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -513,7 +513,7 @@ func _NotificationService_Count_Handler(srv interface{}, ctx context.Context, de
 		FullMethod: "/document.NotificationService/Count",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(NotificationServiceServer).Count(ctx, req.(*NotificationsRequest))
+		return srv.(NotificationServiceServer).Count(ctx, req.(*NotificationsCountRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }

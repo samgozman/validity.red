@@ -494,19 +494,18 @@ func TestNotificationServer_Count(t *testing.T) {
 	}
 	type args struct {
 		ctx context.Context
-		req *proto.NotificationsRequest
+		req *proto.NotificationsCountRequest
 	}
 
-	okReq := &proto.NotificationsRequest{
-		DocumentID: "434377cf-7509-4cc0-9895-0afa683f0e56",
-		UserID:     "458c9061-5262-48b7-9b87-e47fa64d654c",
+	okReq := &proto.NotificationsCountRequest{
+		DocumentIDs: []string{"434377cf-7509-4cc0-9895-0afa683f0e56"},
+		UserID:      "458c9061-5262-48b7-9b87-e47fa64d654c",
 	}
 
 	okRes := &proto.ResponseCount{
 		Result: fmt.Sprintf(
-			"User '%s' received notifications count for the '%s' document",
+			"User '%s' received notifications count for document",
 			okReq.UserID,
-			okReq.DocumentID,
 		),
 	}
 
@@ -533,9 +532,9 @@ func TestNotificationServer_Count(t *testing.T) {
 			fields: fields{App: &testApp},
 			args: args{
 				ctx: context.Background(),
-				req: &proto.NotificationsRequest{
-					DocumentID: "434377cf-7509-4cc0-9895-0afa683f0e56",
-					UserID:     "wrongId",
+				req: &proto.NotificationsCountRequest{
+					DocumentIDs: []string{"434377cf-7509-4cc0-9895-0afa683f0e56"},
+					UserID:      "wrongId",
 				},
 			},
 			wantErr:  true,
@@ -546,9 +545,9 @@ func TestNotificationServer_Count(t *testing.T) {
 			fields: fields{App: &testApp},
 			args: args{
 				ctx: context.Background(),
-				req: &proto.NotificationsRequest{
-					DocumentID: "wrongId",
-					UserID:     "458c9061-5262-48b7-9b87-e47fa64d654c",
+				req: &proto.NotificationsCountRequest{
+					DocumentIDs: []string{"wrongId"},
+					UserID:      "458c9061-5262-48b7-9b87-e47fa64d654c",
 				},
 			},
 			wantErr:  true,
@@ -559,9 +558,9 @@ func TestNotificationServer_Count(t *testing.T) {
 			fields: fields{App: &testApp},
 			args: args{
 				ctx: context.Background(),
-				req: &proto.NotificationsRequest{
-					DocumentID: "00000000-0000-0000-0000-000000000000",
-					UserID:     "458c9061-5262-48b7-9b87-e47fa64d654c",
+				req: &proto.NotificationsCountRequest{
+					DocumentIDs: []string{"00000000-0000-0000-0000-000000000000"},
+					UserID:      "458c9061-5262-48b7-9b87-e47fa64d654c",
 				},
 			},
 			wantErr:  true,

@@ -132,20 +132,32 @@ func (ds *NotificationServer) GetAll(
 
 func (ds *NotificationServer) Count(
 	ctx context.Context,
-	req *proto.NotificationsRequest,
+	req *proto.NotificationsCountRequest,
 ) (*proto.ResponseCount, error) {
-	userID, documentID, err := ds.checkInputsAndDocumentExistence(ctx, req.GetUserID(), req.GetDocumentID())
+	// userID, documentID, err := ds.checkInputsAndDocumentExistence(ctx, req.GetUserID(), req.GetDocumentIDs())
+	userID, err := uuid.Parse(req.GetUserID())
 	if err != nil {
 		return nil, err
 	}
 
-	count, err := ds.App.Notifications.Count(ctx, []uuid.UUID{documentID})
+	stringIDs := req.GetDocumentIDs()
+	var documentIDs []uuid.UUID
+	for _, id := range stringIDs {
+		parsed, err := uuid.Parse(id)
+		if err != nil {
+			continue
+		}
+
+		documentIDs = append(documentIDs, parsed)
+	}
+
+	count, err := ds.App.Notifications.Count(ctx, documentIDs)
 	if err != nil {
 		return nil, err
 	}
 
 	res := &proto.ResponseCount{
-		Result: fmt.Sprintf("User '%s' received notifications count for the '%s' document", userID, documentID),
+		Result: fmt.Sprintf("User '%s' received notifications count for document", userID),
 		Count:  count,
 	}
 	return res, nil
