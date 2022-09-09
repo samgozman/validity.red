@@ -320,9 +320,7 @@ func (app *Config) documentGetStatistics(c *gin.Context) {
 		return
 	}
 
-	if len(getIDs.Ids) == 0 {
-		statistics.TotalNotifications = 0
-	} else {
+	if len(getIDs.Ids) > 0 {
 		totalNotificationsCount, err := app.documentsClient.notificationService.Count(ctx, &document.NotificationsCountRequest{
 			UserID:      userId.(string),
 			DocumentIDs: getIDs.Ids,
