@@ -341,7 +341,9 @@ func (db *DocumentDB) FindIDs(ctx context.Context, userId uuid.UUID) ([]uuid.UUI
 	}
 
 	res := db.Conn.
+		WithContext(ctx).
 		Select("id").
+		Model(&Document{}).
 		Where(&Document{UserID: userId}).
 		Scan(&idsObj)
 
