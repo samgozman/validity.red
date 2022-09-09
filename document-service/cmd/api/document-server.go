@@ -187,7 +187,7 @@ func (ds *DocumentServer) GetUserStatistics(
 		return nil, err
 	}
 
-	types, err := ds.App.Documents.CountTypes(context.Background(), userID)
+	types, err := ds.App.Documents.CountTypes(ctx, userID)
 	if err != nil {
 		return nil, err
 	}
