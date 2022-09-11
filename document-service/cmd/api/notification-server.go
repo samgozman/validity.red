@@ -137,7 +137,7 @@ func (ds *NotificationServer) Count(
 	// userID, documentID, err := ds.checkInputsAndDocumentExistence(ctx, req.GetUserID(), req.GetDocumentIDs())
 	userID, err := uuid.Parse(req.GetUserID())
 	if err != nil {
-		return nil, err
+		return nil, ErrInvalidUserId
 	}
 
 	stringIDs := req.GetDocumentIDs()
@@ -145,7 +145,7 @@ func (ds *NotificationServer) Count(
 	for _, id := range stringIDs {
 		parsed, err := uuid.Parse(id)
 		if err != nil {
-			continue
+			return nil, ErrInvalidDocumentId
 		}
 
 		documentIDs = append(documentIDs, parsed)

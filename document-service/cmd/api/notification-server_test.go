@@ -553,19 +553,6 @@ func TestNotificationServer_Count(t *testing.T) {
 			wantErr:  true,
 			errorMsg: ErrInvalidDocumentId,
 		},
-		{
-			name:   "should fail if documentId is not exists",
-			fields: fields{App: &testApp},
-			args: args{
-				ctx: context.Background(),
-				req: &proto.NotificationsCountRequest{
-					DocumentIDs: []string{"00000000-0000-0000-0000-000000000000"},
-					UserID:      "458c9061-5262-48b7-9b87-e47fa64d654c",
-				},
-			},
-			wantErr:  true,
-			errorMsg: ErrDocumentNotFound,
-		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
