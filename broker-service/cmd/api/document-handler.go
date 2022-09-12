@@ -278,7 +278,7 @@ func (app *Config) documentGetStatistics(c *gin.Context) {
 		TotalDocuments     int64                          `json:"totalDocuments"`
 		TotalNotifications int64                          `json:"totalNotifications"`
 		UsedTypes          []*document.DocumentTypesCount `json:"usedTypes"`
-		LatestDocuments    []*document.Document           `json:"latestDocuments"`
+		LatestDocuments    []*document.DocumentJSON       `json:"latestDocuments"`
 	}
 
 	// call services
@@ -300,7 +300,7 @@ func (app *Config) documentGetStatistics(c *gin.Context) {
 	}
 
 	statistics.TotalDocuments = getStats.Total
-	statistics.LatestDocuments = getStats.LatestDocuments
+	statistics.LatestDocuments = utils.ConvertDocumentsToJSON(getStats.LatestDocuments)
 	statistics.UsedTypes = getStats.Types
 
 	getIDs, err := app.documentsClient.documentService.GetIDs(ctx, &document.DocumentsRequest{
