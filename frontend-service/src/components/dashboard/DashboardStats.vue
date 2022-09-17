@@ -4,7 +4,14 @@ import LatestDocumentsItem from "@/components/dashboard/LatestDocumentsItem.vue"
 </script>
 
 <template>
-  <div class="card col-span-3 row-span-1 shadow-lg compact bg-base-100">
+  <div
+    class="card col-span-7 row-span-1 shadow-lg compact bg-base-100 min-h-[40vh]"
+  >
+    <div class="flex-col sm:flex-row items-center card-body">
+      <p>Placeholder for calendar</p>
+    </div>
+  </div>
+  <div class="card col-span-3 row-span-3 shadow-lg compact bg-base-100">
     <div class="flex-col sm:flex-row items-center card-body">
       <div class="stat">
         <div class="stat-figure text-secondary stats-icon">
@@ -31,7 +38,7 @@ import LatestDocumentsItem from "@/components/dashboard/LatestDocumentsItem.vue"
       </div>
     </div>
   </div>
-  <div class="card col-span-2 row-span-1 shadow-lg compact bg-base-100">
+  <div class="card col-span-2 row-span-4 shadow-lg compact bg-base-100">
     <div class="flex-col items-center card-body">
       <h3 class="card-title text-primary text-left w-full px-4">
         Most used types
@@ -45,7 +52,7 @@ import LatestDocumentsItem from "@/components/dashboard/LatestDocumentsItem.vue"
       </ul>
     </div>
   </div>
-  <div class="card col-span-2 row-span-1 shadow-lg compact bg-base-100">
+  <div class="card col-span-2 row-span-4 shadow-lg compact bg-base-100">
     <div class="flex-col items-center card-body">
       <h3 class="card-title text-primary text-left w-full px-4">
         Latest documents
@@ -57,6 +64,11 @@ import LatestDocumentsItem from "@/components/dashboard/LatestDocumentsItem.vue"
           v-bind:document="document"
         />
       </ul>
+    </div>
+  </div>
+  <div class="card col-span-3 row-span-1 shadow-lg compact bg-base-100">
+    <div class="flex-col sm:flex-row items-center card-body">
+      <p>App version and link to changelog</p>
     </div>
   </div>
 </template>
