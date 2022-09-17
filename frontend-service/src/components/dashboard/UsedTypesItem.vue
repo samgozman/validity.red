@@ -8,11 +8,13 @@ defineProps<{
 </script>
 
 <template>
-  <li>
-    <a>
-      <ion-icon :name="DocumentType.getIconStyle(usedType.type)"></ion-icon>
-      {{ DocumentType.getName(usedType.type) }}
-      <span> {{ usedType.count }} </span>
+  <li class="px-4 py-1">
+    <a class="flex justify-between">
+      <span>
+        <ion-icon :name="DocumentType.getIconStyle(usedType.type)"></ion-icon>
+        {{ DocumentType.getName(usedType.type) }}
+      </span>
+      <span>{{ usedType.count }}</span>
     </a>
   </li>
 </template>
