@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { defineProps } from "vue";
+import { RouterLink } from "vue-router";
 import { DocumentType } from "@/components/document/DocumentType";
 import type { IDocument } from "@/components/document/interfaces/IDocument";
 defineProps<{
@@ -9,12 +10,12 @@ defineProps<{
 
 <template>
   <li>
-    <a>
+    <RouterLink :to="`/documents/${document.ID}`" class="flex justify-between">
       <ion-icon :name="DocumentType.getIconStyle(document.type)"></ion-icon>
       {{ document.title }}
       <span>
         {{ new Date(document.expiresAt).toISOString().slice(0, 10) }}
       </span>
-    </a>
+    </RouterLink>
   </li>
 </template>

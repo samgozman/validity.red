@@ -32,7 +32,7 @@ import LatestDocumentsItem from "@/components/dashboard/LatestDocumentsItem.vue"
     </div>
   </div>
   <div class="card col-span-2 row-span-1 shadow-lg compact bg-base-100">
-    <div class="flex-row items-center space-x-4 card-body">
+    <div class="flex-row items-center card-body">
       <ul>
         <UsedTypesItem
           v-for="usedType in stats.usedTypes"
@@ -43,8 +43,9 @@ import LatestDocumentsItem from "@/components/dashboard/LatestDocumentsItem.vue"
     </div>
   </div>
   <div class="card col-span-2 row-span-1 shadow-lg compact bg-base-100">
-    <div class="flex-row items-center space-x-4 card-body">
-      <ul>
+    <div class="flex-col items-center card-body">
+      <h3 class="card-title text-primary text-left w-full">Latest documents</h3>
+      <ul class="menu p-2 rounded-box w-full">
         <LatestDocumentsItem
           v-for="document in stats.latestDocuments"
           v-bind:key="document.ID"
