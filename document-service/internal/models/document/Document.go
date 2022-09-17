@@ -323,7 +323,7 @@ func (db *DocumentDB) FindLatest(ctx context.Context, userId uuid.UUID, limit in
 		WithContext(ctx).
 		Model(&Document{}).
 		Where(&Document{UserID: userId}).
-		Order("expires_at DESC").
+		Order("expires_at ASC").
 		Limit(limit).
 		Find(&documents)
 
