@@ -5,7 +5,7 @@ import LatestDocumentsItem from "@/components/dashboard/LatestDocumentsItem.vue"
 
 <template>
   <div class="card col-span-3 row-span-1 shadow-lg compact bg-base-100">
-    <div class="flex-row items-center space-x-4 card-body">
+    <div class="flex-col sm:flex-row items-center card-body">
       <div class="stat">
         <div class="stat-figure text-secondary stats-icon">
           <ion-icon name="documents-outline"></ion-icon>
@@ -17,7 +17,7 @@ import LatestDocumentsItem from "@/components/dashboard/LatestDocumentsItem.vue"
         </div>
       </div>
 
-      <div class="divider divider-horizontal"></div>
+      <div class="divider divider-vertical sm:divider-horizontal"></div>
 
       <div class="stat">
         <div class="stat-figure text-secondary stats-icon">
@@ -36,7 +36,7 @@ import LatestDocumentsItem from "@/components/dashboard/LatestDocumentsItem.vue"
       <h3 class="card-title text-primary text-left w-full px-4">
         Most used types
       </h3>
-      <ul class="w-full max-h-36 overflow-y-auto">
+      <ul class="w-full sm:max-h-36 overflow-y-auto">
         <UsedTypesItem
           v-for="usedType in stats.usedTypes"
           v-bind:key="usedType.type"
@@ -50,7 +50,7 @@ import LatestDocumentsItem from "@/components/dashboard/LatestDocumentsItem.vue"
       <h3 class="card-title text-primary text-left w-full px-4">
         Latest documents
       </h3>
-      <ul class="menu p-2 w-full max-h-36 overflow-y-auto">
+      <ul class="menu p-2 w-full sm:max-h-36 overflow-y-auto">
         <LatestDocumentsItem
           v-for="document in stats.latestDocuments"
           v-bind:key="document.ID"

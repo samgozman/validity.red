@@ -6,7 +6,7 @@ import DashboardStats from "@/components/dashboard/DashboardStats.vue";
 <template>
   <StandardContainer>
     <div
-      class="grid grid-cols-1 gap-6 py-6 lg:p-10 xl:grid-cols-7 lg:bg-base-200 rounded-box"
+      class="grid grid-cols-1 gap-y-6 xl:gap-y-0 xl:gap-x-6 py-6 lg:p-10 xl:grid-cols-7 lg:bg-base-200 rounded-box"
     >
       <DashboardStats />
     </div>
