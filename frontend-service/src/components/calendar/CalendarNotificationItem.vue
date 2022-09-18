@@ -12,7 +12,7 @@ defineProps<{
     :to="`/documents/${notification.documentId}`"
     class="flex items-center flex-shrink-0 h-5 px-1 text-xs hover:bg-base-300"
   >
-    <span class="ml-2 font-light leading-none">
+    <span class="ml-2 font-light leading-none hidden md:block">
       {{
         new Date(notification.notificationDate).toLocaleTimeString("en-GB", {
           hour: "2-digit",
