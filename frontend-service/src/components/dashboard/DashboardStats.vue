@@ -6,7 +6,7 @@ import CalendarMonth from "@/components/calendar/CalendarMonth.vue";
 
 <template>
   <div
-    class="card col-span-7 row-span-1 shadow-lg compact bg-base-100 min-h-[40vh]"
+    class="card col-span-full row-span-1 shadow-lg compact bg-base-100 min-h-[40vh]"
   >
     <div class="flex-col sm:flex-row items-center card-body">
       <CalendarMonth />
