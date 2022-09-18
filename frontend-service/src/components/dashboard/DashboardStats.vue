@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import UsedTypesItem from "@/components/dashboard/UsedTypesItem.vue";
 import LatestDocumentsItem from "@/components/dashboard/LatestDocumentsItem.vue";
+import CalendarMonth from "@/components/calendar/CalendarMonth.vue";
 </script>
 
 <template>
@@ -8,7 +9,7 @@ import LatestDocumentsItem from "@/components/dashboard/LatestDocumentsItem.vue"
     class="card col-span-7 row-span-1 shadow-lg compact bg-base-100 min-h-[40vh]"
   >
     <div class="flex-col sm:flex-row items-center card-body">
-      <p>Placeholder for calendar</p>
+      <CalendarMonth />
     </div>
   </div>
   <div class="card col-span-3 row-span-3 shadow-lg compact bg-base-100">
