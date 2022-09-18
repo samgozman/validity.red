@@ -34,7 +34,12 @@ import CalendarDay from "./CalendarDay.vue";
         <div>
           <!-- Placeholder -->
         </div>
-        <CalendarDay v-for="day in 30" v-bind:key="day" v-bind:day="day" />
+        <CalendarDay
+          v-for="day in month"
+          v-bind:key="day[0]"
+          v-bind:indexDay="day[0]"
+          v-bind:notifications="day[1]"
+        />
       </div>
     </div>
   </div>
@@ -42,10 +47,69 @@ import CalendarDay from "./CalendarDay.vue";
 
 <script lang="ts">
 import { defineComponent } from "vue";
+import type { ICalendarNotification } from "./interfaces/ICalendarNotification";
+
+const notifications1: ICalendarNotification[] = [
+  {
+    documentId: "8fd1160f-60b7-4396-8a14-ad0eabaf8ee9",
+    documentTitle: "Document placeholder",
+    notificationDate: new Date().toISOString(),
+  },
+  {
+    documentId: "8fd1160f-60b7-4396-8a14-ad0eabaf8ee9",
+    documentTitle: "Document placeholder",
+    notificationDate: new Date().toISOString(),
+  },
+];
+
+const notifications2: ICalendarNotification[] = [
+  {
+    documentId: "28292f09-0a55-4ecd-9e4d-eb234f4b23ed",
+    documentTitle: "Expiration of visa",
+    notificationDate: new Date().toISOString(),
+  },
+];
+
+// Placeholder month
+const month = new Map<number, ICalendarNotification[]>([
+  [1, []],
+  [2, []],
+  [3, []],
+  [4, []],
+  [5, []],
+  [6, []],
+  [7, notifications1],
+  [8, []],
+  [9, []],
+  [10, []],
+  [11, []],
+  [12, []],
+  [13, []],
+  [14, []],
+  [15, []],
+  [16, []],
+  [17, []],
+  [18, []],
+  [19, []],
+  [20, []],
+  [21, []],
+  [22, []],
+  [23, []],
+  [24, []],
+  [25, notifications2],
+  [26, []],
+  [27, []],
+  [28, []],
+  [29, []],
+  [30, []],
+  [31, []],
+]);
 
 export default defineComponent({
   data() {
-    return {};
+    return {
+      month,
+    };
   },
   methods: {},
 });
