@@ -11,5 +11,6 @@ type NotificationRepository interface {
 	UpdateOne(ctx context.Context, n *Notification) error
 	DeleteOne(ctx context.Context, n *Notification) error
 	FindAll(ctx context.Context, documentID uuid.UUID) ([]Notification, error)
-	Count(ctx context.Context, documentIDs []uuid.UUID) (int64, error)
+	Count(ctx context.Context, documentID uuid.UUID) (int64, error)
+	CountAll(ctx context.Context, userID uuid.UUID) (int64, error)
 }

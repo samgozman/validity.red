@@ -27,6 +27,7 @@ func (ds *NotificationServer) Create(ctx context.Context, req *proto.Notificatio
 
 	// create notification
 	n := notification.Notification{
+		UserID:     userID,
 		DocumentID: documentID,
 		Date:       input.GetDate().AsTime(),
 	}
@@ -134,24 +135,33 @@ func (ds *NotificationServer) Count(
 	ctx context.Context,
 	req *proto.NotificationsCountRequest,
 ) (*proto.ResponseCount, error) {
-	// userID, documentID, err := ds.checkInputsAndDocumentExistence(ctx, req.GetUserID(), req.GetDocumentIDs())
+	userID, documentID, err := ds.checkInputsAndDocumentExistence(ctx, req.GetUserID(), req.GetDocumentID())
+	if err != nil {
+		return nil, err
+	}
+
+	count, err := ds.App.Notifications.Count(ctx, documentID)
+	if err != nil {
+		return nil, err
+	}
+
+	res := &proto.ResponseCount{
+		Result: fmt.Sprintf("User '%s' received notifications count for document '%s'", userID, documentID),
+		Count:  count,
+	}
+	return res, nil
+}
+
+func (ds *NotificationServer) CountAll(
+	ctx context.Context,
+	req *proto.NotificationsCountAllRequest,
+) (*proto.ResponseCount, error) {
 	userID, err := uuid.Parse(req.GetUserID())
 	if err != nil {
 		return nil, ErrInvalidUserId
 	}
 
-	stringIDs := req.GetDocumentIDs()
-	var documentIDs []uuid.UUID
-	for _, id := range stringIDs {
-		parsed, err := uuid.Parse(id)
-		if err != nil {
-			return nil, ErrInvalidDocumentId
-		}
-
-		documentIDs = append(documentIDs, parsed)
-	}
-
-	count, err := ds.App.Notifications.Count(ctx, documentIDs)
+	count, err := ds.App.Notifications.CountAll(ctx, userID)
 	if err != nil {
 		return nil, err
 	}

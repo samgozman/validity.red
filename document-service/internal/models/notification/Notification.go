@@ -21,6 +21,7 @@ func NewNotificationDB(db *gorm.DB) *NotificationDB {
 
 type Notification struct {
 	ID         uuid.UUID `gorm:"primarykey;type:uuid;not null;" json:"id,omitempty"`
+	UserID     uuid.UUID `gorm:"type:uuid;index;not null;" json:"user_id,omitempty"`
 	DocumentID uuid.UUID `gorm:"type:uuid;index;not null;" json:"document_id,omitempty"`
 	Date       time.Time `gorm:"type:time;not null;" json:"date,omitempty"`
 	CreatedAt  time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"created_at,omitempty"`
@@ -35,6 +36,9 @@ func (n *Notification) Prepare() {
 
 // Validate Notification object before inserting into database
 func (n *Notification) Validate() error {
+	if n.UserID == uuid.Nil {
+		return errors.New("user_id is required")
+	}
 	if n.DocumentID == uuid.Nil {
 		return errors.New("document_id is required")
 	}
@@ -121,16 +125,31 @@ func (db *NotificationDB) FindAll(ctx context.Context, documentID uuid.UUID) ([]
 	return notifications, nil
 }
 
-// Count notifications for a given documents
-func (db *NotificationDB) Count(ctx context.Context, documentIDs []uuid.UUID) (int64, error) {
+// Count notifications for a given document
+func (db *NotificationDB) Count(ctx context.Context, documentID uuid.UUID) (int64, error) {
 	var count int64
 
 	res := db.Conn.
 		WithContext(ctx).
 		Model(&Notification{}).
-		// Because Associations.Count do not work as expected (allways zero)
-		// TODO: Can be replaced with raw SQL query (to not to call db twice)
-		Where("document_id IN ?", documentIDs).
+		Where(&Notification{DocumentID: documentID}).
+		Count(&count)
+
+	if res.Error != nil {
+		return 0, res.Error
+	}
+
+	return count, nil
+}
+
+// Count all notifications for a given user
+func (db *NotificationDB) CountAll(ctx context.Context, userID uuid.UUID) (int64, error) {
+	var count int64
+
+	res := db.Conn.
+		WithContext(ctx).
+		Model(&Notification{}).
+		Where(&Notification{UserID: userID}).
 		Count(&count)
 
 	if res.Error != nil {

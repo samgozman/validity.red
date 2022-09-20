@@ -204,25 +204,3 @@ func (ds *DocumentServer) GetUserStatistics(
 		LatestDocuments: utils.ConvertDocumentsToProtoFormat(&latest),
 	}, nil
 }
-
-func (ds *DocumentServer) GetIDs(ctx context.Context, req *proto.DocumentsRequest) (*proto.ResponseIDs, error) {
-	userID, err := uuid.Parse(req.GetUserID())
-	if err != nil {
-		return nil, ErrInvalidUserId
-	}
-
-	ids, err := ds.App.Documents.FindIDs(ctx, userID)
-	if err != nil {
-		return nil, err
-	}
-
-	var stringifiedIDs []string
-	for _, id := range ids {
-		stringifiedIDs = append(stringifiedIDs, id.String())
-	}
-
-	return &proto.ResponseIDs{
-		Result: fmt.Sprintf("User '%s' get all his documents IDs!", userID),
-		Ids:    stringifiedIDs,
-	}, nil
-}

@@ -303,13 +303,16 @@ func (app *Config) documentGetStatistics(c *gin.Context) {
 	statistics.LatestDocuments = utils.ConvertDocumentsToJSON(getStats.LatestDocuments)
 	statistics.UsedTypes = getStats.Types
 
-	getIDs, err := app.documentsClient.documentService.GetIDs(ctx, &document.DocumentsRequest{
-		UserID: userId.(string),
-	})
+	totalNotificationsCount, err := app.documentsClient.notificationService.CountAll(
+		ctx,
+		&document.NotificationsCountAllRequest{
+			UserID: userId.(string),
+		},
+	)
 	if err != nil {
 		go app.logger.LogWarn(&logs.Log{
 			Service: "document-service",
-			Message: "Error on calling GetOne method with GetIDs",
+			Message: "Error on calling GetOne method with CountAll",
 			Error:   err.Error(),
 		})
 
@@ -319,28 +322,7 @@ func (app *Config) documentGetStatistics(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, payload)
 		return
 	}
-
-	if len(getIDs.Ids) > 0 {
-		totalNotificationsCount, err := app.documentsClient.notificationService.Count(ctx, &document.NotificationsCountRequest{
-			UserID:      userId.(string),
-			DocumentIDs: getIDs.Ids,
-		})
-		if err != nil {
-			go app.logger.LogWarn(&logs.Log{
-				Service: "document-service",
-				Message: "Error on calling GetOne method with Count",
-				Error:   err.Error(),
-			})
-
-			payload.Error = true
-			payload.Message = err.Error()
-
-			c.JSON(http.StatusBadRequest, payload)
-			return
-		}
-
-		statistics.TotalNotifications = totalNotificationsCount.Count
-	}
+	statistics.TotalNotifications = totalNotificationsCount.Count
 
 	msg := fmt.Sprintf("User '%s' successfully called documentGetStatistics method", userId.(string))
 	payload.Error = false

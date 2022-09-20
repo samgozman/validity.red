@@ -498,14 +498,15 @@ func TestNotificationServer_Count(t *testing.T) {
 	}
 
 	okReq := &proto.NotificationsCountRequest{
-		DocumentIDs: []string{"434377cf-7509-4cc0-9895-0afa683f0e56"},
-		UserID:      "458c9061-5262-48b7-9b87-e47fa64d654c",
+		DocumentID: "434377cf-7509-4cc0-9895-0afa683f0e56",
+		UserID:     "458c9061-5262-48b7-9b87-e47fa64d654c",
 	}
 
 	okRes := &proto.ResponseCount{
 		Result: fmt.Sprintf(
-			"User '%s' received notifications count for document",
+			"User '%s' received notifications count for document '%s'",
 			okReq.UserID,
+			okReq.DocumentID,
 		),
 	}
 
@@ -533,8 +534,8 @@ func TestNotificationServer_Count(t *testing.T) {
 			args: args{
 				ctx: context.Background(),
 				req: &proto.NotificationsCountRequest{
-					DocumentIDs: []string{"434377cf-7509-4cc0-9895-0afa683f0e56"},
-					UserID:      "wrongId",
+					DocumentID: "434377cf-7509-4cc0-9895-0afa683f0e56",
+					UserID:     "wrongId",
 				},
 			},
 			wantErr:  true,
@@ -546,8 +547,8 @@ func TestNotificationServer_Count(t *testing.T) {
 			args: args{
 				ctx: context.Background(),
 				req: &proto.NotificationsCountRequest{
-					DocumentIDs: []string{"wrongId"},
-					UserID:      "458c9061-5262-48b7-9b87-e47fa64d654c",
+					DocumentID: "wrongId",
+					UserID:     "458c9061-5262-48b7-9b87-e47fa64d654c",
 				},
 			},
 			wantErr:  true,
@@ -666,6 +667,80 @@ func TestNotificationServer_checkInputsAndDocumentExistence(t *testing.T) {
 			}
 			if !reflect.DeepEqual(gotDocumentID, tt.wantDocumentID) {
 				t.Errorf("NotificationServer.checkInputsAndDocumentExistence() gotDocumentID = %v, want %v", gotDocumentID, tt.wantDocumentID)
+			}
+		})
+	}
+}
+
+func TestNotificationServer_CountAll(t *testing.T) {
+	type fields struct {
+		App                                    *Config
+		UnimplementedNotificationServiceServer proto.UnimplementedNotificationServiceServer
+	}
+	type args struct {
+		ctx context.Context
+		req *proto.NotificationsCountAllRequest
+	}
+
+	okReq := &proto.NotificationsCountAllRequest{
+		UserID: "458c9061-5262-48b7-9b87-e47fa64d654c",
+	}
+
+	okRes := &proto.ResponseCount{
+		Result: fmt.Sprintf(
+			"User '%s' received notifications count for document",
+			okReq.UserID,
+		),
+	}
+
+	tests := []struct {
+		name     string
+		fields   fields
+		args     args
+		want     *proto.ResponseCount
+		wantErr  bool
+		errorMsg error
+	}{
+		{
+			name:   "should count all notifications",
+			fields: fields{App: &testApp},
+			args: args{
+				ctx: context.Background(),
+				req: okReq,
+			},
+			want:    okRes,
+			wantErr: false,
+		},
+		{
+			name:   "should fail if userId is incorrect",
+			fields: fields{App: &testApp},
+			args: args{
+				ctx: context.Background(),
+				req: &proto.NotificationsCountAllRequest{
+					UserID: "wrongId",
+				},
+			},
+			wantErr:  true,
+			errorMsg: ErrInvalidUserId,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			ds := &NotificationServer{
+				App:                                    tt.fields.App,
+				UnimplementedNotificationServiceServer: tt.fields.UnimplementedNotificationServiceServer,
+			}
+			got, err := ds.CountAll(tt.args.ctx, tt.args.req)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("NotificationServer.CountAll() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if tt.wantErr && !errors.Is(err, tt.errorMsg) {
+				t.Errorf("NotificationServer.CountAll() wrong error msg = %v, want %v", err.Error(), tt.errorMsg.Error())
+				return
+			}
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("NotificationServer.CountAll() = %v, want %v", got, tt.want)
 			}
 		})
 	}

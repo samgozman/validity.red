@@ -35,6 +35,10 @@ func (db *NotificationDBTest) FindAll(ctx context.Context, documentID uuid.UUID)
 	return notifications, nil
 }
 
-func (db *NotificationDBTest) Count(ctx context.Context, documentIDs []uuid.UUID) (int64, error) {
+func (db *NotificationDBTest) Count(ctx context.Context, documentID uuid.UUID) (int64, error) {
+	return 0, nil
+}
+
+func (db *NotificationDBTest) CountAll(ctx context.Context, userID uuid.UUID) (int64, error) {
 	return 0, nil
 }

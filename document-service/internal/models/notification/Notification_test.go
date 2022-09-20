@@ -42,18 +42,23 @@ func TestNotification_Validate(t *testing.T) {
 		wantErr bool
 	}{
 		{
+			name:    "fail if userID is empty",
+			fields:  &Notification{UserID: uuid.UUID{}, DocumentID: uuid.New(), Date: time.Now()},
+			wantErr: true,
+		},
+		{
 			name:    "fail if documentID is empty",
-			fields:  &Notification{DocumentID: uuid.UUID{}, Date: time.Now()},
+			fields:  &Notification{UserID: uuid.New(), DocumentID: uuid.UUID{}, Date: time.Now()},
 			wantErr: true,
 		},
 		{
 			name:    "fail if Date is empty",
-			fields:  &Notification{DocumentID: uuid.New()},
+			fields:  &Notification{UserID: uuid.New(), DocumentID: uuid.New()},
 			wantErr: true,
 		},
 		{
 			name:    "should pass",
-			fields:  &Notification{DocumentID: uuid.New(), Date: time.Now()},
+			fields:  &Notification{UserID: uuid.New(), DocumentID: uuid.New(), Date: time.Now()},
 			wantErr: false,
 		},
 	}
@@ -61,6 +66,7 @@ func TestNotification_Validate(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			n := &Notification{
 				ID:         tt.fields.ID,
+				UserID:     tt.fields.UserID,
 				DocumentID: tt.fields.DocumentID,
 				Date:       tt.fields.Date,
 				CreatedAt:  tt.fields.CreatedAt,
@@ -90,13 +96,13 @@ func TestNotification_BeforeCreate(t *testing.T) {
 	}{
 		{
 			name:    "should fail on validation",
-			fields:  &Notification{DocumentID: uuid.UUID{}, Date: time.Now()},
+			fields:  &Notification{UserID: uuid.New(), DocumentID: uuid.UUID{}, Date: time.Now()},
 			args:    a,
 			wantErr: true,
 		},
 		{
 			name:    "should pass",
-			fields:  &Notification{DocumentID: uuid.New(), Date: time.Now()},
+			fields:  &Notification{UserID: uuid.New(), DocumentID: uuid.New(), Date: time.Now()},
 			args:    a,
 			wantErr: false,
 		},
@@ -105,6 +111,7 @@ func TestNotification_BeforeCreate(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			n := &Notification{
 				ID:         tt.fields.ID,
+				UserID:     tt.fields.UserID,
 				DocumentID: tt.fields.DocumentID,
 				Date:       tt.fields.Date,
 				CreatedAt:  tt.fields.CreatedAt,

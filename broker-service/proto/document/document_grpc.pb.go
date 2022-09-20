@@ -28,7 +28,6 @@ type DocumentServiceClient interface {
 	GetOne(ctx context.Context, in *DocumentRequest, opts ...grpc.CallOption) (*ResponseDocument, error)
 	GetAll(ctx context.Context, in *DocumentsRequest, opts ...grpc.CallOption) (*ResponseDocumentsList, error)
 	GetUserStatistics(ctx context.Context, in *DocumentsRequest, opts ...grpc.CallOption) (*ResponseDocumentsStatistics, error)
-	GetIDs(ctx context.Context, in *DocumentsRequest, opts ...grpc.CallOption) (*ResponseIDs, error)
 }
 
 type documentServiceClient struct {
@@ -93,15 +92,6 @@ func (c *documentServiceClient) GetUserStatistics(ctx context.Context, in *Docum
 	return out, nil
 }
 
-func (c *documentServiceClient) GetIDs(ctx context.Context, in *DocumentsRequest, opts ...grpc.CallOption) (*ResponseIDs, error) {
-	out := new(ResponseIDs)
-	err := c.cc.Invoke(ctx, "/document.DocumentService/GetIDs", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 // DocumentServiceServer is the server API for DocumentService service.
 // All implementations must embed UnimplementedDocumentServiceServer
 // for forward compatibility
@@ -112,7 +102,6 @@ type DocumentServiceServer interface {
 	GetOne(context.Context, *DocumentRequest) (*ResponseDocument, error)
 	GetAll(context.Context, *DocumentsRequest) (*ResponseDocumentsList, error)
 	GetUserStatistics(context.Context, *DocumentsRequest) (*ResponseDocumentsStatistics, error)
-	GetIDs(context.Context, *DocumentsRequest) (*ResponseIDs, error)
 	mustEmbedUnimplementedDocumentServiceServer()
 }
 
@@ -137,9 +126,6 @@ func (UnimplementedDocumentServiceServer) GetAll(context.Context, *DocumentsRequ
 }
 func (UnimplementedDocumentServiceServer) GetUserStatistics(context.Context, *DocumentsRequest) (*ResponseDocumentsStatistics, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetUserStatistics not implemented")
-}
-func (UnimplementedDocumentServiceServer) GetIDs(context.Context, *DocumentsRequest) (*ResponseIDs, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetIDs not implemented")
 }
 func (UnimplementedDocumentServiceServer) mustEmbedUnimplementedDocumentServiceServer() {}
 
@@ -262,24 +248,6 @@ func _DocumentService_GetUserStatistics_Handler(srv interface{}, ctx context.Con
 	return interceptor(ctx, in, info, handler)
 }
 
-func _DocumentService_GetIDs_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(DocumentsRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(DocumentServiceServer).GetIDs(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/document.DocumentService/GetIDs",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DocumentServiceServer).GetIDs(ctx, req.(*DocumentsRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 // DocumentService_ServiceDesc is the grpc.ServiceDesc for DocumentService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -311,10 +279,6 @@ var DocumentService_ServiceDesc = grpc.ServiceDesc{
 			MethodName: "GetUserStatistics",
 			Handler:    _DocumentService_GetUserStatistics_Handler,
 		},
-		{
-			MethodName: "GetIDs",
-			Handler:    _DocumentService_GetIDs_Handler,
-		},
 	},
 	Streams:  []grpc.StreamDesc{},
 	Metadata: "proto/document.proto",
@@ -329,6 +293,7 @@ type NotificationServiceClient interface {
 	Delete(ctx context.Context, in *NotificationCreateRequest, opts ...grpc.CallOption) (*Response, error)
 	GetAll(ctx context.Context, in *NotificationsRequest, opts ...grpc.CallOption) (*ResponseNotificationsList, error)
 	Count(ctx context.Context, in *NotificationsCountRequest, opts ...grpc.CallOption) (*ResponseCount, error)
+	CountAll(ctx context.Context, in *NotificationsCountAllRequest, opts ...grpc.CallOption) (*ResponseCount, error)
 }
 
 type notificationServiceClient struct {
@@ -384,6 +349,15 @@ func (c *notificationServiceClient) Count(ctx context.Context, in *Notifications
 	return out, nil
 }
 
+func (c *notificationServiceClient) CountAll(ctx context.Context, in *NotificationsCountAllRequest, opts ...grpc.CallOption) (*ResponseCount, error) {
+	out := new(ResponseCount)
+	err := c.cc.Invoke(ctx, "/document.NotificationService/CountAll", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // NotificationServiceServer is the server API for NotificationService service.
 // All implementations must embed UnimplementedNotificationServiceServer
 // for forward compatibility
@@ -393,6 +367,7 @@ type NotificationServiceServer interface {
 	Delete(context.Context, *NotificationCreateRequest) (*Response, error)
 	GetAll(context.Context, *NotificationsRequest) (*ResponseNotificationsList, error)
 	Count(context.Context, *NotificationsCountRequest) (*ResponseCount, error)
+	CountAll(context.Context, *NotificationsCountAllRequest) (*ResponseCount, error)
 	mustEmbedUnimplementedNotificationServiceServer()
 }
 
@@ -414,6 +389,9 @@ func (UnimplementedNotificationServiceServer) GetAll(context.Context, *Notificat
 }
 func (UnimplementedNotificationServiceServer) Count(context.Context, *NotificationsCountRequest) (*ResponseCount, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Count not implemented")
+}
+func (UnimplementedNotificationServiceServer) CountAll(context.Context, *NotificationsCountAllRequest) (*ResponseCount, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CountAll not implemented")
 }
 func (UnimplementedNotificationServiceServer) mustEmbedUnimplementedNotificationServiceServer() {}
 
@@ -518,6 +496,24 @@ func _NotificationService_Count_Handler(srv interface{}, ctx context.Context, de
 	return interceptor(ctx, in, info, handler)
 }
 
+func _NotificationService_CountAll_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(NotificationsCountAllRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(NotificationServiceServer).CountAll(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/document.NotificationService/CountAll",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(NotificationServiceServer).CountAll(ctx, req.(*NotificationsCountAllRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // NotificationService_ServiceDesc is the grpc.ServiceDesc for NotificationService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -544,6 +540,10 @@ var NotificationService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Count",
 			Handler:    _NotificationService_Count_Handler,
+		},
+		{
+			MethodName: "CountAll",
+			Handler:    _NotificationService_CountAll_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
