@@ -679,10 +679,10 @@ func TestNotificationServer_CountAll(t *testing.T) {
 	}
 	type args struct {
 		ctx context.Context
-		req *proto.NotificationsCountAllRequest
+		req *proto.NotificationsAllRequest
 	}
 
-	okReq := &proto.NotificationsCountAllRequest{
+	okReq := &proto.NotificationsAllRequest{
 		UserID: "458c9061-5262-48b7-9b87-e47fa64d654c",
 	}
 
@@ -716,7 +716,7 @@ func TestNotificationServer_CountAll(t *testing.T) {
 			fields: fields{App: &testApp},
 			args: args{
 				ctx: context.Background(),
-				req: &proto.NotificationsCountAllRequest{
+				req: &proto.NotificationsAllRequest{
 					UserID: "wrongId",
 				},
 			},
@@ -742,6 +742,87 @@ func TestNotificationServer_CountAll(t *testing.T) {
 			if !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("NotificationServer.CountAll() = %v, want %v", got, tt.want)
 			}
+		})
+	}
+}
+
+func TestNotificationServer_GetAllForUser(t *testing.T) {
+	type fields struct {
+		App                                    *Config
+		UnimplementedNotificationServiceServer proto.UnimplementedNotificationServiceServer
+	}
+	type args struct {
+		ctx context.Context
+		req *proto.NotificationsAllRequest
+	}
+
+	okReq := &proto.NotificationsAllRequest{
+		UserID: "458c9061-5262-48b7-9b87-e47fa64d654c",
+	}
+
+	okRes := &proto.ResponseNotificationsList{
+		Result: fmt.Sprintf(
+			"User '%s' found %d notifications successfully!",
+			okReq.UserID,
+			0,
+		),
+		// TODO: Fix reflect.DeepEqual false negative
+		// Notifications: []*proto.Notification{},
+	}
+
+	tests := []struct {
+		name     string
+		fields   fields
+		args     args
+		want     *proto.ResponseNotificationsList
+		wantErr  bool
+		errorMsg error
+	}{
+		{
+			name:   "should find all notifications",
+			fields: fields{App: &testApp},
+			args: args{
+				ctx: context.Background(),
+				req: okReq,
+			},
+			want:    okRes,
+			wantErr: false,
+		},
+		{
+			name:   "should fail if userId is incorrect",
+			fields: fields{App: &testApp},
+			args: args{
+				ctx: context.Background(),
+				req: &proto.NotificationsAllRequest{
+					UserID: "wrongId",
+				},
+			},
+			wantErr:  true,
+			errorMsg: ErrInvalidUserId,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			ds := &NotificationServer{
+				App:                                    tt.fields.App,
+				UnimplementedNotificationServiceServer: tt.fields.UnimplementedNotificationServiceServer,
+			}
+			got, err := ds.GetAllForUser(tt.args.ctx, tt.args.req)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("NotificationServer.GetAllForUser() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if tt.wantErr && !errors.Is(err, tt.errorMsg) {
+				t.Errorf("NotificationServer.GetAllForUser() wrong error msg = %v, want %v", err.Error(), tt.errorMsg.Error())
+				return
+			}
+			if !tt.wantErr && got.Result != tt.want.Result {
+				t.Errorf("NotificationServer.GetAllForUser() = %v, want %v", got, tt.want)
+			}
+			// TODO: Fix reflect.DeepEqual false negative with []*proto.Notification
+			// if !reflect.DeepEqual(got, tt.want) {
+			// 	t.Errorf("NotificationServer.GetAll() = %v, want %v", got, tt.want)
+			// }
 		})
 	}
 }

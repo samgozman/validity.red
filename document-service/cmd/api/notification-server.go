@@ -105,7 +105,6 @@ func (ds *NotificationServer) Delete(ctx context.Context, req *proto.Notificatio
 	return res, nil
 }
 
-// TODO: Refactor validators to reduce code duplication
 func (ds *NotificationServer) GetAll(
 	ctx context.Context,
 	req *proto.NotificationsRequest,
@@ -154,7 +153,7 @@ func (ds *NotificationServer) Count(
 
 func (ds *NotificationServer) CountAll(
 	ctx context.Context,
-	req *proto.NotificationsCountAllRequest,
+	req *proto.NotificationsAllRequest,
 ) (*proto.ResponseCount, error) {
 	userID, err := uuid.Parse(req.GetUserID())
 	if err != nil {
@@ -169,6 +168,29 @@ func (ds *NotificationServer) CountAll(
 	res := &proto.ResponseCount{
 		Result: fmt.Sprintf("User '%s' received notifications count for document", userID),
 		Count:  count,
+	}
+	return res, nil
+}
+
+func (ds *NotificationServer) GetAllForUser(
+	ctx context.Context,
+	req *proto.NotificationsAllRequest,
+) (*proto.ResponseNotificationsList, error) {
+	userID, err := uuid.Parse(req.GetUserID())
+	if err != nil {
+		return nil, ErrInvalidUserId
+	}
+
+	// Find all notifications
+	notifications, err := ds.App.Notifications.FindAllForUser(ctx, userID)
+	if err != nil {
+		return nil, err
+	}
+
+	// return response
+	res := &proto.ResponseNotificationsList{
+		Result:        fmt.Sprintf("User '%s' found %d notifications successfully!", userID, len(notifications)),
+		Notifications: utils.ConvertNotficationsToProtoFormat(&notifications),
 	}
 	return res, nil
 }

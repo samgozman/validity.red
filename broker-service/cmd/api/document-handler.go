@@ -305,7 +305,7 @@ func (app *Config) documentGetStatistics(c *gin.Context) {
 
 	totalNotificationsCount, err := app.documentsClient.notificationService.CountAll(
 		ctx,
-		&document.NotificationsCountAllRequest{
+		&document.NotificationsAllRequest{
 			UserID: userId.(string),
 		},
 	)

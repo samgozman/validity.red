@@ -96,7 +96,7 @@ message NotificationsCountRequest {
 	string documentID = 2;
 }
 
-message NotificationsCountAllRequest {
+message NotificationsAllRequest {
 	string userID = 1;
 }
 
@@ -156,5 +156,6 @@ service NotificationService {
 	rpc Delete(NotificationCreateRequest) returns (Response);
 	rpc GetAll(NotificationsRequest) returns (ResponseNotificationsList);
 	rpc Count(NotificationsCountRequest) returns (ResponseCount);
-	rpc CountAll(NotificationsCountAllRequest) returns (ResponseCount);
+	rpc CountAll(NotificationsAllRequest) returns (ResponseCount);
+	rpc GetAllForUser(NotificationsAllRequest) returns (ResponseNotificationsList);
 }

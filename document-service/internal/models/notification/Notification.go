@@ -158,3 +158,19 @@ func (db *NotificationDB) CountAll(ctx context.Context, userID uuid.UUID) (int64
 
 	return count, nil
 }
+
+func (db *NotificationDB) FindAllForUser(ctx context.Context, userID uuid.UUID) ([]Notification, error) {
+	var notifications []Notification
+
+	res := db.Conn.
+		WithContext(ctx).
+		Model(&Notification{}).
+		Where(&Notification{UserID: userID}).
+		Find(&notifications)
+
+	if res.Error != nil {
+		return nil, res.Error
+	}
+
+	return notifications, nil
+}

@@ -293,7 +293,8 @@ type NotificationServiceClient interface {
 	Delete(ctx context.Context, in *NotificationCreateRequest, opts ...grpc.CallOption) (*Response, error)
 	GetAll(ctx context.Context, in *NotificationsRequest, opts ...grpc.CallOption) (*ResponseNotificationsList, error)
 	Count(ctx context.Context, in *NotificationsCountRequest, opts ...grpc.CallOption) (*ResponseCount, error)
-	CountAll(ctx context.Context, in *NotificationsCountAllRequest, opts ...grpc.CallOption) (*ResponseCount, error)
+	CountAll(ctx context.Context, in *NotificationsAllRequest, opts ...grpc.CallOption) (*ResponseCount, error)
+	GetAllForUser(ctx context.Context, in *NotificationsAllRequest, opts ...grpc.CallOption) (*ResponseNotificationsList, error)
 }
 
 type notificationServiceClient struct {
@@ -349,9 +350,18 @@ func (c *notificationServiceClient) Count(ctx context.Context, in *Notifications
 	return out, nil
 }
 
-func (c *notificationServiceClient) CountAll(ctx context.Context, in *NotificationsCountAllRequest, opts ...grpc.CallOption) (*ResponseCount, error) {
+func (c *notificationServiceClient) CountAll(ctx context.Context, in *NotificationsAllRequest, opts ...grpc.CallOption) (*ResponseCount, error) {
 	out := new(ResponseCount)
 	err := c.cc.Invoke(ctx, "/document.NotificationService/CountAll", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *notificationServiceClient) GetAllForUser(ctx context.Context, in *NotificationsAllRequest, opts ...grpc.CallOption) (*ResponseNotificationsList, error) {
+	out := new(ResponseNotificationsList)
+	err := c.cc.Invoke(ctx, "/document.NotificationService/GetAllForUser", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -367,7 +377,8 @@ type NotificationServiceServer interface {
 	Delete(context.Context, *NotificationCreateRequest) (*Response, error)
 	GetAll(context.Context, *NotificationsRequest) (*ResponseNotificationsList, error)
 	Count(context.Context, *NotificationsCountRequest) (*ResponseCount, error)
-	CountAll(context.Context, *NotificationsCountAllRequest) (*ResponseCount, error)
+	CountAll(context.Context, *NotificationsAllRequest) (*ResponseCount, error)
+	GetAllForUser(context.Context, *NotificationsAllRequest) (*ResponseNotificationsList, error)
 	mustEmbedUnimplementedNotificationServiceServer()
 }
 
@@ -390,8 +401,11 @@ func (UnimplementedNotificationServiceServer) GetAll(context.Context, *Notificat
 func (UnimplementedNotificationServiceServer) Count(context.Context, *NotificationsCountRequest) (*ResponseCount, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Count not implemented")
 }
-func (UnimplementedNotificationServiceServer) CountAll(context.Context, *NotificationsCountAllRequest) (*ResponseCount, error) {
+func (UnimplementedNotificationServiceServer) CountAll(context.Context, *NotificationsAllRequest) (*ResponseCount, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CountAll not implemented")
+}
+func (UnimplementedNotificationServiceServer) GetAllForUser(context.Context, *NotificationsAllRequest) (*ResponseNotificationsList, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetAllForUser not implemented")
 }
 func (UnimplementedNotificationServiceServer) mustEmbedUnimplementedNotificationServiceServer() {}
 
@@ -497,7 +511,7 @@ func _NotificationService_Count_Handler(srv interface{}, ctx context.Context, de
 }
 
 func _NotificationService_CountAll_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(NotificationsCountAllRequest)
+	in := new(NotificationsAllRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -509,7 +523,25 @@ func _NotificationService_CountAll_Handler(srv interface{}, ctx context.Context,
 		FullMethod: "/document.NotificationService/CountAll",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(NotificationServiceServer).CountAll(ctx, req.(*NotificationsCountAllRequest))
+		return srv.(NotificationServiceServer).CountAll(ctx, req.(*NotificationsAllRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _NotificationService_GetAllForUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(NotificationsAllRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(NotificationServiceServer).GetAllForUser(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/document.NotificationService/GetAllForUser",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(NotificationServiceServer).GetAllForUser(ctx, req.(*NotificationsAllRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -544,6 +576,10 @@ var NotificationService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "CountAll",
 			Handler:    _NotificationService_CountAll_Handler,
+		},
+		{
+			MethodName: "GetAllForUser",
+			Handler:    _NotificationService_GetAllForUser_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
