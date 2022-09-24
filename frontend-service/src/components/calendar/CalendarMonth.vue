@@ -15,7 +15,9 @@ import CalendarDay from "./CalendarDay.vue";
             <ion-icon name="chevron-forward-outline"></ion-icon>
           </button>
         </div>
-        <h2 class="ml-2 text-xl font-bold leading-none">September, 2020</h2>
+        <h2 class="ml-2 text-xl font-bold leading-none">
+          {{ currentDateString }}
+        </h2>
       </div>
       <!-- Day of the week columns -->
       <div class="grid grid-cols-7 mt-4">
@@ -54,6 +56,7 @@ export default defineComponent({
   data() {
     return {
       month: new Map<number, ICalendarNotification[]>(),
+      currentDateString: "",
       error: false,
       errorMsg: "",
     };
@@ -71,9 +74,15 @@ export default defineComponent({
         // TODO: Push error to Sentry
       }
     },
+    setCurrentDateString(date: Date) {
+      const month = date.toLocaleString("default", { month: "long" });
+      const year = date.getFullYear();
+      this.currentDateString = `${month}, ${year}`;
+    },
   },
   beforeMount() {
     this.refresh();
+    this.setCurrentDateString(new Date());
   },
 });
 </script>
