@@ -8,10 +8,10 @@ import CalendarDay from "./CalendarDay.vue";
       <!-- Header -->
       <div class="flex items-center mt-4">
         <div class="flex ml-6">
-          <button>
+          <button @click.prevent="prevMonth">
             <ion-icon name="chevron-back-outline"></ion-icon>
           </button>
-          <button>
+          <button @click.prevent="nextMonth">
             <ion-icon name="chevron-forward-outline"></ion-icon>
           </button>
         </div>
@@ -64,16 +64,28 @@ export default defineComponent({
   },
   methods: {
     async refresh() {
+      this.setCurrentDateString(this.currentDate);
+
       try {
         const usersCalendar = await CalendarService.getCalendar();
 
-        this.month = CalendarService.createCalendar(new Date(), usersCalendar);
-        console.log(this.month);
+        this.month = CalendarService.createCalendar(
+          this.currentDate,
+          usersCalendar
+        );
       } catch (error) {
         this.error = true;
         this.errorMsg = "An error occurred, please try again";
         // TODO: Push error to Sentry
       }
+    },
+    prevMonth() {
+      this.currentDate.setMonth(this.currentDate.getMonth() - 1);
+      this.refresh();
+    },
+    nextMonth() {
+      this.currentDate.setMonth(this.currentDate.getMonth() + 1);
+      this.refresh();
     },
     setCurrentDateString(date: Date) {
       const month = date.toLocaleString("default", { month: "long" });
@@ -90,7 +102,6 @@ export default defineComponent({
   },
   beforeMount() {
     this.refresh();
-    this.setCurrentDateString(new Date());
   },
 });
 </script>
