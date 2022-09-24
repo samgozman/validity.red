@@ -33,9 +33,8 @@ import CalendarDay from "./CalendarDay.vue";
       <div
         class="grid flex-grow w-full h-auto grid-cols-7 grid-rows-5 gap-px pt-px mt-1 bg-base-200 rounded-box"
       >
-        <div>
-          <!-- Placeholder -->
-        </div>
+        <!-- Placeholder -->
+        <div v-for="day in 7 - currentFirstDayOfWeek" v-bind:key="day" />
         <CalendarDay
           v-for="day in month"
           v-bind:key="day[0]"
@@ -56,6 +55,8 @@ export default defineComponent({
   data() {
     return {
       month: new Map<number, ICalendarNotification[]>(),
+      currentFirstDayOfWeek: 0,
+      currentDate: new Date(),
       currentDateString: "",
       error: false,
       errorMsg: "",
@@ -77,7 +78,14 @@ export default defineComponent({
     setCurrentDateString(date: Date) {
       const month = date.toLocaleString("default", { month: "long" });
       const year = date.getFullYear();
+
+      this.currentDate = date;
       this.currentDateString = `${month}, ${year}`;
+      this.currentFirstDayOfWeek = new Date(
+        date.getFullYear(),
+        date.getMonth(),
+        1
+      ).getDay();
     },
   },
   beforeMount() {
