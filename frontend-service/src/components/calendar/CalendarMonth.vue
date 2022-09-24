@@ -34,7 +34,8 @@ import CalendarDay from "./CalendarDay.vue";
         class="grid flex-grow w-full h-auto grid-cols-7 grid-rows-5 gap-px pt-px mt-1 bg-base-200 rounded-box"
       >
         <!-- Placeholder -->
-        <div v-for="day in 7 - currentFirstDayOfWeek" v-bind:key="day" />
+        <!-- ! Bug -->
+        <div v-for="day in currentFirstDayOfWeek" v-bind:key="day" />
         <CalendarDay
           v-for="day in month"
           v-bind:key="day[0]"
@@ -93,11 +94,24 @@ export default defineComponent({
 
       this.currentDate = date;
       this.currentDateString = `${month}, ${year}`;
-      this.currentFirstDayOfWeek = new Date(
+
+      // To convert getDay from 0-6 (Sun - Sat) to 0-6 (Mon - Sun)
+      const week = new Map<number, number>([
+        [0, 6],
+        [1, 0],
+        [2, 1],
+        [3, 2],
+        [4, 3],
+        [5, 4],
+        [6, 5],
+      ]);
+      const dayOfWeek = new Date(
         date.getFullYear(),
         date.getMonth(),
         1
       ).getDay();
+
+      this.currentFirstDayOfWeek = week.get(dayOfWeek) || 0;
     },
   },
   beforeMount() {
