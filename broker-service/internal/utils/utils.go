@@ -39,3 +39,17 @@ func ConvertDocumentsToJSON(ds []*document.Document) []*document.DocumentJSON {
 
 	return djs
 }
+
+func ConvertCalendarToJSON(cl []*document.CalendarEntity) []*document.CalendarEntityJSON {
+	var cldr []*document.CalendarEntityJSON
+	for _, n := range cl {
+		cldr = append(cldr, &document.CalendarEntityJSON{
+			DocumentID:       n.DocumentID,
+			DocumentTitle:    n.DocumentTitle,
+			NotificationDate: ParseProtobufDateToString(n.NotificationDate),
+			ExpiresAt:        ParseProtobufDateToString(n.ExpiresAt),
+		})
+	}
+
+	return cldr
+}

@@ -34,6 +34,12 @@ func (app *Config) routes() *gin.Engine {
 		documents.GET("/statistics", app.documentGetStatistics)
 	}
 
+	calendar := g.Group("/calendar")
+	calendar.Use(app.AuthGuard())
+	{
+		calendar.GET("", app.getCalendar)
+	}
+
 	user := g.Group("/user")
 	user.Use(app.AuthGuard())
 	{
