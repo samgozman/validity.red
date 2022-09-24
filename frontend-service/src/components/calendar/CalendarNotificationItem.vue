@@ -9,7 +9,7 @@ defineProps<{
 
 <template>
   <RouterLink
-    :to="`/documents/${notification.documentId}`"
+    :to="`/documents/${notification.documentID}`"
     class="flex items-center flex-shrink-0 h-5 px-1 text-xs hover:bg-base-300"
   >
     <span class="ml-2 font-light leading-none hidden md:block">

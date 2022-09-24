@@ -1,5 +1,5 @@
 export interface ICalendarNotification {
-  documentId: string;
+  documentID: string;
   documentTitle: string;
   notificationDate: string;
   expiresAt: string;
