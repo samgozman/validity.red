@@ -158,7 +158,9 @@ func (ds *DocumentServer) GetAll(ctx context.Context, req *proto.DocumentsReques
 	}
 
 	// Find all documents
-	documents, err := ds.App.Documents.FindAll(ctx, userID)
+	documents, err := ds.App.Documents.FindAll(ctx, document.DocumentFindAll{
+		UserID: userID,
+	})
 
 	// return error if exists
 	if err != nil {

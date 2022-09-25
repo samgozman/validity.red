@@ -28,6 +28,12 @@ type Notification struct {
 	UpdatedAt  time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"updated_at,omitempty"`
 }
 
+type NotificationFindAllForUser struct {
+	UserID    uuid.UUID
+	DateStart time.Time
+	DateEnd   time.Time
+}
+
 // Prepare Notification object before inserting into database
 func (n *Notification) Prepare() {
 	n.CreatedAt = time.Now()
@@ -159,13 +165,21 @@ func (db *NotificationDB) CountAll(ctx context.Context, userID uuid.UUID) (int64
 	return count, nil
 }
 
-func (db *NotificationDB) FindAllForUser(ctx context.Context, userID uuid.UUID) ([]Notification, error) {
+func (db *NotificationDB) FindAllForUser(ctx context.Context, params NotificationFindAllForUser) ([]Notification, error) {
 	var notifications []Notification
+
+	// To fix zero time issue for optional date params
+	var condition interface{} = "user_id = ?"
+	var patches []interface{} = []interface{}{params.UserID}
+	if !params.DateStart.IsZero() && !params.DateEnd.IsZero() {
+		condition = "user_id = ? AND created_at BETWEEN ? AND ?"
+		patches = []interface{}{params.UserID, params.DateStart, params.DateEnd}
+	}
 
 	res := db.Conn.
 		WithContext(ctx).
 		Model(&Notification{}).
-		Where(&Notification{UserID: userID}).
+		Where(condition, patches).
 		Find(&notifications)
 
 	if res.Error != nil {

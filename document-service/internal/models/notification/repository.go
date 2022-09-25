@@ -13,5 +13,5 @@ type NotificationRepository interface {
 	FindAll(ctx context.Context, documentID uuid.UUID) ([]Notification, error)
 	Count(ctx context.Context, documentID uuid.UUID) (int64, error)
 	CountAll(ctx context.Context, userID uuid.UUID) (int64, error)
-	FindAllForUser(ctx context.Context, userID uuid.UUID) ([]Notification, error)
+	FindAllForUser(ctx context.Context, params NotificationFindAllForUser) ([]Notification, error)
 }

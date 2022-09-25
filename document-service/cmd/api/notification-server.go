@@ -182,7 +182,9 @@ func (ds *NotificationServer) GetAllForUser(
 	}
 
 	// Find all notifications
-	notifications, err := ds.App.Notifications.FindAllForUser(ctx, userID)
+	notifications, err := ds.App.Notifications.FindAllForUser(ctx, notification.NotificationFindAllForUser{
+		UserID: userID,
+	})
 	if err != nil {
 		return nil, err
 	}

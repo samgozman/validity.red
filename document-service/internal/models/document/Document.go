@@ -44,6 +44,12 @@ type Document struct {
 	UpdatedAt      time.Time                   `gorm:"default:CURRENT_TIMESTAMP" json:"updated_at,omitempty"`
 }
 
+type DocumentFindAll struct {
+	UserID    uuid.UUID
+	DateStart time.Time
+	DateEnd   time.Time
+}
+
 // Prepare Document object before inserting into database
 func (d *Document) Prepare() {
 	escapeCharacters := regexp.MustCompile(`(?m)<|>|\(|\)|;|\\|\/`)
@@ -257,13 +263,22 @@ func (db *DocumentDB) Exists(ctx context.Context, d *Document) (bool, error) {
 }
 
 // Find all documents by UserID
-func (db *DocumentDB) FindAll(ctx context.Context, userId uuid.UUID) ([]Document, error) {
+// DateStart and DateEnd are optional.
+func (db *DocumentDB) FindAll(ctx context.Context, params DocumentFindAll) ([]Document, error) {
 	var documents []Document
+
+	// To fix zero time issue for optional date params
+	var condition interface{} = "user_id = ?"
+	var patches []interface{} = []interface{}{params.UserID}
+	if !params.DateStart.IsZero() && !params.DateEnd.IsZero() {
+		condition = "user_id = ? AND created_at BETWEEN ? AND ?"
+		patches = []interface{}{params.UserID, params.DateStart, params.DateEnd}
+	}
 
 	res := db.Conn.
 		WithContext(ctx).
 		Model(&Document{}).
-		Where(&Document{UserID: userId}).
+		Where(condition, patches).
 		Find(&documents)
 
 	if res.Error != nil {

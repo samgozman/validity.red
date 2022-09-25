@@ -44,7 +44,7 @@ func (db *DocumentDBTest) Exists(ctx context.Context, d *document.Document) (boo
 }
 
 // Find all documents by UserID
-func (db *DocumentDBTest) FindAll(ctx context.Context, userId uuid.UUID) ([]document.Document, error) {
+func (db *DocumentDBTest) FindAll(ctx context.Context, params document.DocumentFindAll) ([]document.Document, error) {
 	var documents []document.Document
 
 	return documents, nil

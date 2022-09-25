@@ -43,7 +43,7 @@ func (db *NotificationDBTest) CountAll(ctx context.Context, userID uuid.UUID) (i
 	return 0, nil
 }
 
-func (db *NotificationDBTest) FindAllForUser(ctx context.Context, userID uuid.UUID) ([]notification.Notification, error) {
+func (db *NotificationDBTest) FindAllForUser(ctx context.Context, params notification.NotificationFindAllForUser) ([]notification.Notification, error) {
 	var notifications []notification.Notification
 	return notifications, nil
 }
