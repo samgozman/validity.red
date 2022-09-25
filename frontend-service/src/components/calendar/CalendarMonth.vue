@@ -34,7 +34,6 @@ import CalendarDay from "./CalendarDay.vue";
         class="grid flex-grow w-full h-auto grid-cols-7 grid-rows-5 gap-px pt-px mt-1 bg-base-200 rounded-box"
       >
         <!-- Placeholder -->
-        <!-- ! Bug -->
         <div v-for="day in currentFirstDayOfWeek" v-bind:key="day" />
         <CalendarDay
           v-for="day in month"
