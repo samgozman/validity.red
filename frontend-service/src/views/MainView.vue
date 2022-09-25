@@ -112,7 +112,7 @@ import LogoText from "@/components/LogoText.vue";
           },
           {
             headline: 'Private',
-            text: 'We do not collect any personal information other than your email.',
+            text: 'Data is encrypted with AES-256 algorithm. We do not collect any personal information other than your email.',
             iconStyle: 'shield-checkmark-outline',
           },
           {
