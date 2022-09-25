@@ -16,6 +16,10 @@ frontend-service/dist
 frontend-service/dist-ssr
 frontend-service/coverage
 
+# Ignore rust files
+calendar-service/target
+**/Cargo.lock
+
 # Ignore editor directories and files
 .vscode/*
 */.vscode/*

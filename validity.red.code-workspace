@@ -10,6 +10,9 @@
 			"path": "document-service"
 		},
 		{
+			"path": "calendar-service"
+		},
+		{
 			"path": "logger-service"
 		},
 		{
