@@ -7,6 +7,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/samgozman/validity.red/broker/internal/utils"
+	"github.com/samgozman/validity.red/broker/proto/calendar"
 	"github.com/samgozman/validity.red/broker/proto/document"
 	"github.com/samgozman/validity.red/broker/proto/logs"
 )
@@ -51,12 +52,12 @@ func (app *Config) getCalendar(c *gin.Context) {
 		return
 	}
 
-	calendar := createCalendar(documents.Documents, notifications.Notifications)
+	calendarArr := createCalendar(documents.Documents, notifications.Notifications)
 
 	payload.Data = struct {
-		Calendar []*document.CalendarEntityJSON `json:"calendar"`
+		Calendar []*calendar.CalendarEntityJSON `json:"calendar"`
 	}{
-		Calendar: utils.ConvertCalendarToJSON(calendar),
+		Calendar: utils.ConvertCalendarToJSON(calendarArr),
 	}
 
 	c.JSON(http.StatusOK, payload)
@@ -67,12 +68,12 @@ func (app *Config) getCalendar(c *gin.Context) {
 func createCalendar(
 	documents []*document.Document,
 	notifications []*document.Notification,
-) []*document.CalendarEntity {
-	var calendar []*document.CalendarEntity
+) []*calendar.CalendarEntity {
+	var calendarArr []*calendar.CalendarEntity
 
 	for _, notification := range notifications {
 		d := findDocumentByID(documents, notification.DocumentID)
-		calendar = append(calendar, &document.CalendarEntity{
+		calendarArr = append(calendarArr, &calendar.CalendarEntity{
 			DocumentID:       d.ID,
 			DocumentTitle:    d.Title,
 			NotificationDate: notification.Date,
@@ -80,7 +81,7 @@ func createCalendar(
 		})
 	}
 
-	return calendar
+	return calendarArr
 }
 
 // Find document by ID in array of documents

@@ -40,20 +40,6 @@ message Document {
 	google.protobuf.Timestamp expiresAt = 6;
 }
 
-message CalendarEntity {
-	string documentID = 1;
-	string documentTitle = 2;
-	google.protobuf.Timestamp notificationDate = 5;
-	google.protobuf.Timestamp expiresAt = 6;
-}
-
-message CalendarEntityJSON {
-	string documentID = 1;
-	string documentTitle = 2;
-	string notificationDate = 5;
-	string expiresAt = 6;
-}
-
 // Message for document exported as JSON format with lesser types
 message DocumentJSON {
 	string ID = 1;

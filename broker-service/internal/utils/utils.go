@@ -3,6 +3,7 @@ package utils
 import (
 	"time"
 
+	"github.com/samgozman/validity.red/broker/proto/calendar"
 	"github.com/samgozman/validity.red/broker/proto/document"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
@@ -40,10 +41,10 @@ func ConvertDocumentsToJSON(ds []*document.Document) []*document.DocumentJSON {
 	return djs
 }
 
-func ConvertCalendarToJSON(cl []*document.CalendarEntity) []*document.CalendarEntityJSON {
-	var cldr []*document.CalendarEntityJSON
+func ConvertCalendarToJSON(cl []*calendar.CalendarEntity) []*calendar.CalendarEntityJSON {
+	var cldr []*calendar.CalendarEntityJSON
 	for _, n := range cl {
-		cldr = append(cldr, &document.CalendarEntityJSON{
+		cldr = append(cldr, &calendar.CalendarEntityJSON{
 			DocumentID:       n.DocumentID,
 			DocumentTitle:    n.DocumentTitle,
 			NotificationDate: ParseProtobufDateToString(n.NotificationDate),

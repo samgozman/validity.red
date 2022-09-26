@@ -1,0 +1,48 @@
+syntax = "proto3";
+
+import "google/protobuf/timestamp.proto";
+
+package calendar;
+
+option go_package = "/calendar";
+
+message CalendarEntity {
+	string documentID = 1;
+	string documentTitle = 2;
+	google.protobuf.Timestamp notificationDate = 3;
+	google.protobuf.Timestamp expiresAt = 4;
+}
+
+message CalendarEntityJSON {
+	string documentID = 1;
+	string documentTitle = 2;
+	string notificationDate = 3;
+	string expiresAt = 4;
+}
+
+message CreateCalendarRequest {
+	string calendarID = 1;
+	string calendarIV = 2;
+	repeated CalendarEntity calendarEntities = 3;
+}
+
+message CreateCalendarResponse {
+	bool error = 1;
+	string message = 2;
+}
+
+message GetCalendarRequest {
+	string calendarID = 1;
+	string calendarIV = 2;
+}
+
+message GetCalendarResponse {
+	bool error = 1;
+	string message = 2;
+	bytes calendar = 3;
+}
+
+service CalendarService {
+	rpc GetCalendar (GetCalendarRequest) returns (GetCalendarResponse) {}
+	rpc CreateCalendar (CreateCalendarRequest) returns (CreateCalendarResponse) {}
+}
