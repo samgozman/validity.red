@@ -13,7 +13,7 @@ up:
 build: build_broker build_user build_logger build_document
 
 ## stops docker-compose (if running), builds all projects and starts docker compose
-up_build: grpc_init build
+up_build: grpc_init grpc_init_rust build
 	@echo "Stopping docker images (if running...)"
 	docker-compose down
 	@echo "Building (when required) and starting docker images..."
@@ -26,8 +26,8 @@ down:
 	docker-compose down
 	@echo "Done!"
 
-# build proto files and copy them into services
-grpc_init:
+# build proto files and copy them into Go services
+grpc_init_go:
 	@echo "Remove old broker-service/proto folder"
 	rm -r broker-service/proto || true
 	@echo "Create new broker-service/proto folders"
@@ -44,6 +44,20 @@ grpc_init:
 	@echo "Move calendar files from default folder into nested"
 	mv broker-service/proto/calendar*.go broker-service/proto/calendar
 	@echo "Done!"
+
+# To init grpc for rust services we need to copy proto files into rust services
+# Build proccess will be done by cargo
+grpc_init_rust:
+	@echo "Remove old calendar-serviceproto folder"
+	rm -r calendar-service/proto || true
+	@echo "Create new calendar-service/proto folders"
+	mkdir calendar-service/proto
+	cp proto/calendar.proto calendar-service/proto
+	@echo "Done!"
+
+# Lint rust services
+lint_rust:
+	rustfmt calendar-service/src/*.rs --edition 2021
 
 ## builds the broker binary as a linux executable
 build_broker:

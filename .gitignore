@@ -18,6 +18,7 @@ frontend-service/coverage
 
 # Ignore rust files
 calendar-service/target
+calendar-service/proto
 **/Cargo.lock
 
 # Ignore editor directories and files
