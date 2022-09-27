@@ -19,6 +19,14 @@ jobs:
       with:
         go-version: 1.19
 
+    - name: Setup protoc
+      uses: arduino/setup-protoc@v1
+      with:
+        version: '3.x'
+
+    - name: Build proto files
+      run: make grpc_init_go
+
     - name: Build go services
       run: make build
 

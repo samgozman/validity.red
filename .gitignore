@@ -16,9 +16,15 @@ frontend-service/dist
 frontend-service/dist-ssr
 frontend-service/coverage
 
+# Ignore proto folder in services
+broker-service/proto
+user-service/proto
+logger-service/proto
+document-service/proto
+calendar-service/proto
+
 # Ignore rust files
 calendar-service/target
-calendar-service/proto
 **/Cargo.lock
 
 # Ignore editor directories and files
