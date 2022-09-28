@@ -75,6 +75,7 @@ func createCalendar(
 		d := findDocumentByID(documents, notification.DocumentID)
 		calendarArr = append(calendarArr, &calendar.CalendarEntity{
 			DocumentID:       d.ID,
+			NotificationID:   notification.ID,
 			DocumentTitle:    d.Title,
 			NotificationDate: notification.Date,
 			ExpiresAt:        d.ExpiresAt,

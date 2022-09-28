@@ -8,9 +8,10 @@ option go_package = "/calendar";
 
 message CalendarEntity {
 	string documentID = 1;
-	string documentTitle = 2;
-	google.protobuf.Timestamp notificationDate = 3;
-	google.protobuf.Timestamp expiresAt = 4;
+	string notificationID = 2;
+	string documentTitle = 3;
+	google.protobuf.Timestamp notificationDate = 4;
+	google.protobuf.Timestamp expiresAt = 5;
 }
 
 message CalendarEntityJSON {
