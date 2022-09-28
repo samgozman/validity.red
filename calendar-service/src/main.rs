@@ -1,5 +1,5 @@
-mod service;
 mod encryptor;
+mod service;
 
 use tonic::{transport::Server, Request, Response, Status};
 
