@@ -13,13 +13,13 @@ pub mod calendar {
 
     /// It takes a vector of `CalendarEntity`s and returns an `ICalendar` with the events from the
     /// `CalendarEntity`s
-    /// 
+    ///
     /// Arguments:
-    /// 
+    ///
     /// * `calendar_events`: A vector of CalendarEntity structs.
-    /// 
+    ///
     /// Returns:
-    /// 
+    ///
     /// A calendar object
     pub fn create(calendar_events: Vec<CalendarEntity>) -> ICalendar<'static> {
         let mut calendar = ICalendar::new(
@@ -44,13 +44,13 @@ pub mod calendar {
     pub fn write() {}
 
     /// It takes a `CalendarEntity` and returns an iCal `Event` with the same data
-    /// 
+    ///
     /// Arguments:
-    /// 
+    ///
     /// * `calendar_event`: The CalendarEntity struct that contains the data for the event.
-    /// 
+    ///
     /// Returns:
-    /// 
+    ///
     /// A new event is being returned.
     fn create_event(calendar_event: CalendarEntity) -> Event<'static> {
         // Convert timestamp to DateTime
