@@ -60,7 +60,7 @@ pub mod calendar {
         let dt_end = dt_start + chrono::Duration::hours(1);
 
         // Convert date to ICS ISO 8601 format
-        let dt_start = dt_start.format("%Y%m%dT%H%M%S").to_string();
+        let dt_start = dt_start.format("%Y%m%dT%H%M%SZ").to_string();
         let dt_end = dt_end.format("%Y%m%dT%H%M%SZ").to_string();
 
         let mut event = Event::new(calendar_event.notification_id, dt_start.clone());
