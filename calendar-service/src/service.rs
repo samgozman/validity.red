@@ -5,14 +5,35 @@ pub mod calendar {
     use chrono::{TimeZone, Utc};
     use ics::properties::{Description, DtEnd, DtStart, Summary};
     use ics::{escape_text, Event, ICalendar};
+    use std::error::Error;
+    use std::fs::File;
+    use std::io::{BufReader, Read, Write};
 
-    // 1. Read file with ID (from request data) as filename
-    // 2. Decode file with AES-256
-    // - optional: check if file is valid (if possible)
-    pub fn read() {}
+    /// Read a file and return the contents as a string
+    ///
+    /// Arguments:
+    ///
+    /// * `file_name`: The name of the file to read.
+    ///
+    /// Returns:
+    ///
+    /// A String containing the contents of the file or an ([`Err`]).
+    pub fn read(file_name: &str) -> Result<String, Box<dyn Error>> {
+        // TODO: Read from env
+        const FILE_PATH: &str = "data/";
+        let path = FILE_PATH.to_owned() + file_name;
 
-    /// It takes a vector of `CalendarEntity`s and returns an `ICalendar` with the events from the
-    /// `CalendarEntity`s
+        let file = File::open(path).expect("File not found");
+        let mut buf_reader = BufReader::new(file);
+        let mut contents = String::new();
+        buf_reader
+            .read_to_string(&mut contents)
+            .expect("Failed to read file");
+
+        Ok(contents)
+    }
+
+    /// It takes a vector of `CalendarEntity`s and returns a string containing the iCalendar data
     ///
     /// Arguments:
     ///
@@ -20,8 +41,8 @@ pub mod calendar {
     ///
     /// Returns:
     ///
-    /// A calendar object
-    pub fn create(calendar_events: Vec<CalendarEntity>) -> ICalendar<'static> {
+    /// A string of the calendar.
+    pub fn create(calendar_events: Vec<CalendarEntity>) -> String {
         let mut calendar = ICalendar::new(
             "2.0",
             "-//Validity.Red//Document expiration calendar 1.0//EN",
@@ -36,12 +57,29 @@ pub mod calendar {
             calendar.add_event(event);
         }
 
-        return calendar;
+        return calendar.to_string();
     }
 
-    // 1. Write encoded buffer to file with ID (from request data) as filename
-    // 2. Replace previous calendar file (if exists)
-    pub fn write() {}
+    /// It creates a file with the given name and writes the given data to it
+    ///
+    /// Arguments:
+    ///
+    /// * `data`: &[u8] - This is the data that we want to write to the file.
+    /// * `file_name`: The name of the file to write to.
+    ///
+    /// Returns:
+    ///
+    /// A Result that either success ([`Ok`]) or failure ([`Err`])
+    pub fn write(data: &[u8], file_name: &str) -> Result<(), Box<dyn Error>> {
+        // TODO: Read from env
+        const FILE_PATH: &str = "data/";
+        let path = FILE_PATH.to_owned() + file_name;
+
+        let mut file = File::create(path).expect("Unable to create file");
+        file.write_all(data).expect("Unable to write data");
+
+        Ok(())
+    }
 
     /// It takes a `CalendarEntity` and returns an iCal `Event` with the same data
     ///
