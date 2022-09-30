@@ -22,26 +22,54 @@ impl Calendar for CalendarService {
         &self,
         request: Request<GetCalendarRequest>,
     ) -> Result<Response<GetCalendarResponse>, Status> {
-        println!("Got a request: {:?}", request);
-        let reply = calendar::GetCalendarResponse {
-            error: false,
-            message: "Not implemented".to_string(),
-            calendar: Vec::<u8>::new(),
-        };
-        Ok(Response::new(reply))
+        let file = service::calendar::read(request.get_ref().calendar_id.as_str());
+        if file.is_err() {
+            let reply = calendar::GetCalendarResponse {
+                error: true,
+                message: file.err().unwrap().to_string(),
+                calendar: Vec::<u8>::new(),
+            };
+            Ok(Response::new(reply))
+        } else {
+            // TODO: Decrypt file
+
+            let reply = calendar::GetCalendarResponse {
+                error: false,
+                message: "Calendar retrieved".to_string(),
+                calendar: file.unwrap().as_bytes().to_vec(),
+            };
+            Ok(Response::new(reply))
+        }
     }
 
-    // TODO: implement full method
     async fn create_calendar(
         &self,
         request: Request<CreateCalendarRequest>,
     ) -> Result<Response<CreateCalendarResponse>, Status> {
-        println!("Got a request: {:?}", request);
-        let reply = calendar::CreateCalendarResponse {
-            error: false,
-            message: "Not implemented".to_string(),
-        };
-        Ok(Response::new(reply))
+        let calendar_ics = service::calendar::create(request.get_ref().calendar_entities.clone());
+        // TODO: encrypt calendar_ics
+
+        let write_check = service::calendar::write(
+            calendar_ics.as_bytes(),
+            request.get_ref().calendar_id.as_str(),
+        );
+
+        match write_check {
+            Ok(_) => {
+                let reply = calendar::CreateCalendarResponse {
+                    error: false,
+                    message: "Calendar created".to_string(),
+                };
+                Ok(Response::new(reply))
+            }
+            Err(msg) => {
+                let reply = calendar::CreateCalendarResponse {
+                    error: true,
+                    message: msg.to_string(),
+                };
+                Ok(Response::new(reply))
+            }
+        }
     }
 }
 

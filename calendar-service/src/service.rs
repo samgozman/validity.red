@@ -1,5 +1,3 @@
-#![allow(dead_code)]
-
 pub mod calendar {
     use crate::calendar::CalendarEntity;
     use chrono::{TimeZone, Utc};
@@ -43,6 +41,7 @@ pub mod calendar {
     ///
     /// A string of the calendar.
     pub fn create(calendar_events: Vec<CalendarEntity>) -> String {
+        // TODO: recieve calendar_events as a pointer
         let mut calendar = ICalendar::new(
             "2.0",
             "-//Validity.Red//Document expiration calendar 1.0//EN",
