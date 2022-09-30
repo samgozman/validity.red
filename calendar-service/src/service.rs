@@ -74,6 +74,12 @@ pub mod calendar {
         // TODO: Read from env
         const FILE_PATH: &str = "data/";
         let path = FILE_PATH.to_owned() + file_name;
+        let path = std::path::Path::new(&path);
+        let parent_folder = path.parent().unwrap();
+
+        if !parent_folder.exists() {
+            std::fs::create_dir_all(parent_folder).unwrap();
+        }
 
         let mut file = File::create(path).expect("Unable to create file");
         file.write_all(data).expect("Unable to write data");
