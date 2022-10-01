@@ -1,23 +1,32 @@
-#![allow(dead_code, unused_variables)]
-
+use ::generic_array::GenericArray;
 use aes_gcm::{
-    aead::{heapless::Vec, AeadInPlace, KeyInit, OsRng},
+    aead::{AeadInPlace, KeyInit},
     Aes256Gcm, Nonce,
 };
 
-// TODO: Retrun unfixed size Vec
-pub fn encrypt(data: String, key: String) -> Result<Vec<u8, 128>, Box<dyn std::error::Error>> {
-    let key = Aes256Gcm::generate_key(&mut OsRng);
-    let cipher = Aes256Gcm::new(&key);
-    let nonce = Nonce::from_slice(b"unique nonce"); // 96-bits; unique per message
+const BLOCK_SIZE: usize = 16;
 
-    // TODO: Split data into chunks of 128 bytes
-    // TODO: PKCS5Padding and PKCS5UnPadding methods
+/// It takes a string, encrypts it, and returns the encrypted data as a vector of bytes
+/// 
+/// Arguments:
+/// 
+/// * `data`: The data to be encrypted.
+/// * `key`: AES-256 key encryption key.
+/// * `iv`: Initialization vector. This is a random value that is used to ensure that the same plaintext
+/// will not produce the same ciphertext.
+/// 
+/// Returns:
+/// 
+/// A vector of bytes
+pub fn encrypt(
+    data: String,
+    key: &[u8; 32],
+    iv: &[u8; 12],
+) -> Result<Vec<u8>, Box<dyn std::error::Error>> {
+    let cipher = Aes256Gcm::new(GenericArray::from_slice(key));
+    let nonce = Nonce::from_slice(iv); // 96-bits; unique per message
 
-    let mut buffer: Vec<u8, 128> = Vec::new(); // Note: buffer needs 16-bytes overhead for auth tag tag
-    buffer
-        .extend_from_slice(data.as_bytes())
-        .expect("buffer too small");
+    let mut buffer = pkcs5_padding(data.as_bytes());
 
     // Encrypt `buffer` in-place, replacing the plaintext contents with ciphertext
     cipher
@@ -30,4 +39,70 @@ pub fn encrypt(data: String, key: String) -> Result<Vec<u8, 128>, Box<dyn std::e
     Ok(buffer)
 }
 
-pub fn decrypt(data: &[u8], key: &[u8]) {}
+/// It takes a byte array, decrypts it using the key and iv, and returns a string
+/// 
+/// Arguments:
+/// 
+/// * `data`: The data to be decrypted.
+/// * `key`: AES-256 key encryption key.
+/// * `iv`: Initialization vector. This is a random value that is used to ensure that the same plaintext
+/// will not produce the same ciphertext.
+/// 
+/// Returns:
+/// 
+/// A String 
+pub fn decrypt(data: &[u8], key: &[u8; 32], iv: &[u8; 12]) -> String {
+    // ? Maybe IV size should be equal to BLOCK_SIZE
+    // TODO: Return Result like in encrypt()
+    let cipher = Aes256Gcm::new(GenericArray::from_slice(key));
+    let nonce = Nonce::from_slice(iv);
+
+    let mut buffer = data.to_vec();
+    cipher
+        .decrypt_in_place(nonce, b"", &mut buffer)
+        .expect("decryption failure!");
+
+    let buffer = pkcs5_unpadding(&buffer);
+    std::str::from_utf8(&buffer)
+        .expect("u8 to String transfromation failed")
+        .to_string()
+}
+
+/// Add padding bytes for the message to transform
+/// it into multiple blocks. (used before encryption)
+/// 
+/// Arguments:
+///
+/// * `src`: The source data to be padded.
+///
+/// Returns:
+///
+/// A vector of bytes.
+fn pkcs5_padding(src: &[u8]) -> Vec<u8> {
+    let padding = BLOCK_SIZE - src.len() % BLOCK_SIZE;
+    let padtext = vec![padding as u8; padding];
+    let mut result = src.to_vec();
+    result.append(&mut padtext.to_vec());
+    return result;
+}
+
+/// Remove padding bytes from the end of the slice (used after decryption)
+///
+/// Arguments:
+///
+/// * `src`: Decrypted source data.
+///
+/// Returns:
+///
+/// A vector of bytes.
+fn pkcs5_unpadding(src: &[u8]) -> Vec<u8> {
+    let length = src.len();
+    let unpadding = src[length - 1] as usize;
+    if length < unpadding {
+        panic!(
+            "Invalid padding. length: {}, unpadding: {}",
+            length, unpadding
+        );
+    }
+    (&src[..(length - unpadding)]).to_vec()
+}

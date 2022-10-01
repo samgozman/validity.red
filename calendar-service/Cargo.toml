@@ -12,7 +12,8 @@ prost-types = "0.11.1"
 tokio = { version = "1.21.2", features = ["macros", "rt-multi-thread"] }
 ics = "0.5.8"
 chrono = "0.4.22"
-aes-gcm = {version = "0.10.1", features = ["heapless"]}
+aes-gcm = "0.10.1"
+generic-array = "0.14.6"
 
 [build-dependencies]
 tonic-build = "0.8.0"
