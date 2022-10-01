@@ -13,7 +13,7 @@ up:
 build: build_broker build_user build_logger build_document
 
 ## stops docker-compose (if running), builds all projects and starts docker compose
-up_build: grpc_init grpc_init_rust build
+up_build: grpc_init_go grpc_init_rust build
 	@echo "Stopping docker images (if running...)"
 	docker-compose down
 	@echo "Building (when required) and starting docker images..."
