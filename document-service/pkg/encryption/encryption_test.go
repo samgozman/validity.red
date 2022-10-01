@@ -145,8 +145,7 @@ func TestDecryptAES(t *testing.T) {
 
 func TestPKCS5Padding(t *testing.T) {
 	type args struct {
-		src   []byte
-		after int
+		src []byte
 	}
 	tests := []struct {
 		name string
@@ -155,13 +154,13 @@ func TestPKCS5Padding(t *testing.T) {
 	}{
 		{
 			name: "should add padding",
-			args: args{src: []byte{115, 109, 97, 108, 108}, after: 5},
+			args: args{src: []byte{115, 109, 97, 108, 108}},
 			want: []byte{115, 109, 97, 108, 108, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11},
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := PKCS5Padding(tt.args.src, tt.args.after); !reflect.DeepEqual(got, tt.want) {
+			if got := PKCS5Padding(tt.args.src); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("PKCS5Padding() = %v, want %v", got, tt.want)
 			}
 		})

@@ -27,7 +27,7 @@ func EncryptAES(key []byte, iv []byte, text string) (string, error) {
 		return "", ErrWrongIVSize
 	}
 
-	bytesText := PKCS5Padding([]byte(text), len(text))
+	bytesText := PKCS5Padding([]byte(text))
 	block, err := aes.NewCipher(key)
 	if err != nil {
 		return "", err
@@ -68,7 +68,7 @@ func DecryptAES(key []byte, iv []byte, cipherText string) (string, error) {
 
 // Add padding bytes for the message to transform
 // it into multiple 8-byte blocks.
-func PKCS5Padding(src []byte, after int) []byte {
+func PKCS5Padding(src []byte) []byte {
 	padding := BlockSize - len(src)%BlockSize
 	padtext := bytes.Repeat([]byte{byte(padding)}, padding)
 	return append(src, padtext...)
