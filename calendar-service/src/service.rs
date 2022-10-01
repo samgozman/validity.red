@@ -1,11 +1,15 @@
 pub mod calendar {
     use crate::calendar::CalendarEntity;
+    use crate::encryptor::{decrypt, encrypt};
     use chrono::{TimeZone, Utc};
     use ics::properties::{Description, DtEnd, DtStart, Summary};
     use ics::{escape_text, Event, ICalendar};
     use std::error::Error;
     use std::fs::File;
     use std::io::{BufReader, Read, Write};
+
+    // TODO: Read from env
+    const KEY: &[u8; 32] = b"A%D*G-KaPdSgVkYp3s6v9y$B?E(H+MbQ";
 
     /// Read a file and return the contents as a string
     ///
@@ -28,7 +32,11 @@ pub mod calendar {
             .read_to_string(&mut contents)
             .expect("Failed to read file");
 
-        Ok(contents)
+        // TODO: Read from Proto
+        let iv: &[u8; 12] = b"123456789012";
+        let decrypted = decrypt(contents.as_bytes(), KEY, iv);
+
+        Ok(decrypted)
     }
 
     /// It takes a vector of `CalendarEntity`s and returns a string containing the iCalendar data
@@ -63,13 +71,13 @@ pub mod calendar {
     ///
     /// Arguments:
     ///
-    /// * `data`: &[u8] - This is the data that we want to write to the file.
+    /// * `data`: String - This is the data that we want to write to the file.
     /// * `file_name`: The name of the file to write to.
     ///
     /// Returns:
     ///
     /// A Result that either success ([`Ok`]) or failure ([`Err`])
-    pub fn write(data: &[u8], file_name: &str) -> Result<(), Box<dyn Error>> {
+    pub fn write(data: String, file_name: &str) -> Result<(), Box<dyn Error>> {
         // TODO: Read from env
         const FILE_PATH: &str = "data/";
         let path = FILE_PATH.to_owned() + file_name;
@@ -80,8 +88,14 @@ pub mod calendar {
             std::fs::create_dir_all(parent_folder).unwrap();
         }
 
+        // TODO: Read from Proto
+        let iv: &[u8; 12] = b"123456789012";
+
+        let encrypted = encrypt(data, KEY, iv).expect("Encryption failed");
+
         let mut file = File::create(path).expect("Unable to create file");
-        file.write_all(data).expect("Unable to write data");
+        file.write_all(encrypted.as_slice())
+            .expect("Unable to write data");
 
         Ok(())
     }

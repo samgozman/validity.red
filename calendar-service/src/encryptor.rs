@@ -7,22 +7,23 @@ use aes_gcm::{
 const BLOCK_SIZE: usize = 16;
 
 /// It takes a string, encrypts it, and returns the encrypted data as a vector of bytes
-/// 
+///
 /// Arguments:
-/// 
+///
 /// * `data`: The data to be encrypted.
 /// * `key`: AES-256 key encryption key.
 /// * `iv`: Initialization vector. This is a random value that is used to ensure that the same plaintext
 /// will not produce the same ciphertext.
-/// 
+///
 /// Returns:
-/// 
+///
 /// A vector of bytes
 pub fn encrypt(
     data: String,
     key: &[u8; 32],
     iv: &[u8; 12],
 ) -> Result<Vec<u8>, Box<dyn std::error::Error>> {
+    // TODO: Encrypt data "in place"
     let cipher = Aes256Gcm::new(GenericArray::from_slice(key));
     let nonce = Nonce::from_slice(iv); // 96-bits; unique per message
 
@@ -40,18 +41,19 @@ pub fn encrypt(
 }
 
 /// It takes a byte array, decrypts it using the key and iv, and returns a string
-/// 
+///
 /// Arguments:
-/// 
+///
 /// * `data`: The data to be decrypted.
 /// * `key`: AES-256 key encryption key.
 /// * `iv`: Initialization vector. This is a random value that is used to ensure that the same plaintext
 /// will not produce the same ciphertext.
-/// 
+///
 /// Returns:
-/// 
-/// A String 
+///
+/// A String
 pub fn decrypt(data: &[u8], key: &[u8; 32], iv: &[u8; 12]) -> String {
+    // TODO: Encrypt data "in place"
     // ? Maybe IV size should be equal to BLOCK_SIZE
     // TODO: Return Result like in encrypt()
     let cipher = Aes256Gcm::new(GenericArray::from_slice(key));
@@ -70,7 +72,7 @@ pub fn decrypt(data: &[u8], key: &[u8; 32], iv: &[u8; 12]) -> String {
 
 /// Add padding bytes for the message to transform
 /// it into multiple blocks. (used before encryption)
-/// 
+///
 /// Arguments:
 ///
 /// * `src`: The source data to be padded.

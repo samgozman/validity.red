@@ -50,7 +50,7 @@ impl Calendar for CalendarService {
         // TODO: encrypt calendar_ics
 
         let write_check = service::calendar::write(
-            calendar_ics.as_bytes(),
+            calendar_ics.to_string(),
             request.get_ref().calendar_id.as_str(),
         );
 
