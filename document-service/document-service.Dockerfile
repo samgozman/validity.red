@@ -1,7 +1,3 @@
-FROM alpine:latest
-
-RUN mkdir /app
-
-COPY documentApp /app
-
-CMD ["/app/documentApp"]
+FROM gcr.io/distroless/static-debian11
+COPY documentApp .
+CMD ["/documentApp"]

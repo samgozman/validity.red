@@ -1,7 +1,4 @@
-FROM alpine:latest
+FROM gcr.io/distroless/static-debian11
 
-RUN mkdir /app
-
-COPY loggerApp /app
-
-CMD ["/app/loggerApp"]
+COPY loggerApp .
+CMD ["/loggerApp"]

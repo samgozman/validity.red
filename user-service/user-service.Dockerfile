@@ -1,7 +1,3 @@
-FROM alpine:latest
-
-RUN mkdir /app
-
-COPY userApp /app
-
-CMD ["/app/userApp"]
+FROM gcr.io/distroless/static-debian11
+COPY userApp .
+CMD ["/userApp"]
