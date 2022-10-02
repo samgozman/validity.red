@@ -79,7 +79,6 @@ services:
       GRPC_PORT: 50051
     networks:
       - broker-network
-      - calendar-network
 
   logger_mongodb:
     image: mongo:4.2.21
@@ -128,4 +127,3 @@ networks:
   documents-network:
   users-network:
   logger-network:
-  calendar-network:
