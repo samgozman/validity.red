@@ -1,6 +1,7 @@
 mod encryptor;
 mod service;
 
+use std::env;
 use tonic::{transport::Server, Request, Response, Status};
 
 use calendar::calendar_service_server::{CalendarService as Calendar, CalendarServiceServer};
@@ -75,8 +76,10 @@ impl Calendar for CalendarService {
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    // TODO: add from ENV
-    let addr = "[::1]:50051".parse()?;
+    println!("Starting calendars server...");
+    // TODO: Set default values for env vars
+    let grpc_port = env::var("GRPC_PORT").expect("Expected GRPC_PORT to be set");
+    let addr = format!("0.0.0.0:{}", grpc_port).parse()?;
     let calendar_service = CalendarService::default();
 
     Server::builder()

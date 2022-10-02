@@ -70,6 +70,17 @@ services:
     depends_on:
       - documents_postgres
 
+  calendar-service:
+    build:
+      context: ./calendar-service
+      dockerfile: calendar-service.Dockerfile
+    restart: always
+    environment:
+      GRPC_PORT: 50051
+    networks:
+      - broker-network
+      - calendar-network
+
   logger_mongodb:
     image: mongo:4.2.21
     ports:
@@ -117,3 +128,4 @@ networks:
   documents-network:
   users-network:
   logger-network:
+  calendar-network:
