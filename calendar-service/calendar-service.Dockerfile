@@ -5,6 +5,6 @@ COPY . .
 RUN apk add build-base protoc protobuf-dev
 RUN cargo build --release
 
-FROM alpine:latest
+FROM gcr.io/distroless/cc-debian11
 COPY --from=builder /usr/src/app/target/release/calendar-service /usr/local/bin/app
 CMD ["app"]
