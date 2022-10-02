@@ -8,6 +8,7 @@ document-service/documentApp
 user-service/db-data
 logger-service/db-data
 document-service/db-data
+calendar-service/data
 
 # Ignore frontend files
 frontend-service/node_modules

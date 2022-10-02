@@ -77,6 +77,8 @@ services:
     restart: always
     environment:
       GRPC_PORT: 50051
+    volumes:
+      - ./calendar-service/data/:/data/
     networks:
       - broker-network
 
