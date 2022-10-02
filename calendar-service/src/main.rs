@@ -23,7 +23,16 @@ impl Calendar for CalendarService {
         &self,
         request: Request<GetCalendarRequest>,
     ) -> Result<Response<GetCalendarResponse>, Status> {
-        let file = service::calendar::read(request.get_ref().calendar_id.as_str());
+        let request_iv = request.get_ref().calendar_iv.as_bytes();
+        // TODO: Refactor to helper function (u8 to [u8; N])
+        let mut iv: [u8; 12] = Default::default();
+        if request_iv.len() == 12 {
+            iv.copy_from_slice(&request_iv[0..12]);
+        } else {
+            return Err(Status::invalid_argument("Invalid calendar_iv"));
+        }
+
+        let file = service::calendar::read(request.get_ref().calendar_id.as_str(), &iv);
         if file.is_err() {
             let reply = calendar::GetCalendarResponse {
                 error: true,
@@ -47,12 +56,21 @@ impl Calendar for CalendarService {
         &self,
         request: Request<CreateCalendarRequest>,
     ) -> Result<Response<CreateCalendarResponse>, Status> {
+        let request_iv = request.get_ref().calendar_iv.as_bytes();
+        // TODO: Refactor to helper function (u8 to [u8; N])
+        let mut iv: [u8; 12] = Default::default();
+        if request_iv.len() == 12 {
+            iv.copy_from_slice(&request_iv[0..12]);
+        } else {
+            return Err(Status::invalid_argument("Invalid calendar_iv"));
+        }
+
         let calendar_ics = service::calendar::create(request.get_ref().calendar_entities.clone());
-        // TODO: encrypt calendar_ics
 
         let write_check = service::calendar::write(
             calendar_ics.to_string(),
             request.get_ref().calendar_id.as_str(),
+            &iv,
         );
 
         match write_check {

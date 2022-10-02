@@ -16,11 +16,12 @@ pub mod calendar {
     /// Arguments:
     ///
     /// * `file_name`: The name of the file to read.
+    /// * `iv`: Initialization vector. This is a random value that is used to ensure that the same plaintext
     ///
     /// Returns:
     ///
     /// A String containing the contents of the file or an ([`Err`]).
-    pub fn read(file_name: &str) -> Result<String, Box<dyn Error>> {
+    pub fn read(file_name: &str, iv: &[u8; 12]) -> Result<String, Box<dyn Error>> {
         // TODO: Read from env
         const FILE_PATH: &str = "data/";
         let path = FILE_PATH.to_owned() + file_name;
@@ -33,8 +34,6 @@ pub mod calendar {
             .read_to_end(&mut file_data)
             .expect("Failed to read file");
 
-        // TODO: Read from Proto
-        let iv: &[u8; 12] = b"123456789012";
         let decrypted = decrypt(file_data.as_slice(), KEY, iv);
 
         Ok(decrypted)
@@ -74,11 +73,12 @@ pub mod calendar {
     ///
     /// * `data`: String - This is the data that we want to write to the file.
     /// * `file_name`: The name of the file to write to.
+    /// * `iv`: Initialization vector. This is a random value that is used to ensure that the same plaintext
     ///
     /// Returns:
     ///
     /// A Result that either success ([`Ok`]) or failure ([`Err`])
-    pub fn write(data: String, file_name: &str) -> Result<(), Box<dyn Error>> {
+    pub fn write(data: String, file_name: &str, iv: &[u8; 12]) -> Result<(), Box<dyn Error>> {
         // TODO: Read from env
         const FILE_PATH: &str = "data/";
         let path = FILE_PATH.to_owned() + file_name;
@@ -88,9 +88,6 @@ pub mod calendar {
         if !parent_folder.exists() {
             std::fs::create_dir_all(parent_folder).unwrap();
         }
-
-        // TODO: Read from Proto
-        let iv: &[u8; 12] = b"123456789012";
 
         let encrypted = encrypt(data, KEY, iv).expect("Encryption failed");
 
