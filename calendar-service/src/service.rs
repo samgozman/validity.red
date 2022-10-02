@@ -27,14 +27,15 @@ pub mod calendar {
 
         let file = File::open(path).expect("File not found");
         let mut buf_reader = BufReader::new(file);
-        let mut contents = String::new();
+
+        let mut file_data: Vec<u8> = Vec::new();
         buf_reader
-            .read_to_string(&mut contents)
+            .read_to_end(&mut file_data)
             .expect("Failed to read file");
 
         // TODO: Read from Proto
         let iv: &[u8; 12] = b"123456789012";
-        let decrypted = decrypt(contents.as_bytes(), KEY, iv);
+        let decrypted = decrypt(file_data.as_slice(), KEY, iv);
 
         Ok(decrypted)
     }
