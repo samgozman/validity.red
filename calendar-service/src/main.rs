@@ -24,13 +24,11 @@ impl Calendar for CalendarService {
         request: Request<GetCalendarRequest>,
     ) -> Result<Response<GetCalendarResponse>, Status> {
         let request_iv = request.get_ref().calendar_iv.as_bytes();
-        // TODO: Refactor to helper function (u8 to [u8; N])
-        let mut iv: [u8; 12] = Default::default();
-        if request_iv.len() == 12 {
-            iv.copy_from_slice(&request_iv[0..12]);
-        } else {
-            return Err(Status::invalid_argument("Invalid calendar_iv"));
+        if request_iv.len() != 12 {
+            return Err(Status::invalid_argument("Invalid calendar_iv length"));
         }
+        let mut iv: [u8; 12] = Default::default();
+        iv.copy_from_slice(&request_iv[0..12]);
 
         let file = service::calendar::read(request.get_ref().calendar_id.as_str(), &iv);
         if file.is_err() {
@@ -57,13 +55,11 @@ impl Calendar for CalendarService {
         request: Request<CreateCalendarRequest>,
     ) -> Result<Response<CreateCalendarResponse>, Status> {
         let request_iv = request.get_ref().calendar_iv.as_bytes();
-        // TODO: Refactor to helper function (u8 to [u8; N])
-        let mut iv: [u8; 12] = Default::default();
-        if request_iv.len() == 12 {
-            iv.copy_from_slice(&request_iv[0..12]);
-        } else {
-            return Err(Status::invalid_argument("Invalid calendar_iv"));
+        if request_iv.len() != 12 {
+            return Err(Status::invalid_argument("Invalid calendar_iv length"));
         }
+        let mut iv: [u8; 12] = Default::default();
+        iv.copy_from_slice(&request_iv[0..12]);
 
         let calendar_ics = service::calendar::create(request.get_ref().calendar_entities.clone());
 
