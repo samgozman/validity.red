@@ -66,8 +66,8 @@ func DecryptAES(key []byte, iv []byte, cipherText string) (string, error) {
 	return string(PKCS5UnPadding(cipherTextDecoded)), nil
 }
 
-// Add padding bytes for the message to transform
-// it into multiple 8-byte blocks.
+// Add padding bytes for the message to make it
+// divisible by the block size before encryption.
 func PKCS5Padding(src []byte) []byte {
 	padding := BlockSize - len(src)%BlockSize
 	padtext := bytes.Repeat([]byte{byte(padding)}, padding)

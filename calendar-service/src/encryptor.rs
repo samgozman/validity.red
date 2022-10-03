@@ -70,8 +70,8 @@ pub fn decrypt(data: &[u8], key: &[u8; 32], iv: &[u8; 12]) -> String {
         .to_string()
 }
 
-/// Add padding bytes for the message to transform
-/// it into multiple blocks. (used before encryption)
+/// Add padding bytes for the message to make it divisible by the block size
+/// before encryption.
 ///
 /// Arguments:
 ///
