@@ -135,4 +135,30 @@ mod tests {
         let unpadded_data = super::pkcs5_unpadding(&padded_data);
         assert_eq!(unpadded_data.len(), 36, "Unpadding failed for long string");
     }
+
+    const KEY: &[u8; 32] = b"01234567890123456789012345678901";
+    const IV: &[u8; 12] = b"012345678901";
+
+    #[test]
+    fn test_encrypt() {
+        let data = "Hello";
+        let encrypted_data = super::encrypt(data.to_string(), KEY, IV).unwrap();
+        let expected_data = [
+            56, 234, 164, 6, 206, 254, 84, 123, 168, 97, 157, 67, 127, 222, 121, 111, 3, 34, 21,
+            236, 175, 184, 216, 246, 118, 243, 15, 247, 102, 209, 63, 138,
+        ]
+        .to_vec();
+        assert_eq!(encrypted_data, expected_data, "Encryption failed");
+    }
+
+    #[test]
+    fn test_decrypt() {
+        let encrypted_data = [
+            56, 234, 164, 6, 206, 254, 84, 123, 168, 97, 157, 67, 127, 222, 121, 111, 3, 34, 21,
+            236, 175, 184, 216, 246, 118, 243, 15, 247, 102, 209, 63, 138,
+        ];
+        let decrypted_data = super::decrypt(&encrypted_data, KEY, IV);
+        let expected_data = "Hello".to_string();
+        assert_eq!(decrypted_data, expected_data, "Decryption failed");
+    }
 }
