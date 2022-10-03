@@ -113,27 +113,41 @@ mod tests {
         // Test with short string (less than block size)
         let data = "Hello";
         let padded_data = super::pkcs5_padding(data.as_bytes());
-        assert_eq!(padded_data.len(), 16, "Padding failed for short string");
+        let expected: Vec<u8> = vec![
+            72, 101, 108, 108, 111, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11,
+        ];
+        assert_eq!(padded_data, expected, "Padding failed for short string");
 
         // Test with long string (more than block size)
-        let data = "Hello, World! This is a long string.";
+        let data = "Hello, Big World!";
         let padded_data = super::pkcs5_padding(data.as_bytes());
-        assert_eq!(padded_data.len(), 48, "Padding failed for long string");
+        let expected: Vec<u8> = vec![
+            72, 101, 108, 108, 111, 44, 32, 66, 105, 103, 32, 87, 111, 114, 108, 100, 33, 15, 15,
+            15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15,
+        ];
+        assert_eq!(padded_data, expected, "Padding failed for long string");
     }
 
     #[test]
     fn test_pkcs5_unpadding() {
         // Test with short string (less than block size)
-        let data = "Hello";
-        let padded_data: Vec<u8> = super::pkcs5_padding(data.as_bytes());
+        let padded_data: Vec<u8> = vec![
+            72, 101, 108, 108, 111, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11,
+        ];
         let unpadded_data = super::pkcs5_unpadding(&padded_data);
-        assert_eq!(unpadded_data.len(), 5, "Unpadding failed for short string");
+        let expected: Vec<u8> = vec![72, 101, 108, 108, 111];
+        assert_eq!(unpadded_data, expected, "Unpadding failed for short string");
 
         // Test with long string (more than block size)
-        let data = "Hello, World! This is a long string.";
-        let padded_data = super::pkcs5_padding(data.as_bytes());
+        let padded_data: Vec<u8> = vec![
+            72, 101, 108, 108, 111, 44, 32, 66, 105, 103, 32, 87, 111, 114, 108, 100, 33, 15, 15,
+            15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15,
+        ];
         let unpadded_data = super::pkcs5_unpadding(&padded_data);
-        assert_eq!(unpadded_data.len(), 36, "Unpadding failed for long string");
+        let expected: Vec<u8> = vec![
+            72, 101, 108, 108, 111, 44, 32, 66, 105, 103, 32, 87, 111, 114, 108, 100, 33,
+        ];
+        assert_eq!(unpadded_data, expected, "Unpadding failed for long string");
     }
 
     const KEY: &[u8; 32] = b"01234567890123456789012345678901";
