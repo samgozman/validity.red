@@ -23,7 +23,6 @@ pub fn encrypt(
     key: &[u8; 32],
     iv: &[u8; 12],
 ) -> Result<Vec<u8>, Box<dyn std::error::Error>> {
-    // TODO: Encrypt data "in place"
     let cipher = Aes256Gcm::new(GenericArray::from_slice(key));
     let nonce = Nonce::from_slice(iv); // 96-bits; unique per message
 
@@ -53,8 +52,6 @@ pub fn encrypt(
 ///
 /// A String
 pub fn decrypt(data: &[u8], key: &[u8; 32], iv: &[u8; 12]) -> String {
-    // TODO: Encrypt data "in place"
-    // ? Maybe IV size should be equal to BLOCK_SIZE
     // TODO: Return Result like in encrypt()
     let cipher = Aes256Gcm::new(GenericArray::from_slice(key));
     let nonce = Nonce::from_slice(iv);
