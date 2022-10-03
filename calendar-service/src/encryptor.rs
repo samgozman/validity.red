@@ -105,3 +105,34 @@ fn pkcs5_unpadding(src: &[u8]) -> Vec<u8> {
     }
     (&src[..(length - unpadding)]).to_vec()
 }
+
+#[cfg(test)]
+mod tests {
+    #[test]
+    fn test_pkcs5_padding() {
+        // Test with short string (less than block size)
+        let data = "Hello";
+        let padded_data = super::pkcs5_padding(data.as_bytes());
+        assert_eq!(padded_data.len(), 16, "Padding failed for short string");
+
+        // Test with long string (more than block size)
+        let data = "Hello, World! This is a long string.";
+        let padded_data = super::pkcs5_padding(data.as_bytes());
+        assert_eq!(padded_data.len(), 48, "Padding failed for long string");
+    }
+
+    #[test]
+    fn test_pkcs5_unpadding() {
+        // Test with short string (less than block size)
+        let data = "Hello";
+        let padded_data: Vec<u8> = super::pkcs5_padding(data.as_bytes());
+        let unpadded_data = super::pkcs5_unpadding(&padded_data);
+        assert_eq!(unpadded_data.len(), 5, "Unpadding failed for short string");
+
+        // Test with long string (more than block size)
+        let data = "Hello, World! This is a long string.";
+        let padded_data = super::pkcs5_padding(data.as_bytes());
+        let unpadded_data = super::pkcs5_unpadding(&padded_data);
+        assert_eq!(unpadded_data.len(), 36, "Unpadding failed for long string");
+    }
+}
