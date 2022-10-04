@@ -61,7 +61,7 @@ impl Calendar for CalendarService {
         let mut iv: [u8; 12] = Default::default();
         iv.copy_from_slice(&request_iv[0..12]);
 
-        let calendar_ics = service::calendar::create(request.get_ref().calendar_entities.clone());
+        let calendar_ics = service::calendar::create(&request.get_ref().calendar_entities.clone());
 
         let write_check = service::calendar::write(
             calendar_ics.to_string(),

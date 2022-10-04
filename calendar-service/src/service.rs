@@ -48,8 +48,7 @@ pub mod calendar {
     /// Returns:
     ///
     /// A string of the calendar.
-    pub fn create(calendar_events: Vec<CalendarEntity>) -> String {
-        // TODO: recieve calendar_events as a pointer
+    pub fn create(calendar_events: &Vec<CalendarEntity>) -> String {
         let mut calendar = ICalendar::new(
             "2.0",
             "-//Validity.Red//Document expiration calendar 1.0//EN",
@@ -107,9 +106,9 @@ pub mod calendar {
     /// Returns:
     ///
     /// A new event is being returned.
-    fn create_event(calendar_event: CalendarEntity) -> Event<'static> {
+    fn create_event(calendar_event: &CalendarEntity) -> Event<'static> {
         // Convert timestamp to DateTime
-        let dt_start = calendar_event.notification_date.unwrap();
+        let dt_start = calendar_event.notification_date.clone().unwrap();
         let dt_start = Utc.timestamp(dt_start.seconds, dt_start.nanos as u32);
         // End date is 1 hour after start date
         let dt_end = dt_start + chrono::Duration::hours(1);
@@ -118,7 +117,7 @@ pub mod calendar {
         let dt_start = dt_start.format("%Y%m%dT%H%M%SZ").to_string();
         let dt_end = dt_end.format("%Y%m%dT%H%M%SZ").to_string();
 
-        let mut event = Event::new(calendar_event.notification_id, dt_start.clone());
+        let mut event = Event::new(calendar_event.notification_id.clone(), dt_start.clone());
         event.push(DtStart::new(dt_start));
         event.push(DtEnd::new(dt_end));
         event.push(Summary::new(calendar_event.document_title.clone()));
@@ -153,7 +152,7 @@ pub mod calendar {
                 }),
             };
 
-            let event = create_event(calendar_event);
+            let event = create_event(&calendar_event);
             let expected = "\
                 BEGIN:VEVENT\r\n\
                 UID:e533947d-6f40-4f4f-b614-ddf70534c576\r\n\
