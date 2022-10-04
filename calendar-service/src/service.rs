@@ -165,7 +165,44 @@ pub mod calendar {
             "
             .to_string();
 
-            assert_eq!(event.to_string(), expected, "create_event has unexpected output");
+            assert_eq!(event.to_string(), expected, "unexpected output");
+        }
+
+        #[test]
+        fn test_create() {
+            let calendar_events = vec![CalendarEntity {
+                notification_id: "e533947d-6f40-4f4f-b614-ddf70534c576".to_string(),
+                document_title: "Document title".to_string(),
+                notification_date: Some(Timestamp {
+                    seconds: 1610000000,
+                    nanos: 0,
+                }),
+                document_id: "8d3c3c83-b4e1-466e-ad71-29948479b38e".to_string(),
+                expires_at: Some(Timestamp {
+                    seconds: 1630000000,
+                    nanos: 0,
+                }),
+            }];
+
+            let calendar = create(&calendar_events);
+
+            let expected = "\
+                BEGIN:VCALENDAR\r\n\
+                VERSION:2.0\r\n\
+                PRODID:-//Validity.Red//Document expiration calendar 1.0//EN\r\n\
+                BEGIN:VEVENT\r\n\
+                UID:e533947d-6f40-4f4f-b614-ddf70534c576\r\n\
+                DTSTAMP:20210107T061320Z\r\n\
+                DTSTART:20210107T061320Z\r\n\
+                DTEND:20210107T071320Z\r\n\
+                SUMMARY:Document title\r\n\
+                DESCRIPTION:Document title\\nValidity.Red\r\n\
+                END:VEVENT\r\n\
+                END:VCALENDAR\r\n\
+            "
+            .to_string();
+
+            assert_eq!(calendar, expected, "unexpected output");
         }
     }
 }
