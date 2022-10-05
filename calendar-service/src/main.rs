@@ -18,7 +18,6 @@ pub struct CalendarService {}
 
 #[tonic::async_trait]
 impl Calendar for CalendarService {
-    // TODO: implement full method
     async fn get_calendar(
         &self,
         request: Request<GetCalendarRequest>,
@@ -39,8 +38,6 @@ impl Calendar for CalendarService {
             };
             Ok(Response::new(reply))
         } else {
-            // TODO: Decrypt file
-
             let reply = calendar::GetCalendarResponse {
                 error: false,
                 message: "Calendar retrieved".to_string(),
