@@ -204,5 +204,33 @@ pub mod calendar {
 
             assert_eq!(calendar, expected, "unexpected output");
         }
+
+        #[test]
+        fn test_write() {
+            let iv = b"123456789012";
+            let file_name = "tmp/test.ics";
+
+            write("Test data string".to_string(), file_name, &iv).unwrap();
+
+            let path = std::path::Path::new("data/tmp/test.ics");
+            assert!(path.exists(), "File does not exist");
+
+            // Clear test files
+            std::fs::remove_dir_all(path.parent().unwrap()).unwrap();
+        }
+
+        #[test]
+        fn test_read() {
+            let iv = b"123456789012";
+            let file_name = "tmp/test.ics";
+
+            write("Test data string".to_string(), file_name, &iv).unwrap();
+
+            let data = read(file_name, &iv).unwrap();
+            assert_eq!(data, "Test data string", "Unexpected data");
+
+            // Clear test files
+            std::fs::remove_dir_all("data/tmp").unwrap();
+        }
     }
 }
