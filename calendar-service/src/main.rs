@@ -88,7 +88,6 @@ impl Calendar for CalendarService {
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     println!("Starting calendars server...");
-    // TODO: Set default values for env vars
     let grpc_port = env::var("GRPC_PORT").expect("Expected GRPC_PORT to be set");
     let addr = format!("0.0.0.0:{}", grpc_port).parse()?;
     let calendar_service = CalendarService::default();
