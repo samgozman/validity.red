@@ -4,12 +4,10 @@ pub mod calendar {
     use chrono::{TimeZone, Utc};
     use ics::properties::{Description, DtEnd, DtStart, Summary};
     use ics::{escape_text, Event, ICalendar};
+    use std::env;
     use std::error::Error;
     use std::fs::File;
     use std::io::{BufReader, Read, Write};
-
-    // TODO: Read from env
-    const KEY: &[u8; 32] = b"A%D*G-KaPdSgVkYp3s6v9y$B?E(H+MbQ";
 
     /// Read a file and return the contents as a string
     ///
@@ -22,7 +20,6 @@ pub mod calendar {
     ///
     /// A String containing the contents of the file or an ([`Err`]).
     pub fn read(file_name: &str, iv: &[u8; 12]) -> Result<String, Box<dyn Error>> {
-        // TODO: Read from env
         const FILE_PATH: &str = "data/";
         let path = FILE_PATH.to_owned() + file_name;
 
@@ -34,7 +31,12 @@ pub mod calendar {
             .read_to_end(&mut file_data)
             .expect("Failed to read file");
 
-        let decrypted = decrypt(file_data.as_slice(), KEY, iv);
+        // TODO: Find a better way to get ENV variables in Rust
+        let env_key = env::var("ENCRYPTION_KEY").expect("Expected ENCRYPTION_KEY ENV to be set");
+        let mut encryption_key: [u8; 32] = Default::default();
+        encryption_key.copy_from_slice(env_key.as_bytes());
+
+        let decrypted = decrypt(file_data.as_slice(), &encryption_key, iv);
 
         Ok(decrypted)
     }
@@ -78,7 +80,6 @@ pub mod calendar {
     ///
     /// A Result that either success ([`Ok`]) or failure ([`Err`])
     pub fn write(data: String, file_name: &str, iv: &[u8; 12]) -> Result<(), Box<dyn Error>> {
-        // TODO: Read from env
         const FILE_PATH: &str = "data/";
         let path = FILE_PATH.to_owned() + file_name;
         let path = std::path::Path::new(&path);
@@ -88,7 +89,12 @@ pub mod calendar {
             std::fs::create_dir_all(parent_folder).unwrap();
         }
 
-        let encrypted = encrypt(data, KEY, iv).expect("Encryption failed");
+        // TODO: Find a better way to get ENV variables in Rust
+        let env_key = env::var("ENCRYPTION_KEY").expect("Expected ENCRYPTION_KEY ENV to be set");
+        let mut encryption_key: [u8; 32] = Default::default();
+        encryption_key.copy_from_slice(env_key.as_bytes());
+
+        let encrypted = encrypt(data, &encryption_key, iv).expect("Encryption failed");
 
         let mut file = File::create(path).expect("Unable to create file");
         file.write_all(encrypted.as_slice())
@@ -135,6 +141,7 @@ pub mod calendar {
         use super::*;
         use crate::calendar::CalendarEntity;
         use prost_types::Timestamp;
+        use std::env;
 
         #[test]
         fn test_create_event() {
@@ -207,6 +214,8 @@ pub mod calendar {
 
         #[test]
         fn test_write() {
+            env::set_var("ENCRYPTION_KEY", "12345678901234567890123456789012");
+
             let iv = b"123456789012";
             let file_name = "tmp/test.ics";
 
@@ -221,6 +230,8 @@ pub mod calendar {
 
         #[test]
         fn test_read() {
+            env::set_var("ENCRYPTION_KEY", "12345678901234567890123456789012");
+
             let iv = b"123456789012";
             let file_name = "tmp/test.ics";
 

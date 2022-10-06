@@ -77,6 +77,7 @@ services:
     restart: always
     environment:
       GRPC_PORT: 50051
+      ENCRYPTION_KEY: A%D*G-KaPdSgVkYp3s6v9y$B?E(H+MbQ
     volumes:
       - ./calendar-service/data/:/data/
     networks:
