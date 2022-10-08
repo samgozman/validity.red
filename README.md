@@ -2,4 +2,4 @@
 
 ## Services
 
-![services diagram](./docs/diagrams/services-diagram.jpeg)
+![services diagram](./docs/diagrams/services-diagram.png)
