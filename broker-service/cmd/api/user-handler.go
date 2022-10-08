@@ -2,11 +2,11 @@ package main
 
 import (
 	"context"
+	"log"
 	"net/http"
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/samgozman/validity.red/broker/proto/logs"
 	"github.com/samgozman/validity.red/broker/proto/user"
 )
 
@@ -36,11 +36,7 @@ func (app *Config) userRegister(c *gin.Context) {
 		},
 	})
 	if err != nil {
-		go app.logger.LogWarn(&logs.Log{
-			Service: "user-service",
-			Message: "Error on calling Register method",
-			Error:   err.Error(),
-		})
+		log.Println("Error on calling user-service::Register method:", err)
 		payload.Error = true
 		payload.Message = err.Error()
 		c.JSON(http.StatusBadRequest, payload)
@@ -51,11 +47,6 @@ func (app *Config) userRegister(c *gin.Context) {
 
 	payload.Error = false
 	payload.Message = res.Result
-
-	go app.logger.LogInfo(&logs.Log{
-		Service: "user-service",
-		Message: res.Result,
-	})
 
 	c.JSON(http.StatusCreated, payload)
 }
@@ -76,11 +67,7 @@ func (app *Config) userLogin(c *gin.Context) {
 		},
 	})
 	if err != nil {
-		go app.logger.LogWarn(&logs.Log{
-			Service: "user-service",
-			Message: "Error on calling Login method",
-			Error:   err.Error(),
-		})
+		log.Println("Error on calling user-service::Login method:", err)
 		payload.Error = true
 		payload.Message = err.Error()
 		c.JSON(http.StatusUnauthorized, payload)
@@ -90,19 +77,10 @@ func (app *Config) userLogin(c *gin.Context) {
 	payload.Error = false
 	payload.Message = res.Result
 
-	go app.logger.LogInfo(&logs.Log{
-		Service: "user-service",
-		Message: res.Result,
-	})
-
 	// Generate JWT token
 	token, err := app.token.Generate(res.UserId)
 	if err != nil {
-		go app.logger.LogWarn(&logs.Log{
-			Service: "broker-service",
-			Message: "Error generating JWT token",
-			Error:   err.Error(),
-		})
+		log.Println("Error on calling broker-service::token::Generate method:", err)
 		payload.Error = true
 		payload.Message = err.Error()
 		c.JSON(http.StatusInternalServerError, payload)
@@ -125,11 +103,7 @@ func (app *Config) userRefreshToken(c *gin.Context) {
 	// Refresh JWT token
 	token, err := app.token.Refresh(tk.(string))
 	if err != nil {
-		go app.logger.LogWarn(&logs.Log{
-			Service: "broker-service",
-			Message: "Error refreshing JWT token",
-			Error:   err.Error(),
-		})
+		log.Println("Error on calling broker-service::token::Refresh method:", err)
 		payload.Error = true
 		payload.Message = err.Error()
 		c.JSON(http.StatusUnauthorized, payload)

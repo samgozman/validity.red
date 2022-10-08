@@ -7,12 +7,10 @@ import (
 
 	"github.com/samgozman/validity.red/broker/internal/token"
 	"github.com/samgozman/validity.red/broker/proto/document"
-	"github.com/samgozman/validity.red/broker/proto/logs"
 	"github.com/samgozman/validity.red/broker/proto/user"
 )
 
 type Config struct {
-	logger          *Logger
 	token           *token.TokenMaker
 	usersClient     *UsersClient
 	documentsClient *DocumentsClient
@@ -29,28 +27,13 @@ type DocumentsClient struct {
 }
 
 func main() {
-	// Create logger
-	loggerServiceConn, err := connectToService("logger-service", os.Getenv("LOGGER_GRPC_PORT"))
-	if err != nil {
-		log.Fatal(err)
-		return
-	}
-	defer loggerServiceConn.Close()
-	logger := Logger{
-		client: logs.NewLogServiceClient(loggerServiceConn),
-	}
-
 	// ! Move client connections to the separate gorutine
 	// ! which will be trying to reconnect without blocking the main app
 
 	// USERS CLIENT SECTION - START //
 	userServiceConn, err := connectToService("user-service", os.Getenv("USER_GRPC_PORT"))
 	if err != nil {
-		go logger.LogFatal(&logs.Log{
-			Service: "user-service",
-			Message: "Error on connecting to the user-service",
-			Error:   err.Error(),
-		})
+		log.Fatalln("Error on connecting to the user-service:", err)
 		return
 	}
 	defer userServiceConn.Close()
@@ -64,11 +47,7 @@ func main() {
 	// DOCUMENTS CLIENT SECTION - START //
 	documentServiceConn, err := connectToService("document-service", os.Getenv("DOCUMENT_GRPC_PORT"))
 	if err != nil {
-		go logger.LogFatal(&logs.Log{
-			Service: "document-service",
-			Message: "Error on connecting to the document-service",
-			Error:   err.Error(),
-		})
+		log.Fatalln("Error on connecting to the document-service:", err)
 		return
 	}
 	defer documentServiceConn.Close()
@@ -87,7 +66,6 @@ func main() {
 	}
 
 	app := Config{
-		logger:          &logger,
 		token:           &token,
 		usersClient:     &usersClient,
 		documentsClient: &documentsClient,

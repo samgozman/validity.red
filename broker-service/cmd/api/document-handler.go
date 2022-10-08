@@ -3,13 +3,13 @@ package main
 import (
 	"context"
 	"fmt"
+	"log"
 	"net/http"
 	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/samgozman/validity.red/broker/internal/utils"
 	"github.com/samgozman/validity.red/broker/proto/document"
-	"github.com/samgozman/validity.red/broker/proto/logs"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
@@ -50,11 +50,7 @@ func (app *Config) documentCreate(c *gin.Context) {
 		},
 	})
 	if err != nil {
-		go app.logger.LogWarn(&logs.Log{
-			Service: "document-service",
-			Message: "Error on calling Create method",
-			Error:   err.Error(),
-		})
+		log.Println("Error on calling document-service::Create method:", err)
 
 		payload.Error = true
 		payload.Message = err.Error()
@@ -69,11 +65,6 @@ func (app *Config) documentCreate(c *gin.Context) {
 	}{
 		DocumentId: res.DocumentId,
 	}
-
-	go app.logger.LogInfo(&logs.Log{
-		Service: "document-service",
-		Message: res.Result,
-	})
 
 	c.JSON(http.StatusCreated, payload)
 }
@@ -101,11 +92,7 @@ func (app *Config) documentEdit(c *gin.Context) {
 		},
 	})
 	if err != nil {
-		go app.logger.LogWarn(&logs.Log{
-			Service: "document-service",
-			Message: "Error on calling Edit method",
-			Error:   err.Error(),
-		})
+		log.Println("Error on calling document-service::Edit method:", err)
 
 		payload.Error = true
 		payload.Message = err.Error()
@@ -116,11 +103,6 @@ func (app *Config) documentEdit(c *gin.Context) {
 
 	payload.Error = false
 	payload.Message = res.Result
-
-	go app.logger.LogInfo(&logs.Log{
-		Service: "document-service",
-		Message: res.Result,
-	})
 
 	c.JSON(http.StatusCreated, payload)
 }
@@ -143,11 +125,7 @@ func (app *Config) documentDelete(c *gin.Context) {
 		UserID:     userId.(string),
 	})
 	if err != nil {
-		go app.logger.LogWarn(&logs.Log{
-			Service: "document-service",
-			Message: "Error on calling Delete method",
-			Error:   err.Error(),
-		})
+		log.Println("Error on calling document-service::Delete method:", err)
 
 		payload.Error = true
 		payload.Message = err.Error()
@@ -158,11 +136,6 @@ func (app *Config) documentDelete(c *gin.Context) {
 
 	payload.Error = false
 	payload.Message = res.Result
-
-	go app.logger.LogInfo(&logs.Log{
-		Service: "document-service",
-		Message: res.Result,
-	})
 
 	c.JSON(http.StatusOK, payload)
 }
@@ -185,11 +158,7 @@ func (app *Config) documentGetOne(c *gin.Context) {
 		UserID:     userId.(string),
 	})
 	if err != nil {
-		go app.logger.LogWarn(&logs.Log{
-			Service: "document-service",
-			Message: "Error on calling GetOne method",
-			Error:   err.Error(),
-		})
+		log.Println("Error on calling document-service::GetOne method:", err)
 
 		payload.Error = true
 		payload.Message = err.Error()
@@ -213,11 +182,6 @@ func (app *Config) documentGetOne(c *gin.Context) {
 		},
 	}
 
-	go app.logger.LogInfo(&logs.Log{
-		Service: "document-service",
-		Message: res.Result,
-	})
-
 	c.JSON(http.StatusOK, payload)
 }
 
@@ -236,11 +200,7 @@ func (app *Config) documentGetAll(c *gin.Context) {
 		UserID: userId.(string),
 	})
 	if err != nil {
-		go app.logger.LogWarn(&logs.Log{
-			Service: "document-service",
-			Message: "Error on calling GetAll method",
-			Error:   err.Error(),
-		})
+		log.Println("Error on calling document-service::GetAll method:", err)
 
 		payload.Error = true
 		payload.Message = err.Error()
@@ -256,11 +216,6 @@ func (app *Config) documentGetAll(c *gin.Context) {
 	}{
 		Documents: utils.ConvertDocumentsToJSON(res.Documents),
 	}
-
-	go app.logger.LogInfo(&logs.Log{
-		Service: "document-service",
-		Message: res.Result,
-	})
 
 	c.JSON(http.StatusOK, payload)
 }
@@ -286,11 +241,7 @@ func (app *Config) documentGetStatistics(c *gin.Context) {
 		UserID: userId.(string),
 	})
 	if err != nil {
-		go app.logger.LogWarn(&logs.Log{
-			Service: "document-service",
-			Message: "Error on calling GetOne method with GetUserStatistics",
-			Error:   err.Error(),
-		})
+		log.Println("Error on calling document-service::GetUserStatistics method:", err)
 
 		payload.Error = true
 		payload.Message = err.Error()
@@ -310,11 +261,7 @@ func (app *Config) documentGetStatistics(c *gin.Context) {
 		},
 	)
 	if err != nil {
-		go app.logger.LogWarn(&logs.Log{
-			Service: "document-service",
-			Message: "Error on calling GetOne method with CountAll",
-			Error:   err.Error(),
-		})
+		log.Println("Error on calling document-service::notification::CountAll method:", err)
 
 		payload.Error = true
 		payload.Message = err.Error()
@@ -328,11 +275,6 @@ func (app *Config) documentGetStatistics(c *gin.Context) {
 	payload.Error = false
 	payload.Message = msg
 	payload.Data = statistics
-
-	go app.logger.LogInfo(&logs.Log{
-		Service: "document-service",
-		Message: msg,
-	})
 
 	c.JSON(http.StatusOK, payload)
 }

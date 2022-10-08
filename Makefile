@@ -10,7 +10,7 @@ up:
 	@echo "Docker images started!"
 
 ## Build go binaries
-build: build_broker build_user build_logger build_document
+build: build_broker build_user build_document
 
 ## stops docker-compose (if running), builds all projects and starts docker compose
 up_build: grpc_init_go grpc_init_rust build
@@ -34,12 +34,10 @@ grpc_init_go:
 	mkdir broker-service/proto broker-service/proto/user broker-service/proto/logs broker-service/proto/document broker-service/proto/calendar
 	@echo "Starting proto files generation for Go..."
 	protoc --go_out=./user-service --go_opt=paths=source_relative --go-grpc_out=./user-service --go-grpc_opt=paths=source_relative proto/user.proto
-	protoc --go_out=./logger-service --go_opt=paths=source_relative --go-grpc_out=./logger-service --go-grpc_opt=paths=source_relative proto/logs.proto
 	protoc --go_out=./document-service --go_opt=paths=source_relative --go-grpc_out=./document-service --go-grpc_opt=paths=source_relative proto/document.proto
 	protoc --go_out=./broker-service --go_opt=paths=source_relative --go-grpc_out=./broker-service --go-grpc_opt=paths=source_relative proto/calendar.proto
 	@echo "Copy pregenerated Go proto files into broker-service"
 	cp user-service/proto/* broker-service/proto/user
-	cp logger-service/proto/* broker-service/proto/logs
 	cp document-service/proto/* broker-service/proto/document
 	@echo "Move calendar files from default folder into nested"
 	mv broker-service/proto/calendar*.go broker-service/proto/calendar
@@ -75,10 +73,4 @@ build_user:
 build_document:
 	@echo "Building document binary..."
 	cd ./document-service && env GOOS=linux CGO_ENABLED=0 go build -o ${DOCUMENT_BINARY} ./cmd/api
-	@echo "Done!"
-
-## builds the logger binary as a linux executable
-build_logger:
-	@echo "Building logger binary..."
-	cd ./logger-service && env GOOS=linux CGO_ENABLED=0 go build -o ${LOGGER_BINARY} ./cmd/api
 	@echo "Done!"

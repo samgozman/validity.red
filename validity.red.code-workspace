@@ -13,9 +13,6 @@
 			"path": "calendar-service"
 		},
 		{
-			"path": "logger-service"
-		},
-		{
 			"path": "frontend-service"
 		},
 		{

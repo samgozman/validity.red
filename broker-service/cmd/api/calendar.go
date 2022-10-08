@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"log"
 	"net/http"
 	"time"
 
@@ -9,7 +10,6 @@ import (
 	"github.com/samgozman/validity.red/broker/internal/utils"
 	"github.com/samgozman/validity.red/broker/proto/calendar"
 	"github.com/samgozman/validity.red/broker/proto/document"
-	"github.com/samgozman/validity.red/broker/proto/logs"
 )
 
 // TODO: add pagination by month
@@ -26,11 +26,7 @@ func (app *Config) getCalendar(c *gin.Context) {
 		UserID: userId.(string),
 	})
 	if err != nil {
-		go app.logger.LogWarn(&logs.Log{
-			Service: "document-service",
-			Message: "Error on calling GetAll method for getCalendar",
-			Error:   err.Error(),
-		})
+		log.Println("Error on calling GetAll method for getCalendar:", err)
 		payload.Error = true
 		payload.Message = err.Error()
 		c.JSON(http.StatusBadRequest, payload)
@@ -41,11 +37,7 @@ func (app *Config) getCalendar(c *gin.Context) {
 		UserID: userId.(string),
 	})
 	if err != nil {
-		go app.logger.LogWarn(&logs.Log{
-			Service: "document-service",
-			Message: "Error on calling Notification.GetAllForUser method for getCalendar",
-			Error:   err.Error(),
-		})
+		log.Println("Error on calling Notification.GetAllForUser method for getCalendar:", err)
 		payload.Error = true
 		payload.Message = err.Error()
 		c.JSON(http.StatusBadRequest, payload)
