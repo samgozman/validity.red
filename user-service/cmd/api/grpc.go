@@ -69,11 +69,11 @@ func (us *UserServer) Register(ctx context.Context, req *proto.RegisterRequest) 
 	return res, nil
 }
 
-func (us *AuthServer) Login(ctx context.Context, req *proto.AuthRequest) (*proto.AuthResponse, error) {
+func (as *AuthServer) Login(ctx context.Context, req *proto.AuthRequest) (*proto.AuthResponse, error) {
 	input := req.GetAuthEntry()
 
 	// find user
-	u, err := us.App.Repo.FindOneByEmail(ctx, input.Email)
+	u, err := as.App.Repo.FindOneByEmail(ctx, input.Email)
 	if err != nil {
 		return nil, err
 	}
