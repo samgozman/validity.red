@@ -2,6 +2,7 @@ package user
 
 import (
 	"context"
+	"crypto/rand"
 	"errors"
 	"html"
 	"strings"
@@ -25,12 +26,14 @@ func NewPostgresRepository(db *gorm.DB) *PostgresRepository {
 
 type User struct {
 	// Id will be set as primaryKey by default
-	ID         uuid.UUID `gorm:"type:uuid" json:"id,omitempty"`
-	Email      string    `gorm:"uniqueIndex;size:100;not null;" json:"email,omitempty"`
-	Password   string    `gorm:"not null;" json:"password"`
-	IsVerified bool      `gorm:"type:bool;default:false;not null;" json:"is_verified"`
-	CreatedAt  time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"created_at,omitempty"`
-	UpdatedAt  time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"updated_at,omitempty"`
+	ID          uuid.UUID `gorm:"type:uuid" json:"id,omitempty"`
+	Email       string    `gorm:"uniqueIndex;size:100;not null;" json:"email,omitempty"`
+	Password    string    `gorm:"not null;" json:"password"`
+	IsVerified  bool      `gorm:"type:bool;default:false;not null;" json:"is_verified"`
+	CalendarID  string    `gorm:"size:32;" json:"calendar_id,omitempty"`
+	IV_Calendar string    `gorm:"size:12;" json:"iv_calendar,omitempty"`
+	CreatedAt   time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"created_at,omitempty"`
+	UpdatedAt   time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"updated_at,omitempty"`
 }
 
 // Prepare User object before inserting into database
@@ -38,6 +41,9 @@ func (user *User) Prepare() {
 	user.Email = html.EscapeString(strings.TrimSpace(user.Email))
 	user.CreatedAt = time.Now()
 	user.UpdatedAt = time.Now()
+
+	calendarID := GenerateRandomBytes(32)
+	user.CalendarID = strings.ToLower(string(calendarID))
 }
 
 // Validate User object before inserting into database
@@ -67,6 +73,12 @@ func Hash(password string) ([]byte, error) {
 
 func VerifyPassword(hashedPassword, password string) error {
 	return bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(password))
+}
+
+func GenerateRandomBytes(n int) []byte {
+	b := make([]byte, n)
+	rand.Read(b)
+	return b
 }
 
 func (user *User) BeforeCreate(tx *gorm.DB) error {
@@ -111,4 +123,34 @@ func (u *PostgresRepository) FindOneByEmail(ctx context.Context, email string) (
 	}
 
 	return user, nil
+}
+
+// Get user's calendar id and calendar iv
+func (u *PostgresRepository) GetCalendarId(ctx context.Context, userId string) (*User, error) {
+	user := &User{}
+	res := u.Conn.Table("users").
+		Select("calendar_id, iv_calendar").
+		First(&user, "id = ?", userId).
+		WithContext(ctx)
+	if res.Error != nil {
+		return nil, res.Error
+	}
+
+	return user, nil
+}
+
+func (u *PostgresRepository) Update(ctx context.Context, userId string, fields map[string]interface{}) error {
+	res := u.Conn.WithContext(ctx).
+		Table("users").
+		Model(&User{}).
+		Where("id = ?", userId).
+		Updates(fields)
+	if res.Error != nil {
+		return res.Error
+	}
+	if res.RowsAffected == 0 {
+		return errors.New("user not found")
+	}
+
+	return nil
 }

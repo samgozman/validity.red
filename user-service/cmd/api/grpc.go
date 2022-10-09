@@ -93,4 +93,31 @@ func (as *AuthServer) Login(ctx context.Context, req *proto.AuthRequest) (*proto
 	return res, nil
 }
 
+func (us *UserServer) GetCalendarId(ctx context.Context, req *proto.GetCalendarIdRequest) (*proto.GetCalendarIdResponse, error) {
+	u, err := us.App.Repo.GetCalendarId(ctx, req.UserId)
+	if err != nil {
+		return nil, err
+	}
+
+	res := &proto.GetCalendarIdResponse{
+		CalendarId: u.CalendarID,
+		CalendarIv: u.IV_Calendar,
+	}
+	return res, nil
+}
+
+func (us *UserServer) SetCalendarIv(ctx context.Context, req *proto.SetCalendarIvRequest) (*proto.Response, error) {
+	err := us.App.Repo.Update(ctx, req.UserId, map[string]interface{}{
+		"iv_calendar": req.CalendarIv,
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	res := &proto.Response{
+		Result: "Calendars IV updated successfully!",
+	}
+	return res, nil
+}
+
 // TODO: Edit - edit user info
