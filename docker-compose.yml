@@ -60,8 +60,9 @@ services:
       dockerfile: calendar-service.Dockerfile
     restart: always
     environment:
+      RUST_BACKTRACE: true
       GRPC_PORT: 50051
-      ENCRYPTION_KEY: A%D*G-KaPdSgVkYp3s6v9y$B?E(H+MbQ
+      ENCRYPTION_KEY: f149VI7P9EsUkirKOnGNy9YKQtbZKEAj
     volumes:
       - ./calendar-service/data/:/data/
     networks:

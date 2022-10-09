@@ -2,9 +2,9 @@ package user
 
 import (
 	"context"
-	"crypto/rand"
 	"errors"
 	"html"
+	"math/rand"
 	"strings"
 	"time"
 
@@ -31,7 +31,7 @@ type User struct {
 	Password    string    `gorm:"not null;" json:"password"`
 	IsVerified  bool      `gorm:"type:bool;default:false;not null;" json:"is_verified"`
 	CalendarID  string    `gorm:"size:32;" json:"calendar_id,omitempty"`
-	IV_Calendar string    `gorm:"size:12;" json:"iv_calendar,omitempty"`
+	IV_Calendar []byte    `gorm:"size:12;" json:"iv_calendar,omitempty"`
 	CreatedAt   time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"created_at,omitempty"`
 	UpdatedAt   time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"updated_at,omitempty"`
 }
@@ -41,9 +41,7 @@ func (user *User) Prepare() {
 	user.Email = html.EscapeString(strings.TrimSpace(user.Email))
 	user.CreatedAt = time.Now()
 	user.UpdatedAt = time.Now()
-
-	calendarID := GenerateRandomBytes(32)
-	user.CalendarID = strings.ToLower(string(calendarID))
+	user.CalendarID = GenerateRandomString(32)
 }
 
 // Validate User object before inserting into database
@@ -75,10 +73,13 @@ func VerifyPassword(hashedPassword, password string) error {
 	return bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(password))
 }
 
-func GenerateRandomBytes(n int) []byte {
-	b := make([]byte, n)
-	rand.Read(b)
-	return b
+func GenerateRandomString(n int) string {
+	var chars = []rune("ABCDEFGHIJKLMNOPQRSTUVWXYZ0987654321")
+	str := make([]rune, n)
+	for i := range str {
+		str[i] = chars[rand.Intn(len(chars))]
+	}
+	return string(str)
 }
 
 func (user *User) BeforeCreate(tx *gorm.DB) error {

@@ -22,7 +22,7 @@ impl Calendar for CalendarService {
         &self,
         request: Request<GetCalendarRequest>,
     ) -> Result<Response<GetCalendarResponse>, Status> {
-        let request_iv = request.get_ref().calendar_iv.as_bytes();
+        let request_iv = request.get_ref().calendar_iv.clone();
         if request_iv.len() != 12 {
             return Err(Status::invalid_argument("Invalid calendar_iv length"));
         }
@@ -51,7 +51,7 @@ impl Calendar for CalendarService {
         &self,
         request: Request<CreateCalendarRequest>,
     ) -> Result<Response<CreateCalendarResponse>, Status> {
-        let request_iv = request.get_ref().calendar_iv.as_bytes();
+        let request_iv = request.get_ref().calendar_iv.clone();
         if request_iv.len() != 12 {
             return Err(Status::invalid_argument("Invalid calendar_iv length"));
         }

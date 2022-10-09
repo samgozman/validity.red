@@ -5,7 +5,6 @@ import (
 	"crypto/rand"
 	"log"
 	"net/http"
-	"strings"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -17,7 +16,7 @@ import (
 
 // TODO: add pagination by month
 func (app *Config) getCalendar(c *gin.Context) {
-	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
 	// get userId from context
@@ -96,12 +95,11 @@ func (app *Config) updateIcsCalendar(userId string) {
 	// Create new IV
 	ivCalendar := make([]byte, 12)
 	rand.Read(ivCalendar)
-	ivCalendarStr := strings.ToLower(string(ivCalendar))
 
 	// Call rust service to create ics
 	calendarsResp, err := app.calendarsClient.calendarService.CreateCalendar(ctx, &calendar.CreateCalendarRequest{
 		CalendarID:       calendarIdResp.CalendarId,
-		CalendarIV:       ivCalendarStr,
+		CalendarIV:       ivCalendar,
 		CalendarEntities: calendarArr,
 	})
 	if err != nil {
@@ -116,7 +114,7 @@ func (app *Config) updateIcsCalendar(userId string) {
 	// Update user's IV
 	_, err = app.usersClient.userService.SetCalendarIv(ctx, &user.SetCalendarIvRequest{
 		UserId:     userId,
-		CalendarIv: ivCalendarStr,
+		CalendarIv: ivCalendar,
 	})
 	if err != nil {
 		log.Println("Error on calling UserService.SetCalendarIv:", err)

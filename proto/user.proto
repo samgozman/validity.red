@@ -19,12 +19,12 @@ message GetCalendarIdRequest {
 
 message GetCalendarIdResponse {
 	string calendarId = 1;
-	string calendarIv = 2;
+	bytes calendarIv = 2;
 }
 
 message SetCalendarIvRequest {
 	string userId = 1;
-	string calendarIv = 2;
+	bytes calendarIv = 2;
 }
 
 message AuthResponse {
