@@ -6,6 +6,7 @@ import (
 	"os"
 
 	"github.com/samgozman/validity.red/broker/internal/token"
+	"github.com/samgozman/validity.red/broker/proto/calendar"
 	"github.com/samgozman/validity.red/broker/proto/document"
 	"github.com/samgozman/validity.red/broker/proto/user"
 )
@@ -14,6 +15,7 @@ type Config struct {
 	token           *token.TokenMaker
 	usersClient     *UsersClient
 	documentsClient *DocumentsClient
+	calendarsClient *CalendarsClient
 }
 
 type UsersClient struct {
@@ -24,6 +26,10 @@ type UsersClient struct {
 type DocumentsClient struct {
 	documentService     document.DocumentServiceClient
 	notificationService document.NotificationServiceClient
+}
+
+type CalendarsClient struct {
+	calendarService calendar.CalendarServiceClient
 }
 
 func main() {
@@ -58,6 +64,19 @@ func main() {
 	}
 	// DOCUMENTS CLIENT SECTION - END //
 
+	// CALENDARS CLIENT SECTION - START //
+	calendarServiceConn, err := connectToService("calendar-service", os.Getenv("CALENDAR_GRPC_PORT"))
+	if err != nil {
+		log.Fatalln("Error on connecting to the calendar-service:", err)
+		return
+	}
+	defer calendarServiceConn.Close()
+
+	calendarsClient := CalendarsClient{
+		calendarService: calendar.NewCalendarServiceClient(calendarServiceConn),
+	}
+	// CALENDARS CLIENT SECTION - END //
+
 	// Create JWT token maker
 	token := token.TokenMaker{
 		Key: []byte(os.Getenv("JWT_SECRET")),
@@ -69,6 +88,7 @@ func main() {
 		token:           &token,
 		usersClient:     &usersClient,
 		documentsClient: &documentsClient,
+		calendarsClient: &calendarsClient,
 	}
 
 	router := app.routes()

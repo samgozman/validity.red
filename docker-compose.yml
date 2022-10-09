@@ -12,6 +12,7 @@ services:
       BROKER_PORT: "80"
       USER_GRPC_PORT: "50001"
       DOCUMENT_GRPC_PORT: "50002"
+      CALENDAR_GRPC_PORT: "50051"
     networks:
       - broker-network
 

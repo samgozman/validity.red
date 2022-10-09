@@ -2,14 +2,17 @@ package main
 
 import (
 	"context"
+	"crypto/rand"
 	"log"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/samgozman/validity.red/broker/internal/utils"
 	"github.com/samgozman/validity.red/broker/proto/calendar"
 	"github.com/samgozman/validity.red/broker/proto/document"
+	"github.com/samgozman/validity.red/broker/proto/user"
 )
 
 // TODO: add pagination by month
@@ -53,6 +56,72 @@ func (app *Config) getCalendar(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, payload)
+}
+
+// Creates users full calendar and saves it to the file system
+func (app *Config) updateIcsCalendar(userId string) {
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+
+	// 1. get user's calendar id
+	calendarIdResp, err := app.usersClient.userService.GetCalendarId(ctx, &user.GetCalendarIdRequest{
+		UserId: userId,
+	})
+	if err != nil {
+		log.Println("Error on calling UserService.GetCalendarId:", err)
+		return
+	}
+
+	// 2. get documents
+	documents, err := app.documentsClient.documentService.GetAll(ctx, &document.DocumentsRequest{
+		UserID: userId,
+	})
+	if err != nil {
+		log.Println("Error on calling GetAll method:", err)
+		return
+	}
+
+	// 3. get notifications
+	notifications, err := app.documentsClient.notificationService.GetAllForUser(ctx, &document.NotificationsAllRequest{
+		UserID: userId,
+	})
+	if err != nil {
+		log.Println("Error on calling Notification.GetAllForUser:", err)
+		return
+	}
+
+	// 4. create calendar
+	calendarArr := createCalendar(documents.Documents, notifications.Notifications)
+
+	// Create new IV
+	ivCalendar := make([]byte, 12)
+	rand.Read(ivCalendar)
+	ivCalendarStr := strings.ToLower(string(ivCalendar))
+
+	// Call rust service to create ics
+	calendarsResp, err := app.calendarsClient.calendarService.CreateCalendar(ctx, &calendar.CreateCalendarRequest{
+		CalendarID:       calendarIdResp.CalendarId,
+		CalendarIV:       ivCalendarStr,
+		CalendarEntities: calendarArr,
+	})
+	if err != nil {
+		log.Println("Error on calling CalendarService.CreateCalendar:", err)
+		return
+	}
+	if calendarsResp.Error {
+		log.Println("Error on calling CalendarService.CreateCalendar:", calendarsResp.Message)
+		return
+	}
+
+	// Update user's IV
+	_, err = app.usersClient.userService.SetCalendarIv(ctx, &user.SetCalendarIvRequest{
+		UserId:     userId,
+		CalendarIv: ivCalendarStr,
+	})
+	if err != nil {
+		log.Println("Error on calling UserService.SetCalendarIv:", err)
+		return
+	}
 }
 
 // Combine array of documents with array of notifications
