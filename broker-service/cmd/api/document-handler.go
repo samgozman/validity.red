@@ -104,6 +104,7 @@ func (app *Config) documentEdit(c *gin.Context) {
 	payload.Error = false
 	payload.Message = res.Result
 
+	go app.updateIcsCalendar(userId.(string))
 	c.JSON(http.StatusCreated, payload)
 }
 
@@ -137,6 +138,7 @@ func (app *Config) documentDelete(c *gin.Context) {
 	payload.Error = false
 	payload.Message = res.Result
 
+	go app.updateIcsCalendar(userId.(string))
 	c.JSON(http.StatusOK, payload)
 }
 

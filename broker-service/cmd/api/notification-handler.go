@@ -47,6 +47,7 @@ func (app *Config) documentNotificationCreate(c *gin.Context) {
 	payload.Error = false
 	payload.Message = res.Result
 
+	go app.updateIcsCalendar(userId.(string))
 	c.JSON(http.StatusCreated, payload)
 }
 
@@ -83,6 +84,7 @@ func (app *Config) documentNotificationEdit(c *gin.Context) {
 	payload.Error = false
 	payload.Message = res.Result
 
+	go app.updateIcsCalendar(userId.(string))
 	c.JSON(http.StatusCreated, payload)
 }
 
@@ -117,6 +119,7 @@ func (app *Config) documentNotificationDelete(c *gin.Context) {
 	payload.Error = false
 	payload.Message = res.Result
 
+	go app.updateIcsCalendar(userId.(string))
 	c.JSON(http.StatusOK, payload)
 }
 
