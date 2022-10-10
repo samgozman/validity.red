@@ -43,7 +43,7 @@ func (u *PostgresTestRepository) FindOneByEmail(ctx context.Context, email strin
 func (u *PostgresTestRepository) GetCalendarId(ctx context.Context, userId string) (*user.User, error) {
 	return &user.User{
 		CalendarID:  "8gipfmoqt8mtucep",
-		IV_Calendar: "zns4qy85gcoz",
+		IV_Calendar: make([]byte, 12),
 	}, nil
 }
 
