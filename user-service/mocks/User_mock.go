@@ -47,6 +47,10 @@ func (u *PostgresTestRepository) GetCalendarId(ctx context.Context, userId strin
 	}, nil
 }
 
+func (u *PostgresTestRepository) GetCalendarIv(ctx context.Context, calendarId string) ([]byte, error) {
+	return make([]byte, 12), nil
+}
+
 func (u *PostgresTestRepository) Update(ctx context.Context, userId string, fields map[string]interface{}) error {
 	return nil
 }

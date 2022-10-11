@@ -142,6 +142,21 @@ func (u *PostgresRepository) GetCalendarId(ctx context.Context, userId string) (
 	return user, nil
 }
 
+func (u *PostgresRepository) GetCalendarIv(ctx context.Context, calendarId string) ([]byte, error) {
+	data := struct {
+		IV_Calendar []byte `json:"iv_calendar,omitempty"`
+	}{}
+	res := u.Conn.Table("users").
+		Select("iv_calendar").
+		First(&data, "calendar_id = ?", calendarId).
+		WithContext(ctx)
+	if res.Error != nil {
+		return nil, res.Error
+	}
+
+	return data.IV_Calendar, nil
+}
+
 func (u *PostgresRepository) Update(ctx context.Context, userId string, fields map[string]interface{}) error {
 	res := u.Conn.WithContext(ctx).
 		Table("users").
