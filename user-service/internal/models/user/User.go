@@ -2,9 +2,10 @@ package user
 
 import (
 	"context"
+	"crypto/rand"
 	"errors"
 	"html"
-	"math/rand"
+	"math/big"
 	"strings"
 	"time"
 
@@ -30,7 +31,7 @@ type User struct {
 	Email       string    `gorm:"uniqueIndex;size:100;not null;" json:"email,omitempty"`
 	Password    string    `gorm:"not null;" json:"password"`
 	IsVerified  bool      `gorm:"type:bool;default:false;not null;" json:"is_verified"`
-	CalendarID  string    `gorm:"size:32;" json:"calendar_id,omitempty"`
+	CalendarID  string    `gorm:"uniqueIndex;size:32;" json:"calendar_id,omitempty"`
 	IV_Calendar []byte    `gorm:"size:12;" json:"iv_calendar,omitempty"`
 	CreatedAt   time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"created_at,omitempty"`
 	UpdatedAt   time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"updated_at,omitempty"`
@@ -77,7 +78,8 @@ func GenerateRandomString(n int) string {
 	var chars = []rune("ABCDEFGHIJKLMNOPQRSTUVWXYZ0987654321")
 	str := make([]rune, n)
 	for i := range str {
-		str[i] = chars[rand.Intn(len(chars))]
+		num, _ := rand.Int(rand.Reader, big.NewInt(int64(len(chars))))
+		str[i] = chars[num.Int64()]
 	}
 	return string(str)
 }
