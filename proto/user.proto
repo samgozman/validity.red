@@ -17,6 +17,14 @@ message GetCalendarIdRequest {
 	string userId = 1;
 }
 
+message GetCalendarIvRequest {
+	string calendarId = 1;
+}
+
+message GetCalendarIvResponse {
+	bytes calendarIv = 1;
+}
+
 message GetCalendarIdResponse {
 	string calendarId = 1;
 	bytes calendarIv = 2;
@@ -54,6 +62,7 @@ service AuthService {
 service UserService {
 	rpc Register(RegisterRequest) returns (Response);
 	rpc GetCalendarId(GetCalendarIdRequest) returns (GetCalendarIdResponse);
+	rpc GetCalendarIv(GetCalendarIvRequest) returns (GetCalendarIvResponse);
 	rpc SetCalendarIv(SetCalendarIvRequest) returns (Response);
 	// TODO: change password
 	// TODO: delete user data

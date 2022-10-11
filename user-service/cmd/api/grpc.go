@@ -106,6 +106,18 @@ func (us *UserServer) GetCalendarId(ctx context.Context, req *proto.GetCalendarI
 	return res, nil
 }
 
+func (us *UserServer) GetCalendarIv(ctx context.Context, req *proto.GetCalendarIvRequest) (*proto.GetCalendarIvResponse, error) {
+	iv, err := us.App.Repo.GetCalendarIv(ctx, req.CalendarId)
+	if err != nil {
+		return nil, err
+	}
+
+	res := &proto.GetCalendarIvResponse{
+		CalendarIv: iv,
+	}
+	return res, nil
+}
+
 func (us *UserServer) SetCalendarIv(ctx context.Context, req *proto.SetCalendarIvRequest) (*proto.Response, error) {
 	err := us.App.Repo.Update(ctx, req.UserId, map[string]interface{}{
 		"iv_calendar": req.CalendarIv,
