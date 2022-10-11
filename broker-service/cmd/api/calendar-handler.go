@@ -57,6 +57,38 @@ func (app *Config) getCalendar(c *gin.Context) {
 	c.JSON(http.StatusOK, payload)
 }
 
+func (app *Config) getCalendarIcs(c *gin.Context) {
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+	defer cancel()
+
+	calendarId := c.Param("id")
+
+	ivResp, err := app.usersClient.userService.GetCalendarIv(ctx, &user.GetCalendarIvRequest{
+		CalendarId: calendarId,
+	})
+	if err != nil {
+		log.Println("Error on calling UserService.GetCalendarIv method for getCalendarIcs:", err)
+		c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
+		return
+	}
+
+	calendarIcs, err := app.calendarsClient.calendarService.GetCalendar(ctx, &calendar.GetCalendarRequest{
+		CalendarID: calendarId,
+		CalendarIV: ivResp.CalendarIv,
+	})
+	if err != nil {
+		// TODO: return 404 if not found
+		log.Println("Error on calling GetCalendar method for getCalendarIcs:", err)
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.Writer.Header().Set("Content-Type", "text/calendar")
+	c.Writer.Header().Set("Content-Disposition", "attachment; filename=validity-calendar.ics")
+	c.Writer.Header().Set("Content-Length", string(rune(len(calendarIcs.Calendar))))
+	c.Data(http.StatusOK, "text/calendar", calendarIcs.Calendar)
+}
+
 // Creates users full calendar and saves it to the file system
 func (app *Config) updateIcsCalendar(userId string) {
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)

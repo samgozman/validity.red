@@ -40,6 +40,11 @@ func (app *Config) routes() *gin.Engine {
 		calendar.GET("", app.getCalendar)
 	}
 
+	ics := g.Group("/ics")
+	{
+		ics.GET("/:id", app.getCalendarIcs)
+	}
+
 	user := g.Group("/user")
 	user.Use(app.AuthGuard())
 	{
