@@ -76,6 +76,11 @@ func (app *Config) userLogin(c *gin.Context) {
 
 	payload.Error = false
 	payload.Message = res.Result
+	payload.Data = struct {
+		CalendarId string `json:"calendarId"`
+	}{
+		CalendarId: res.CalendarId,
+	}
 
 	// Generate JWT token
 	token, err := app.token.Generate(res.UserId)

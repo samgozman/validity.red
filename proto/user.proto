@@ -38,6 +38,7 @@ message SetCalendarIvRequest {
 message AuthResponse {
 	string result = 1;
 	string userId = 2;
+	string calendarId = 3;
 }
 
 message Register {
