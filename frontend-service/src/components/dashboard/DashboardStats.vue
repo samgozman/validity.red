@@ -6,6 +6,17 @@ import CalendarMonth from "@/components/calendar/CalendarMonth.vue";
 
 <template>
   <div
+    v-if="calendarId"
+    class="card col-span-full row-span-1 shadow-lg compact bg-base-100"
+  >
+    <div class="flex-col sm:flex-row items-center card-body">
+      <p>Export Validity.Red data to sync with your calendar app</p>
+      <button @click.prevent="getIcs" href="#" class="btn btn-primary btn-sm">
+        Export calendar
+      </button>
+    </div>
+  </div>
+  <div
     class="card col-span-full row-span-1 shadow-lg compact bg-base-100 min-h-[40vh]"
   >
     <div class="flex-col sm:flex-row items-center card-body">
@@ -82,6 +93,7 @@ import type { IDashboardStats } from "./interfaces/IDashboardStats";
 interface VueData {
   stats: IDashboardStats;
   avgNotifications: number;
+  calendarId: string | null;
   error: boolean;
   errorMsg: string;
 }
@@ -91,6 +103,7 @@ export default defineComponent({
     return {
       stats: {} as IDashboardStats,
       avgNotifications: 0,
+      calendarId: localStorage.getItem("calendarId"),
       error: false,
       errorMsg: "",
     };
@@ -101,6 +114,29 @@ export default defineComponent({
         this.stats = await DashboardService.getStats();
         this.avgNotifications =
           this.stats.totalNotifications / this.stats.totalDocuments || 0;
+      } catch (error) {
+        this.error = true;
+        this.errorMsg = "An error occurred, please try again";
+        // TODO: Push error to Sentry
+      }
+    },
+    async getIcs() {
+      try {
+        const data = await DashboardService.getIcsFile(this.calendarId || "");
+        // For some reason, the blob storage is not working properly
+        // if we just set the href of existing vue-node to the blob url.
+        // This is an oldfashioned workaround.
+        const link = document.createElement("a");
+        link.href = window.URL.createObjectURL(
+          new Blob([data], { type: "text/calendar" })
+        );
+        link.setAttribute("download", "validity-calendar.ics"); //or any other extension
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        // TODO: Fix! This way of downloading the file is not calling the download alert box.
+        // And there for not trying to open the file in the calendar app. (and may not work on mobile)
+        // So to fix this, we need to find a way to use a fileserver instead or proxy the original request link.
       } catch (error) {
         this.error = true;
         this.errorMsg = "An error occurred, please try again";

@@ -28,4 +28,12 @@ export class DashboardService {
 
     return data;
   }
+
+  public static async getIcsFile(calendarId: string): Promise<string> {
+    const res = await new QueryMaker({
+      route: `/ics/${calendarId}`,
+    }).get<any>();
+
+    return res.data;
+  }
 }

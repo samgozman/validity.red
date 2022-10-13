@@ -6,7 +6,7 @@ export interface IResponse {
 }
 
 interface IQueryMakerParams {
-  /** API route, like '/auth/login' */
+  /** API route, like `/auth/login` */
   route: string;
   /** Stringified JSON payload for POST/PATCH */
   payload?: string;
@@ -33,15 +33,15 @@ export class QueryMaker {
     return axios.post<T>(this.routeUrl, this.params.payload, this.axiosConfig);
   }
 
-  public async patch<T = IResponse>() {
+  public async patch<T = IResponse>(): Promise<AxiosResponse<T>> {
     return axios.patch<T>(this.routeUrl, this.params.payload, this.axiosConfig);
   }
 
-  public async delete<T = IResponse>() {
+  public async delete<T = IResponse>(): Promise<AxiosResponse<T>> {
     return axios.delete<T>(this.routeUrl, this.axiosConfig);
   }
 
-  public async get<T = IResponse>() {
+  public async get<T = IResponse>(): Promise<AxiosResponse<T>> {
     return axios.get<T>(this.routeUrl, this.axiosConfig);
   }
 }
