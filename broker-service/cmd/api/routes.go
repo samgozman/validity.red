@@ -28,7 +28,6 @@ func (app *Config) routes() *gin.Engine {
 		documents.DELETE("/:documentId/notifications/delete/:id", app.documentNotificationDelete)
 		documents.PATCH("/:documentId/notifications/edit/:id", app.documentNotificationEdit)
 		documents.POST("/create", app.documentCreate)
-		// TODO: edit/:id
 		documents.PATCH("/edit", app.documentEdit)
 		documents.DELETE("/:documentId/delete", app.documentDelete)
 		documents.GET("/statistics", app.documentGetStatistics)

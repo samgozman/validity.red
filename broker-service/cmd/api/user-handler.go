@@ -11,22 +11,24 @@ import (
 )
 
 type AuthPayload struct {
-	Email    string `json:"email"`
-	Password string `json:"password"`
-}
-
-type RegisterPayload struct {
-	Email    string `json:"email"`
-	Password string `json:"password"`
+	Email    string `json:"email" uri:"email" binding:"required,email"`
+	Password string `json:"password" uri:"password" binding:"required,min=8,max=64"`
 }
 
 // Call Register method on `user-service`
 func (app *Config) userRegister(c *gin.Context) {
+	c.Writer.Header().Set("Content-Type", "application/json")
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
 
 	var payload jsonResponse
-	requestPayload := decodeJSON[RegisterPayload](c)
+	requestPayload := AuthPayload{}
+	if err := c.BindJSON(&requestPayload); err != nil {
+		payload.Error = true
+		payload.Message = "Invalid inputs."
+		c.AbortWithStatusJSON(http.StatusBadRequest, payload)
+		return
+	}
 
 	// call service
 	res, err := app.usersClient.userService.Register(ctx, &user.RegisterRequest{
@@ -53,11 +55,18 @@ func (app *Config) userRegister(c *gin.Context) {
 
 // Call Login method on `user-service`
 func (app *Config) userLogin(c *gin.Context) {
+	c.Writer.Header().Set("Content-Type", "application/json")
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
 
 	var payload jsonResponse
-	requestPayload := decodeJSON[AuthPayload](c)
+	requestPayload := AuthPayload{}
+	if err := c.BindJSON(&requestPayload); err != nil {
+		payload.Error = true
+		payload.Message = "Invalid inputs."
+		c.AbortWithStatusJSON(http.StatusBadRequest, payload)
+		return
+	}
 
 	// call service
 	res, err := app.usersClient.authService.Login(ctx, &user.AuthRequest{
