@@ -32,10 +32,14 @@ import NavBarItems from "./NavBarItems.vue";
     </div>
     <div class="navbar-center"></div>
     <div class="navbar-end">
-      <RouterLink class="btn mr-4 rounded-full" to="/documents/create">
-        <ion-icon name="add-outline" class="text-xl mr-1"></ion-icon> Add new
+      <RouterLink
+        class="btn btn-circle mr-2 sm:mr-4 sm:rounded-full sm:w-max sm:px-4"
+        to="/documents/create"
+      >
+        <ion-icon name="add-outline" class="text-xl sm:mr-1"></ion-icon>
+        <span class="hidden sm:block">Add new</span>
       </RouterLink>
-      <div class="dropdown dropdown-end mr-4">
+      <div class="dropdown dropdown-end sm:mr-4">
         <label tabindex="0" class="btn btn-neutral btn-circle">
           <ion-icon name="person-circle-outline" class="text-4xl"></ion-icon>
         </label>
