@@ -25,13 +25,13 @@ import NavItem from "./NavItem.vue";
     <div class="navbar-center"></div>
     <div class="navbar-end">
       <RouterLink
-        class="btn btn-circle mr-2 sm:mr-4 sm:rounded-full sm:w-max sm:px-4"
+        class="btn btn-circle mr-2 lg:mr-4 lg:rounded-full lg:w-max lg:px-4"
         to="/documents/create"
       >
-        <ion-icon name="add-outline" class="text-xl sm:mr-1"></ion-icon>
-        <span class="hidden sm:block">Add new</span>
+        <ion-icon name="add-outline" class="text-xl lg:mr-1"></ion-icon>
+        <span class="hidden lg:block">Add new</span>
       </RouterLink>
-      <div class="dropdown dropdown-end sm:mr-4">
+      <div class="dropdown dropdown-end lg:mr-4">
         <label tabindex="0" class="btn btn-neutral btn-circle">
           <ion-icon name="person-circle-outline" class="text-4xl"></ion-icon>
         </label>
