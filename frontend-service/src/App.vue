@@ -2,7 +2,7 @@
 import { RouterView } from "vue-router";
 import { navbarItems } from "@/components/navbar/items";
 import NavBar from "@/components/navbar/NavBar.vue";
-import NavBarItems from "@/components/navbar/NavBarItems.vue";
+import NavItem from "@/components/navbar/NavItem.vue";
 import Footer from "@/components/FooterComponent.vue";
 </script>
 
@@ -21,7 +21,11 @@ import Footer from "@/components/FooterComponent.vue";
     <div class="drawer-side">
       <label for="left-sidebar" class="drawer-overlay"></label>
       <ul class="menu p-4 overflow-y-auto w-80 bg-base-100">
-        <NavBarItems :items="navbarItems" />
+        <NavItem
+          v-for="item in navbarItems"
+          v-bind:key="item.name"
+          :item="item"
+        />
       </ul>
     </div>
   </div>
