@@ -3,7 +3,9 @@ import CalendarDay from "./CalendarDay.vue";
 </script>
 
 <template>
-  <div class="flex flex-grow w-full h-[60vh] md:h-[70vh] xl:h-[60vh]">
+  <div
+    class="flex flex-grow w-full min-h-[300px] h-[60vh] sm:h-[85vh] md:h-[70vh] xl:h-[60vh]"
+  >
     <div class="flex flex-col flex-grow">
       <!-- Header -->
       <div class="flex items-center mt-4">
