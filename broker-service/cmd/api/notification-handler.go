@@ -16,22 +16,42 @@ type NotificationPayload struct {
 	Date time.Time `json:"date" binding:"required"`
 }
 
+type NotificationModifyPayload struct {
+	ID         string `uri:"id" binding:"required,uuid"`
+	DocumentId string `uri:"documentId" binding:"required,uuid"`
+}
+
 // Call Create method on Notification in `document-service`
 func (app *Config) documentNotificationCreate(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
 
+	var payload jsonResponse
+
+	uri := struct {
+		DocumentId string `uri:"documentId" binding:"required,uuid"`
+	}{}
+
 	// get userId from context
 	userId, _ := c.Get("UserId")
-	documentId := c.Param("documentId")
-	notificationPayload := decodeJSON[NotificationPayload](c)
-
-	var payload jsonResponse
+	// Validate inputs
+	if err := c.BindUri(&uri); err != nil {
+		payload.Error = true
+		payload.Message = "Invalid documentId."
+		c.AbortWithStatusJSON(http.StatusBadRequest, payload)
+	}
+	notificationPayload := NotificationPayload{}
+	if err := c.BindJSON(&notificationPayload); err != nil {
+		payload.Error = true
+		payload.Message = "Invalid notification payload."
+		c.AbortWithStatusJSON(http.StatusBadRequest, payload)
+		return
+	}
 
 	// call service
 	res, err := app.documentsClient.notificationService.Create(ctx, &document.NotificationCreateRequest{
 		NotificationEntry: &document.Notification{
-			DocumentID: documentId,
+			DocumentID: uri.DocumentId,
 			Date:       timestamppb.New(notificationPayload.Date),
 		},
 		UserID: userId.(string),
@@ -52,23 +72,35 @@ func (app *Config) documentNotificationCreate(c *gin.Context) {
 }
 
 // Call Edit method on Notification in `document-service`
+// ! Not used
+// TODO: Delete
 func (app *Config) documentNotificationEdit(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
 
+	var payload jsonResponse
+	uri := NotificationModifyPayload{}
+
 	// get userId from context
 	userId, _ := c.Get("UserId")
-	documentId := c.Param("documentId")
-	id := c.Param("id")
-	notificationPayload := decodeJSON[NotificationPayload](c)
-
-	var payload jsonResponse
-
+	// Validate inputs
+	if err := c.BindUri(&uri); err != nil {
+		payload.Error = true
+		payload.Message = "Invalid id's input."
+		c.AbortWithStatusJSON(http.StatusBadRequest, payload)
+	}
+	notificationPayload := NotificationPayload{}
+	if err := c.BindJSON(&notificationPayload); err != nil {
+		payload.Error = true
+		payload.Message = "Invalid notification payload."
+		c.AbortWithStatusJSON(http.StatusBadRequest, payload)
+		return
+	}
 	// call service
 	res, err := app.documentsClient.notificationService.Edit(ctx, &document.NotificationCreateRequest{
 		NotificationEntry: &document.Notification{
-			ID:         id,
-			DocumentID: documentId,
+			ID:         uri.ID,
+			DocumentID: uri.DocumentId,
 			Date:       timestamppb.New(notificationPayload.Date),
 		},
 		UserID: userId.(string),
@@ -93,18 +125,23 @@ func (app *Config) documentNotificationDelete(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
 
+	var payload jsonResponse
+	uri := NotificationModifyPayload{}
+
 	// get userId from context
 	userId, _ := c.Get("UserId")
-	documentId := c.Param("documentId")
-	id := c.Param("id")
-
-	var payload jsonResponse
+	// Validate inputs
+	if err := c.BindUri(&uri); err != nil {
+		payload.Error = true
+		payload.Message = "Invalid id's input."
+		c.AbortWithStatusJSON(http.StatusBadRequest, payload)
+	}
 
 	// call service
 	res, err := app.documentsClient.notificationService.Delete(ctx, &document.NotificationCreateRequest{
 		NotificationEntry: &document.Notification{
-			ID:         id,
-			DocumentID: documentId,
+			ID:         uri.ID,
+			DocumentID: uri.DocumentId,
 		},
 		UserID: userId.(string),
 	})
@@ -128,15 +165,24 @@ func (app *Config) documentNotificationGetAll(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
 
+	var payload jsonResponse
+
+	uri := struct {
+		DocumentId string `uri:"documentId" binding:"required,uuid"`
+	}{}
+
 	// get userId from context
 	userId, _ := c.Get("UserId")
-	documentId := c.Param("documentId")
-
-	var payload jsonResponse
+	// Validate inputs
+	if err := c.BindUri(&uri); err != nil {
+		payload.Error = true
+		payload.Message = "Invalid documentId."
+		c.AbortWithStatusJSON(http.StatusBadRequest, payload)
+	}
 
 	// call service
 	res, err := app.documentsClient.notificationService.GetAll(ctx, &document.NotificationsRequest{
-		DocumentID: documentId,
+		DocumentID: uri.DocumentId,
 		UserID:     userId.(string),
 	})
 	if err != nil {
