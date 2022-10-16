@@ -13,16 +13,18 @@ import (
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
+// ? Maybe use alpha-num-unicode rule for string fields?
+
 type DocumentCreate struct {
-	Type        int32     `json:"type"`
+	Type        int32     `json:"type" binding:"required,number"`
 	Title       string    `json:"title" binding:"required"`
 	Description string    `json:"description"`
 	ExpiresAt   time.Time `json:"expiresAt" binding:"required"`
 }
 
 type DocumentEdit struct {
-	ID          string    `json:"id" binding:"required"`
-	Type        int32     `json:"type"`
+	ID          string    `json:"id" binding:"required,uuid"`
+	Type        int32     `json:"type" binding:"required,number"`
 	Title       string    `json:"title" binding:"required"`
 	Description string    `json:"description"`
 	ExpiresAt   time.Time `json:"expiresAt" binding:"required"`
@@ -37,7 +39,13 @@ func (app *Config) documentCreate(c *gin.Context) {
 	userId, _ := c.Get("UserId")
 
 	var payload jsonResponse
-	documentPayload := decodeJSON[DocumentCreate](c)
+	documentPayload := DocumentCreate{}
+	if err := c.BindJSON(&documentPayload); err != nil {
+		payload.Error = true
+		payload.Message = "Invalid document payload."
+		c.AbortWithStatusJSON(http.StatusBadRequest, payload)
+		return
+	}
 
 	// call service
 	res, err := app.documentsClient.documentService.Create(ctx, &document.DocumentCreateRequest{
@@ -78,7 +86,13 @@ func (app *Config) documentEdit(c *gin.Context) {
 	userId, _ := c.Get("UserId")
 
 	var payload jsonResponse
-	documentPayload := decodeJSON[DocumentEdit](c)
+	documentPayload := DocumentEdit{}
+	if err := c.BindJSON(&documentPayload); err != nil {
+		payload.Error = true
+		payload.Message = "Invalid document payload."
+		c.AbortWithStatusJSON(http.StatusBadRequest, payload)
+		return
+	}
 
 	// call service
 	res, err := app.documentsClient.documentService.Edit(ctx, &document.DocumentCreateRequest{
@@ -113,16 +127,22 @@ func (app *Config) documentDelete(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
 
+	var payload jsonResponse
+
 	// get userId from context
 	userId, _ := c.Get("UserId")
-	// get documentId from param :documentId
-	documentId := c.Param("documentId")
-
-	var payload jsonResponse
+	uri := struct {
+		DocumentId string `uri:"documentId" binding:"required,uuid"`
+	}{}
+	if err := c.BindUri(&uri); err != nil {
+		payload.Error = true
+		payload.Message = "Invalid documentId."
+		c.AbortWithStatusJSON(http.StatusBadRequest, payload)
+	}
 
 	// call service
 	res, err := app.documentsClient.documentService.Delete(ctx, &document.DocumentRequest{
-		DocumentID: documentId,
+		DocumentID: uri.DocumentId,
 		UserID:     userId.(string),
 	})
 	if err != nil {
@@ -147,16 +167,22 @@ func (app *Config) documentGetOne(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
 
+	var payload jsonResponse
+
 	// get userId from context
 	userId, _ := c.Get("UserId")
-	// get documentId from param :documentId
-	documentId := c.Param("documentId")
-
-	var payload jsonResponse
+	uri := struct {
+		DocumentId string `uri:"documentId" binding:"required,uuid"`
+	}{}
+	if err := c.BindUri(&uri); err != nil {
+		payload.Error = true
+		payload.Message = "Invalid documentId."
+		c.AbortWithStatusJSON(http.StatusBadRequest, payload)
+	}
 
 	// call service
 	res, err := app.documentsClient.documentService.GetOne(ctx, &document.DocumentRequest{
-		DocumentID: documentId,
+		DocumentID: uri.DocumentId,
 		UserID:     userId.(string),
 	})
 	if err != nil {
