@@ -61,10 +61,16 @@ func (app *Config) getCalendarIcs(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
 
-	calendarId := c.Param("id")
+	uri := struct {
+		ID string `uri:"id" binding:"required,alphanum"`
+	}{}
+	if err := c.BindUri(&uri); err != nil {
+		c.AbortWithStatus(http.StatusBadRequest)
+		return
+	}
 
 	ivResp, err := app.usersClient.userService.GetCalendarIv(ctx, &user.GetCalendarIvRequest{
-		CalendarId: calendarId,
+		CalendarId: uri.ID,
 	})
 	if err != nil {
 		log.Println("Error on calling UserService.GetCalendarIv method for getCalendarIcs:", err)
@@ -73,7 +79,7 @@ func (app *Config) getCalendarIcs(c *gin.Context) {
 	}
 
 	calendarIcs, err := app.calendarsClient.calendarService.GetCalendar(ctx, &calendar.GetCalendarRequest{
-		CalendarID: calendarId,
+		CalendarID: uri.ID,
 		CalendarIV: ivResp.CalendarIv,
 	})
 	if err != nil {
