@@ -1,7 +1,7 @@
 import { QueryMaker, type IResponse } from "@/services/QueryMaker";
 import type { ICalendarNotification } from "./interfaces/ICalendarNotification";
 
-interface CalendarResponse extends IResponse {
+interface ICalendarResponse extends IResponse {
   data: {
     calendar: ICalendarNotification[];
   };
@@ -16,7 +16,7 @@ export class CalendarService {
   public static async getCalendar(): Promise<ICalendarNotification[]> {
     const res = await new QueryMaker({
       route: "/calendar",
-    }).get<CalendarResponse>();
+    }).get<ICalendarResponse>();
     const { error, message, data } = res.data;
 
     if (error) {
