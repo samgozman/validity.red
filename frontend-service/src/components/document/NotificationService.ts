@@ -1,18 +1,18 @@
 import { QueryMaker, type IResponse } from "@/services/QueryMaker";
 import type { INotification } from "./interfaces/INotification";
 
-interface NotificationDeletePayload {
+interface INotificationDeletePayload {
   id: string;
   documentId: string;
 }
 
-interface NotificationGetAllResponse extends IResponse {
+interface INotificationGetAllResponse extends IResponse {
   data: {
     notifications: INotification[];
   };
 }
 
-interface NotificationPayload {
+interface INotificationPayload {
   date: Date;
   documentId: string;
 }
@@ -23,7 +23,7 @@ export class NotificationService {
    * @param params
    */
   public static async deleteOne(
-    params: NotificationDeletePayload
+    params: INotificationDeletePayload
   ): Promise<void> {
     const res = await new QueryMaker({
       route: `/documents/${params.documentId}/notifications/delete/${params.id}`,
@@ -42,7 +42,7 @@ export class NotificationService {
   public static async getAll(documentId: string): Promise<INotification[]> {
     const res = await new QueryMaker({
       route: `/documents/${documentId}/notifications`,
-    }).get<NotificationGetAllResponse>();
+    }).get<INotificationGetAllResponse>();
     const { error, message, data } = res.data;
 
     if (error) {
@@ -57,14 +57,14 @@ export class NotificationService {
    * @param notification
    */
   public static async createOne(
-    notification: NotificationPayload
+    notification: INotificationPayload
   ): Promise<void> {
     const payload = JSON.stringify({ date: notification.date });
 
     const res = await new QueryMaker({
       route: `/documents/${notification.documentId}/notifications/create`,
       payload,
-    }).post<NotificationGetAllResponse>();
+    }).post<INotificationGetAllResponse>();
     const { error, message } = res.data;
 
     if (error) {

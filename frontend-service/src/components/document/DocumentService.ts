@@ -1,19 +1,19 @@
 import { QueryMaker, type IResponse } from "@/services/QueryMaker";
 import type { IDocument } from "./interfaces/IDocument";
 
-interface DocumentGetAllResponse extends IResponse {
+interface IDocumentGetAllResponse extends IResponse {
   data: {
     documents: IDocument[];
   };
 }
 
-interface DocumentGetOneResponse extends IResponse {
+interface IDocumentGetOneResponse extends IResponse {
   data: {
     document: IDocument;
   };
 }
 
-interface DocumentCreateResponse extends IResponse {
+interface IDocumentCreateResponse extends IResponse {
   data: {
     documentId: string;
   };
@@ -52,7 +52,7 @@ export class DocumentService {
   public static async getAll(): Promise<IDocument[]> {
     const res = await new QueryMaker({
       route: "/documents",
-    }).get<DocumentGetAllResponse>();
+    }).get<IDocumentGetAllResponse>();
     const { error, message, data } = res.data;
 
     if (error) {
@@ -70,7 +70,7 @@ export class DocumentService {
   public static async getOne(documentId: string): Promise<IDocument> {
     const res = await new QueryMaker({
       route: `/documents/${documentId}`,
-    }).get<DocumentGetOneResponse>();
+    }).get<IDocumentGetOneResponse>();
     const { error, message, data } = res.data;
 
     if (error) {
@@ -89,7 +89,7 @@ export class DocumentService {
     const res = await new QueryMaker({
       route: "/documents/create",
       payload,
-    }).post<DocumentCreateResponse>();
+    }).post<IDocumentCreateResponse>();
     const { error, message, data } = res.data;
 
     if (error) {
@@ -105,7 +105,7 @@ export class DocumentService {
     const res = await new QueryMaker({
       route: "/documents/edit",
       payload,
-    }).patch<DocumentCreateResponse>();
+    }).patch<IDocumentCreateResponse>();
     const { error, message } = res.data;
 
     if (error) {

@@ -1,12 +1,12 @@
 import type { IResponse } from "@/services/QueryMaker";
 import { QueryMaker } from "@/services/QueryMaker";
 
-interface AuthCredentials {
+interface IAuthCredentials {
   email: string;
   password: string;
 }
 
-interface AuthResponse extends IResponse {
+interface IAuthResponse extends IResponse {
   data: {
     calendarId: string;
   };
@@ -17,7 +17,7 @@ export class AuthService {
    * Login user and save auth token to cookie
    * @param credentials
    */
-  public static async userLogin(credentials: AuthCredentials): Promise<void> {
+  public static async userLogin(credentials: IAuthCredentials): Promise<void> {
     const payload = JSON.stringify({
       email: credentials.email,
       password: credentials.password,
@@ -26,7 +26,7 @@ export class AuthService {
     const res = await new QueryMaker({
       route: "/auth/login",
       payload,
-    }).post<AuthResponse>();
+    }).post<IAuthResponse>();
     const { error, message, data } = res.data;
 
     // Save calendar to local storage
@@ -43,7 +43,7 @@ export class AuthService {
    */
   public static async userRegister(
     // TODO: Use another type with more fields
-    credentials: AuthCredentials
+    credentials: IAuthCredentials
   ): Promise<void> {
     const payload = JSON.stringify({
       email: credentials.email,
