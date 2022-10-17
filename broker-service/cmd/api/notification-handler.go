@@ -149,7 +149,7 @@ func (app *Config) documentNotificationGetAll(c *gin.Context) {
 	payload.Data = struct {
 		Notifications []*document.NotificationJSON `json:"notifications"`
 	}{
-		Notifications: utils.ConvertNotficationsToJSON(res.Notifications),
+		Notifications: utils.ConvertNotificationsToJSON(res.Notifications),
 	}
 
 	c.JSON(http.StatusOK, payload)

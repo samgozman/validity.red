@@ -7,7 +7,7 @@ import (
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
-func ConvertNotficationsToProtoFormat(n *[]notification.Notification) []*proto.Notification {
+func ConvertNotificationsToProtoFormat(n *[]notification.Notification) []*proto.Notification {
 	var result []*proto.Notification
 
 	for _, n := range *n {

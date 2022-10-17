@@ -17,7 +17,7 @@ export class DashboardService {
     }
 
     for (const d of data.latestDocuments) {
-      // Retrun date in YYYY-MM-DD format
+      // Return date in YYYY-MM-DD format
       d.expiresAt = new Date(d.expiresAt).toISOString().substring(0, 10);
     }
 

@@ -13,7 +13,7 @@ const BLOCK_SIZE: usize = 16;
 /// * `data`: The data to be encrypted.
 /// * `key`: AES-256 key encryption key.
 /// * `iv`: Initialization vector. This is a random value that is used to ensure that the same plaintext
-/// will not produce the same ciphertext.
+/// will not produce the same cipher text.
 ///
 /// Returns:
 ///
@@ -28,12 +28,12 @@ pub fn encrypt(
 
     let mut buffer = pkcs5_padding(data.as_bytes());
 
-    // Encrypt `buffer` in-place, replacing the plaintext contents with ciphertext
+    // Encrypt `buffer` in-place, replacing the plaintext contents with cipher text
     cipher
         .encrypt_in_place(nonce, b"", &mut buffer)
         .expect("encryption failure!");
 
-    // `buffer` now contains the message ciphertext
+    // `buffer` now contains the message cipher text
     assert_ne!(&buffer, data.as_bytes());
 
     Ok(buffer)
@@ -46,7 +46,7 @@ pub fn encrypt(
 /// * `data`: The data to be decrypted.
 /// * `key`: AES-256 key encryption key.
 /// * `iv`: Initialization vector. This is a random value that is used to ensure that the same plaintext
-/// will not produce the same ciphertext.
+/// will not produce the same cipher text.
 ///
 /// Returns:
 ///
@@ -63,7 +63,7 @@ pub fn decrypt(data: &[u8], key: &[u8; 32], iv: &[u8; 12]) -> String {
 
     let buffer = pkcs5_unpadding(&buffer);
     std::str::from_utf8(&buffer)
-        .expect("u8 to String transfromation failed")
+        .expect("u8 to String transformation failed")
         .to_string()
 }
 

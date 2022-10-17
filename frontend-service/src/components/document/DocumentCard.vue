@@ -32,7 +32,7 @@ defineProps<{
           :v-model="document.ID"
           >Edit</RouterLink
         >
-        <a :href="deleteAncor" class="btn">Delete</a>
+        <a :href="deleteAnchor" class="btn">Delete</a>
       </div>
     </div>
     <ModalConfirmation
@@ -51,7 +51,7 @@ import { DocumentService } from "./DocumentService";
 export default defineComponent({
   data() {
     return {
-      deleteAncor: "#delete-document",
+      deleteAnchor: "#delete-document",
       deleteModalId: "delete-document",
     };
   },

@@ -125,7 +125,7 @@ export default defineComponent({
         const data = await DashboardService.getIcsFile(this.calendarId || "");
         // For some reason, the blob storage is not working properly
         // if we just set the href of existing vue-node to the blob url.
-        // This is an oldfashioned workaround.
+        // This is an old-fashioned workaround.
         const link = document.createElement("a");
         link.href = window.URL.createObjectURL(
           new Blob([data], { type: "text/calendar" })
@@ -136,7 +136,7 @@ export default defineComponent({
         link.remove();
         // TODO: Fix! This way of downloading the file is not calling the download alert box.
         // And there for not trying to open the file in the calendar app. (and may not work on mobile)
-        // So to fix this, we need to find a way to use a fileserver instead or proxy the original request link.
+        // So to fix this, we need to find a way to use a file server instead or proxy the original request link.
       } catch (error) {
         this.error = true;
         this.errorMsg = "An error occurred, please try again";

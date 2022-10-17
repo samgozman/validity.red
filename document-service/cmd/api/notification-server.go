@@ -94,7 +94,7 @@ func (ds *NotificationServer) GetAll(
 	// return response
 	res := &proto.ResponseNotificationsList{
 		Result:        fmt.Sprintf("User '%s' found %d notifications successfully!", userID, len(notifications)),
-		Notifications: utils.ConvertNotficationsToProtoFormat(&notifications),
+		Notifications: utils.ConvertNotificationsToProtoFormat(&notifications),
 	}
 	return res, nil
 }
@@ -159,7 +159,7 @@ func (ds *NotificationServer) GetAllForUser(
 	// return response
 	res := &proto.ResponseNotificationsList{
 		Result:        fmt.Sprintf("User '%s' found %d notifications successfully!", userID, len(notifications)),
-		Notifications: utils.ConvertNotficationsToProtoFormat(&notifications),
+		Notifications: utils.ConvertNotificationsToProtoFormat(&notifications),
 	}
 	return res, nil
 }

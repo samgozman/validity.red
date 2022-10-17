@@ -10,7 +10,7 @@ defineProps<{
 <template>
   <div class="indicator w-full">
     <div class="indicator-item indicator-middle indicator-end">
-      <a :href="deleteAncor" class="btn btn-xs btn-accent btn-circle">
+      <a :href="deleteAnchor" class="btn btn-xs btn-accent btn-circle">
         <ion-icon name="close-outline" class="text-lg"></ion-icon>
       </a>
     </div>
@@ -38,13 +38,13 @@ export default defineComponent({
       dateWithTZ: new Date(this.notification.date).toLocaleString("en-GB", {
         timeZoneName: "short",
       }),
-      deleteAncor: "",
+      deleteAnchor: "",
       deleteModalId: "",
     };
   },
   methods: {
     setContext() {
-      this.deleteAncor = `#delete-${this.notification.ID}`;
+      this.deleteAnchor = `#delete-${this.notification.ID}`;
       this.deleteModalId = `delete-${this.notification.ID}`;
     },
     async deleteNotification() {

@@ -19,7 +19,7 @@ const BlockSize = aes.BlockSize
 //
 // "key" - should be the AES key, either 16, 24, or 32 bytes to select AES-128, AES-192, or AES-256.
 //
-// "iv" - len(iv) should equal BlockSize (default: 16). IV stads for Initialization vector.
+// "iv" - len(iv) should equal BlockSize (default: 16). IV stands for Initialization vector.
 // IV should be randomly generated for each encryption.
 // IV are used to ensure that the same value encrypted N times, will not always result in the same encrypted value.
 func EncryptAES(key []byte, iv []byte, text string) (string, error) {
@@ -43,7 +43,7 @@ func EncryptAES(key []byte, iv []byte, text string) (string, error) {
 //
 // "key" - should be the AES key, either 16, 24, or 32 bytes to select AES-128, AES-192, or AES-256.
 //
-// "iv" - len(iv) should equal BlockSize (default: 16). IV stads for Initialization vector.
+// "iv" - len(iv) should equal BlockSize (default: 16). IV stands for Initialization vector.
 // IV should be randomly generated for each encryption.
 // IV are used to ensure that the same value encrypted N times, will not always result in the same encrypted value.
 func DecryptAES(key []byte, iv []byte, cipherText string) (string, error) {

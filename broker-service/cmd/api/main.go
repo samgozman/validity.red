@@ -33,7 +33,7 @@ type CalendarsClient struct {
 }
 
 func main() {
-	// ! Move client connections to the separate gorutine
+	// ! Move client connections to the separate goroutine
 	// ! which will be trying to reconnect without blocking the main app
 
 	// USERS CLIENT SECTION - START //

@@ -137,8 +137,8 @@ export default defineComponent({
       }
       return false;
     },
-    isExpired(dstr: string) {
-      const parsed = Date.parse(dstr);
+    isExpired(dateString: string) {
+      const parsed = Date.parse(dateString);
       if (isNaN(parsed)) {
         this.error = true;
         this.errorMsg = "Invalid date. Please use the format YYYY-MM-DD";

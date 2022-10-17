@@ -52,12 +52,12 @@ func TestUser_Validate(t *testing.T) {
 	}{
 		{
 			name:    "fail if email is empty",
-			user:    &User{Email: "", Password: "foopassword"},
+			user:    &User{Email: "", Password: "fooPassword"},
 			wantErr: true,
 		},
 		{
 			name:    "fail if is not email",
-			user:    &User{Email: "bonk12345", Password: "foopassword"},
+			user:    &User{Email: "bonk12345", Password: "fooPassword"},
 			wantErr: true,
 		},
 		{
@@ -80,7 +80,7 @@ func TestUser_Validate(t *testing.T) {
 		},
 		{
 			name:    "should pass",
-			user:    &User{Email: "test@example.com", Password: "foopassword"},
+			user:    &User{Email: "test@example.com", Password: "fooPassword"},
 			wantErr: false,
 		},
 	}
@@ -114,7 +114,7 @@ func TestHash(t *testing.T) {
 	}{
 		{
 			name:    "should pass",
-			args:    args{password: "foopassword"},
+			args:    args{password: "fooPassword"},
 			wantErr: false,
 		},
 	}
@@ -138,7 +138,7 @@ func TestVerifyPassword(t *testing.T) {
 		password       string
 	}
 
-	testPass := "foopassword"
+	testPass := "fooPassword"
 	hashedPass, _ := Hash(testPass)
 
 	tests := []struct {
@@ -153,7 +153,7 @@ func TestVerifyPassword(t *testing.T) {
 		},
 		{
 			name:    "should fail",
-			args:    args{hashedPassword: string(hashedPass), password: "wrongpassword"},
+			args:    args{hashedPassword: string(hashedPass), password: "wrongPassword"},
 			wantErr: true,
 		},
 	}

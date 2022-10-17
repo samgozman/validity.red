@@ -12,7 +12,7 @@ func ParseProtobufDateToString(t *timestamppb.Timestamp) string {
 	return t.AsTime().Format(time.RFC3339)
 }
 
-func ConvertNotficationsToJSON(ns []*document.Notification) []*document.NotificationJSON {
+func ConvertNotificationsToJSON(ns []*document.Notification) []*document.NotificationJSON {
 	var njs []*document.NotificationJSON
 	for _, n := range ns {
 		njs = append(njs, &document.NotificationJSON{
@@ -42,9 +42,9 @@ func ConvertDocumentsToJSON(ds []*document.Document) []*document.DocumentJSON {
 }
 
 func ConvertCalendarToJSON(cl []*calendar.CalendarEntity) []*calendar.CalendarEntityJSON {
-	var cldr []*calendar.CalendarEntityJSON
+	var calendarJson []*calendar.CalendarEntityJSON
 	for _, n := range cl {
-		cldr = append(cldr, &calendar.CalendarEntityJSON{
+		calendarJson = append(calendarJson, &calendar.CalendarEntityJSON{
 			DocumentID:       n.DocumentID,
 			DocumentTitle:    n.DocumentTitle,
 			NotificationDate: ParseProtobufDateToString(n.NotificationDate),
@@ -52,5 +52,5 @@ func ConvertCalendarToJSON(cl []*calendar.CalendarEntity) []*calendar.CalendarEn
 		})
 	}
 
-	return cldr
+	return calendarJson
 }

@@ -6,7 +6,7 @@ defineProps<{
 }>();
 </script>
 
-<!-- TODO: Create dynamicly from browser history -->
+<!-- TODO: Create dynamically from browser history -->
 <template>
   <div class="text-sm breadcrumbs">
     <ul>

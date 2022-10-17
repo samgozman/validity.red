@@ -32,7 +32,7 @@ defineProps<{
         </p>
       </div>
       <div class="flex space-x-2 flex-0" :class="{ 'opacity-0': !isHovering }">
-        <a :href="deleteAncor" class="btn btn-sm btn-circle">
+        <a :href="deleteAnchor" class="btn btn-sm btn-circle">
           <ion-icon name="trash-outline" class="text-xl"></ion-icon>
         </a>
       </div>
@@ -54,14 +54,14 @@ export default defineComponent({
   data() {
     return {
       isHovering: false,
-      deleteAncor: "",
+      deleteAnchor: "",
       deleteModalId: "",
       documentLink: "",
     };
   },
   methods: {
     setContext() {
-      this.deleteAncor = `#delete-${this.document.ID}`;
+      this.deleteAnchor = `#delete-${this.document.ID}`;
       this.deleteModalId = `delete-${this.document.ID}`;
       this.documentLink = `documents/${this.document.ID}`;
     },
