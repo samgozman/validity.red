@@ -73,25 +73,6 @@ func (db *NotificationDB) InsertOne(ctx context.Context, n *Notification) error 
 	return nil
 }
 
-func (db *NotificationDB) UpdateOne(ctx context.Context, n *Notification) error {
-	res := db.Conn.
-		WithContext(ctx).
-		Where(&Notification{ID: n.ID, DocumentID: n.DocumentID}).
-		Updates(&Notification{
-			Date: n.Date,
-		})
-
-	if res.Error != nil {
-		return res.Error
-	}
-
-	if res.RowsAffected == 0 {
-		return errors.New("notification is not found")
-	}
-
-	return nil
-}
-
 func (db *NotificationDB) DeleteOne(ctx context.Context, n *Notification) error {
 	res := db.Conn.
 		WithContext(ctx).

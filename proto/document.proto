@@ -152,7 +152,6 @@ service DocumentService {
 
 service NotificationService {
 	rpc Create(NotificationCreateRequest) returns (Response);
-	rpc Edit(NotificationCreateRequest) returns (Response);
 	rpc Delete(NotificationCreateRequest) returns (Response);
 	rpc GetAll(NotificationsRequest) returns (ResponseNotificationsList);
 	rpc Count(NotificationsCountRequest) returns (ResponseCount);

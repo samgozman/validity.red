@@ -22,10 +22,6 @@ func (db *NotificationDBTest) InsertOne(ctx context.Context, n *notification.Not
 	return nil
 }
 
-func (db *NotificationDBTest) UpdateOne(ctx context.Context, n *notification.Notification) error {
-	return nil
-}
-
 func (db *NotificationDBTest) DeleteOne(ctx context.Context, n *notification.Notification) error {
 	return nil
 }

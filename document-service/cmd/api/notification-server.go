@@ -43,37 +43,6 @@ func (ds *NotificationServer) Create(ctx context.Context, req *proto.Notificatio
 	return res, nil
 }
 
-func (ds *NotificationServer) Edit(ctx context.Context, req *proto.NotificationCreateRequest) (*proto.Response, error) {
-	input := req.GetNotificationEntry()
-
-	// Validate input arguments
-	userID, documentID, err := ds.checkInputsAndDocumentExistence(ctx, req.GetUserID(), input.GetDocumentID())
-	if err != nil {
-		return nil, err
-	}
-	notificationID, err := uuid.Parse(input.GetID())
-	if err != nil {
-		return nil, ErrInvalidNotificationId
-	}
-
-	// update notification
-	n := notification.Notification{
-		ID:         notificationID,
-		DocumentID: documentID,
-		Date:       input.GetDate().AsTime(),
-	}
-	err = ds.App.Notifications.UpdateOne(ctx, &n)
-
-	// return error if exists
-	if err != nil {
-		return nil, err
-	}
-
-	// return response
-	res := &proto.Response{Result: fmt.Sprintf("User '%s' edited notification '%s' successfully!", userID, n.ID)}
-	return res, nil
-}
-
 func (ds *NotificationServer) Delete(ctx context.Context, req *proto.NotificationCreateRequest) (*proto.Response, error) {
 	input := req.GetNotificationEntry()
 

@@ -71,55 +71,6 @@ func (app *Config) documentNotificationCreate(c *gin.Context) {
 	c.JSON(http.StatusCreated, payload)
 }
 
-// Call Edit method on Notification in `document-service`
-// ! Not used
-// TODO: Delete
-func (app *Config) documentNotificationEdit(c *gin.Context) {
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
-	defer cancel()
-
-	var payload jsonResponse
-	uri := NotificationModifyPayload{}
-
-	// get userId from context
-	userId, _ := c.Get("UserId")
-	// Validate inputs
-	if err := c.BindUri(&uri); err != nil {
-		payload.Error = true
-		payload.Message = "Invalid id's input."
-		c.AbortWithStatusJSON(http.StatusBadRequest, payload)
-	}
-	notificationPayload := NotificationPayload{}
-	if err := c.BindJSON(&notificationPayload); err != nil {
-		payload.Error = true
-		payload.Message = "Invalid notification payload."
-		c.AbortWithStatusJSON(http.StatusBadRequest, payload)
-		return
-	}
-	// call service
-	res, err := app.documentsClient.notificationService.Edit(ctx, &document.NotificationCreateRequest{
-		NotificationEntry: &document.Notification{
-			ID:         uri.ID,
-			DocumentID: uri.DocumentId,
-			Date:       timestamppb.New(notificationPayload.Date),
-		},
-		UserID: userId.(string),
-	})
-	if err != nil {
-		log.Println("Error on calling document-service::notification::Edit method:", err)
-		payload.Error = true
-		payload.Message = err.Error()
-		c.JSON(http.StatusBadRequest, payload)
-		return
-	}
-
-	payload.Error = false
-	payload.Message = res.Result
-
-	go app.updateIcsCalendar(userId.(string))
-	c.JSON(http.StatusCreated, payload)
-}
-
 // Call Delete method on Notification in `document-service`
 func (app *Config) documentNotificationDelete(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
