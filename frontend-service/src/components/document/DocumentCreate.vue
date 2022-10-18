@@ -178,7 +178,6 @@ export default defineComponent({
         if (this.isLonger(this.title, 100, "Title is too long!")) return;
         if (this.isLonger(this.description, 500, "Description is too long!"))
           return;
-        if (this.isLonger(this.title, 100, "Title is too long!")) return;
         if (this.isEmpty(this.expiresAt, "Expiration date is required!"))
           return;
         if (this.isExpired(this.expiresAt)) return;
@@ -227,8 +226,8 @@ export default defineComponent({
     if (this.isEditMode) {
       try {
         const document = await DocumentService.getOne(this.documentId);
-        this.title = document.title;
-        this.description = document.description;
+        this.title = document.title || "";
+        this.description = document.description || "";
         this.type = DocumentType.getName(document.type);
         this.expiresAt = new Date(document.expiresAt)
           .toISOString()
