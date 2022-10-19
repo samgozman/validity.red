@@ -19,7 +19,7 @@ func (app *Config) routes() *gin.Engine {
 	}))
 
 	documents := g.Group("/documents")
-	documents.Use(app.AuthGuard())
+	documents.Use(app.AuthGuard(), app.ErrorHandler())
 	{
 		documents.GET("", app.documentGetAll)
 		documents.GET("/:documentId", app.documentGetOne)
@@ -33,24 +33,26 @@ func (app *Config) routes() *gin.Engine {
 	}
 
 	calendar := g.Group("/calendar")
-	calendar.Use(app.AuthGuard())
+	calendar.Use(app.AuthGuard(), app.ErrorHandler())
 	{
 		calendar.GET("", app.getCalendar)
 	}
 
 	ics := g.Group("/ics")
+	ics.Use(app.ErrorHandler())
 	{
 		ics.GET("/:id", app.getCalendarIcs)
 	}
 
 	user := g.Group("/user")
-	user.Use(app.AuthGuard())
+	user.Use(app.AuthGuard(), app.ErrorHandler())
 	{
 		user.GET("/token/refresh", app.userRefreshToken)
 	}
 
 	// Auth routes (without auth guard)
 	auth := g.Group("/auth")
+	auth.Use(app.ErrorHandler())
 	{
 		auth.POST("/login", app.userLogin)
 		auth.POST("/register", app.userRegister)

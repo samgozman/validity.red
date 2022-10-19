@@ -24,9 +24,7 @@ func (app *Config) userRegister(c *gin.Context) {
 	var payload jsonResponse
 	requestPayload := AuthPayload{}
 	if err := c.BindJSON(&requestPayload); err != nil {
-		payload.Error = true
-		payload.Message = "Invalid inputs."
-		c.AbortWithStatusJSON(http.StatusBadRequest, payload)
+		c.Error(ErrInvalidInputs)
 		return
 	}
 
@@ -39,9 +37,7 @@ func (app *Config) userRegister(c *gin.Context) {
 	})
 	if err != nil {
 		log.Println("Error on calling user-service::Register method:", err)
-		payload.Error = true
-		payload.Message = err.Error()
-		c.JSON(http.StatusBadRequest, payload)
+		c.Error(err)
 		return
 	}
 
@@ -62,9 +58,7 @@ func (app *Config) userLogin(c *gin.Context) {
 	var payload jsonResponse
 	requestPayload := AuthPayload{}
 	if err := c.BindJSON(&requestPayload); err != nil {
-		payload.Error = true
-		payload.Message = "Invalid inputs."
-		c.AbortWithStatusJSON(http.StatusBadRequest, payload)
+		c.Error(ErrInvalidInputs)
 		return
 	}
 
@@ -77,9 +71,7 @@ func (app *Config) userLogin(c *gin.Context) {
 	})
 	if err != nil {
 		log.Println("Error on calling user-service::Login method:", err)
-		payload.Error = true
-		payload.Message = err.Error()
-		c.JSON(http.StatusUnauthorized, payload)
+		c.Error(err)
 		return
 	}
 
@@ -95,9 +87,7 @@ func (app *Config) userLogin(c *gin.Context) {
 	token, err := app.token.Generate(res.UserId)
 	if err != nil {
 		log.Println("Error on calling broker-service::token::Generate method:", err)
-		payload.Error = true
-		payload.Message = err.Error()
-		c.JSON(http.StatusInternalServerError, payload)
+		c.Error(err)
 		return
 	}
 
@@ -118,9 +108,7 @@ func (app *Config) userRefreshToken(c *gin.Context) {
 	token, err := app.token.Refresh(tk.(string))
 	if err != nil {
 		log.Println("Error on calling broker-service::token::Refresh method:", err)
-		payload.Error = true
-		payload.Message = err.Error()
-		c.JSON(http.StatusUnauthorized, payload)
+		c.Error(ErrUnauthorized)
 		return
 	}
 

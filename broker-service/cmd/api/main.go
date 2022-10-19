@@ -33,9 +33,6 @@ type CalendarsClient struct {
 }
 
 func main() {
-	// ! Move client connections to the separate goroutine
-	// ! which will be trying to reconnect without blocking the main app
-
 	// USERS CLIENT SECTION - START //
 	userServiceConn, err := connectToService("user-service", os.Getenv("USER_GRPC_PORT"))
 	if err != nil {
