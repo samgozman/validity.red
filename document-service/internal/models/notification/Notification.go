@@ -2,10 +2,11 @@ package notification
 
 import (
 	"context"
-	"errors"
 	"time"
 
 	"github.com/google/uuid"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 	"gorm.io/gorm"
 )
 
@@ -37,13 +38,13 @@ func (n *Notification) Prepare() {
 // Validate Notification object before inserting into database
 func (n *Notification) Validate() error {
 	if n.UserID == uuid.Nil {
-		return errors.New("user_id is required")
+		return status.Error(codes.InvalidArgument, "user_id is required")
 	}
 	if n.DocumentID == uuid.Nil {
-		return errors.New("document_id is required")
+		return status.Error(codes.InvalidArgument, "document_id is required")
 	}
 	if n.Date.IsZero() {
-		return errors.New("date is required")
+		return status.Error(codes.InvalidArgument, "date is required")
 	}
 
 	return nil
@@ -67,7 +68,7 @@ func (n *Notification) BeforeCreate(tx *gorm.DB) error {
 func (db *NotificationDB) InsertOne(ctx context.Context, n *Notification) error {
 	res := db.Conn.WithContext(ctx).Create(&n)
 	if res.Error != nil {
-		return res.Error
+		return status.Error(codes.Internal, res.Error.Error())
 	}
 
 	return nil
@@ -80,11 +81,11 @@ func (db *NotificationDB) DeleteOne(ctx context.Context, n *Notification) error 
 		Delete(&Notification{})
 
 	if res.Error != nil {
-		return res.Error
+		return status.Error(codes.Internal, res.Error.Error())
 	}
 
 	if res.RowsAffected == 0 {
-		return errors.New("notification not found")
+		return status.Error(codes.NotFound, "notification not found")
 	}
 
 	return nil
@@ -100,7 +101,7 @@ func (db *NotificationDB) FindAll(ctx context.Context, documentID uuid.UUID) ([]
 		Find(&notifications)
 
 	if res.Error != nil {
-		return nil, res.Error
+		return nil, status.Error(codes.Internal, res.Error.Error())
 	}
 
 	return notifications, nil
@@ -117,7 +118,7 @@ func (db *NotificationDB) Count(ctx context.Context, documentID uuid.UUID) (int6
 		Count(&count)
 
 	if res.Error != nil {
-		return 0, res.Error
+		return 0, status.Error(codes.Internal, res.Error.Error())
 	}
 
 	return count, nil
@@ -134,7 +135,7 @@ func (db *NotificationDB) CountAll(ctx context.Context, userID uuid.UUID) (int64
 		Count(&count)
 
 	if res.Error != nil {
-		return 0, res.Error
+		return 0, status.Error(codes.Internal, res.Error.Error())
 	}
 
 	return count, nil
@@ -150,7 +151,7 @@ func (db *NotificationDB) FindAllForUser(ctx context.Context, userID uuid.UUID) 
 		Find(&notifications)
 
 	if res.Error != nil {
-		return nil, res.Error
+		return nil, status.Error(codes.Internal, res.Error.Error())
 	}
 
 	return notifications, nil

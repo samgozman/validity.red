@@ -34,8 +34,6 @@ func (ds *DocumentServer) Create(ctx context.Context, req *proto.DocumentCreateR
 		ExpiresAt:   input.ExpiresAt.AsTime(),
 	}
 	err = ds.App.Documents.InsertOne(ctx, &d)
-
-	// return error if exists
 	if err != nil {
 		return nil, err
 	}
@@ -72,8 +70,6 @@ func (ds *DocumentServer) Edit(ctx context.Context, req *proto.DocumentCreateReq
 		ExpiresAt:   input.ExpiresAt.AsTime(),
 	}
 	err = ds.App.Documents.UpdateOne(ctx, &d)
-
-	// return error if exists
 	if err != nil {
 		return nil, err
 	}
@@ -101,8 +97,6 @@ func (ds *DocumentServer) Delete(ctx context.Context, req *proto.DocumentRequest
 		UserID: userID,
 	}
 	err = ds.App.Documents.DeleteOne(ctx, &d)
-
-	// return error if exists
 	if err != nil {
 		return nil, err
 	}
@@ -130,8 +124,6 @@ func (ds *DocumentServer) GetOne(ctx context.Context, req *proto.DocumentRequest
 		UserID: userID,
 	}
 	err = ds.App.Documents.FindOne(ctx, &d)
-
-	// return error if exists
 	if err != nil {
 		return nil, err
 	}
@@ -159,8 +151,6 @@ func (ds *DocumentServer) GetAll(ctx context.Context, req *proto.DocumentsReques
 
 	// Find all documents
 	documents, err := ds.App.Documents.FindAll(ctx, userID)
-
-	// return error if exists
 	if err != nil {
 		return nil, err
 	}

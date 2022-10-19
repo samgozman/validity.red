@@ -2,7 +2,6 @@ package document
 
 import (
 	"context"
-	"errors"
 	"os"
 	"regexp"
 	"strings"
@@ -12,6 +11,8 @@ import (
 	"github.com/samgozman/validity.red/document/internal/models/notification"
 	"github.com/samgozman/validity.red/document/pkg/encryption"
 	proto "github.com/samgozman/validity.red/document/proto"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 )
@@ -54,19 +55,19 @@ func (d *Document) Prepare() {
 // Validate Document object before inserting into database
 func (d *Document) Validate() error {
 	if d.UserID == uuid.Nil {
-		return errors.New("user_id is required")
+		return status.Error(codes.InvalidArgument, "user_id is required")
 	}
 	if d.Title == "" {
-		return errors.New("title is required")
+		return status.Error(codes.InvalidArgument, "title is required")
 	}
 	if len([]rune(d.Title)) > 100 {
-		return errors.New("title length must be less than 100 characters")
+		return status.Error(codes.InvalidArgument, "title length must be less than 100 characters")
 	}
 	if len([]rune(d.Description)) > 500 {
-		return errors.New("description length must be less than 500 characters")
+		return status.Error(codes.InvalidArgument, "description length must be less than 500 characters")
 	}
 	if d.ExpiresAt.IsZero() {
-		return errors.New("expires_at is required")
+		return status.Error(codes.InvalidArgument, "expires_at is required")
 	}
 
 	return nil
@@ -76,22 +77,22 @@ func (d *Document) Validate() error {
 func (d *Document) Encrypt() error {
 	iv_title, err := encryption.GenerateRandomIV(encryption.BlockSize)
 	if err != nil {
-		return err
+		return status.Error(codes.Internal, err.Error())
 	}
 	// TODO: Do not encrypt description if it is empty
 	iv_description, err := encryption.GenerateRandomIV(encryption.BlockSize)
 	if err != nil {
-		return err
+		return status.Error(codes.Internal, err.Error())
 	}
 
 	encryptedTitle, err := encryption.EncryptAES(EncryptionKey, iv_title, d.Title)
 	if err != nil {
-		return err
+		return status.Error(codes.Internal, err.Error())
 	}
 
 	encryptedDesc, err := encryption.EncryptAES(EncryptionKey, iv_description, d.Description)
 	if err != nil {
-		return err
+		return status.Error(codes.Internal, err.Error())
 	}
 
 	d.Title = string(encryptedTitle)
@@ -106,7 +107,7 @@ func (d *Document) Decrypt() error {
 	if d.IV_Title != nil {
 		title, err := encryption.DecryptAES(EncryptionKey, d.IV_Title, d.Title)
 		if err != nil {
-			return err
+			return status.Error(codes.Internal, err.Error())
 		}
 		d.Title = string(title)
 	}
@@ -114,7 +115,7 @@ func (d *Document) Decrypt() error {
 	if d.IV_Description != nil {
 		desc, err := encryption.DecryptAES(EncryptionKey, d.IV_Description, d.Description)
 		if err != nil {
-			return err
+			return status.Error(codes.Internal, err.Error())
 		}
 		d.Description = string(desc)
 	}
@@ -130,12 +131,12 @@ func (d *Document) BeforeCreate(tx *gorm.DB) error {
 
 	err := d.Validate()
 	if err != nil {
-		return err
+		return status.Error(codes.Internal, err.Error())
 	}
 
 	err = d.Encrypt()
 	if err != nil {
-		return err
+		return status.Error(codes.Internal, err.Error())
 	}
 
 	return nil
@@ -148,7 +149,7 @@ func (d *Document) BeforeUpdate(tx *gorm.DB) error {
 
 	err := d.Encrypt()
 	if err != nil {
-		return err
+		return status.Error(codes.Internal, err.Error())
 	}
 
 	return nil
@@ -157,7 +158,7 @@ func (d *Document) BeforeUpdate(tx *gorm.DB) error {
 func (d *Document) AfterFind(tx *gorm.DB) error {
 	err := d.Decrypt()
 	if err != nil {
-		return err
+		return status.Error(codes.Internal, err.Error())
 	}
 
 	return nil
@@ -167,7 +168,7 @@ func (d *Document) AfterFind(tx *gorm.DB) error {
 func (db *DocumentDB) InsertOne(ctx context.Context, d *Document) error {
 	res := db.Conn.WithContext(ctx).Create(&d)
 	if res.Error != nil {
-		return res.Error
+		return status.Error(codes.Internal, res.Error.Error())
 	}
 
 	return nil
@@ -185,11 +186,11 @@ func (db *DocumentDB) UpdateOne(ctx context.Context, d *Document) error {
 		})
 
 	if res.Error != nil {
-		return res.Error
+		return status.Error(codes.Internal, res.Error.Error())
 	}
 
 	if res.RowsAffected == 0 {
-		return errors.New("document not found or you don't have permission to update it")
+		return status.Error(codes.NotFound, "document not found")
 	}
 
 	return nil
@@ -207,11 +208,11 @@ func (db *DocumentDB) DeleteOne(ctx context.Context, d *Document) error {
 		Delete(&Document{ID: d.ID, UserID: d.UserID})
 
 	if res.Error != nil {
-		return res.Error
+		return status.Error(codes.Internal, res.Error.Error())
 	}
 
 	if res.RowsAffected == 0 {
-		return errors.New("document not found or you don't have permission to delete it")
+		return status.Error(codes.NotFound, "document not found")
 	}
 
 	return nil
@@ -226,11 +227,11 @@ func (db *DocumentDB) FindOne(ctx context.Context, d *Document) error {
 		First(&d)
 
 	if res.Error != nil {
-		return res.Error
+		return status.Error(codes.Internal, res.Error.Error())
 	}
 
 	if res.RowsAffected == 0 {
-		return errors.New("document not found or you don't have permission to view it")
+		return status.Error(codes.NotFound, "document not found")
 	}
 
 	return nil
@@ -250,7 +251,7 @@ func (db *DocumentDB) Exists(ctx context.Context, d *Document) (bool, error) {
 		).
 		Scan(&exist)
 	if res.Error != nil {
-		return false, res.Error
+		return false, status.Error(codes.Internal, res.Error.Error())
 	}
 
 	return exist.Found, nil
@@ -267,12 +268,12 @@ func (db *DocumentDB) FindAll(ctx context.Context, userId uuid.UUID) ([]Document
 		Find(&documents)
 
 	if res.Error != nil {
-		return nil, res.Error
+		return nil, status.Error(codes.Internal, res.Error.Error())
 	}
 
 	// TODO: Remove this error, just return an empty array
 	if res.RowsAffected == 0 {
-		return nil, errors.New("documents not found")
+		return nil, status.Error(codes.NotFound, "documents not found")
 	}
 
 	return documents, nil
@@ -289,7 +290,7 @@ func (db *DocumentDB) Count(ctx context.Context, userId uuid.UUID) (int64, error
 		Count(&count)
 
 	if res.Error != nil {
-		return 0, res.Error
+		return 0, status.Error(codes.Internal, res.Error.Error())
 	}
 
 	return count, nil
@@ -308,7 +309,7 @@ func (db *DocumentDB) CountTypes(ctx context.Context, userId uuid.UUID) ([]*prot
 		Scan(&types)
 
 	if res.Error != nil {
-		return nil, res.Error
+		return nil, status.Error(codes.Internal, res.Error.Error())
 	}
 
 	return types, nil
@@ -328,7 +329,7 @@ func (db *DocumentDB) FindLatest(ctx context.Context, userId uuid.UUID, limit in
 		Find(&documents)
 
 	if res.Error != nil {
-		return nil, res.Error
+		return nil, status.Error(codes.Internal, res.Error.Error())
 	}
 
 	return documents, nil
