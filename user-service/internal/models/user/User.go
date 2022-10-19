@@ -125,9 +125,6 @@ func (u *PostgresRepository) FindOneByEmail(ctx context.Context, email string) (
 	if res.Error != nil {
 		return nil, status.Error(codes.Internal, res.Error.Error())
 	}
-	if res.RowsAffected == 0 {
-		return nil, status.Error(codes.NotFound, "user not found")
-	}
 
 	return user, nil
 }
