@@ -3,7 +3,6 @@ package user
 import (
 	"context"
 	"crypto/rand"
-	"errors"
 	"html"
 	"math/big"
 	"strings"
@@ -12,6 +11,8 @@ import (
 	"github.com/badoux/checkmail"
 	"github.com/google/uuid"
 	"golang.org/x/crypto/bcrypt"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 	"gorm.io/gorm"
 )
 
@@ -48,19 +49,19 @@ func (user *User) Prepare() {
 // Validate User object before inserting into database
 func (user *User) Validate() error {
 	if user.Email == "" {
-		return errors.New("email is required")
+		return status.Error(codes.InvalidArgument, "email is required")
 	}
 	if user.Password == "" {
-		return errors.New("password is required")
+		return status.Error(codes.InvalidArgument, "password is required")
 	}
 	if len(user.Password) < 8 {
-		return errors.New("password is too short, must be at least 8 characters")
+		return status.Error(codes.InvalidArgument, "password is too short, must be at least 8 characters")
 	}
 	if len(user.Password) > 64 {
-		return errors.New("password is too long, must be between 8 - 64 characters")
+		return status.Error(codes.InvalidArgument, "password is too long, must be between 8 - 64 characters")
 	}
 	if err := checkmail.ValidateFormat(user.Email); err != nil {
-		return errors.New("invalid email")
+		return status.Error(codes.InvalidArgument, "invalid email")
 	}
 
 	return nil
@@ -111,7 +112,7 @@ func (user *User) BeforeSave(tx *gorm.DB) error {
 func (u *PostgresRepository) InsertOne(ctx context.Context, user *User) error {
 	res := u.Conn.Table("users").Create(&user).WithContext(ctx)
 	if res.Error != nil {
-		return res.Error
+		return status.Error(codes.Internal, res.Error.Error())
 	}
 
 	return nil
@@ -122,7 +123,10 @@ func (u *PostgresRepository) FindOneByEmail(ctx context.Context, email string) (
 	user := &User{}
 	res := u.Conn.Table("users").First(&user, "email = ?", email).WithContext(ctx)
 	if res.Error != nil {
-		return nil, res.Error
+		return nil, status.Error(codes.Internal, res.Error.Error())
+	}
+	if res.RowsAffected == 0 {
+		return nil, status.Error(codes.NotFound, "user not found")
 	}
 
 	return user, nil
@@ -136,7 +140,10 @@ func (u *PostgresRepository) GetCalendarId(ctx context.Context, userId string) (
 		First(&user, "id = ?", userId).
 		WithContext(ctx)
 	if res.Error != nil {
-		return nil, res.Error
+		return nil, status.Error(codes.Internal, res.Error.Error())
+	}
+	if res.RowsAffected == 0 {
+		return nil, status.Error(codes.NotFound, "user not found")
 	}
 
 	return user, nil
@@ -151,7 +158,10 @@ func (u *PostgresRepository) GetCalendarIv(ctx context.Context, calendarId strin
 		First(&data, "calendar_id = ?", calendarId).
 		WithContext(ctx)
 	if res.Error != nil {
-		return nil, res.Error
+		return nil, status.Error(codes.Internal, res.Error.Error())
+	}
+	if res.RowsAffected == 0 {
+		return nil, status.Error(codes.NotFound, "user not found")
 	}
 
 	return data.IV_Calendar, nil
@@ -164,10 +174,10 @@ func (u *PostgresRepository) Update(ctx context.Context, userId string, fields m
 		Where("id = ?", userId).
 		Updates(fields)
 	if res.Error != nil {
-		return res.Error
+		return status.Error(codes.Internal, res.Error.Error())
 	}
 	if res.RowsAffected == 0 {
-		return errors.New("user not found")
+		return status.Error(codes.NotFound, "user not found")
 	}
 
 	return nil

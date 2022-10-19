@@ -12,6 +12,8 @@ import (
 	"golang.org/x/crypto/bcrypt"
 
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 type AuthServer struct {
@@ -59,7 +61,6 @@ func (us *UserServer) Register(ctx context.Context, req *proto.RegisterRequest) 
 		Password: input.Password,
 	}
 	err := us.App.Repo.InsertOne(ctx, &userPayload)
-	// return error if exists
 	if err != nil {
 		return nil, err
 	}
@@ -81,7 +82,7 @@ func (as *AuthServer) Login(ctx context.Context, req *proto.AuthRequest) (*proto
 	// verify password
 	err = user.VerifyPassword(u.Password, input.Password)
 	if err != nil && err == bcrypt.ErrMismatchedHashAndPassword {
-		return nil, err
+		return nil, status.Error(codes.Unauthenticated, "authentication failed")
 	}
 
 	// return response
