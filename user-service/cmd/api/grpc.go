@@ -14,6 +14,7 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
+	"google.golang.org/protobuf/types/known/emptypb"
 )
 
 type AuthServer struct {
@@ -52,7 +53,7 @@ func (app *Config) gRPCListen() {
 	}
 }
 
-func (us *UserServer) Register(ctx context.Context, req *proto.RegisterRequest) (*proto.Response, error) {
+func (us *UserServer) Register(ctx context.Context, req *proto.RegisterRequest) (*emptypb.Empty, error) {
 	input := req.GetRegisterEntry()
 
 	// register user
@@ -66,8 +67,7 @@ func (us *UserServer) Register(ctx context.Context, req *proto.RegisterRequest) 
 	}
 
 	// return response
-	res := &proto.Response{Result: fmt.Sprintf("User '%s' registered successfully!", userPayload.ID)}
-	return res, nil
+	return &emptypb.Empty{}, nil
 }
 
 func (as *AuthServer) Login(ctx context.Context, req *proto.AuthRequest) (*proto.AuthResponse, error) {
@@ -87,7 +87,6 @@ func (as *AuthServer) Login(ctx context.Context, req *proto.AuthRequest) (*proto
 
 	// return response
 	res := &proto.AuthResponse{
-		Result: fmt.Sprintf("User '%s' logged in successfully!", u.ID),
 		// TODO: Return user entity
 		UserId:     u.ID.String(),
 		CalendarId: u.CalendarID,
@@ -120,7 +119,7 @@ func (us *UserServer) GetCalendarIv(ctx context.Context, req *proto.GetCalendarI
 	return res, nil
 }
 
-func (us *UserServer) SetCalendarIv(ctx context.Context, req *proto.SetCalendarIvRequest) (*proto.Response, error) {
+func (us *UserServer) SetCalendarIv(ctx context.Context, req *proto.SetCalendarIvRequest) (*emptypb.Empty, error) {
 	err := us.App.Repo.Update(ctx, req.UserId, map[string]interface{}{
 		"iv_calendar": req.CalendarIv,
 	})
@@ -128,10 +127,7 @@ func (us *UserServer) SetCalendarIv(ctx context.Context, req *proto.SetCalendarI
 		return nil, err
 	}
 
-	res := &proto.Response{
-		Result: "Calendars IV updated successfully!",
-	}
-	return res, nil
+	return &emptypb.Empty{}, nil
 }
 
 // TODO: Edit - edit user info

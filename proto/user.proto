@@ -1,5 +1,5 @@
 syntax = "proto3";
-
+import "google/protobuf/empty.proto";
 package user;
 
 option go_package = "/user";
@@ -36,9 +36,8 @@ message SetCalendarIvRequest {
 }
 
 message AuthResponse {
-	string result = 1;
-	string userId = 2;
-	string calendarId = 3;
+	string userId = 1;
+	string calendarId = 2;
 }
 
 message Register {
@@ -51,20 +50,16 @@ message RegisterRequest {
 	Register registerEntry = 1;
 }
 
-message Response {
-	string result = 1;
-}
-
 // Describe the service available methods
 service AuthService {
 	rpc Login(AuthRequest) returns (AuthResponse);
 }
 
 service UserService {
-	rpc Register(RegisterRequest) returns (Response);
+	rpc Register(RegisterRequest) returns (google.protobuf.Empty);
 	rpc GetCalendarId(GetCalendarIdRequest) returns (GetCalendarIdResponse);
 	rpc GetCalendarIv(GetCalendarIvRequest) returns (GetCalendarIvResponse);
-	rpc SetCalendarIv(SetCalendarIvRequest) returns (Response);
+	rpc SetCalendarIv(SetCalendarIvRequest) returns (google.protobuf.Empty);
 	// TODO: change password
 	// TODO: delete user data
 }

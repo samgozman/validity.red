@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	proto "github.com/samgozman/validity.red/user/proto"
+	"google.golang.org/protobuf/types/known/emptypb"
 )
 
 func TestUserServer_Register(t *testing.T) {
@@ -25,15 +26,11 @@ func TestUserServer_Register(t *testing.T) {
 		},
 	}
 
-	okRes := &proto.Response{
-		Result: "User '434377cf-7509-4cc0-9895-0afa683f0e56' registered successfully!",
-	}
-
 	tests := []struct {
 		name    string
 		fields  fields
 		args    args
-		want    *proto.Response
+		want    *emptypb.Empty
 		wantErr bool
 	}{
 		{
@@ -43,7 +40,7 @@ func TestUserServer_Register(t *testing.T) {
 				ctx: context.Background(),
 				req: okReq,
 			},
-			want:    okRes,
+			want:    &emptypb.Empty{},
 			wantErr: false,
 		},
 	}
@@ -83,7 +80,6 @@ func TestAuthServer_Login(t *testing.T) {
 	}
 
 	okRes := &proto.AuthResponse{
-		Result: "User '434377cf-7509-4cc0-9895-0afa683f0e56' logged in successfully!",
 		UserId: "434377cf-7509-4cc0-9895-0afa683f0e56",
 	}
 
