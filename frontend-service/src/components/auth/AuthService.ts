@@ -7,9 +7,7 @@ interface IAuthCredentials {
 }
 
 interface IAuthResponse extends IResponse {
-  data: {
-    calendarId: string;
-  };
+  calendarId: string;
 }
 
 export class AuthService {
@@ -27,10 +25,10 @@ export class AuthService {
       route: "/auth/login",
       payload,
     }).post<IAuthResponse>();
-    const { error, message, data } = res.data;
+    const { error, message, calendarId } = res.data;
 
     // Save calendar to local storage
-    localStorage.setItem("calendarId", data.calendarId);
+    localStorage.setItem("calendarId", calendarId);
 
     if (error) {
       throw new Error(message);

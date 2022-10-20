@@ -7,9 +7,7 @@ interface INotificationDeletePayload {
 }
 
 interface INotificationGetAllResponse extends IResponse {
-  data: {
-    notifications: INotification[];
-  };
+  notifications: INotification[];
 }
 
 interface INotificationPayload {
@@ -43,13 +41,13 @@ export class NotificationService {
     const res = await new QueryMaker({
       route: `/documents/${documentId}/notifications`,
     }).get<INotificationGetAllResponse>();
-    const { error, message, data } = res.data;
+    const { error, message, notifications } = res.data;
 
     if (error) {
       throw new Error(message);
     }
 
-    return data.notifications || [];
+    return notifications || [];
   }
 
   /**

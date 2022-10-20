@@ -2,21 +2,15 @@ import { QueryMaker, type IResponse } from "@/services/QueryMaker";
 import type { IDocument } from "./interfaces/IDocument";
 
 interface IDocumentGetAllResponse extends IResponse {
-  data: {
-    documents: IDocument[];
-  };
+  documents: IDocument[];
 }
 
 interface IDocumentGetOneResponse extends IResponse {
-  data: {
-    document: IDocument;
-  };
+  document: IDocument;
 }
 
 interface IDocumentCreateResponse extends IResponse {
-  data: {
-    documentId: string;
-  };
+  documentId: string;
 }
 
 interface DocumentPayload {
@@ -53,34 +47,34 @@ export class DocumentService {
     const res = await new QueryMaker({
       route: "/documents",
     }).get<IDocumentGetAllResponse>();
-    const { error, message, data } = res.data;
+    const { error, message, documents } = res.data;
 
     if (error) {
       throw new Error(message);
     }
 
     // Short date format
-    for (const d of data.documents) {
+    for (const d of documents) {
       d.expiresAt = this.getDate(d.expiresAt);
     }
 
-    return data.documents;
+    return documents;
   }
 
   public static async getOne(documentId: string): Promise<IDocument> {
     const res = await new QueryMaker({
       route: `/documents/${documentId}`,
     }).get<IDocumentGetOneResponse>();
-    const { error, message, data } = res.data;
+    const { error, message, document } = res.data;
 
     if (error) {
       throw new Error(message);
     }
 
     // Short date format
-    data.document.expiresAt = this.getDate(data.document.expiresAt);
+    document.expiresAt = this.getDate(document.expiresAt);
 
-    return data.document;
+    return document;
   }
 
   public static async createOne(document: DocumentPayload): Promise<string> {
@@ -90,13 +84,13 @@ export class DocumentService {
       route: "/documents/create",
       payload,
     }).post<IDocumentCreateResponse>();
-    const { error, message, data } = res.data;
+    const { error, message, documentId } = res.data;
 
     if (error) {
       throw new Error(message);
     }
 
-    return data.documentId;
+    return documentId;
   }
 
   public static async updateOne(document: DocumentPayload): Promise<void> {
