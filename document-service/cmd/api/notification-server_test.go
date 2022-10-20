@@ -3,12 +3,12 @@ package main
 import (
 	"context"
 	"errors"
-	"fmt"
 	"reflect"
 	"testing"
 
 	"github.com/google/uuid"
 	proto "github.com/samgozman/validity.red/document/proto"
+	"google.golang.org/protobuf/types/known/emptypb"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
@@ -30,19 +30,11 @@ func TestNotificationServer_Create(t *testing.T) {
 		UserID: "458c9061-5262-48b7-9b87-e47fa64d654c",
 	}
 
-	okRes := &proto.Response{
-		Result: fmt.Sprintf(
-			"User '%s' created notification '%s' successfully!",
-			okReq.UserID,
-			"00000000-0000-0000-0000-000000000000",
-		),
-	}
-
 	tests := []struct {
 		name     string
 		fields   fields
 		args     args
-		want     *proto.Response
+		want     *emptypb.Empty
 		wantErr  bool
 		errorMsg error
 	}{
@@ -53,7 +45,7 @@ func TestNotificationServer_Create(t *testing.T) {
 				ctx: context.Background(),
 				req: okReq,
 			},
-			want:    okRes,
+			want:    &emptypb.Empty{},
 			wantErr: false,
 		},
 		{
@@ -141,19 +133,11 @@ func TestNotificationServer_Delete(t *testing.T) {
 		UserID: "458c9061-5262-48b7-9b87-e47fa64d654c",
 	}
 
-	okRes := &proto.Response{
-		Result: fmt.Sprintf(
-			"User '%s' deleted notification with id '%s' successfully!",
-			okReq.UserID,
-			okReq.NotificationEntry.ID,
-		),
-	}
-
 	tests := []struct {
 		name     string
 		fields   fields
 		args     args
-		want     *proto.Response
+		want     *emptypb.Empty
 		wantErr  bool
 		errorMsg error
 	}{
@@ -164,7 +148,7 @@ func TestNotificationServer_Delete(t *testing.T) {
 				ctx: context.Background(),
 				req: okReq,
 			},
-			want:    okRes,
+			want:    &emptypb.Empty{},
 			wantErr: false,
 		},
 		{
@@ -266,11 +250,6 @@ func TestNotificationServer_GetAll(t *testing.T) {
 	}
 
 	okRes := &proto.ResponseNotificationsList{
-		Result: fmt.Sprintf(
-			"User '%s' found %d notifications successfully!",
-			okReq.UserID,
-			0,
-		),
 		// TODO: Fix reflect.DeepEqual false negative
 		// Notifications: []*proto.Notification{},
 	}
@@ -339,7 +318,7 @@ func TestNotificationServer_GetAll(t *testing.T) {
 				App:                                    tt.fields.App,
 				UnimplementedNotificationServiceServer: tt.fields.UnimplementedNotificationServiceServer,
 			}
-			got, err := ds.GetAll(tt.args.ctx, tt.args.req)
+			_, err := ds.GetAll(tt.args.ctx, tt.args.req)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("NotificationServer.GetAll() error = %v, wantErr %v", err, tt.wantErr)
 				return
@@ -348,9 +327,9 @@ func TestNotificationServer_GetAll(t *testing.T) {
 				t.Errorf("NotificationServer.GetAll() wrong error msg = %v, want %v", err.Error(), tt.errorMsg.Error())
 				return
 			}
-			if !tt.wantErr && got.Result != tt.want.Result {
-				t.Errorf("NotificationServer.GetAll() = %v, want %v", got, tt.want)
-			}
+			// if !tt.wantErr && !reflect.DeepEqual(got, tt.want) {
+			// 	t.Errorf("NotificationServer.GetAll() = %v, want %v", got, tt.want)
+			// }
 			// TODO: Fix reflect.DeepEqual false negative with []*proto.Notification
 			// if !reflect.DeepEqual(got, tt.want) {
 			// 	t.Errorf("NotificationServer.GetAll() = %v, want %v", got, tt.want)
@@ -374,14 +353,6 @@ func TestNotificationServer_Count(t *testing.T) {
 		UserID:     "458c9061-5262-48b7-9b87-e47fa64d654c",
 	}
 
-	okRes := &proto.ResponseCount{
-		Result: fmt.Sprintf(
-			"User '%s' received notifications count for document '%s'",
-			okReq.UserID,
-			okReq.DocumentID,
-		),
-	}
-
 	tests := []struct {
 		name     string
 		fields   fields
@@ -397,7 +368,7 @@ func TestNotificationServer_Count(t *testing.T) {
 				ctx: context.Background(),
 				req: okReq,
 			},
-			want:    okRes,
+			want:    &proto.ResponseCount{},
 			wantErr: false,
 		},
 		{
@@ -558,13 +529,6 @@ func TestNotificationServer_CountAll(t *testing.T) {
 		UserID: "458c9061-5262-48b7-9b87-e47fa64d654c",
 	}
 
-	okRes := &proto.ResponseCount{
-		Result: fmt.Sprintf(
-			"User '%s' received notifications count for document",
-			okReq.UserID,
-		),
-	}
-
 	tests := []struct {
 		name     string
 		fields   fields
@@ -580,7 +544,7 @@ func TestNotificationServer_CountAll(t *testing.T) {
 				ctx: context.Background(),
 				req: okReq,
 			},
-			want:    okRes,
+			want:    &proto.ResponseCount{},
 			wantErr: false,
 		},
 		{
@@ -633,11 +597,6 @@ func TestNotificationServer_GetAllForUser(t *testing.T) {
 	}
 
 	okRes := &proto.ResponseNotificationsList{
-		Result: fmt.Sprintf(
-			"User '%s' found %d notifications successfully!",
-			okReq.UserID,
-			0,
-		),
 		// TODO: Fix reflect.DeepEqual false negative
 		// Notifications: []*proto.Notification{},
 	}
@@ -679,7 +638,7 @@ func TestNotificationServer_GetAllForUser(t *testing.T) {
 				App:                                    tt.fields.App,
 				UnimplementedNotificationServiceServer: tt.fields.UnimplementedNotificationServiceServer,
 			}
-			got, err := ds.GetAllForUser(tt.args.ctx, tt.args.req)
+			_, err := ds.GetAllForUser(tt.args.ctx, tt.args.req)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("NotificationServer.GetAllForUser() error = %v, wantErr %v", err, tt.wantErr)
 				return
@@ -688,9 +647,9 @@ func TestNotificationServer_GetAllForUser(t *testing.T) {
 				t.Errorf("NotificationServer.GetAllForUser() wrong error msg = %v, want %v", err.Error(), tt.errorMsg.Error())
 				return
 			}
-			if !tt.wantErr && got.Result != tt.want.Result {
-				t.Errorf("NotificationServer.GetAllForUser() = %v, want %v", got, tt.want)
-			}
+			// if !tt.wantErr && got != tt.want {
+			// 	t.Errorf("NotificationServer.GetAllForUser() = %v, want %v", got, tt.want)
+			// }
 			// TODO: Fix reflect.DeepEqual false negative with []*proto.Notification
 			// if !reflect.DeepEqual(got, tt.want) {
 			// 	t.Errorf("NotificationServer.GetAll() = %v, want %v", got, tt.want)

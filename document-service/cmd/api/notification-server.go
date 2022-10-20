@@ -2,13 +2,13 @@ package main
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/google/uuid"
 	"github.com/samgozman/validity.red/document/internal/models/document"
 	"github.com/samgozman/validity.red/document/internal/models/notification"
 	"github.com/samgozman/validity.red/document/internal/utils"
 	proto "github.com/samgozman/validity.red/document/proto"
+	"google.golang.org/protobuf/types/known/emptypb"
 )
 
 type NotificationServer struct {
@@ -17,7 +17,7 @@ type NotificationServer struct {
 	proto.UnimplementedNotificationServiceServer
 }
 
-func (ds *NotificationServer) Create(ctx context.Context, req *proto.NotificationCreateRequest) (*proto.Response, error) {
+func (ds *NotificationServer) Create(ctx context.Context, req *proto.NotificationCreateRequest) (*emptypb.Empty, error) {
 	input := req.GetNotificationEntry()
 
 	userID, documentID, err := ds.checkInputsAndDocumentExistence(ctx, req.GetUserID(), input.GetDocumentID())
@@ -38,16 +38,14 @@ func (ds *NotificationServer) Create(ctx context.Context, req *proto.Notificatio
 		return nil, err
 	}
 
-	// return response
-	res := &proto.Response{Result: fmt.Sprintf("User '%s' created notification '%s' successfully!", userID, n.ID)}
-	return res, nil
+	return &emptypb.Empty{}, nil
 }
 
-func (ds *NotificationServer) Delete(ctx context.Context, req *proto.NotificationCreateRequest) (*proto.Response, error) {
+func (ds *NotificationServer) Delete(ctx context.Context, req *proto.NotificationCreateRequest) (*emptypb.Empty, error) {
 	input := req.GetNotificationEntry()
 
 	// Validate input arguments
-	userID, documentID, err := ds.checkInputsAndDocumentExistence(ctx, req.GetUserID(), input.GetDocumentID())
+	_, documentID, err := ds.checkInputsAndDocumentExistence(ctx, req.GetUserID(), input.GetDocumentID())
 	if err != nil {
 		return nil, err
 	}
@@ -69,16 +67,14 @@ func (ds *NotificationServer) Delete(ctx context.Context, req *proto.Notificatio
 		return nil, err
 	}
 
-	// return response
-	res := &proto.Response{Result: fmt.Sprintf("User '%s' deleted notification with id '%s' successfully!", userID, n.ID)}
-	return res, nil
+	return &emptypb.Empty{}, nil
 }
 
 func (ds *NotificationServer) GetAll(
 	ctx context.Context,
 	req *proto.NotificationsRequest,
 ) (*proto.ResponseNotificationsList, error) {
-	userID, documentID, err := ds.checkInputsAndDocumentExistence(ctx, req.GetUserID(), req.GetDocumentID())
+	_, documentID, err := ds.checkInputsAndDocumentExistence(ctx, req.GetUserID(), req.GetDocumentID())
 	if err != nil {
 		return nil, err
 	}
@@ -93,7 +89,6 @@ func (ds *NotificationServer) GetAll(
 
 	// return response
 	res := &proto.ResponseNotificationsList{
-		Result:        fmt.Sprintf("User '%s' found %d notifications successfully!", userID, len(notifications)),
 		Notifications: utils.ConvertNotificationsToProtoFormat(&notifications),
 	}
 	return res, nil
@@ -103,7 +98,7 @@ func (ds *NotificationServer) Count(
 	ctx context.Context,
 	req *proto.NotificationsCountRequest,
 ) (*proto.ResponseCount, error) {
-	userID, documentID, err := ds.checkInputsAndDocumentExistence(ctx, req.GetUserID(), req.GetDocumentID())
+	_, documentID, err := ds.checkInputsAndDocumentExistence(ctx, req.GetUserID(), req.GetDocumentID())
 	if err != nil {
 		return nil, err
 	}
@@ -114,8 +109,7 @@ func (ds *NotificationServer) Count(
 	}
 
 	res := &proto.ResponseCount{
-		Result: fmt.Sprintf("User '%s' received notifications count for document '%s'", userID, documentID),
-		Count:  count,
+		Count: count,
 	}
 	return res, nil
 }
@@ -135,8 +129,7 @@ func (ds *NotificationServer) CountAll(
 	}
 
 	res := &proto.ResponseCount{
-		Result: fmt.Sprintf("User '%s' received notifications count for document", userID),
-		Count:  count,
+		Count: count,
 	}
 	return res, nil
 }
@@ -158,7 +151,6 @@ func (ds *NotificationServer) GetAllForUser(
 
 	// return response
 	res := &proto.ResponseNotificationsList{
-		Result:        fmt.Sprintf("User '%s' found %d notifications successfully!", userID, len(notifications)),
 		Notifications: utils.ConvertNotificationsToProtoFormat(&notifications),
 	}
 	return res, nil

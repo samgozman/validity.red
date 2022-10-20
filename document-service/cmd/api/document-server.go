@@ -2,12 +2,12 @@ package main
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/google/uuid"
 	"github.com/samgozman/validity.red/document/internal/models/document"
 	"github.com/samgozman/validity.red/document/internal/utils"
 	proto "github.com/samgozman/validity.red/document/proto"
+	"google.golang.org/protobuf/types/known/emptypb"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
@@ -40,13 +40,12 @@ func (ds *DocumentServer) Create(ctx context.Context, req *proto.DocumentCreateR
 
 	// return response
 	res := &proto.ResponseDocumentCreate{
-		Result:     fmt.Sprintf("User '%s' created document '%s' successfully!", userID, d.ID),
 		DocumentId: d.ID.String(),
 	}
 	return res, nil
 }
 
-func (ds *DocumentServer) Edit(ctx context.Context, req *proto.DocumentCreateRequest) (*proto.Response, error) {
+func (ds *DocumentServer) Edit(ctx context.Context, req *proto.DocumentCreateRequest) (*emptypb.Empty, error) {
 	input := req.GetDocumentEntry()
 
 	// Decode values
@@ -74,12 +73,10 @@ func (ds *DocumentServer) Edit(ctx context.Context, req *proto.DocumentCreateReq
 		return nil, err
 	}
 
-	// return response
-	res := &proto.Response{Result: fmt.Sprintf("User '%s' edited document '%s' successfully!", userID, d.ID)}
-	return res, nil
+	return &emptypb.Empty{}, nil
 }
 
-func (ds *DocumentServer) Delete(ctx context.Context, req *proto.DocumentRequest) (*proto.Response, error) {
+func (ds *DocumentServer) Delete(ctx context.Context, req *proto.DocumentRequest) (*emptypb.Empty, error) {
 	// Decode values
 	id, err := uuid.Parse(req.GetDocumentID())
 	if err != nil {
@@ -101,9 +98,7 @@ func (ds *DocumentServer) Delete(ctx context.Context, req *proto.DocumentRequest
 		return nil, err
 	}
 
-	// return response
-	res := &proto.Response{Result: fmt.Sprintf("User '%s' deleted document '%s' successfully!", userID, id)}
-	return res, nil
+	return &emptypb.Empty{}, nil
 }
 
 func (ds *DocumentServer) GetOne(ctx context.Context, req *proto.DocumentRequest) (*proto.ResponseDocument, error) {
@@ -130,7 +125,6 @@ func (ds *DocumentServer) GetOne(ctx context.Context, req *proto.DocumentRequest
 
 	// return response
 	res := &proto.ResponseDocument{
-		Result: fmt.Sprintf("User '%s' found document '%s' successfully!", userID, d.ID),
 		Document: &proto.Document{
 			ID:          d.ID.String(),
 			UserID:      d.UserID.String(),
@@ -157,7 +151,6 @@ func (ds *DocumentServer) GetAll(ctx context.Context, req *proto.DocumentsReques
 
 	// return response
 	res := &proto.ResponseDocumentsList{
-		Result:    fmt.Sprintf("User '%s' found %d documents successfully!", userID, len(documents)),
 		Documents: utils.ConvertDocumentsToProtoFormat(&documents),
 	}
 	return res, nil
@@ -188,7 +181,6 @@ func (ds *DocumentServer) GetUserStatistics(
 	}
 
 	return &proto.ResponseDocumentsStatistics{
-		Result:          fmt.Sprintf("User '%s' get documents statistics successfully!", userID),
 		Total:           total,
 		Types:           types,
 		LatestDocuments: utils.ConvertDocumentsToProtoFormat(&latest),

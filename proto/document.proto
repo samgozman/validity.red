@@ -1,5 +1,5 @@
 syntax = "proto3";
-
+import "google/protobuf/empty.proto";
 import "google/protobuf/timestamp.proto";
 
 package document;
@@ -101,58 +101,47 @@ message NotificationsAllRequest {
 }
 
 message ResponseNotificationsList {
-	string result = 1;
-	repeated Notification notifications = 2;
-}
-
-message Response {
-	string result = 1;
+	repeated Notification notifications = 1;
 }
 
 message ResponseCount {
-	string result = 1;
-	int64 count = 2;
+	int64 count = 1;
 }
 
 message ResponseDocumentsStatistics {
-	string result = 1;
-	int64 total = 2;
-	repeated DocumentTypesCount types = 3;
-	repeated Document latestDocuments = 4;
+	int64 total = 1;
+	repeated DocumentTypesCount types = 2;
+	repeated Document latestDocuments = 3;
 }
 
 message ResponseDocument {
-	string result = 1;
-	Document document = 2;
+	Document document = 1;
 }
 
 message ResponseDocumentCreate {
-	string result = 1;
-	string documentId = 2;
+	string documentId = 1;
 }
 
 message ResponseDocumentsList {
-	string result = 1;
-	repeated Document documents = 2;
+	repeated Document documents = 1;
 }
 
 message ResponseNotifications {
-	string result = 1;
-	google.protobuf.Timestamp date = 2;
+	google.protobuf.Timestamp date = 1;
 }
 
 service DocumentService {
 	rpc Create(DocumentCreateRequest) returns (ResponseDocumentCreate);
-	rpc Edit(DocumentCreateRequest) returns (Response);
-	rpc Delete(DocumentRequest) returns (Response);
+	rpc Edit(DocumentCreateRequest) returns (google.protobuf.Empty);
+	rpc Delete(DocumentRequest) returns (google.protobuf.Empty);
 	rpc GetOne(DocumentRequest) returns (ResponseDocument);
 	rpc GetAll(DocumentsRequest) returns (ResponseDocumentsList);
 	rpc GetUserStatistics(DocumentsRequest) returns (ResponseDocumentsStatistics);
 }
 
 service NotificationService {
-	rpc Create(NotificationCreateRequest) returns (Response);
-	rpc Delete(NotificationCreateRequest) returns (Response);
+	rpc Create(NotificationCreateRequest) returns (google.protobuf.Empty);
+	rpc Delete(NotificationCreateRequest) returns (google.protobuf.Empty);
 	rpc GetAll(NotificationsRequest) returns (ResponseNotificationsList);
 	rpc Count(NotificationsCountRequest) returns (ResponseCount);
 	rpc CountAll(NotificationsAllRequest) returns (ResponseCount);

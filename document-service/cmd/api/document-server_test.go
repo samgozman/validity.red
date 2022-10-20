@@ -3,12 +3,12 @@ package main
 import (
 	"context"
 	"errors"
-	"fmt"
 	"reflect"
 	"testing"
 	"time"
 
 	proto "github.com/samgozman/validity.red/document/proto"
+	"google.golang.org/protobuf/types/known/emptypb"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
@@ -29,11 +29,6 @@ func TestDocumentServer_Create(t *testing.T) {
 	}
 
 	okRes := &proto.ResponseDocumentCreate{
-		Result: fmt.Sprintf(
-			"User '%s' created document '%s' successfully!",
-			okReq.DocumentEntry.UserID,
-			"00000000-0000-0000-0000-000000000000",
-		),
 		DocumentId: "00000000-0000-0000-0000-000000000000",
 	}
 
@@ -110,19 +105,11 @@ func TestDocumentServer_Edit(t *testing.T) {
 		},
 	}
 
-	okRes := &proto.Response{
-		Result: fmt.Sprintf(
-			"User '%s' edited document '%s' successfully!",
-			okReq.DocumentEntry.UserID,
-			okReq.DocumentEntry.ID,
-		),
-	}
-
 	tests := []struct {
 		name     string
 		fields   fields
 		args     args
-		want     *proto.Response
+		want     *emptypb.Empty
 		wantErr  bool
 		errorMsg error
 	}{
@@ -133,7 +120,7 @@ func TestDocumentServer_Edit(t *testing.T) {
 				ctx: context.Background(),
 				req: okReq,
 			},
-			want:    okRes,
+			want:    &emptypb.Empty{},
 			wantErr: false,
 		},
 		{
@@ -204,19 +191,11 @@ func TestDocumentServer_Delete(t *testing.T) {
 		UserID:     "458c9061-5262-48b7-9b87-e47fa64d654c",
 	}
 
-	okRes := &proto.Response{
-		Result: fmt.Sprintf(
-			"User '%s' deleted document '%s' successfully!",
-			okReq.UserID,
-			okReq.DocumentID,
-		),
-	}
-
 	tests := []struct {
 		name     string
 		fields   fields
 		args     args
-		want     *proto.Response
+		want     *emptypb.Empty
 		wantErr  bool
 		errorMsg error
 	}{
@@ -227,7 +206,7 @@ func TestDocumentServer_Delete(t *testing.T) {
 				ctx: context.Background(),
 				req: okReq,
 			},
-			want:    okRes,
+			want:    &emptypb.Empty{},
 			wantErr: false,
 		},
 		{
@@ -301,11 +280,6 @@ func TestDocumentServer_GetOne(t *testing.T) {
 	}
 
 	okRes := &proto.ResponseDocument{
-		Result: fmt.Sprintf(
-			"User '%s' found document '%s' successfully!",
-			okReq.UserID,
-			okReq.DocumentID,
-		),
 		Document: doc,
 	}
 
@@ -390,13 +364,7 @@ func TestDocumentServer_GetAll(t *testing.T) {
 		UserID: "458c9061-5262-48b7-9b87-e47fa64d654c",
 	}
 
-	okRes := &proto.ResponseDocumentsList{
-		Result: fmt.Sprintf(
-			"User '%s' found %d documents successfully!",
-			okReq.UserID,
-			0,
-		),
-	}
+	okRes := &proto.ResponseDocumentsList{}
 
 	tests := []struct {
 		name     string
@@ -465,12 +433,7 @@ func TestDocumentServer_GetUserStatistics(t *testing.T) {
 		UserID: "458c9061-5262-48b7-9b87-e47fa64d654c",
 	}
 
-	okRes := &proto.ResponseDocumentsStatistics{
-		Result: fmt.Sprintf(
-			"User '%s' get documents statistics successfully!",
-			okReq.UserID,
-		),
-	}
+	okRes := &proto.ResponseDocumentsStatistics{}
 
 	tests := []struct {
 		name     string
