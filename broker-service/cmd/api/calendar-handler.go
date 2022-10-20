@@ -29,9 +29,7 @@ func (app *Config) getCalendar(c *gin.Context) {
 	})
 	if err != nil {
 		log.Println("Error on calling GetAll method for getCalendar:", err)
-		payload.Error = true
-		payload.Message = err.Error()
-		c.JSON(http.StatusBadRequest, payload)
+		c.Error(err)
 		return
 	}
 
@@ -40,9 +38,7 @@ func (app *Config) getCalendar(c *gin.Context) {
 	})
 	if err != nil {
 		log.Println("Error on calling Notification.GetAllForUser method for getCalendar:", err)
-		payload.Error = true
-		payload.Message = err.Error()
-		c.JSON(http.StatusBadRequest, payload)
+		c.Error(err)
 		return
 	}
 
@@ -83,9 +79,8 @@ func (app *Config) getCalendarIcs(c *gin.Context) {
 		CalendarIV: ivResp.CalendarIv,
 	})
 	if err != nil {
-		// TODO: return 404 if not found
 		log.Println("Error on calling GetCalendar method for getCalendarIcs:", err)
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.Error(err)
 		return
 	}
 
@@ -99,6 +94,8 @@ func (app *Config) getCalendarIcs(c *gin.Context) {
 func (app *Config) updateIcsCalendar(userId string) {
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
+
+	// TODO: Send all errors from this route to Sentry
 
 	// 1. get user's calendar id
 	calendarIdResp, err := app.usersClient.userService.GetCalendarId(ctx, &user.GetCalendarIdRequest{

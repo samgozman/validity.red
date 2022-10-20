@@ -41,9 +41,7 @@ func (app *Config) documentCreate(c *gin.Context) {
 	var payload jsonResponse
 	documentPayload := DocumentCreate{}
 	if err := c.BindJSON(&documentPayload); err != nil {
-		payload.Error = true
-		payload.Message = "Invalid document payload."
-		c.AbortWithStatusJSON(http.StatusBadRequest, payload)
+		c.Error(ErrInvalidInputs)
 		return
 	}
 
@@ -59,10 +57,7 @@ func (app *Config) documentCreate(c *gin.Context) {
 	})
 	if err != nil {
 		log.Println("Error on calling document-service::Create method:", err)
-
-		payload.Error = true
-		payload.Message = err.Error()
-		c.JSON(http.StatusBadRequest, payload)
+		c.Error(err)
 		return
 	}
 
@@ -88,9 +83,7 @@ func (app *Config) documentEdit(c *gin.Context) {
 	var payload jsonResponse
 	documentPayload := DocumentEdit{}
 	if err := c.BindJSON(&documentPayload); err != nil {
-		payload.Error = true
-		payload.Message = "Invalid document payload."
-		c.AbortWithStatusJSON(http.StatusBadRequest, payload)
+		c.Error(ErrInvalidInputs)
 		return
 	}
 
@@ -107,11 +100,7 @@ func (app *Config) documentEdit(c *gin.Context) {
 	})
 	if err != nil {
 		log.Println("Error on calling document-service::Edit method:", err)
-
-		payload.Error = true
-		payload.Message = err.Error()
-
-		c.JSON(http.StatusBadRequest, payload)
+		c.Error(err)
 		return
 	}
 
@@ -135,9 +124,8 @@ func (app *Config) documentDelete(c *gin.Context) {
 		DocumentId string `uri:"documentId" binding:"required,uuid"`
 	}{}
 	if err := c.BindUri(&uri); err != nil {
-		payload.Error = true
-		payload.Message = "Invalid documentId."
-		c.AbortWithStatusJSON(http.StatusBadRequest, payload)
+		c.Error(ErrInvalidInputs)
+		return
 	}
 
 	// call service
@@ -147,11 +135,7 @@ func (app *Config) documentDelete(c *gin.Context) {
 	})
 	if err != nil {
 		log.Println("Error on calling document-service::Delete method:", err)
-
-		payload.Error = true
-		payload.Message = err.Error()
-
-		c.JSON(http.StatusBadRequest, payload)
+		c.Error(err)
 		return
 	}
 
@@ -175,9 +159,8 @@ func (app *Config) documentGetOne(c *gin.Context) {
 		DocumentId string `uri:"documentId" binding:"required,uuid"`
 	}{}
 	if err := c.BindUri(&uri); err != nil {
-		payload.Error = true
-		payload.Message = "Invalid documentId."
-		c.AbortWithStatusJSON(http.StatusBadRequest, payload)
+		c.Error(ErrInvalidInputs)
+		return
 	}
 
 	// call service
@@ -187,11 +170,7 @@ func (app *Config) documentGetOne(c *gin.Context) {
 	})
 	if err != nil {
 		log.Println("Error on calling document-service::GetOne method:", err)
-
-		payload.Error = true
-		payload.Message = err.Error()
-
-		c.JSON(http.StatusBadRequest, payload)
+		c.Error(err)
 		return
 	}
 
@@ -229,11 +208,7 @@ func (app *Config) documentGetAll(c *gin.Context) {
 	})
 	if err != nil {
 		log.Println("Error on calling document-service::GetAll method:", err)
-
-		payload.Error = true
-		payload.Message = err.Error()
-
-		c.JSON(http.StatusBadRequest, payload)
+		c.Error(err)
 		return
 	}
 
@@ -270,11 +245,7 @@ func (app *Config) documentGetStatistics(c *gin.Context) {
 	})
 	if err != nil {
 		log.Println("Error on calling document-service::GetUserStatistics method:", err)
-
-		payload.Error = true
-		payload.Message = err.Error()
-
-		c.JSON(http.StatusBadRequest, payload)
+		c.Error(err)
 		return
 	}
 
@@ -290,11 +261,7 @@ func (app *Config) documentGetStatistics(c *gin.Context) {
 	)
 	if err != nil {
 		log.Println("Error on calling document-service::notification::CountAll method:", err)
-
-		payload.Error = true
-		payload.Message = err.Error()
-
-		c.JSON(http.StatusBadRequest, payload)
+		c.Error(err)
 		return
 	}
 	statistics.TotalNotifications = totalNotificationsCount.Count

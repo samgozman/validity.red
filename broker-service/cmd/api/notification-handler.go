@@ -36,15 +36,12 @@ func (app *Config) documentNotificationCreate(c *gin.Context) {
 	userId, _ := c.Get("UserId")
 	// Validate inputs
 	if err := c.BindUri(&uri); err != nil {
-		payload.Error = true
-		payload.Message = "Invalid documentId."
-		c.AbortWithStatusJSON(http.StatusBadRequest, payload)
+		c.Error(ErrInvalidInputs)
+		return
 	}
 	notificationPayload := NotificationPayload{}
 	if err := c.BindJSON(&notificationPayload); err != nil {
-		payload.Error = true
-		payload.Message = "Invalid notification payload."
-		c.AbortWithStatusJSON(http.StatusBadRequest, payload)
+		c.Error(ErrInvalidInputs)
 		return
 	}
 
@@ -58,9 +55,7 @@ func (app *Config) documentNotificationCreate(c *gin.Context) {
 	})
 	if err != nil {
 		log.Println("Error on calling document-service::notification::Create method:", err)
-		payload.Error = true
-		payload.Message = err.Error()
-		c.JSON(http.StatusBadRequest, payload)
+		c.Error(err)
 		return
 	}
 
@@ -83,9 +78,8 @@ func (app *Config) documentNotificationDelete(c *gin.Context) {
 	userId, _ := c.Get("UserId")
 	// Validate inputs
 	if err := c.BindUri(&uri); err != nil {
-		payload.Error = true
-		payload.Message = "Invalid id's input."
-		c.AbortWithStatusJSON(http.StatusBadRequest, payload)
+		c.Error(ErrInvalidInputs)
+		return
 	}
 
 	// call service
@@ -98,9 +92,7 @@ func (app *Config) documentNotificationDelete(c *gin.Context) {
 	})
 	if err != nil {
 		log.Println("Error on calling document-service::notification::Delete method:", err)
-		payload.Error = true
-		payload.Message = err.Error()
-		c.JSON(http.StatusBadRequest, payload)
+		c.Error(err)
 		return
 	}
 
@@ -126,9 +118,8 @@ func (app *Config) documentNotificationGetAll(c *gin.Context) {
 	userId, _ := c.Get("UserId")
 	// Validate inputs
 	if err := c.BindUri(&uri); err != nil {
-		payload.Error = true
-		payload.Message = "Invalid documentId."
-		c.AbortWithStatusJSON(http.StatusBadRequest, payload)
+		c.Error(ErrInvalidInputs)
+		return
 	}
 
 	// call service
@@ -138,9 +129,7 @@ func (app *Config) documentNotificationGetAll(c *gin.Context) {
 	})
 	if err != nil {
 		log.Println("Error on calling document-service::notification::GetAll method:", err)
-		payload.Error = true
-		payload.Message = err.Error()
-		c.JSON(http.StatusBadRequest, payload)
+		c.Error(err)
 		return
 	}
 
