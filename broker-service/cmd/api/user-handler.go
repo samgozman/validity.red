@@ -21,7 +21,6 @@ func (app *Config) userRegister(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
 
-	var payload jsonResponse
 	requestPayload := AuthPayload{}
 	if err := c.BindJSON(&requestPayload); err != nil {
 		c.Error(ErrInvalidInputs)
@@ -29,7 +28,7 @@ func (app *Config) userRegister(c *gin.Context) {
 	}
 
 	// call service
-	res, err := app.usersClient.userService.Register(ctx, &user.RegisterRequest{
+	_, err := app.usersClient.userService.Register(ctx, &user.RegisterRequest{
 		RegisterEntry: &user.Register{
 			Email:    requestPayload.Email,
 			Password: requestPayload.Password,
@@ -43,10 +42,7 @@ func (app *Config) userRegister(c *gin.Context) {
 
 	// TODO: Send verification email
 
-	payload.Error = false
-	payload.Message = res.Result
-
-	c.JSON(http.StatusCreated, payload)
+	c.Status(http.StatusCreated)
 }
 
 // Call Login method on `user-service`
@@ -55,7 +51,6 @@ func (app *Config) userLogin(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
 
-	var payload jsonResponse
 	requestPayload := AuthPayload{}
 	if err := c.BindJSON(&requestPayload); err != nil {
 		c.Error(ErrInvalidInputs)
@@ -75,14 +70,6 @@ func (app *Config) userLogin(c *gin.Context) {
 		return
 	}
 
-	payload.Error = false
-	payload.Message = res.Result
-	payload.Data = struct {
-		CalendarId string `json:"calendarId"`
-	}{
-		CalendarId: res.CalendarId,
-	}
-
 	// Generate JWT token
 	token, err := app.token.Generate(res.UserId)
 	if err != nil {
@@ -93,16 +80,17 @@ func (app *Config) userLogin(c *gin.Context) {
 
 	// write jwt token
 	c.SetCookie("token", token, app.token.MaxAge, "/", "", false, false)
-
-	c.JSON(http.StatusAccepted, payload)
+	c.JSON(http.StatusAccepted, struct {
+		CalendarId string `json:"calendarId"`
+	}{
+		CalendarId: res.CalendarId,
+	})
 }
 
 // Refresh current user JWT token
 func (app *Config) userRefreshToken(c *gin.Context) {
 	// get token from context
 	tk, _ := c.Get("Token")
-
-	var payload jsonResponse
 
 	// Refresh JWT token
 	token, err := app.token.Refresh(tk.(string))
@@ -113,9 +101,5 @@ func (app *Config) userRefreshToken(c *gin.Context) {
 	}
 
 	c.SetCookie("token", token, app.token.MaxAge, "/", "", false, false)
-
-	payload.Error = false
-	payload.Message = "Token refreshed"
-
-	c.JSON(http.StatusAccepted, payload)
+	c.Status(http.StatusAccepted)
 }

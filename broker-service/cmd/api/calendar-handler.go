@@ -22,8 +22,6 @@ func (app *Config) getCalendar(c *gin.Context) {
 	// get userId from context
 	userId, _ := c.Get("UserId")
 
-	var payload jsonResponse
-
 	documents, err := app.documentsClient.documentService.GetAll(ctx, &document.DocumentsRequest{
 		UserID: userId.(string),
 	})
@@ -44,13 +42,11 @@ func (app *Config) getCalendar(c *gin.Context) {
 
 	calendarArr := createCalendar(documents.Documents, notifications.Notifications)
 
-	payload.Data = struct {
+	c.JSON(http.StatusOK, struct {
 		Calendar []*calendar.CalendarEntityJSON `json:"calendar"`
 	}{
 		Calendar: utils.ConvertCalendarToJSON(calendarArr),
-	}
-
-	c.JSON(http.StatusOK, payload)
+	})
 }
 
 func (app *Config) getCalendarIcs(c *gin.Context) {

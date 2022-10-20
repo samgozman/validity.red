@@ -26,8 +26,6 @@ func (app *Config) documentNotificationCreate(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
 
-	var payload jsonResponse
-
 	uri := struct {
 		DocumentId string `uri:"documentId" binding:"required,uuid"`
 	}{}
@@ -46,7 +44,7 @@ func (app *Config) documentNotificationCreate(c *gin.Context) {
 	}
 
 	// call service
-	res, err := app.documentsClient.notificationService.Create(ctx, &document.NotificationCreateRequest{
+	_, err := app.documentsClient.notificationService.Create(ctx, &document.NotificationCreateRequest{
 		NotificationEntry: &document.Notification{
 			DocumentID: uri.DocumentId,
 			Date:       timestamppb.New(notificationPayload.Date),
@@ -59,11 +57,8 @@ func (app *Config) documentNotificationCreate(c *gin.Context) {
 		return
 	}
 
-	payload.Error = false
-	payload.Message = res.Result
-
 	go app.updateIcsCalendar(userId.(string))
-	c.JSON(http.StatusCreated, payload)
+	c.Status(http.StatusCreated)
 }
 
 // Call Delete method on Notification in `document-service`
@@ -71,7 +66,6 @@ func (app *Config) documentNotificationDelete(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
 
-	var payload jsonResponse
 	uri := NotificationModifyPayload{}
 
 	// get userId from context
@@ -83,7 +77,7 @@ func (app *Config) documentNotificationDelete(c *gin.Context) {
 	}
 
 	// call service
-	res, err := app.documentsClient.notificationService.Delete(ctx, &document.NotificationCreateRequest{
+	_, err := app.documentsClient.notificationService.Delete(ctx, &document.NotificationCreateRequest{
 		NotificationEntry: &document.Notification{
 			ID:         uri.ID,
 			DocumentID: uri.DocumentId,
@@ -96,19 +90,14 @@ func (app *Config) documentNotificationDelete(c *gin.Context) {
 		return
 	}
 
-	payload.Error = false
-	payload.Message = res.Result
-
 	go app.updateIcsCalendar(userId.(string))
-	c.JSON(http.StatusOK, payload)
+	c.Status(http.StatusOK)
 }
 
 // Call GetAll method on Notification in `document-service`
 func (app *Config) documentNotificationGetAll(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
-
-	var payload jsonResponse
 
 	uri := struct {
 		DocumentId string `uri:"documentId" binding:"required,uuid"`
@@ -133,13 +122,9 @@ func (app *Config) documentNotificationGetAll(c *gin.Context) {
 		return
 	}
 
-	payload.Error = false
-	payload.Message = res.Result
-	payload.Data = struct {
+	c.JSON(http.StatusOK, struct {
 		Notifications []*document.NotificationJSON `json:"notifications"`
 	}{
 		Notifications: utils.ConvertNotificationsToJSON(res.Notifications),
-	}
-
-	c.JSON(http.StatusOK, payload)
+	})
 }

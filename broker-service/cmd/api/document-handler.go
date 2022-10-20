@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"log"
 	"net/http"
 	"time"
@@ -38,7 +37,6 @@ func (app *Config) documentCreate(c *gin.Context) {
 	// get userId from context
 	userId, _ := c.Get("UserId")
 
-	var payload jsonResponse
 	documentPayload := DocumentCreate{}
 	if err := c.BindJSON(&documentPayload); err != nil {
 		c.Error(ErrInvalidInputs)
@@ -61,15 +59,11 @@ func (app *Config) documentCreate(c *gin.Context) {
 		return
 	}
 
-	payload.Error = false
-	payload.Message = res.Result
-	payload.Data = struct {
+	c.JSON(http.StatusCreated, struct {
 		DocumentId string `json:"documentId"`
 	}{
 		DocumentId: res.DocumentId,
-	}
-
-	c.JSON(http.StatusCreated, payload)
+	})
 }
 
 // Call Edit method on `document-service`
@@ -80,7 +74,6 @@ func (app *Config) documentEdit(c *gin.Context) {
 	// get userId from context
 	userId, _ := c.Get("UserId")
 
-	var payload jsonResponse
 	documentPayload := DocumentEdit{}
 	if err := c.BindJSON(&documentPayload); err != nil {
 		c.Error(ErrInvalidInputs)
@@ -88,7 +81,7 @@ func (app *Config) documentEdit(c *gin.Context) {
 	}
 
 	// call service
-	res, err := app.documentsClient.documentService.Edit(ctx, &document.DocumentCreateRequest{
+	_, err := app.documentsClient.documentService.Edit(ctx, &document.DocumentCreateRequest{
 		DocumentEntry: &document.Document{
 			ID:          documentPayload.ID,
 			UserID:      userId.(string),
@@ -104,19 +97,14 @@ func (app *Config) documentEdit(c *gin.Context) {
 		return
 	}
 
-	payload.Error = false
-	payload.Message = res.Result
-
 	go app.updateIcsCalendar(userId.(string))
-	c.JSON(http.StatusCreated, payload)
+	c.Status(http.StatusCreated)
 }
 
 // Call Delete method on `document-service`
 func (app *Config) documentDelete(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
-
-	var payload jsonResponse
 
 	// get userId from context
 	userId, _ := c.Get("UserId")
@@ -129,7 +117,7 @@ func (app *Config) documentDelete(c *gin.Context) {
 	}
 
 	// call service
-	res, err := app.documentsClient.documentService.Delete(ctx, &document.DocumentRequest{
+	_, err := app.documentsClient.documentService.Delete(ctx, &document.DocumentRequest{
 		DocumentID: uri.DocumentId,
 		UserID:     userId.(string),
 	})
@@ -139,19 +127,14 @@ func (app *Config) documentDelete(c *gin.Context) {
 		return
 	}
 
-	payload.Error = false
-	payload.Message = res.Result
-
 	go app.updateIcsCalendar(userId.(string))
-	c.JSON(http.StatusOK, payload)
+	c.Status(http.StatusOK)
 }
 
 // Call GetOne method on `document-service`
 func (app *Config) documentGetOne(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
-
-	var payload jsonResponse
 
 	// get userId from context
 	userId, _ := c.Get("UserId")
@@ -174,9 +157,7 @@ func (app *Config) documentGetOne(c *gin.Context) {
 		return
 	}
 
-	payload.Error = false
-	payload.Message = res.Result
-	payload.Data = struct {
+	c.JSON(http.StatusOK, struct {
 		Document *document.DocumentJSON `json:"document"`
 	}{
 		Document: &document.DocumentJSON{
@@ -187,9 +168,7 @@ func (app *Config) documentGetOne(c *gin.Context) {
 			Description: res.Document.Description,
 			ExpiresAt:   utils.ParseProtobufDateToString(res.Document.ExpiresAt),
 		},
-	}
-
-	c.JSON(http.StatusOK, payload)
+	})
 }
 
 // Call GetAll method on `document-service`
@@ -199,8 +178,6 @@ func (app *Config) documentGetAll(c *gin.Context) {
 
 	// get userId from context
 	userId, _ := c.Get("UserId")
-
-	var payload jsonResponse
 
 	// call service
 	res, err := app.documentsClient.documentService.GetAll(ctx, &document.DocumentsRequest{
@@ -212,15 +189,11 @@ func (app *Config) documentGetAll(c *gin.Context) {
 		return
 	}
 
-	payload.Error = false
-	payload.Message = res.Result
-	payload.Data = struct {
+	c.JSON(http.StatusOK, struct {
 		Documents []*document.DocumentJSON `json:"documents"`
 	}{
 		Documents: utils.ConvertDocumentsToJSON(res.Documents),
-	}
-
-	c.JSON(http.StatusOK, payload)
+	})
 }
 
 // TODO: Cache this route
@@ -231,7 +204,6 @@ func (app *Config) documentGetStatistics(c *gin.Context) {
 	// get userId from context
 	userId, _ := c.Get("UserId")
 
-	var payload jsonResponse
 	var statistics struct {
 		TotalDocuments     int64                          `json:"totalDocuments"`
 		TotalNotifications int64                          `json:"totalNotifications"`
@@ -266,10 +238,5 @@ func (app *Config) documentGetStatistics(c *gin.Context) {
 	}
 	statistics.TotalNotifications = totalNotificationsCount.Count
 
-	msg := fmt.Sprintf("User '%s' successfully called documentGetStatistics method", userId.(string))
-	payload.Error = false
-	payload.Message = msg
-	payload.Data = statistics
-
-	c.JSON(http.StatusOK, payload)
+	c.JSON(http.StatusOK, statistics)
 }
