@@ -330,6 +330,7 @@ func (db *DocumentDB) FindLatest(ctx context.Context, userId uuid.UUID, limit in
 	// TODO: Specify attributes to fetch
 	res := db.Conn.
 		WithContext(ctx).
+		Select("id, type, title, expires_at, iv_title").
 		Model(&Document{}).
 		Where(&Document{UserID: userId}).
 		Order("expires_at ASC").
