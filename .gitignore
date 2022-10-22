@@ -1,5 +1,5 @@
 # Ignore binary files
-broker-service/brokerApp
+gateway-service/gatewayApp
 user-service/userApp
 logger-service/loggerApp
 document-service/documentApp
@@ -18,7 +18,7 @@ frontend-service/dist-ssr
 frontend-service/coverage
 
 # Ignore proto folder in services
-broker-service/proto
+gateway-service/proto
 user-service/proto
 logger-service/proto
 document-service/proto

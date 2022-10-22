@@ -1,4 +1,4 @@
-BROKER_BINARY=brokerApp
+GATEWAY_BINARY=gatewayApp
 USER_BINARY=userApp
 LOGGER_BINARY=loggerApp
 DOCUMENT_BINARY=documentApp
@@ -10,7 +10,7 @@ up:
 	@echo "Docker images started!"
 
 ## Build go binaries
-build: build_broker build_user build_document
+build: build_gateway build_user build_document
 
 ## stops docker-compose (if running), builds all projects and starts docker compose
 up_build: grpc_init_go grpc_init_rust build
@@ -28,19 +28,19 @@ down:
 
 # build proto files and copy them into Go services
 grpc_init_go:
-	@echo "Remove old broker-service/proto folder"
-	rm -r broker-service/proto || true
-	@echo "Create new broker-service/proto folders"
-	mkdir broker-service/proto broker-service/proto/user broker-service/proto/logs broker-service/proto/document broker-service/proto/calendar
+	@echo "Remove old gateway-service/proto folder"
+	rm -r gateway-service/proto || true
+	@echo "Create new gateway-service/proto folders"
+	mkdir gateway-service/proto gateway-service/proto/user gateway-service/proto/logs gateway-service/proto/document gateway-service/proto/calendar
 	@echo "Starting proto files generation for Go..."
 	protoc --go_out=./user-service --go_opt=paths=source_relative --go-grpc_out=./user-service --go-grpc_opt=paths=source_relative proto/user.proto
 	protoc --go_out=./document-service --go_opt=paths=source_relative --go-grpc_out=./document-service --go-grpc_opt=paths=source_relative proto/document.proto
-	protoc --go_out=./broker-service --go_opt=paths=source_relative --go-grpc_out=./broker-service --go-grpc_opt=paths=source_relative proto/calendar.proto
-	@echo "Copy pregenerated Go proto files into broker-service"
-	cp user-service/proto/* broker-service/proto/user
-	cp document-service/proto/* broker-service/proto/document
+	protoc --go_out=./gateway-service --go_opt=paths=source_relative --go-grpc_out=./gateway-service --go-grpc_opt=paths=source_relative proto/calendar.proto
+	@echo "Copy pregenerated Go proto files into gateway-service"
+	cp user-service/proto/* gateway-service/proto/user
+	cp document-service/proto/* gateway-service/proto/document
 	@echo "Move calendar files from default folder into nested"
-	mv broker-service/proto/calendar*.go broker-service/proto/calendar
+	mv gateway-service/proto/calendar*.go gateway-service/proto/calendar
 	@echo "Done!"
 
 # To init grpc for rust services we need to copy proto files into rust services
@@ -57,10 +57,10 @@ grpc_init_rust:
 lint_rust:
 	rustfmt calendar-service/src/*.rs --edition 2021
 
-## builds the broker binary as a linux executable
-build_broker:
+## builds the gateway binary as a linux executable
+build_gateway:
 	@echo "Building broker binary..."
-	cd ./broker-service && env GOOS=linux CGO_ENABLED=0 go build -o ${BROKER_BINARY} ./cmd/api
+	cd ./gateway-service && env GOOS=linux CGO_ENABLED=0 go build -o ${GATEWAY_BINARY} ./cmd/api
 	@echo "Done!"
 
 ## builds the user binary as a linux executable

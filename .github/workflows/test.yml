@@ -44,6 +44,6 @@ jobs:
       working-directory: ./user-service
       run: go test -v ./...
 
-    - name: Test broker-service
-      working-directory: ./broker-service
+    - name: Test gateway-service
+      working-directory: ./gateway-service
       run: go test -v ./...

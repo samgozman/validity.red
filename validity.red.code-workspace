@@ -1,7 +1,7 @@
 {
 	"folders": [
 		{
-			"path": "broker-service"
+			"path": "gateway-service"
 		},
 		{
 			"path": "user-service"

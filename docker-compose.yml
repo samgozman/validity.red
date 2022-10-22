@@ -1,10 +1,10 @@
 version: '3.8'
 
 services:
-  broker-service:
+  gateway-service:
     build:
-      context: ./broker-service
-      dockerfile: broker-service.Dockerfile
+      context: ./gateway-service
+      dockerfile: gateway-service.Dockerfile
     restart: always
     ports:
       - "8080:80"

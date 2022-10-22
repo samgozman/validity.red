@@ -73,7 +73,7 @@ func (app *Config) userLogin(c *gin.Context) {
 	// Generate JWT token
 	token, err := app.token.Generate(res.UserId)
 	if err != nil {
-		log.Println("Error on calling broker-service::token::Generate method:", err)
+		log.Println("Error on calling gateway-service::token::Generate method:", err)
 		c.Error(err)
 		return
 	}
@@ -95,7 +95,7 @@ func (app *Config) userRefreshToken(c *gin.Context) {
 	// Refresh JWT token
 	token, err := app.token.Refresh(tk.(string))
 	if err != nil {
-		log.Println("Error on calling broker-service::token::Refresh method:", err)
+		log.Println("Error on calling gateway-service::token::Refresh method:", err)
 		c.Error(ErrUnauthorized)
 		return
 	}
