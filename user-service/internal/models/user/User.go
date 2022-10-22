@@ -118,6 +118,11 @@ func (u *PostgresRepository) InsertOne(ctx context.Context, user *User) error {
 			errors.Is(res.Error, gorm.ErrInvalidValueOfLength) {
 			return status.Error(codes.InvalidArgument, "invalid user data")
 		}
+
+		if strings.Contains(res.Error.Error(), "SQLSTATE 23505") {
+			return status.Error(codes.AlreadyExists, "user is already exists")
+		}
+
 		return status.Error(codes.Internal, res.Error.Error())
 	}
 
