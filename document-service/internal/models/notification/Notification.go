@@ -2,6 +2,7 @@ package notification
 
 import (
 	"context"
+	"errors"
 	"time"
 
 	"github.com/google/uuid"
@@ -68,6 +69,11 @@ func (n *Notification) BeforeCreate(tx *gorm.DB) error {
 func (db *NotificationDB) InsertOne(ctx context.Context, n *Notification) error {
 	res := db.Conn.WithContext(ctx).Create(&n)
 	if res.Error != nil {
+		if errors.Is(res.Error, gorm.ErrInvalidData) ||
+			errors.Is(res.Error, gorm.ErrInvalidValue) ||
+			errors.Is(res.Error, gorm.ErrInvalidValueOfLength) {
+			return status.Error(codes.InvalidArgument, "invalid notification data")
+		}
 		return status.Error(codes.Internal, res.Error.Error())
 	}
 

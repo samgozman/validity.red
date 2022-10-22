@@ -2,6 +2,7 @@ package document
 
 import (
 	"context"
+	"errors"
 	"os"
 	"regexp"
 	"strings"
@@ -168,6 +169,11 @@ func (d *Document) AfterFind(tx *gorm.DB) error {
 func (db *DocumentDB) InsertOne(ctx context.Context, d *Document) error {
 	res := db.Conn.WithContext(ctx).Create(&d)
 	if res.Error != nil {
+		if errors.Is(res.Error, gorm.ErrInvalidData) ||
+			errors.Is(res.Error, gorm.ErrInvalidValue) ||
+			errors.Is(res.Error, gorm.ErrInvalidValueOfLength) {
+			return status.Error(codes.InvalidArgument, "invalid document data")
+		}
 		return status.Error(codes.Internal, res.Error.Error())
 	}
 
@@ -186,6 +192,11 @@ func (db *DocumentDB) UpdateOne(ctx context.Context, d *Document) error {
 		})
 
 	if res.Error != nil {
+		if errors.Is(res.Error, gorm.ErrInvalidData) ||
+			errors.Is(res.Error, gorm.ErrInvalidValue) ||
+			errors.Is(res.Error, gorm.ErrInvalidValueOfLength) {
+			return status.Error(codes.InvalidArgument, "invalid document data")
+		}
 		return status.Error(codes.Internal, res.Error.Error())
 	}
 
@@ -227,11 +238,10 @@ func (db *DocumentDB) FindOne(ctx context.Context, d *Document) error {
 		First(&d)
 
 	if res.Error != nil {
+		if errors.Is(res.Error, gorm.ErrRecordNotFound) {
+			return status.Error(codes.NotFound, "document not found")
+		}
 		return status.Error(codes.Internal, res.Error.Error())
-	}
-
-	if res.RowsAffected == 0 {
-		return status.Error(codes.NotFound, "document not found")
 	}
 
 	return nil
@@ -251,6 +261,9 @@ func (db *DocumentDB) Exists(ctx context.Context, d *Document) (bool, error) {
 		).
 		Scan(&exist)
 	if res.Error != nil {
+		if errors.Is(res.Error, gorm.ErrRecordNotFound) {
+			return false, status.Error(codes.NotFound, "document not found")
+		}
 		return false, status.Error(codes.Internal, res.Error.Error())
 	}
 
@@ -269,11 +282,6 @@ func (db *DocumentDB) FindAll(ctx context.Context, userId uuid.UUID) ([]Document
 
 	if res.Error != nil {
 		return nil, status.Error(codes.Internal, res.Error.Error())
-	}
-
-	// TODO: Remove this error, just return an empty array
-	if res.RowsAffected == 0 {
-		return nil, status.Error(codes.NotFound, "documents not found")
 	}
 
 	return documents, nil
@@ -329,6 +337,9 @@ func (db *DocumentDB) FindLatest(ctx context.Context, userId uuid.UUID, limit in
 		Find(&documents)
 
 	if res.Error != nil {
+		if errors.Is(res.Error, gorm.ErrRecordNotFound) {
+			return nil, status.Error(codes.NotFound, "document not found")
+		}
 		return nil, status.Error(codes.Internal, res.Error.Error())
 	}
 

@@ -3,6 +3,7 @@ package user
 import (
 	"context"
 	"crypto/rand"
+	"errors"
 	"html"
 	"math/big"
 	"strings"
@@ -112,6 +113,11 @@ func (user *User) BeforeSave(tx *gorm.DB) error {
 func (u *PostgresRepository) InsertOne(ctx context.Context, user *User) error {
 	res := u.Conn.Table("users").Create(&user).WithContext(ctx)
 	if res.Error != nil {
+		if errors.Is(res.Error, gorm.ErrInvalidData) ||
+			errors.Is(res.Error, gorm.ErrInvalidValue) ||
+			errors.Is(res.Error, gorm.ErrInvalidValueOfLength) {
+			return status.Error(codes.InvalidArgument, "invalid user data")
+		}
 		return status.Error(codes.Internal, res.Error.Error())
 	}
 
@@ -123,6 +129,9 @@ func (u *PostgresRepository) FindOneByEmail(ctx context.Context, email string) (
 	user := &User{}
 	res := u.Conn.Table("users").First(&user, "email = ?", email).WithContext(ctx)
 	if res.Error != nil {
+		if errors.Is(res.Error, gorm.ErrRecordNotFound) {
+			return nil, status.Error(codes.NotFound, "user not found")
+		}
 		return nil, status.Error(codes.Internal, res.Error.Error())
 	}
 
@@ -137,10 +146,10 @@ func (u *PostgresRepository) GetCalendarId(ctx context.Context, userId string) (
 		First(&user, "id = ?", userId).
 		WithContext(ctx)
 	if res.Error != nil {
+		if errors.Is(res.Error, gorm.ErrRecordNotFound) {
+			return nil, status.Error(codes.NotFound, "user not found")
+		}
 		return nil, status.Error(codes.Internal, res.Error.Error())
-	}
-	if res.RowsAffected == 0 {
-		return nil, status.Error(codes.NotFound, "user not found")
 	}
 
 	return user, nil
@@ -155,10 +164,10 @@ func (u *PostgresRepository) GetCalendarIv(ctx context.Context, calendarId strin
 		First(&data, "calendar_id = ?", calendarId).
 		WithContext(ctx)
 	if res.Error != nil {
+		if errors.Is(res.Error, gorm.ErrRecordNotFound) {
+			return nil, status.Error(codes.NotFound, "user not found")
+		}
 		return nil, status.Error(codes.Internal, res.Error.Error())
-	}
-	if res.RowsAffected == 0 {
-		return nil, status.Error(codes.NotFound, "user not found")
 	}
 
 	return data.IV_Calendar, nil
@@ -171,6 +180,11 @@ func (u *PostgresRepository) Update(ctx context.Context, userId string, fields m
 		Where("id = ?", userId).
 		Updates(fields)
 	if res.Error != nil {
+		if errors.Is(res.Error, gorm.ErrInvalidData) ||
+			errors.Is(res.Error, gorm.ErrInvalidValue) ||
+			errors.Is(res.Error, gorm.ErrInvalidValueOfLength) {
+			return status.Error(codes.InvalidArgument, "invalid user data")
+		}
 		return status.Error(codes.Internal, res.Error.Error())
 	}
 	if res.RowsAffected == 0 {
