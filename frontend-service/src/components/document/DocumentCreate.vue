@@ -137,14 +137,17 @@ export default defineComponent({
       }
       return false;
     },
-    isExpired(dateString: string) {
+    isValidDate(dateString: string) {
       const parsed = Date.parse(dateString);
       if (isNaN(parsed)) {
         this.error = true;
         this.errorMsg = "Invalid date. Please use the format YYYY-MM-DD";
         return true;
       }
-      if (new Date(parsed) < new Date()) {
+      return false;
+    },
+    isExpired(date: Date) {
+      if (date < new Date()) {
         this.error = true;
         this.errorMsg = "Expiration date is in the past!";
         return false;
@@ -180,7 +183,7 @@ export default defineComponent({
           return;
         if (this.isEmpty(this.expiresAt, "Expiration date is required!"))
           return;
-        if (this.isExpired(this.expiresAt)) return;
+        if (this.isValidDate(this.expiresAt)) return;
 
         const expirationDate = new Date(Date.parse(this.expiresAt));
         const typeIndex = [...this.typeOptions.values()]
@@ -189,6 +192,8 @@ export default defineComponent({
         this.documentTypeId = typeIndex === -1 ? 0 : typeIndex;
 
         if (!this.isEditMode) {
+          if (this.isExpired(expirationDate)) return;
+
           // 2. Create document and get its id
           await this.createDocument(expirationDate);
           // 3. Create default notification if needed
