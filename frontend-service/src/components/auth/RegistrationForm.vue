@@ -22,7 +22,7 @@ import InputLabel from "../elements/InputLabel.vue";
         class="input input-bordered"
       />
     </div>
-    <div v-show="error" class="badge badge-error badge-outline w-full">
+    <div v-show="errorMsg" class="badge badge-error badge-outline w-full">
       {{ errorMsg }}
     </div>
     <div class="form-control mt-6">
@@ -44,13 +44,13 @@ import InputLabel from "../elements/InputLabel.vue";
 <script lang="ts">
 import { defineComponent } from "vue";
 import { AuthService } from "./AuthService";
+import { ErrorDecoder } from "@/services/ErrorDecoder";
 
 export default defineComponent({
   data() {
     return {
       email: "",
       password: "",
-      error: false,
       errorMsg: "",
       showForm: true,
     };
@@ -68,9 +68,7 @@ export default defineComponent({
           this.$router.push("/");
         }, 7000);
       } catch (error) {
-        this.error = true;
-        this.errorMsg = "An error occurred, please try again";
-        // TODO: Push error to Sentry
+        this.errorMsg = await ErrorDecoder.decode(error);
       }
     },
   },

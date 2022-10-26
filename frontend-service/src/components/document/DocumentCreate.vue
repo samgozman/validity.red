@@ -88,7 +88,7 @@
             </label>
           </div>
           <button class="btn btn-primary" type="submit">Save</button>
-          <div v-show="error" class="badge badge-error badge-outline w-full">
+          <div v-show="errorMsg" class="badge badge-error badge-outline w-full">
             {{ errorMsg }}
           </div>
         </div>
@@ -102,6 +102,7 @@ import { defineComponent } from "vue";
 import { DocumentService } from "./DocumentService";
 import { NotificationService } from "./NotificationService";
 import { DocumentType } from "./DocumentType";
+import { ErrorDecoder } from "@/services/ErrorDecoder";
 
 export default defineComponent({
   data() {
@@ -116,14 +117,12 @@ export default defineComponent({
       documentTypeId: 0,
       isEditMode: false,
       documentId: "",
-      error: false,
       errorMsg: "",
     };
   },
   methods: {
     isEmpty(str: string, msg: string): boolean {
       if (str === "") {
-        this.error = true;
         this.errorMsg = msg;
         return true;
       }
@@ -131,7 +130,6 @@ export default defineComponent({
     },
     isLonger(str: string, len: number, msg: string) {
       if (str.length > len) {
-        this.error = true;
         this.errorMsg = msg;
         return true;
       }
@@ -140,7 +138,6 @@ export default defineComponent({
     isValidDate(dateString: string) {
       const parsed = Date.parse(dateString);
       if (isNaN(parsed)) {
-        this.error = true;
         this.errorMsg = "Invalid date. Please use the format YYYY-MM-DD";
         return true;
       }
@@ -148,7 +145,6 @@ export default defineComponent({
     },
     isExpired(date: Date) {
       if (date < new Date()) {
-        this.error = true;
         this.errorMsg = "Expiration date is in the past!";
         return false;
       }
@@ -173,7 +169,6 @@ export default defineComponent({
     async submit() {
       try {
         // 0. Clear the error message
-        this.error = false;
         this.errorMsg = "";
 
         // 1. Validate form inputs
@@ -214,9 +209,7 @@ export default defineComponent({
           params: { id: this.documentId },
         });
       } catch (error) {
-        this.error = true;
-        this.errorMsg = "An error occurred, please try again";
-        // TODO: Push error to Sentry
+        this.errorMsg = await ErrorDecoder.decode(error);
       }
     },
   },
@@ -238,9 +231,7 @@ export default defineComponent({
           .toISOString()
           .split("T")[0];
       } catch (error) {
-        this.error = true;
-        this.errorMsg = "An error occurred, please try again";
-        // TODO: Push error to Sentry
+        this.errorMsg = await ErrorDecoder.decode(error);
       }
     }
   },

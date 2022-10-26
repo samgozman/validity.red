@@ -59,7 +59,7 @@ defineProps<{
           <ion-icon name="add-outline" class="text-xl"></ion-icon>
         </button>
       </div>
-      <div v-show="error" class="badge badge-error badge-outline w-full">
+      <div v-show="errorMsg" class="badge badge-error badge-outline w-full">
         {{ errorMsg }}
       </div>
     </div>
@@ -69,6 +69,7 @@ defineProps<{
 <script lang="ts">
 import { defineComponent } from "vue";
 import { NotificationService } from "./NotificationService";
+import { ErrorDecoder } from "@/services/ErrorDecoder";
 
 export default defineComponent({
   data() {
@@ -78,7 +79,6 @@ export default defineComponent({
       minDate: new Date().toISOString().split("T")[0],
       inputDate: "",
       inputTime: "",
-      error: false,
       errorMsg: "",
     };
   },
@@ -87,26 +87,26 @@ export default defineComponent({
       this.$emit("refreshNotificationsEvent");
     },
     async submit() {
-      this.error = false;
       this.errorMsg = "";
 
       // TODO: Is timezone correct?
       const fullDate = new Date(`${this.inputDate}T${this.inputTime}:00`);
       if (isNaN(fullDate.getTime())) {
-        this.error = true;
         this.errorMsg = "Invalid date.";
         return;
       }
       if (new Date(fullDate) < new Date()) {
-        this.error = true;
         this.errorMsg = "Notification date is in the past!";
         return false;
       }
-
-      await NotificationService.createOne({
-        date: new Date(fullDate),
-        documentId: this.documentId,
-      });
+      try {
+        await NotificationService.createOne({
+          date: new Date(fullDate),
+          documentId: this.documentId,
+        });
+      } catch (error) {
+        this.errorMsg = await ErrorDecoder.decode(error);
+      }
 
       this.closeFromClicked();
       this.$emit("refreshNotificationsEvent");

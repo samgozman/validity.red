@@ -7,6 +7,9 @@ import ExpirationCard from "./ExpirationCard.vue";
 
 <template>
   <DocumentBreadcrumbs :title="document.title || ''" class="lg:px-10 pt-7" />
+  <div v-show="errorMsg" class="badge badge-error badge-outline w-full">
+    Error: {{ errorMsg }}
+  </div>
   <div
     class="grid grid-cols-1 gap-6 py-5 lg:px-10 xl:grid-cols-3 lg:bg-base-200 rounded-box"
   >
@@ -33,11 +36,13 @@ import { DocumentService } from "./DocumentService";
 import { NotificationService } from "./NotificationService";
 import type { IDocument } from "./interfaces/IDocument";
 import type { INotification } from "./interfaces/INotification";
+import { ErrorDecoder } from "@/services/ErrorDecoder";
 
 interface VueData {
   document: IDocument;
   notifications: INotification[];
   documentId: string;
+  errorMsg: string;
 }
 
 export default defineComponent({
@@ -47,22 +52,23 @@ export default defineComponent({
       notifications: [],
       documentId:
         typeof this.$route.params.id === "string" ? this.$route.params.id : "",
+      errorMsg: "",
     };
   },
   methods: {
     async fetchDocument() {
       try {
+        this.errorMsg = "";
         this.document = await DocumentService.getOne(this.documentId);
       } catch (error) {
-        // TODO: Push error to Sentry
-        // TODO: Navigate to 404 page
+        this.errorMsg = await ErrorDecoder.decode(error);
       }
     },
     async fetchNotifications() {
       try {
         this.notifications = await NotificationService.getAll(this.documentId);
       } catch (error) {
-        // TODO: Push error to Sentry
+        this.errorMsg = await ErrorDecoder.decode(error);
       }
     },
   },

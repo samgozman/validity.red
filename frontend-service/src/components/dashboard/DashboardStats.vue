@@ -10,7 +10,12 @@ import CalendarMonth from "@/components/calendar/CalendarMonth.vue";
     class="card col-span-full row-span-1 shadow-lg compact bg-base-100"
   >
     <div class="flex-col sm:flex-row items-center card-body">
-      <p>Export Validity.Red data to sync with your calendar app</p>
+      <p v-show="!errorMsgIcs">
+        Export Validity.Red data to sync with your calendar app
+      </p>
+      <span v-show="errorMsgIcs" class="badge badge-error badge-outline w-full">
+        Error: {{ errorMsgIcs }}
+      </span>
       <button @click.prevent="getIcs" href="#" class="btn btn-primary btn-sm">
         Export calendar
       </button>
@@ -80,7 +85,10 @@ import CalendarMonth from "@/components/calendar/CalendarMonth.vue";
   </div>
   <div class="card col-span-3 row-span-1 shadow-lg compact bg-base-100">
     <div class="flex-col sm:flex-row items-center card-body">
-      <p>App version and link to changelog</p>
+      <p v-show="!errorMsg">App version and link to changelog</p>
+      <span v-show="errorMsg" class="badge badge-error badge-outline w-full">
+        Error: {{ errorMsg }}
+      </span>
     </div>
   </div>
 </template>
@@ -89,13 +97,14 @@ import CalendarMonth from "@/components/calendar/CalendarMonth.vue";
 import { defineComponent } from "vue";
 import { DashboardService } from "./DashboardService";
 import type { IDashboardStats } from "./interfaces/IDashboardStats";
+import { ErrorDecoder } from "@/services/ErrorDecoder";
 
 interface VueData {
   stats: IDashboardStats;
   avgNotifications: number;
   calendarId: string | null;
-  error: boolean;
   errorMsg: string;
+  errorMsgIcs: string;
 }
 
 export default defineComponent({
@@ -104,23 +113,23 @@ export default defineComponent({
       stats: {} as IDashboardStats,
       avgNotifications: 0,
       calendarId: localStorage.getItem("calendarId"),
-      error: false,
       errorMsg: "",
+      errorMsgIcs: "",
     };
   },
   methods: {
     async refresh() {
+      this.errorMsg = "";
       try {
         this.stats = await DashboardService.getStats();
         this.avgNotifications =
           this.stats.totalNotifications / this.stats.totalDocuments || 0;
       } catch (error) {
-        this.error = true;
-        this.errorMsg = "An error occurred, please try again";
-        // TODO: Push error to Sentry
+        this.errorMsg = await ErrorDecoder.decode(error);
       }
     },
     async getIcs() {
+      this.errorMsgIcs = "";
       try {
         const data = await DashboardService.getIcsFile(this.calendarId || "");
         // For some reason, the blob storage is not working properly
@@ -138,9 +147,7 @@ export default defineComponent({
         // And there for not trying to open the file in the calendar app. (and may not work on mobile)
         // So to fix this, we need to find a way to use a file server instead or proxy the original request link.
       } catch (error) {
-        this.error = true;
-        this.errorMsg = "An error occurred, please try again";
-        // TODO: Push error to Sentry
+        this.errorMsgIcs = await ErrorDecoder.decode(error);
       }
     },
   },

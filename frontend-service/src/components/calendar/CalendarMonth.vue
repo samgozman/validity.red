@@ -17,8 +17,11 @@ import CalendarDay from "./CalendarDay.vue";
             <ion-icon name="chevron-forward-outline"></ion-icon>
           </button>
         </div>
-        <h2 class="ml-2 text-xl font-bold leading-none">
+        <h2 v-show="!errorMsg" class="ml-2 text-xl font-bold leading-none">
           {{ currentDateString }}
+        </h2>
+        <h2 v-show="errorMsg" class="badge badge-error badge-outline w-full">
+          Error: {{ errorMsg }}
         </h2>
       </div>
       <!-- Day of the week columns -->
@@ -52,6 +55,7 @@ import CalendarDay from "./CalendarDay.vue";
 import { defineComponent } from "vue";
 import type { ICalendarNotification } from "./interfaces/ICalendarNotification";
 import { CalendarService } from "./CalendarService";
+import { ErrorDecoder } from "@/services/ErrorDecoder";
 
 export default defineComponent({
   data() {
@@ -60,14 +64,13 @@ export default defineComponent({
       currentFirstDayOfWeek: 0,
       currentDate: new Date(),
       currentDateString: "",
-      error: false,
       errorMsg: "",
     };
   },
   methods: {
     async refresh() {
       this.setCurrentDateString(this.currentDate);
-
+      this.errorMsg = "";
       try {
         const usersCalendar = await CalendarService.getCalendar();
 
@@ -76,9 +79,7 @@ export default defineComponent({
           usersCalendar
         );
       } catch (error) {
-        this.error = true;
-        this.errorMsg = "An error occurred, please try again";
-        // TODO: Push error to Sentry
+        this.errorMsg = await ErrorDecoder.decode(error);
       }
     },
     prevMonth() {

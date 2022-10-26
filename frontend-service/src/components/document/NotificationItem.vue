@@ -17,7 +17,8 @@ defineProps<{
     <div
       class="grid w-full h-10 rounded bg-primary text-primary-content place-content-center my-1"
     >
-      {{ dateWithTZ }}
+      <p v-if="!errorMsg">{{ dateWithTZ }}</p>
+      <p v-if="errorMsg">Error: {{ errorMsg }}</p>
     </div>
     <ModalConfirmation
       :modalId="deleteModalId"
@@ -31,6 +32,7 @@ defineProps<{
 <script lang="ts">
 import { defineComponent } from "vue";
 import { NotificationService } from "./NotificationService";
+import { ErrorDecoder } from "@/services/ErrorDecoder";
 
 export default defineComponent({
   data() {
@@ -40,6 +42,7 @@ export default defineComponent({
       }),
       deleteAnchor: "",
       deleteModalId: "",
+      errorMsg: "",
     };
   },
   methods: {
@@ -48,6 +51,7 @@ export default defineComponent({
       this.deleteModalId = `delete-${this.notification.ID}`;
     },
     async deleteNotification() {
+      this.errorMsg = "";
       try {
         await NotificationService.deleteOne({
           id: this.notification.ID,
@@ -56,9 +60,7 @@ export default defineComponent({
         // push?
         this.$emit("refreshNotificationsEvent");
       } catch (error) {
-        // TODO: push error to errors handler (display errors it in the UI)
-        console.error("An error occurred, please try again", error);
-        // TODO: Push error to Sentry
+        this.errorMsg = await ErrorDecoder.decode(error);
       }
     },
   },

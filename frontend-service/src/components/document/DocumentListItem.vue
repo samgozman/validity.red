@@ -27,6 +27,9 @@ defineProps<{
         <p class="text-base-content text-opacity-80">
           {{ document.description }}
         </p>
+        <p v-show="errorMsg" class="badge badge-error badge-outline w-full">
+          Error: {{ errorMsg }}
+        </p>
         <p class="text-base-content text-opacity-40">
           {{ document.expiresAt }}
         </p>
@@ -49,6 +52,7 @@ defineProps<{
 <script lang="ts">
 import { defineComponent } from "vue";
 import { DocumentService } from "./DocumentService";
+import { ErrorDecoder } from "@/services/ErrorDecoder";
 
 export default defineComponent({
   data() {
@@ -57,6 +61,7 @@ export default defineComponent({
       deleteAnchor: "",
       deleteModalId: "",
       documentLink: "",
+      errorMsg: "",
     };
   },
   methods: {
@@ -66,14 +71,13 @@ export default defineComponent({
       this.documentLink = `documents/${this.document.ID}`;
     },
     async deleteDocument() {
+      this.errorMsg = "";
       try {
         await DocumentService.deleteOne(this.document.ID);
         this.$router.push("/documents");
         this.$emit("refreshDocumentsEvent");
       } catch (error) {
-        // TODO: push error to errors handler (display errors it in the UI)
-        console.error("An error occurred, please try again", error);
-        // TODO: Push error to Sentry
+        this.errorMsg = await ErrorDecoder.decode(error);
       }
     },
   },

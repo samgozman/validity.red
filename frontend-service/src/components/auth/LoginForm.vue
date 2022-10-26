@@ -26,7 +26,7 @@ import InputLabel from "../elements/InputLabel.vue";
         <a href="#" class="label-text-alt link link-hover">Forgot password?</a>
       </label>
     </div>
-    <div v-show="error" class="badge badge-error badge-outline w-full">
+    <div v-show="errorMsg" class="badge badge-error badge-outline w-full">
       {{ errorMsg }}
     </div>
     <div class="form-control mt-6">
@@ -46,13 +46,13 @@ import InputLabel from "../elements/InputLabel.vue";
 <script lang="ts">
 import { defineComponent } from "vue";
 import { AuthService } from "./AuthService";
+import { ErrorDecoder } from "@/services/ErrorDecoder";
 
 export default defineComponent({
   data() {
     return {
       email: "",
       password: "",
-      error: false,
       errorMsg: "",
     };
   },
@@ -67,9 +67,7 @@ export default defineComponent({
         // window.localStorage.setItem("userData", JSON.stringify(user));
         this.$router.push("/");
       } catch (error) {
-        this.error = true;
-        this.errorMsg = "An error occurred, please try again";
-        // TODO: Push error to Sentry
+        this.errorMsg = await ErrorDecoder.decode(error);
       }
     },
   },
