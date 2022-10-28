@@ -60,6 +60,12 @@ const router = createRouter({
       name: "about",
       component: AboutView,
     },
+    // Should be the last route
+    {
+      path: "/:pathMatch(.*)",
+      name: "not-found",
+      component: () => import("@/views/NotFoundView.vue"),
+    },
   ],
 });
 
