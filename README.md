@@ -4,7 +4,7 @@
 
 ```mermaid
 graph TB
-    A(frontend-service: TS, Vue) === |REST| B((gateway-service))
+    A(frontend-service: TS, Vue) === |REST| B((gateway-service: Go))
     B --- |gRPC| C(user-service: Go) --- F[(Postgres)]
     B --- |gRPC| D(document-service: Go) --- G[(Postgres)]
     B --- |gRPC| E(calendar-service: Rust)
