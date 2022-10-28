@@ -34,6 +34,9 @@ defineProps<{
         >
         <a :href="deleteAnchor" class="btn">Delete</a>
       </div>
+      <div v-show="errorMsg" class="badge badge-error badge-outline w-full">
+        {{ errorMsg }}
+      </div>
     </div>
     <ModalConfirmation
       :modalId="deleteModalId"
@@ -47,23 +50,24 @@ defineProps<{
 <script lang="ts">
 import { defineComponent } from "vue";
 import { DocumentService } from "./DocumentService";
+import { ErrorDecoder } from "@/services/ErrorDecoder";
 
 export default defineComponent({
   data() {
     return {
       deleteAnchor: "#delete-document",
       deleteModalId: "delete-document",
+      errorMsg: "",
     };
   },
   methods: {
     async deleteDocument() {
+      this.errorMsg = "";
       try {
         await DocumentService.deleteOne(this.document.ID);
         this.$router.push("/documents");
       } catch (error) {
-        // TODO: push error to errors handler (display errors it in the UI)
-        console.error("An error occurred, please try again", error);
-        // TODO: Push error to Sentry
+        this.errorMsg = await ErrorDecoder.decode(error);
       }
     },
   },
