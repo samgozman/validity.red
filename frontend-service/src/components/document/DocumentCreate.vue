@@ -231,7 +231,7 @@ export default defineComponent({
           .toISOString()
           .split("T")[0];
       } catch (error) {
-        this.errorMsg = await ErrorDecoder.decode(error);
+        this.errorMsg = await ErrorDecoder.decode(error, this.$router);
       }
     }
   },
