@@ -15,7 +15,9 @@ import StandardContainer from "@/components/layout/StandardContainer.vue";
               <img src="/img/travolta404.gif" alt="Travolta not found" />
             </div>
           </div>
-          <RouterLink to="/" class="btn btn-primary mt-4 w-full">Home page</RouterLink>
+          <RouterLink to="/" class="btn btn-primary mt-4 w-full"
+            >Home page</RouterLink
+          >
         </div>
       </div>
     </div>
