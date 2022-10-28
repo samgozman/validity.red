@@ -61,7 +61,7 @@ export default defineComponent({
         this.errorMsg = "";
         this.document = await DocumentService.getOne(this.documentId);
       } catch (error) {
-        this.errorMsg = await ErrorDecoder.decode(error);
+        this.errorMsg = await ErrorDecoder.decode(error, this.$router);
       }
     },
     async fetchNotifications() {
