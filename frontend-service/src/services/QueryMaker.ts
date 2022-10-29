@@ -13,9 +13,9 @@ interface IQueryMakerParams {
 }
 
 export class QueryMaker {
+  public readonly routeUrl: string;
   // TODO: Get URL from ENV
   private readonly baseUrl = "http://localhost:8080";
-  private readonly routeUrl: string;
   private readonly axiosConfig: AxiosRequestConfig<unknown> = {
     // To pass Set-Cookie header
     withCredentials: true,

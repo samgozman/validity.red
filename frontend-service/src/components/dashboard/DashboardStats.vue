@@ -6,19 +6,30 @@ import CalendarMonth from "@/components/calendar/CalendarMonth.vue";
 
 <template>
   <div
-    v-if="calendarId"
-    class="card col-span-full row-span-1 shadow-lg compact bg-base-100"
+    class="card col-span-full sm:col-span-4 row-span-1 shadow-lg compact bg-base-100"
   >
-    <div class="flex-col sm:flex-row items-center card-body">
-      <p v-show="!errorMsgIcs">
-        Export Validity.Red data to sync with your calendar app
-      </p>
-      <span v-show="errorMsgIcs" class="badge badge-error badge-outline w-full">
-        Error: {{ errorMsgIcs }}
-      </span>
-      <button @click.prevent="getIcs" href="#" class="btn btn-primary btn-sm">
-        Export calendar
-      </button>
+    <div class="flex-row items-center card-body">
+      <h3 class="text-xl font-bold">Sync with your calendar app</h3>
+    </div>
+  </div>
+  <div
+    class="card col-span-full sm:col-span-3 row-span-1 shadow-lg compact bg-base-100"
+  >
+    <div class="flex-col items-center card-body">
+      <div class="form-control w-full md:flex-row">
+        <div class="input-group w-full">
+          <input
+            type="text"
+            class="input input-bordered w-full"
+            :value="icsRoute"
+            readonly
+          />
+          <button class="btn btn-primary" @click.prevent="copyToClipboard()">
+            Copy link
+          </button>
+        </div>
+        <button class="btn mt-3 md:ml-3 md:mt-0">How to sync?</button>
+      </div>
     </div>
   </div>
   <div
@@ -91,6 +102,20 @@ import CalendarMonth from "@/components/calendar/CalendarMonth.vue";
       </span>
     </div>
   </div>
+  <div
+    v-if="calendarId"
+    class="card col-span-full row-span-1 shadow-lg compact bg-base-100"
+  >
+    <div class="flex-col sm:flex-row items-center card-body">
+      <p v-show="!errorMsgIcs">Export Validity.Red calendar .ics file</p>
+      <span v-show="errorMsgIcs" class="badge badge-error badge-outline w-full">
+        Error: {{ errorMsgIcs }}
+      </span>
+      <button @click.prevent="getIcs" href="#" class="btn btn-primary btn-sm">
+        Export calendar
+      </button>
+    </div>
+  </div>
 </template>
 
 <script lang="ts">
@@ -98,11 +123,13 @@ import { defineComponent } from "vue";
 import { DashboardService } from "./DashboardService";
 import type { IDashboardStats } from "./interfaces/IDashboardStats";
 import { ErrorDecoder } from "@/services/ErrorDecoder";
+import { QueryMaker } from "@/services/QueryMaker";
 
 interface VueData {
   stats: IDashboardStats;
   avgNotifications: number;
   calendarId: string | null;
+  icsRoute: string;
   errorMsg: string;
   errorMsgIcs: string;
 }
@@ -113,6 +140,7 @@ export default defineComponent({
       stats: {} as IDashboardStats,
       avgNotifications: 0,
       calendarId: localStorage.getItem("calendarId"),
+      icsRoute: "",
       errorMsg: "",
       errorMsgIcs: "",
     };
@@ -120,6 +148,9 @@ export default defineComponent({
   methods: {
     async refresh() {
       this.errorMsg = "";
+      this.icsRoute = new QueryMaker({
+        route: `/ics/${this.calendarId}`,
+      }).routeUrl;
       try {
         this.stats = await DashboardService.getStats();
         this.avgNotifications =
@@ -149,6 +180,9 @@ export default defineComponent({
       } catch (error) {
         this.errorMsgIcs = await ErrorDecoder.decode(error);
       }
+    },
+    copyToClipboard() {
+      navigator.clipboard.writeText(this.icsRoute);
     },
   },
   beforeMount() {
