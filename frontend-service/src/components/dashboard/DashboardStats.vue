@@ -85,7 +85,7 @@ import CalendarMonth from "@/components/calendar/CalendarMonth.vue";
       <h3 class="card-title text-primary text-left w-full px-4">
         Latest documents
       </h3>
-      <ul class="menu p-2 w-full sm:max-h-36 overflow-y-auto">
+      <ul class="menu flex-row w-full sm:max-h-36 overflow-y-auto">
         <LatestDocumentsItem
           v-for="document in stats.latestDocuments"
           v-bind:key="document.ID"
