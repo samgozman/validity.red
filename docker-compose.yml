@@ -1,4 +1,5 @@
 version: '3.8'
+# Environment for local development
 
 services:
   gateway-service:
@@ -9,10 +10,13 @@ services:
     ports:
       - "8080:80"
     environment:
-      BROKER_PORT: "80"
+      GATEWAY_PORT: "80"
+      USER_GRPC_HOST: "user-service"
       USER_GRPC_PORT: "50001"
       DOCUMENT_GRPC_PORT: "50002"
+      DOCUMENT_GRPC_HOST: "document-service"
       CALENDAR_GRPC_PORT: "50051"
+      CALENDAR_GRPC_HOST: "calendar-service"
     networks:
       - broker-network
 

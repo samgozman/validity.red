@@ -34,7 +34,7 @@ type CalendarsClient struct {
 
 func main() {
 	// USERS CLIENT SECTION - START //
-	userServiceConn, err := connectToService("user-service", os.Getenv("USER_GRPC_PORT"))
+	userServiceConn, err := connectToService(os.Getenv("USER_GRPC_HOST"), os.Getenv("USER_GRPC_PORT"))
 	if err != nil {
 		log.Fatalln("Error on connecting to the user-service:", err)
 		return
@@ -48,7 +48,7 @@ func main() {
 	// USERS CLIENT SECTION - END //
 
 	// DOCUMENTS CLIENT SECTION - START //
-	documentServiceConn, err := connectToService("document-service", os.Getenv("DOCUMENT_GRPC_PORT"))
+	documentServiceConn, err := connectToService(os.Getenv("DOCUMENT_GRPC_HOST"), os.Getenv("DOCUMENT_GRPC_PORT"))
 	if err != nil {
 		log.Fatalln("Error on connecting to the document-service:", err)
 		return
@@ -62,7 +62,7 @@ func main() {
 	// DOCUMENTS CLIENT SECTION - END //
 
 	// CALENDARS CLIENT SECTION - START //
-	calendarServiceConn, err := connectToService("calendar-service", os.Getenv("CALENDAR_GRPC_PORT"))
+	calendarServiceConn, err := connectToService(os.Getenv("CALENDAR_GRPC_HOST"), os.Getenv("CALENDAR_GRPC_PORT"))
 	if err != nil {
 		log.Fatalln("Error on connecting to the calendar-service:", err)
 		return
@@ -89,7 +89,7 @@ func main() {
 	}
 
 	router := app.routes()
-	err = router.Run(fmt.Sprintf(":%s", os.Getenv("BROKER_PORT")))
+	err = router.Run(fmt.Sprintf(":%s", os.Getenv("GATEWAY_PORT")))
 	if err != nil {
 		log.Panic(err)
 	}
