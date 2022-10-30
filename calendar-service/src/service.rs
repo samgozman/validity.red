@@ -1,7 +1,8 @@
 pub mod calendar {
     use crate::calendar::CalendarEntity;
     use crate::encryptor::{decrypt, encrypt};
-    use chrono::{TimeZone, Utc};
+    use chrono::TimeZone;
+    use chrono_tz::Tz;
     use ics::properties::{Description, DtEnd, DtStart, Summary};
     use ics::{escape_text, Event, ICalendar};
     use std::env;
@@ -46,11 +47,12 @@ pub mod calendar {
     /// Arguments:
     ///
     /// * `calendar_events`: A vector of CalendarEntity structs.
+    /// * `tz`: Timezone identifier. For example, `Europe/Paris`.
     ///
     /// Returns:
     ///
     /// A string of the calendar.
-    pub fn create(calendar_events: &Vec<CalendarEntity>) -> String {
+    pub fn create(calendar_events: &Vec<CalendarEntity>, tz: &str) -> String {
         let mut calendar = ICalendar::new(
             "2.0",
             "-//Validity.Red//Document expiration calendar 1.0//EN",
@@ -61,7 +63,7 @@ pub mod calendar {
         // REFRESH-INTERVAL;VALUE=DURATION:PT12H
 
         for calendar_event in calendar_events {
-            let event = self::create_event(calendar_event);
+            let event = self::create_event(calendar_event, tz);
             calendar.add_event(event);
         }
 
@@ -108,14 +110,19 @@ pub mod calendar {
     /// Arguments:
     ///
     /// * `calendar_event`: The CalendarEntity struct that contains the data for the event.
+    /// * `tz`: Timezone identifier. For example, `Europe/Paris`.
     ///
     /// Returns:
     ///
     /// A new event is being returned.
-    fn create_event(calendar_event: &CalendarEntity) -> Event<'static> {
+    fn create_event(calendar_event: &CalendarEntity, tz: &str) -> Event<'static> {
+        // TODO: Use ics standard timezone options instead of manual offset
+        // Define timezone offset
+        let tz: Tz = tz.parse().unwrap();
         // Convert timestamp to DateTime
         let dt_start = calendar_event.notification_date.clone().unwrap();
-        let dt_start = Utc.timestamp(dt_start.seconds, dt_start.nanos as u32);
+        let dt_start = tz.timestamp(dt_start.seconds, dt_start.nanos as u32);
+
         // End date is 1 hour after start date
         let dt_end = dt_start + chrono::Duration::hours(1);
 
@@ -132,6 +139,8 @@ pub mod calendar {
             Validity.Red",
             calendar_event.document_title,
         ))));
+
+        // ? CATEGORIES?
 
         return event;
     }
@@ -159,13 +168,13 @@ pub mod calendar {
                 }),
             };
 
-            let event = create_event(&calendar_event);
+            let event = create_event(&calendar_event, "Asia/Tbilisi");
             let expected = "\
                 BEGIN:VEVENT\r\n\
                 UID:e533947d-6f40-4f4f-b614-ddf70534c576\r\n\
-                DTSTAMP:20210107T061320Z\r\n\
-                DTSTART:20210107T061320Z\r\n\
-                DTEND:20210107T071320Z\r\n\
+                DTSTAMP:20210107T101320Z\r\n\
+                DTSTART:20210107T101320Z\r\n\
+                DTEND:20210107T111320Z\r\n\
                 SUMMARY:Document title\r\n\
                 DESCRIPTION:Document title\\nValidity.Red\r\n\
                 END:VEVENT\r\n\
@@ -191,7 +200,7 @@ pub mod calendar {
                 }),
             }];
 
-            let calendar = create(&calendar_events);
+            let calendar = create(&calendar_events, "Asia/Tbilisi");
 
             let expected = "\
                 BEGIN:VCALENDAR\r\n\
@@ -199,9 +208,9 @@ pub mod calendar {
                 PRODID:-//Validity.Red//Document expiration calendar 1.0//EN\r\n\
                 BEGIN:VEVENT\r\n\
                 UID:e533947d-6f40-4f4f-b614-ddf70534c576\r\n\
-                DTSTAMP:20210107T061320Z\r\n\
-                DTSTART:20210107T061320Z\r\n\
-                DTEND:20210107T071320Z\r\n\
+                DTSTAMP:20210107T101320Z\r\n\
+                DTSTART:20210107T101320Z\r\n\
+                DTEND:20210107T111320Z\r\n\
                 SUMMARY:Document title\r\n\
                 DESCRIPTION:Document title\\nValidity.Red\r\n\
                 END:VEVENT\r\n\
