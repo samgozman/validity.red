@@ -52,7 +52,7 @@ pub mod calendar {
     /// Returns:
     ///
     /// A string of the calendar.
-    pub fn create(calendar_events: &Vec<CalendarEntity>, tz: &str) -> String {
+    pub fn create(calendar_events: &Vec<CalendarEntity>, tz: Tz) -> String {
         let mut calendar = ICalendar::new(
             "2.0",
             "-//Validity.Red//Document expiration calendar 1.0//EN",
@@ -115,10 +115,8 @@ pub mod calendar {
     /// Returns:
     ///
     /// A new event is being returned.
-    fn create_event(calendar_event: &CalendarEntity, tz: &str) -> Event<'static> {
+    fn create_event(calendar_event: &CalendarEntity, tz: Tz) -> Event<'static> {
         // TODO: Use ics standard timezone options instead of manual offset
-        // Define timezone offset
-        let tz: Tz = tz.parse().unwrap();
         // Convert timestamp to DateTime
         let dt_start = calendar_event.notification_date.clone().unwrap();
         let dt_start = tz.timestamp(dt_start.seconds, dt_start.nanos as u32);

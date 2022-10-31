@@ -3,6 +3,7 @@ mod service;
 
 use std::env;
 use tonic::{transport::Server, Request, Response, Status};
+use chrono_tz::Tz;
 
 use calendar::calendar_service_server::{CalendarService as Calendar, CalendarServiceServer};
 use calendar::{
@@ -58,7 +59,16 @@ impl Calendar for CalendarService {
         let mut iv: [u8; 12] = Default::default();
         iv.copy_from_slice(&request_iv[0..12]);
 
-        let calendar_ics = service::calendar::create(&request.get_ref().calendar_entities.clone(), "Europe/Paris");
+        let timezone_input = &request.get_ref().timezone.parse::<Tz>();
+        let timezone: Tz;
+        if timezone_input.is_err() {
+            // ? Should we return an error here?
+            timezone = Tz::UTC;
+        } else {
+            timezone = timezone_input.as_ref().unwrap().clone();
+        }
+
+        let calendar_ics = service::calendar::create(&request.get_ref().calendar_entities.clone(), timezone);
 
         let write_check = service::calendar::write(
             calendar_ics.to_string(),
