@@ -60,6 +60,7 @@ func (us *UserServer) Register(ctx context.Context, req *proto.RegisterRequest) 
 	userPayload := user.User{
 		Email:    input.Email,
 		Password: input.Password,
+		Timezone: input.Timezone,
 	}
 	err := us.App.Repo.InsertOne(ctx, &userPayload)
 	if err != nil {
@@ -103,6 +104,7 @@ func (us *UserServer) GetCalendarId(ctx context.Context, req *proto.GetCalendarI
 	res := &proto.GetCalendarIdResponse{
 		CalendarId: u.CalendarID,
 		CalendarIv: u.IV_Calendar,
+		Timezone:   u.Timezone,
 	}
 	return res, nil
 }

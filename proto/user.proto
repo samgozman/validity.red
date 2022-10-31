@@ -28,6 +28,7 @@ message GetCalendarIvResponse {
 message GetCalendarIdResponse {
 	string calendarId = 1;
 	bytes calendarIv = 2;
+	string timezone = 3;
 }
 
 message SetCalendarIvRequest {
@@ -43,7 +44,7 @@ message AuthResponse {
 message Register {
 	string email = 1;
 	string password = 2;
-	// some default preferences (GMT zone, etc.)
+	string timezone = 3;
 }
 
 message RegisterRequest {

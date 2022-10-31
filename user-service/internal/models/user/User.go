@@ -35,6 +35,7 @@ type User struct {
 	IsVerified  bool      `gorm:"type:bool;default:false;not null;" json:"is_verified"`
 	CalendarID  string    `gorm:"uniqueIndex;size:32;" json:"calendar_id,omitempty"`
 	IV_Calendar []byte    `gorm:"size:12;" json:"iv_calendar,omitempty"`
+	Timezone    string    `gorm:"size:50;default:Etc/UTC" json:"timezone,omitempty"`
 	CreatedAt   time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"created_at,omitempty"`
 	UpdatedAt   time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"updated_at,omitempty"`
 }
@@ -147,7 +148,7 @@ func (u *PostgresRepository) FindOneByEmail(ctx context.Context, email string) (
 func (u *PostgresRepository) GetCalendarId(ctx context.Context, userId string) (*User, error) {
 	user := &User{}
 	res := u.Conn.Table("users").
-		Select("calendar_id, iv_calendar").
+		Select("calendar_id, iv_calendar, timezone").
 		First(&user, "id = ?", userId).
 		WithContext(ctx)
 	if res.Error != nil {
