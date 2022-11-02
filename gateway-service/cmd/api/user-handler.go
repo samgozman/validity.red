@@ -89,8 +89,10 @@ func (app *Config) userLogin(c *gin.Context) {
 	c.SetCookie("token", token, app.token.MaxAge, "/", "", false, false)
 	c.JSON(http.StatusAccepted, struct {
 		CalendarId string `json:"calendarId"`
+		Timezone   string `json:"timezone"`
 	}{
 		CalendarId: res.CalendarId,
+		Timezone:   res.Timezone,
 	})
 }
 

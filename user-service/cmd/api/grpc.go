@@ -91,6 +91,7 @@ func (as *AuthServer) Login(ctx context.Context, req *proto.AuthRequest) (*proto
 		// TODO: Return user entity
 		UserId:     u.ID.String(),
 		CalendarId: u.CalendarID,
+		Timezone:   u.Timezone,
 	}
 	return res, nil
 }

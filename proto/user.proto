@@ -39,6 +39,7 @@ message SetCalendarIvRequest {
 message AuthResponse {
 	string userId = 1;
 	string calendarId = 2;
+	string timezone = 3;
 }
 
 message Register {
