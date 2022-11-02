@@ -33,6 +33,8 @@ func (u *PostgresTestRepository) FindOneByEmail(ctx context.Context, email strin
 		Email:      "me@example.com",
 		Password:   "",
 		IsVerified: true,
+		CalendarID: "8gipfmoqt8mtucep",
+		Timezone:   "Europe/London",
 		CreatedAt:  time.Now(),
 		UpdatedAt:  time.Now(),
 	}
