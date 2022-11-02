@@ -45,6 +45,7 @@ import CalendarDay from "./CalendarDay.vue";
           v-bind:key="day[0]"
           v-bind:indexDay="day[0]"
           v-bind:notifications="day[1]"
+          v-bind:tz="usersTimezone"
         />
       </div>
     </div>
@@ -64,6 +65,9 @@ export default defineComponent({
       currentFirstDayOfWeek: 0,
       currentDate: new Date(),
       currentDateString: "",
+      usersTimezone:
+        localStorage.getItem("usersTimezone") ||
+        Intl.DateTimeFormat().resolvedOptions().timeZone,
       errorMsg: "",
     };
   },

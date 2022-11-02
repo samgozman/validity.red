@@ -24,7 +24,8 @@ message CalendarEntityJSON {
 message CreateCalendarRequest {
 	string calendarID = 1;
 	bytes calendarIV = 2;
-	repeated CalendarEntity calendarEntities = 3;
+	string timezone = 3;
+	repeated CalendarEntity calendarEntities = 4;
 }
 
 message CreateCalendarResponse {

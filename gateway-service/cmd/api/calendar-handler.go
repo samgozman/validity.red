@@ -132,6 +132,7 @@ func (app *Config) updateIcsCalendar(userId string) {
 		CalendarID:       calendarIdResp.CalendarId,
 		CalendarIV:       ivCalendar,
 		CalendarEntities: calendarArr,
+		Timezone:         calendarIdResp.Timezone,
 	})
 	if err != nil {
 		log.Println("Error on calling CalendarService.CreateCalendar:", err)

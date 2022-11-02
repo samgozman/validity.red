@@ -6,8 +6,13 @@ interface IAuthCredentials {
   password: string;
 }
 
+interface IRegisterCredentials extends IAuthCredentials {
+  timezone: string;
+}
+
 interface IAuthResponse extends IResponse {
   calendarId: string;
+  timezone: string;
 }
 
 export class AuthService {
@@ -16,19 +21,17 @@ export class AuthService {
    * @param credentials
    */
   public static async userLogin(credentials: IAuthCredentials): Promise<void> {
-    const payload = JSON.stringify({
-      email: credentials.email,
-      password: credentials.password,
-    });
+    const payload = JSON.stringify(credentials);
 
     const res = await new QueryMaker({
       route: "/auth/login",
       payload,
     }).post<IAuthResponse>();
-    const { error, message, calendarId } = res.data;
+    const { error, message, calendarId, timezone } = res.data;
 
     // Save calendar to local storage
     localStorage.setItem("calendarId", calendarId);
+    localStorage.setItem("usersTimezone", timezone);
 
     if (error) {
       throw new Error(message);
@@ -40,13 +43,9 @@ export class AuthService {
    * @param credentials
    */
   public static async userRegister(
-    // TODO: Use another type with more fields
-    credentials: IAuthCredentials
+    credentials: IRegisterCredentials
   ): Promise<void> {
-    const payload = JSON.stringify({
-      email: credentials.email,
-      password: credentials.password,
-    });
+    const payload = JSON.stringify(credentials);
 
     const res = await new QueryMaker({
       route: "/auth/register",

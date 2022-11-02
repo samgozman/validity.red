@@ -15,13 +15,19 @@ type AuthPayload struct {
 	Password string `json:"password" uri:"password" binding:"required,min=8,max=64"`
 }
 
+type RegisterPayload struct {
+	Email    string `json:"email" uri:"email" binding:"required,email"`
+	Password string `json:"password" uri:"password" binding:"required,min=8,max=64"`
+	Timezone string `json:"timezone" uri:"timezone" binding:"required,timezone"`
+}
+
 // Call Register method on `user-service`
 func (app *Config) userRegister(c *gin.Context) {
 	c.Writer.Header().Set("Content-Type", "application/json")
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
 
-	requestPayload := AuthPayload{}
+	requestPayload := RegisterPayload{}
 	if err := c.BindJSON(&requestPayload); err != nil {
 		c.Error(ErrInvalidInputs)
 		return
@@ -32,6 +38,7 @@ func (app *Config) userRegister(c *gin.Context) {
 		RegisterEntry: &user.Register{
 			Email:    requestPayload.Email,
 			Password: requestPayload.Password,
+			Timezone: requestPayload.Timezone,
 		},
 	})
 	if err != nil {
@@ -82,8 +89,10 @@ func (app *Config) userLogin(c *gin.Context) {
 	c.SetCookie("token", token, app.token.MaxAge, "/", "", false, false)
 	c.JSON(http.StatusAccepted, struct {
 		CalendarId string `json:"calendarId"`
+		Timezone   string `json:"timezone"`
 	}{
 		CalendarId: res.CalendarId,
+		Timezone:   res.Timezone,
 	})
 }
 
