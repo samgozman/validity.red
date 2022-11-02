@@ -12,6 +12,7 @@ interface IRegisterCredentials extends IAuthCredentials {
 
 interface IAuthResponse extends IResponse {
   calendarId: string;
+  timezone: string;
 }
 
 export class AuthService {
@@ -26,10 +27,11 @@ export class AuthService {
       route: "/auth/login",
       payload,
     }).post<IAuthResponse>();
-    const { error, message, calendarId } = res.data;
+    const { error, message, calendarId, timezone } = res.data;
 
     // Save calendar to local storage
     localStorage.setItem("calendarId", calendarId);
+    localStorage.setItem("usersTimezone", timezone);
 
     if (error) {
       throw new Error(message);
