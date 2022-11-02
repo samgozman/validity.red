@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import timezones from "timezones-list";
 import InputLabel from "../elements/InputLabel.vue";
 </script>
 
@@ -21,6 +22,14 @@ import InputLabel from "../elements/InputLabel.vue";
         placeholder="password"
         class="input input-bordered"
       />
+    </div>
+    <div class="form-control">
+      <InputLabel label="Timezone" />
+      <select class="select select-bordered w-full" v-model="selectedTz">
+        <option v-for="(option, index) in timezones" v-bind:key="index">
+          {{ option.label }}
+        </option>
+      </select>
     </div>
     <div v-show="errorMsg" class="badge badge-error badge-outline w-full">
       {{ errorMsg }}
@@ -52,15 +61,19 @@ export default defineComponent({
       email: "",
       password: "",
       errorMsg: "",
+      selectedTz: "",
       showForm: true,
     };
   },
   methods: {
     async register() {
+      const tz = timezones.find((t) => t.label === this.selectedTz);
+      const tzCode = tz ? tz.tzCode : "Europe/London";
       try {
         await AuthService.userRegister({
           email: this.email,
           password: this.password,
+          timezone: tzCode,
         });
 
         this.showForm = false;
@@ -71,6 +84,11 @@ export default defineComponent({
         this.errorMsg = await ErrorDecoder.decode(error);
       }
     },
+  },
+  beforeMount() {
+    const userTz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    const tz = timezones.find((t) => t.tzCode === userTz);
+    this.selectedTz = tz ? tz.label : "Europe/London (GMT+00:00)";
   },
 });
 </script>
