@@ -130,26 +130,19 @@ func (u *PostgresRepository) InsertOne(ctx context.Context, user *User) error {
 	return nil
 }
 
-// Find one user by email
-func (u *PostgresRepository) FindOneByEmail(ctx context.Context, email string) (*User, error) {
-	user := &User{}
-	res := u.Conn.Table("users").First(&user, "email = ?", email).WithContext(ctx)
-	if res.Error != nil {
-		if errors.Is(res.Error, gorm.ErrRecordNotFound) {
-			return nil, status.Error(codes.NotFound, "user not found")
-		}
-		return nil, status.Error(codes.Internal, res.Error.Error())
-	}
-
-	return user, nil
-}
-
-// Get user's calendar id and calendar iv
-func (u *PostgresRepository) GetCalendarId(ctx context.Context, userId string) (*User, error) {
+// Find one user by "query" with selected "fields".
+//
+// Example:
+//
+// query: User{Email: "example@email.com"}
+//
+// fields: "calendar_id, iv_calendar, timezone"
+func (u *PostgresRepository) FindOne(ctx context.Context, query *User, fields string) (*User, error) {
 	user := &User{}
 	res := u.Conn.Table("users").
-		Select("calendar_id, iv_calendar, timezone").
-		First(&user, "id = ?", userId).
+		Select(fields).
+		Where(query).
+		First(&user).
 		WithContext(ctx)
 	if res.Error != nil {
 		if errors.Is(res.Error, gorm.ErrRecordNotFound) {
@@ -159,24 +152,6 @@ func (u *PostgresRepository) GetCalendarId(ctx context.Context, userId string) (
 	}
 
 	return user, nil
-}
-
-func (u *PostgresRepository) GetCalendarIv(ctx context.Context, calendarId string) ([]byte, error) {
-	data := struct {
-		IV_Calendar []byte `json:"iv_calendar,omitempty"`
-	}{}
-	res := u.Conn.Table("users").
-		Select("iv_calendar").
-		First(&data, "calendar_id = ?", calendarId).
-		WithContext(ctx)
-	if res.Error != nil {
-		if errors.Is(res.Error, gorm.ErrRecordNotFound) {
-			return nil, status.Error(codes.NotFound, "user not found")
-		}
-		return nil, status.Error(codes.Internal, res.Error.Error())
-	}
-
-	return data.IV_Calendar, nil
 }
 
 func (u *PostgresRepository) Update(ctx context.Context, userId string, fields map[string]interface{}) error {

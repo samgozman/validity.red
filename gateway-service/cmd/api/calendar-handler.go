@@ -94,11 +94,11 @@ func (app *Config) updateIcsCalendar(userId string) {
 	// TODO: Send all errors from this route to Sentry
 
 	// 1. get user's calendar id
-	calendarIdResp, err := app.usersClient.userService.GetCalendarId(ctx, &user.GetCalendarIdRequest{
+	calendarIdResp, err := app.usersClient.userService.GetCalendarOptions(ctx, &user.GetCalendarIdRequest{
 		UserId: userId,
 	})
 	if err != nil {
-		log.Println("Error on calling UserService.GetCalendarId:", err)
+		log.Println("Error on calling UserService.GetCalendarOptions:", err)
 		return
 	}
 
