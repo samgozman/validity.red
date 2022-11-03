@@ -25,7 +25,7 @@ func (u *PostgresTestRepository) InsertOne(ctx context.Context, user *user.User)
 	return nil
 }
 
-func (u *PostgresTestRepository) FindOne(ctx context.Context, query []interface{}, fields string) (*user.User, error) {
+func (u *PostgresTestRepository) FindOne(ctx context.Context, query *user.User, fields string) (*user.User, error) {
 	userId, _ := uuid.Parse("434377cf-7509-4cc0-9895-0afa683f0e56")
 	user := &user.User{
 		ID:          userId,

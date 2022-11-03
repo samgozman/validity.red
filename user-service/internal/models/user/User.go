@@ -134,14 +134,15 @@ func (u *PostgresRepository) InsertOne(ctx context.Context, user *User) error {
 //
 // Example:
 //
-// query: []interface{"email = ?", "example@email.com"}
+// query: User{Email: "example@email.com"}
 //
 // fields: "calendar_id, iv_calendar, timezone"
-func (u *PostgresRepository) FindOne(ctx context.Context, query []interface{}, fields string) (*User, error) {
+func (u *PostgresRepository) FindOne(ctx context.Context, query *User, fields string) (*User, error) {
 	user := &User{}
 	res := u.Conn.Table("users").
 		Select(fields).
-		First(&user, query...).
+		Where(query).
+		First(&user).
 		WithContext(ctx)
 	if res.Error != nil {
 		if errors.Is(res.Error, gorm.ErrRecordNotFound) {

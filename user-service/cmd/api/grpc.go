@@ -7,6 +7,7 @@ import (
 	"net"
 	"os"
 
+	"github.com/google/uuid"
 	"github.com/samgozman/validity.red/user/internal/models/user"
 	proto "github.com/samgozman/validity.red/user/proto"
 	"golang.org/x/crypto/bcrypt"
@@ -75,7 +76,7 @@ func (as *AuthServer) Login(ctx context.Context, req *proto.AuthRequest) (*proto
 	input := req.GetAuthEntry()
 
 	// find user
-	u, err := as.App.Repo.FindOne(ctx, []interface{}{"email = ?", input.Email}, "id, password, calendar_id, timezone")
+	u, err := as.App.Repo.FindOne(ctx, &user.User{Email: input.Email}, "id, password, calendar_id, timezone")
 	if err != nil {
 		return nil, err
 	}
@@ -97,7 +98,8 @@ func (as *AuthServer) Login(ctx context.Context, req *proto.AuthRequest) (*proto
 }
 
 func (us *UserServer) GetCalendarOptions(ctx context.Context, req *proto.GetCalendarIdRequest) (*proto.GetCalendarIdResponse, error) {
-	u, err := us.App.Repo.FindOne(ctx, []interface{}{"id = ?", req.UserId}, "calendar_id, iv_calendar, timezone")
+	userId, _ := uuid.Parse(req.UserId)
+	u, err := us.App.Repo.FindOne(ctx, &user.User{ID: userId}, "calendar_id, iv_calendar, timezone")
 	if err != nil {
 		return nil, err
 	}
@@ -111,7 +113,7 @@ func (us *UserServer) GetCalendarOptions(ctx context.Context, req *proto.GetCale
 }
 
 func (us *UserServer) GetCalendarIv(ctx context.Context, req *proto.GetCalendarIvRequest) (*proto.GetCalendarIvResponse, error) {
-	u, err := us.App.Repo.FindOne(ctx, []interface{}{"calendar_id = ?", req.CalendarId}, "iv_calendar")
+	u, err := us.App.Repo.FindOne(ctx, &user.User{CalendarID: req.CalendarId}, "iv_calendar")
 	if err != nil {
 		return nil, err
 	}
