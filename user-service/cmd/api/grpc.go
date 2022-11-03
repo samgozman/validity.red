@@ -75,7 +75,7 @@ func (as *AuthServer) Login(ctx context.Context, req *proto.AuthRequest) (*proto
 	input := req.GetAuthEntry()
 
 	// find user
-	u, err := as.App.Repo.FindOneByEmail(ctx, input.Email)
+	u, err := as.App.Repo.FindOne(ctx, []interface{}{"email = ?", input.Email}, "id, password, calendar_id, timezone")
 	if err != nil {
 		return nil, err
 	}
@@ -97,7 +97,7 @@ func (as *AuthServer) Login(ctx context.Context, req *proto.AuthRequest) (*proto
 }
 
 func (us *UserServer) GetCalendarId(ctx context.Context, req *proto.GetCalendarIdRequest) (*proto.GetCalendarIdResponse, error) {
-	u, err := us.App.Repo.GetCalendarId(ctx, req.UserId)
+	u, err := us.App.Repo.FindOne(ctx, []interface{}{"id = ?", req.UserId}, "calendar_id, iv_calendar, timezone")
 	if err != nil {
 		return nil, err
 	}
@@ -111,13 +111,13 @@ func (us *UserServer) GetCalendarId(ctx context.Context, req *proto.GetCalendarI
 }
 
 func (us *UserServer) GetCalendarIv(ctx context.Context, req *proto.GetCalendarIvRequest) (*proto.GetCalendarIvResponse, error) {
-	iv, err := us.App.Repo.GetCalendarIv(ctx, req.CalendarId)
+	u, err := us.App.Repo.FindOne(ctx, []interface{}{"calendar_id = ?", req.CalendarId}, "iv_calendar")
 	if err != nil {
 		return nil, err
 	}
 
 	res := &proto.GetCalendarIvResponse{
-		CalendarIv: iv,
+		CalendarIv: u.IV_Calendar,
 	}
 	return res, nil
 }
