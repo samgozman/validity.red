@@ -134,7 +134,7 @@ func (u *PostgresRepository) InsertOne(ctx context.Context, user *User) error {
 //
 // Example:
 //
-// query: []string{"email = ?", "example@email.com"}
+// query: []interface{"email = ?", "example@email.com"}
 //
 // fields: "calendar_id, iv_calendar, timezone"
 func (u *PostgresRepository) FindOne(ctx context.Context, query []interface{}, fields string) (*User, error) {
