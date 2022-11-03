@@ -59,7 +59,7 @@ service AuthService {
 
 service UserService {
 	rpc Register(RegisterRequest) returns (google.protobuf.Empty);
-	rpc GetCalendarId(GetCalendarIdRequest) returns (GetCalendarIdResponse);
+	rpc GetCalendarOptions(GetCalendarIdRequest) returns (GetCalendarIdResponse);
 	rpc GetCalendarIv(GetCalendarIvRequest) returns (GetCalendarIvResponse);
 	rpc SetCalendarIv(SetCalendarIvRequest) returns (google.protobuf.Empty);
 	// TODO: change password

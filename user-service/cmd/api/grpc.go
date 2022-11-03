@@ -96,7 +96,7 @@ func (as *AuthServer) Login(ctx context.Context, req *proto.AuthRequest) (*proto
 	return res, nil
 }
 
-func (us *UserServer) GetCalendarId(ctx context.Context, req *proto.GetCalendarIdRequest) (*proto.GetCalendarIdResponse, error) {
+func (us *UserServer) GetCalendarOptions(ctx context.Context, req *proto.GetCalendarIdRequest) (*proto.GetCalendarIdResponse, error) {
 	u, err := us.App.Repo.FindOne(ctx, []interface{}{"id = ?", req.UserId}, "calendar_id, iv_calendar, timezone")
 	if err != nil {
 		return nil, err
