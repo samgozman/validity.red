@@ -18,7 +18,7 @@ services:
       CALENDAR_GRPC_PORT: "50051"
       CALENDAR_GRPC_HOST: "calendar-service"
     networks:
-      - broker-network
+      - gateway-network
 
   user-service:
     build:
@@ -34,7 +34,7 @@ services:
       POSTGRES_DB: users
       JWT_SECRET: someSecretJwtKey
     networks:
-      - broker-network
+      - gateway-network
       - users-network
     depends_on:
       - users_postgres
@@ -53,7 +53,7 @@ services:
       POSTGRES_DB: documents
       ENCRYPTION_KEY: 8dHWTNSAsGaaD7JbqVubF1aWVWGJYF3q
     networks:
-      - broker-network
+      - gateway-network
       - documents-network
     depends_on:
       - documents_postgres
@@ -70,7 +70,7 @@ services:
     volumes:
       - ./calendar-service/data/:/data/
     networks:
-      - broker-network
+      - gateway-network
 
   users_postgres:
     image: postgres:14.4
@@ -101,6 +101,6 @@ services:
       - ./document-service/db-data/postgres/:/var/lib/postgresql/data
 
 networks:
-  broker-network:
+  gateway-network:
   documents-network:
   users-network:
