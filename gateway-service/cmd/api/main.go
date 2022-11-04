@@ -5,6 +5,7 @@ import (
 	"log"
 	"os"
 
+	"github.com/go-redis/redis/v8"
 	"github.com/samgozman/validity.red/broker/internal/token"
 	"github.com/samgozman/validity.red/broker/proto/calendar"
 	"github.com/samgozman/validity.red/broker/proto/document"
@@ -16,6 +17,7 @@ type Config struct {
 	usersClient     *UsersClient
 	documentsClient *DocumentsClient
 	calendarsClient *CalendarsClient
+	redisClient     *redis.Client
 }
 
 type UsersClient struct {
@@ -74,6 +76,13 @@ func main() {
 	}
 	// CALENDARS CLIENT SECTION - END //
 
+	// Redis connection
+	rdb := connectToRedis(RedisConfig{
+		Host:     os.Getenv("REDIS_HOST"),
+		Port:     os.Getenv("REDIS_PORT"),
+		Password: os.Getenv("REDIS_PASSWORD"),
+	})
+
 	// Create JWT token maker
 	token := token.TokenMaker{
 		Key: []byte(os.Getenv("JWT_SECRET")),
@@ -86,6 +95,7 @@ func main() {
 		usersClient:     &usersClient,
 		documentsClient: &documentsClient,
 		calendarsClient: &calendarsClient,
+		redisClient:     rdb,
 	}
 
 	router := app.routes()

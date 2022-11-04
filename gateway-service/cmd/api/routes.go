@@ -1,8 +1,13 @@
 package main
 
 import (
+	"log"
+
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+	"github.com/ulule/limiter/v3"
+	ginLimiter "github.com/ulule/limiter/v3/drivers/middleware/gin"
+	storeRedis "github.com/ulule/limiter/v3/drivers/store/redis"
 )
 
 func (app *Config) routes() *gin.Engine {
@@ -17,6 +22,22 @@ func (app *Config) routes() *gin.Engine {
 		MaxAge:           300,
 		AllowWildcard:    true,
 	}))
+
+	// Rate limiting
+	rate, err := limiter.NewRateFromFormatted("1000-H")
+	if err != nil {
+		log.Fatal(err)
+	}
+	// Create a store with the redis client.
+	store, err := storeRedis.NewStoreWithOptions(app.redisClient, limiter.StoreOptions{
+		Prefix: "gin_limiter",
+	})
+	if err != nil {
+		log.Fatal(err)
+	}
+	// Create a new middleware with the limiter instance.
+	rateLimiter := ginLimiter.NewMiddleware(limiter.New(store, rate))
+	g.Use(rateLimiter)
 
 	documents := g.Group("/documents")
 	documents.Use(app.AuthGuard(), app.ErrorHandler())

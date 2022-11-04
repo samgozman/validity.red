@@ -5,9 +5,7 @@ logger-service/loggerApp
 document-service/documentApp
 
 # Ignore mounted volumes
-user-service/db-data
-logger-service/db-data
-document-service/db-data
+*/db-data
 calendar-service/data
 
 # Ignore frontend files
