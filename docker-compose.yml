@@ -17,8 +17,14 @@ services:
       DOCUMENT_GRPC_HOST: "document-service"
       CALENDAR_GRPC_PORT: "50051"
       CALENDAR_GRPC_HOST: "calendar-service"
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      REDIS_PASSWORD: VWtWRVNWTmZVRUZUVTFkUFVrUQ==
     networks:
       - gateway-network
+      - redis-network
+    depends_on:
+      - redis
 
   user-service:
     build:
@@ -100,7 +106,21 @@ services:
     volumes:
       - ./document-service/db-data/postgres/:/var/lib/postgresql/data
 
+  redis:
+    image: redis:7.0.5-alpine3.16
+    restart: always
+    environment:
+      REDIS_PASSWORD: VWtWRVNWTmZVRUZUVTFkUFVrUQ==
+    entrypoint: ["/bin/sh", "-c", "redis-server --appendonly yes --requirepass $${REDIS_PASSWORD} --maxmemory 256mb --maxmemory-policy allkeys-lru"]
+    networks:
+      - redis-network
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./gateway-service/db-data/redis/:/data
+
 networks:
   gateway-network:
   documents-network:
   users-network:
+  redis-network:
