@@ -79,7 +79,7 @@ services:
       - gateway-network
 
   users_postgres:
-    image: postgres:14.4
+    image: postgres:14.5-alpine3.16
     restart: always
     environment:
       POSTGRES_USER: admin
@@ -93,7 +93,7 @@ services:
       - users-network
 
   documents_postgres:
-    image: postgres:14.4
+    image: postgres:14.5-alpine3.16
     restart: always
     environment:
       POSTGRES_USER: admin
