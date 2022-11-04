@@ -79,12 +79,8 @@
           <div v-if="!isEditMode" class="form-control">
             <label class="label cursor-pointer">
               <span class="label-text">Add default notification?</span>
-              <input
-                type="checkbox"
-                class="toggle toggle-primary"
-                v-model="createDefaultNotification"
-                checked
-              />
+              <input type="checkbox" class="toggle toggle-primary"
+              v-model="createDefaultNotification" checked:="true" />
             </label>
           </div>
           <button class="btn btn-primary" type="submit">Save</button>
