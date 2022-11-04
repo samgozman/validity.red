@@ -5,7 +5,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/go-redis/redis/v9"
+	"github.com/go-redis/redis/v8"
 	"github.com/samgozman/validity.red/broker/internal/token"
 	"github.com/samgozman/validity.red/broker/proto/calendar"
 	"github.com/samgozman/validity.red/broker/proto/document"

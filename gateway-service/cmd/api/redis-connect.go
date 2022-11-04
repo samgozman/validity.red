@@ -6,7 +6,7 @@ import (
 	"log"
 	"time"
 
-	"github.com/go-redis/redis/v9"
+	"github.com/go-redis/redis/v8"
 )
 
 type RedisConfig struct {
