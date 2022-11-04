@@ -20,6 +20,9 @@
             <span class="label-text text-base-300">
               Avoid unnecessary details.
             </span>
+            <span class="label-text-alt text-base-300">
+              {{ title.length }}/100
+            </span>
           </label>
         </div>
       </div>
@@ -68,6 +71,9 @@
               your document. <br />
               Please use this field only to distinguish documents from each
               other.
+            </span>
+            <span class="label-text-alt text-base-300">
+              {{ description.length }}/500
             </span>
           </label>
         </div>
