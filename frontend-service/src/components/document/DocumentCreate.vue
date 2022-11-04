@@ -20,6 +20,9 @@
             <span class="label-text text-base-300">
               Avoid unnecessary details.
             </span>
+            <span class="label-text-alt text-base-300">
+              {{ title.length }}/100
+            </span>
           </label>
         </div>
       </div>
@@ -69,6 +72,9 @@
               Please use this field only to distinguish documents from each
               other.
             </span>
+            <span class="label-text-alt text-base-300">
+              {{ description.length }}/500
+            </span>
           </label>
         </div>
       </div>
@@ -79,12 +85,8 @@
           <div v-if="!isEditMode" class="form-control">
             <label class="label cursor-pointer">
               <span class="label-text">Add default notification?</span>
-              <input
-                type="checkbox"
-                class="toggle toggle-primary"
-                v-model="createDefaultNotification"
-                checked
-              />
+              <input type="checkbox" class="toggle toggle-primary"
+              v-model="createDefaultNotification" checked:="true" />
             </label>
           </div>
           <button class="btn btn-primary" type="submit">Save</button>
