@@ -1,14 +1,12 @@
 mod encryptor;
 mod service;
 
+use chrono_tz::Tz;
 use std::env;
 use tonic::{transport::Server, Request, Response, Status};
-use chrono_tz::Tz;
 
 use calendar::calendar_service_server::{CalendarService as Calendar, CalendarServiceServer};
-use calendar::{
-    CreateCalendarRequest, CreateCalendarResponse, GetCalendarRequest, GetCalendarResponse,
-};
+use calendar::{CreateCalendarRequest, GetCalendarRequest, GetCalendarResponse};
 
 pub mod calendar {
     tonic::include_proto!("calendar");
@@ -32,16 +30,9 @@ impl Calendar for CalendarService {
 
         let file = service::calendar::read(request.get_ref().calendar_id.as_str(), &iv);
         if file.is_err() {
-            let reply = calendar::GetCalendarResponse {
-                error: true,
-                message: file.err().unwrap().to_string(),
-                calendar: Vec::<u8>::new(),
-            };
-            Ok(Response::new(reply))
+            Err(file.err().unwrap())
         } else {
             let reply = calendar::GetCalendarResponse {
-                error: false,
-                message: "Calendar retrieved".to_string(),
                 calendar: file.unwrap().as_bytes().to_vec(),
             };
             Ok(Response::new(reply))
@@ -51,7 +42,7 @@ impl Calendar for CalendarService {
     async fn create_calendar(
         &self,
         request: Request<CreateCalendarRequest>,
-    ) -> Result<Response<CreateCalendarResponse>, Status> {
+    ) -> Result<Response<()>, Status> {
         let request_iv = request.get_ref().calendar_iv.clone();
         if request_iv.len() != 12 {
             return Err(Status::invalid_argument("Invalid calendar_iv length"));
@@ -62,35 +53,22 @@ impl Calendar for CalendarService {
         let timezone_input = &request.get_ref().timezone.parse::<Tz>();
         let timezone: Tz;
         if timezone_input.is_err() {
-            // ? Should we return an error here?
-            timezone = Tz::UTC;
+            return Err(Status::invalid_argument("Invalid timezone value"));
         } else {
             timezone = timezone_input.as_ref().unwrap().clone();
         }
 
-        let calendar_ics = service::calendar::create(&request.get_ref().calendar_entities.clone(), timezone);
+        let calendar_ics =
+            service::calendar::create(&request.get_ref().calendar_entities.clone(), timezone);
 
         let write_check = service::calendar::write(
             calendar_ics.to_string(),
             request.get_ref().calendar_id.as_str(),
             &iv,
         );
-
         match write_check {
-            Ok(_) => {
-                let reply = calendar::CreateCalendarResponse {
-                    error: false,
-                    message: "Calendar created".to_string(),
-                };
-                Ok(Response::new(reply))
-            }
-            Err(msg) => {
-                let reply = calendar::CreateCalendarResponse {
-                    error: true,
-                    message: msg.to_string(),
-                };
-                Ok(Response::new(reply))
-            }
+            Ok(_) => Ok(Response::new(())),
+            Err(msg) => Err(Status::internal(msg.to_string())),
         }
     }
 }

@@ -1,3 +1,5 @@
+use std::error::Error;
+
 use ::generic_array::GenericArray;
 use aes_gcm::{
     aead::{AeadInPlace, KeyInit},
@@ -51,7 +53,7 @@ pub fn encrypt(
 /// Returns:
 ///
 /// A String
-pub fn decrypt(data: &[u8], key: &[u8; 32], iv: &[u8; 12]) -> String {
+pub fn decrypt(data: &[u8], key: &[u8; 32], iv: &[u8; 12]) -> Result<String, Box<dyn Error>> {
     // TODO: Return Result like in encrypt()
     let cipher = Aes256Gcm::new(GenericArray::from_slice(key));
     let nonce = Nonce::from_slice(iv);
@@ -62,9 +64,11 @@ pub fn decrypt(data: &[u8], key: &[u8; 32], iv: &[u8; 12]) -> String {
         .expect("decryption failure!");
 
     let buffer = pkcs5_unpadding(&buffer);
-    std::str::from_utf8(&buffer)
+    let decoded = std::str::from_utf8(&buffer)
         .expect("u8 to String transformation failed")
-        .to_string()
+        .to_string();
+
+    return Ok(decoded);
 }
 
 /// Add padding bytes for the message to make it divisible by the block size
@@ -173,6 +177,6 @@ mod tests {
         ];
         let decrypted_data = super::decrypt(&encrypted_data, KEY, IV);
         let expected_data = "Hello".to_string();
-        assert_eq!(decrypted_data, expected_data, "Decryption failed");
+        assert_eq!(decrypted_data.unwrap(), expected_data, "Decryption failed");
     }
 }
