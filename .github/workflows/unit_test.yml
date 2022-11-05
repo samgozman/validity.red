@@ -59,6 +59,9 @@ jobs:
       with:
         version: '3.x'
 
+    - name: Init proto files
+      run: make grpc_init_rust
+
     - name: Build calendar-service
       working-directory: ./calendar-service
       run: cargo build --verbose
