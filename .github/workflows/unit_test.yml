@@ -54,8 +54,10 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
-    - name: Build
+    - name: Build calendar-service
+      working-directory: ./calendar-service
       run: cargo build --verbose
 
-    - name: Run tests
+    - name: Test calendar-service
+      working-directory: ./calendar-service
       run: cargo test --verbose
