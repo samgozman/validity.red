@@ -43,23 +43,23 @@ jobs:
       - name: Build gateway-service
         working-directory: ./gateway-service
         run: |
-          docker build . -t ghcr.io/samgozman/validity.red/gateway-service:latest
+          docker build -f gateway-service.Dockerfile -t ghcr.io/samgozman/validity.red/gateway-service:latest
           docker push ghcr.io/samgozman/validity.red/gateway-service:latest
 
       - name: Build user-service
         working-directory: ./user-service
         run: |
-          docker build . -t ghcr.io/samgozman/validity.red/user-service:latest
+          docker build -f user-service.Dockerfile -t ghcr.io/samgozman/validity.red/user-service:latest
           docker push ghcr.io/samgozman/validity.red/user-service:latest
 
       - name: Build document-service
         working-directory: ./document-service
         run: |
-          docker build . -t ghcr.io/samgozman/validity.red/document-service:latest
+          docker build -f document-service.Dockerfile -t ghcr.io/samgozman/validity.red/document-service:latest
           docker push ghcr.io/samgozman/validity.red/document-service:latest
 
       - name: Build calendar-service
         working-directory: ./calendar-service
         run: |
-          docker build . -t ghcr.io/samgozman/validity.red/calendar-service:latest
+          docker build -f calendar-service.Dockerfile -t ghcr.io/samgozman/validity.red/calendar-service:latest
           docker push ghcr.io/samgozman/validity.red/calendar-service:latest
