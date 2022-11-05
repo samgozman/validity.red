@@ -54,7 +54,7 @@ func (app *Config) getCalendarIcs(c *gin.Context) {
 	defer cancel()
 
 	uri := struct {
-		ID string `uri:"id" binding:"required,alphanum"`
+		ID string `uri:"id" binding:"required,alphanum,len=32"`
 	}{}
 	if err := c.BindUri(&uri); err != nil {
 		c.AbortWithStatus(http.StatusBadRequest)
