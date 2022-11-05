@@ -24,8 +24,8 @@ pub mod calendar {
     /// A String containing the contents of the file or an ([`Err`]).
     pub fn read(file_name: &str, iv: &[u8; 12]) -> Result<String, Status> {
         const FILE_PATH: &str = "data/";
-        let path = FILE_PATH.to_owned() + file_name;
-        let path = Path::new(&path);
+        let binding = FILE_PATH.to_owned() + file_name;
+        let path = Path::new(binding.as_str());
 
         if !path.exists() {
             return Err(Status::not_found("Calendar file not found"));
@@ -158,6 +158,7 @@ pub mod calendar {
         use crate::calendar::CalendarEntity;
         use prost_types::Timestamp;
         use std::env;
+        use serial_test::serial;
 
         #[test]
         fn test_create_event() {
@@ -229,6 +230,7 @@ pub mod calendar {
         }
 
         #[test]
+        #[serial]
         fn test_write() {
             env::set_var("ENCRYPTION_KEY", "12345678901234567890123456789012");
 
@@ -245,6 +247,7 @@ pub mod calendar {
         }
 
         #[test]
+        #[serial]
         fn test_read() {
             env::set_var("ENCRYPTION_KEY", "12345678901234567890123456789012");
 
