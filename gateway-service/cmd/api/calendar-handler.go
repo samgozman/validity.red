@@ -66,7 +66,7 @@ func (app *Config) getCalendarIcs(c *gin.Context) {
 	})
 	if err != nil {
 		log.Println("Error on calling UserService.GetCalendarIv method for getCalendarIcs:", err)
-		c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
+		c.Error(err)
 		return
 	}
 
@@ -128,7 +128,7 @@ func (app *Config) updateIcsCalendar(userId string) {
 	rand.Read(ivCalendar)
 
 	// Call rust service to create ics
-	calendarsResp, err := app.calendarsClient.calendarService.CreateCalendar(ctx, &calendar.CreateCalendarRequest{
+	_, err = app.calendarsClient.calendarService.CreateCalendar(ctx, &calendar.CreateCalendarRequest{
 		CalendarID:       calendarIdResp.CalendarId,
 		CalendarIV:       ivCalendar,
 		CalendarEntities: calendarArr,
@@ -136,10 +136,6 @@ func (app *Config) updateIcsCalendar(userId string) {
 	})
 	if err != nil {
 		log.Println("Error on calling CalendarService.CreateCalendar:", err)
-		return
-	}
-	if calendarsResp.Error {
-		log.Println("Error on calling CalendarService.CreateCalendar:", calendarsResp.Message)
 		return
 	}
 

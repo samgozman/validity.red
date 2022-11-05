@@ -9,6 +9,8 @@ pub mod calendar {
     use std::error::Error;
     use std::fs::File;
     use std::io::{BufReader, Read, Write};
+    use std::path::Path;
+    use tonic::Status;
 
     /// Read a file and return the contents as a string
     ///
@@ -20,11 +22,16 @@ pub mod calendar {
     /// Returns:
     ///
     /// A String containing the contents of the file or an ([`Err`]).
-    pub fn read(file_name: &str, iv: &[u8; 12]) -> Result<String, Box<dyn Error>> {
+    pub fn read(file_name: &str, iv: &[u8; 12]) -> Result<String, Status> {
         const FILE_PATH: &str = "data/";
         let path = FILE_PATH.to_owned() + file_name;
+        let path = Path::new(&path);
 
-        let file = File::open(path).expect("File not found");
+        if !path.exists() {
+            return Err(Status::not_found("Calendar file not found"));
+        }
+
+        let file = File::open(path).expect("Failed to open calendar file");
         let mut buf_reader = BufReader::new(file);
 
         let mut file_data: Vec<u8> = Vec::new();
@@ -38,8 +45,10 @@ pub mod calendar {
         encryption_key.copy_from_slice(env_key.as_bytes());
 
         let decrypted = decrypt(file_data.as_slice(), &encryption_key, iv);
-
-        Ok(decrypted)
+        match decrypted {
+            Ok(data) => Ok(data),
+            Err(e) => Err(Status::internal(e.to_string())),
+        }
     }
 
     /// It takes a vector of `CalendarEntity`s and returns a string containing the iCalendar data
@@ -84,7 +93,7 @@ pub mod calendar {
     pub fn write(data: String, file_name: &str, iv: &[u8; 12]) -> Result<(), Box<dyn Error>> {
         const FILE_PATH: &str = "data/";
         let path = FILE_PATH.to_owned() + file_name;
-        let path = std::path::Path::new(&path);
+        let path = Path::new(&path);
         let parent_folder = path.parent().unwrap();
 
         if !parent_folder.exists() {
@@ -228,7 +237,7 @@ pub mod calendar {
 
             write("Test data string".to_string(), file_name, &iv).unwrap();
 
-            let path = std::path::Path::new("data/tmp/test.ics");
+            let path = Path::new("data/tmp/test.ics");
             assert!(path.exists(), "File does not exist");
 
             // Clear test files

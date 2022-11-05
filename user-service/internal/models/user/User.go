@@ -144,14 +144,17 @@ func (u *PostgresRepository) FindOne(ctx context.Context, query *User, fields st
 		Where(query).
 		First(&user).
 		WithContext(ctx)
-	if res.Error != nil {
-		if errors.Is(res.Error, gorm.ErrRecordNotFound) {
-			return nil, status.Error(codes.NotFound, "user not found")
-		}
-		return nil, status.Error(codes.Internal, res.Error.Error())
-	}
 
-	return user, nil
+	if res.Error == nil {
+		return user, nil
+	}
+	if errors.Is(res.Error, gorm.ErrRecordNotFound) {
+		if query.CalendarID != "" {
+			return nil, status.Error(codes.NotFound, "calendar id not found")
+		}
+		return nil, status.Error(codes.NotFound, "user not found")
+	}
+	return nil, status.Error(codes.Internal, res.Error.Error())
 }
 
 func (u *PostgresRepository) Update(ctx context.Context, userId string, fields map[string]interface{}) error {
