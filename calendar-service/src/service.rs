@@ -165,8 +165,8 @@ pub mod calendar {
                     nanos: 0,
                 }),
             };
-
-            let event = create_event(&calendar_event, "Asia/Tbilisi");
+            let tz: Tz = "Asia/Tbilisi".parse().unwrap();
+            let event = create_event(&calendar_event, tz);
             let expected = "\
                 BEGIN:VEVENT\r\n\
                 UID:e533947d-6f40-4f4f-b614-ddf70534c576\r\n\
@@ -197,8 +197,8 @@ pub mod calendar {
                     nanos: 0,
                 }),
             }];
-
-            let calendar = create(&calendar_events, "Asia/Tbilisi");
+            let tz: Tz = "Asia/Tbilisi".parse().unwrap();
+            let calendar = create(&calendar_events, tz);
 
             let expected = "\
                 BEGIN:VCALENDAR\r\n\
