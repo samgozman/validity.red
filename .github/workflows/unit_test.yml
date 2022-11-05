@@ -34,7 +34,7 @@ jobs:
       run: make grpc_init_go
 
     - name: Build go services
-      run: make build
+      run: make build_go
 
     - name: Test document-service
       working-directory: ./document-service
