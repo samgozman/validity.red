@@ -1,4 +1,4 @@
-name: Testing validity.red
+name: Unit tests for validity.red
 
 on:
   push:
@@ -9,7 +9,7 @@ on:
 jobs:
 
   unit_test_go:
-    name: Build & run Go unit tests
+    name: Go unit tests
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
@@ -49,10 +49,15 @@ jobs:
       run: go test -v ./...
 
   unit_test_rust:
-    name: Build & run Rust unit tests
+    name: Rust unit tests
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
+
+    - name: Setup protoc
+      uses: arduino/setup-protoc@v1
+      with:
+        version: '3.x'
 
     - name: Build calendar-service
       working-directory: ./calendar-service
