@@ -25,6 +25,7 @@ import Footer from "@/components/FooterComponent.vue";
           v-for="item in navbarItems"
           v-bind:key="item.name"
           :item="item"
+          :isMobile="true"
         />
       </ul>
     </div>
