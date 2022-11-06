@@ -1,5 +1,7 @@
 # validity.red
 
+[![Unit tests](https://github.com/samgozman/validity.red/actions/workflows/unit_test.yml/badge.svg?branch=main)](https://github.com/samgozman/validity.red/actions/workflows/unit_test.yml)
+
 ## Services
 
 ```mermaid
