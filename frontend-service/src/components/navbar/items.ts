@@ -37,3 +37,12 @@ export const navbarItemsUser: NavbarItem[] = [
     iconClass: "person-add-outline",
   },
 ];
+
+/** Navbar items for authenticated user drop-down menu */
+export const navbarItemsUserAuth: NavbarItem[] = [
+  {
+    name: "Logout",
+    url: { name: "logout" },
+    iconClass: "log-out-outline",
+  },
+];

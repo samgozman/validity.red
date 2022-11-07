@@ -1,8 +1,13 @@
 <script setup lang="ts">
 import { RouterLink } from "vue-router";
-import { navbarItems, navbarItemsUser } from "@/components/navbar/items";
+import {
+  navbarItems,
+  navbarItemsUser,
+  navbarItemsUserAuth,
+} from "@/components/navbar/items";
 import LogoText from "@/components/LogoText.vue";
 import NavItem from "./NavItem.vue";
+import { state } from "@/state";
 </script>
 
 <template>
@@ -40,7 +45,9 @@ import NavItem from "./NavItem.vue";
           class="mt-3 p-2 shadow menu menu-compact dropdown-content bg-base-100 rounded-box w-48"
         >
           <NavItem
-            v-for="item in navbarItemsUser"
+            v-for="item in state.user.isAuthenticated
+              ? navbarItemsUserAuth
+              : navbarItemsUser"
             v-bind:key="item.name"
             :item="item"
           />
