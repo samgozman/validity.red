@@ -34,10 +34,16 @@ import Footer from "@/components/FooterComponent.vue";
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import { RefreshToken } from "./services/RefreshToken";
+import { RefreshToken } from "@/services/RefreshToken";
+import { setUser } from "@/state";
 
 export default defineComponent({
   mounted() {
+    // if user has token and user object in local storage then update user state
+    const user = localStorage.getItem("user");
+    if (RefreshToken.getCookie("token") && user) {
+      setUser(JSON.parse(user));
+    }
     // Run token refresh task in background
     setInterval(async () => {
       await RefreshToken.call();

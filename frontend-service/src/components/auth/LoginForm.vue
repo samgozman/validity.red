@@ -47,6 +47,7 @@ import InputLabel from "../elements/InputLabel.vue";
 import { defineComponent } from "vue";
 import { AuthService } from "./AuthService";
 import { ErrorDecoder } from "@/services/ErrorDecoder";
+import { setIsAuthenticated } from "@/state";
 
 export default defineComponent({
   data() {
@@ -63,8 +64,7 @@ export default defineComponent({
           email: this.email,
           password: this.password,
         });
-
-        // window.localStorage.setItem("userData", JSON.stringify(user));
+        setIsAuthenticated(true);
         this.$router.push("/");
       } catch (error) {
         this.errorMsg = await ErrorDecoder.decode(error);

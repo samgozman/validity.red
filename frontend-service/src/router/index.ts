@@ -3,6 +3,7 @@ import MainView from "@/views/MainView.vue";
 import AboutView from "@/views/AboutView.vue";
 import LoginView from "@/views/LoginView.vue";
 import RegistrationView from "@/views/RegistrationView.vue";
+import { logout } from "@/services/Logout";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -21,6 +22,14 @@ const router = createRouter({
       path: "/register",
       name: "register",
       component: RegistrationView,
+    },
+    {
+      path: "/logout",
+      name: "logout",
+      redirect: () => {
+        logout();
+        return { name: "home" };
+      },
     },
     {
       path: "/dashboard",
@@ -69,7 +78,7 @@ const router = createRouter({
   ],
 });
 
-router.beforeEach(async (to, from) => {
+router.beforeEach(async (to) => {
   // Check for requiresAuth guard
   if (!to.meta.requiresAuth) return;
 

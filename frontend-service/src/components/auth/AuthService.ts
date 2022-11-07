@@ -1,5 +1,6 @@
 import type { IResponse } from "@/services/QueryMaker";
 import { QueryMaker } from "@/services/QueryMaker";
+import { setCalendarId, setUsersTimezone } from "@/state";
 
 interface IAuthCredentials {
   email: string;
@@ -29,9 +30,8 @@ export class AuthService {
     }).post<IAuthResponse>();
     const { error, message, calendarId, timezone } = res.data;
 
-    // Save calendar to local storage
-    localStorage.setItem("calendarId", calendarId);
-    localStorage.setItem("usersTimezone", timezone);
+    setCalendarId(calendarId);
+    setUsersTimezone(timezone);
 
     if (error) {
       throw new Error(message);

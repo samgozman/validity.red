@@ -124,6 +124,7 @@ import { DashboardService } from "./DashboardService";
 import type { IDashboardStats } from "./interfaces/IDashboardStats";
 import { ErrorDecoder } from "@/services/ErrorDecoder";
 import { QueryMaker } from "@/services/QueryMaker";
+import { state } from "@/state";
 
 interface VueData {
   stats: IDashboardStats;
@@ -139,7 +140,7 @@ export default defineComponent({
     return {
       stats: {} as IDashboardStats,
       avgNotifications: 0,
-      calendarId: localStorage.getItem("calendarId"),
+      calendarId: state.value.user.calendarId,
       icsRoute: "",
       errorMsg: "",
       errorMsgIcs: "",
