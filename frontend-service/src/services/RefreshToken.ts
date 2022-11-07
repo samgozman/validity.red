@@ -21,7 +21,7 @@ export class RefreshToken {
    * @param cookieName Name of the cookie
    * @returns
    */
-  private static getCookie(cookieName: string): string | undefined {
+  public static getCookie(cookieName: string): string | undefined {
     const cookie: { [name: string]: string } = {};
     document.cookie.split(";").forEach((el) => {
       const [key, value] = el.split("=");
