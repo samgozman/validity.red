@@ -22,7 +22,7 @@ jobs:
 
       - name: Tar dist files
         working-directory: ./frontend-service
-        run: tar -cvf frontend_service.tar /dist
+        run: tar -cvf frontend_service.tar ./dist
 
       # It will be available in the Actions tab for 90 days
       - name: Publish SPA as an artifact
