@@ -16,10 +16,10 @@
 			"path": "frontend-service"
 		},
 		{
-			"path": "docs"
+			"path": "proto"
 		},
 		{
-			"path": "proto"
+			"path": "deploy"
 		},
 		// For the full view of the project
 		{
