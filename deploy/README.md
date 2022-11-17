@@ -5,8 +5,8 @@
 ```mermaid
 graph LR
     A((frontend-service <br/> gateway-service <br/> redis DB <br/>))
-    A-->B((user-service <br/> document-service <br/> calendar-service <br/>))
-    B-->C((users_postgres <br/> documents_postgres <br/>))
+    A<--> |service_network| B((user-service <br/> document-service <br/> calendar-service <br/>))
+    B<--> |db_network| C((users_postgres <br/> documents_postgres <br/>))
 ```
 
 In the current deployment setup there are only 3 servers used:
