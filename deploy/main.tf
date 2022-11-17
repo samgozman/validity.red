@@ -18,8 +18,12 @@ variable "os_type" {
   default = "ubuntu-22.04"
 }
 
-variable "ip_range" {
+variable "ip_range_web" {
   default = "10.0.0.0/16"
+}
+
+variable "ip_range_services" {
+  default = "10.1.0.0/16"
 }
 
 # TODO: get DC name from https://docs.hetzner.cloud/#datacenters
@@ -46,38 +50,67 @@ resource "hcloud_server" "web" {
   name        = "web-server-${count.index}"
   image       = var.os_type
   server_type = "cpx11"
-	datacenter  = var.datacenter
+  datacenter  = var.datacenter
   ssh_keys    = [hcloud_ssh_key.default.id]
-	backups     = false
-	public_net {
-		ipv4_enabled = true
+  backups     = false
+  public_net {
+    ipv4_enabled = true
     ipv4 = hcloud_primary_ip.public.id
   }
+  network {
+    network_id = hcloud_network.service_network.id
+    ip         = "10.0.1.0"
+  }
 
-	# cloud-init config
+  # cloud-init config
   # user_data = file("user_data.yml")
+}
+
+resource "hcloud_server" "services" {
+  count       = 1
+  name        = "service-server-${count.index}"
+  image       = var.os_type
+  server_type = "cpx11"
+  datacenter  = var.datacenter
+  ssh_keys    = [hcloud_ssh_key.default.id]
+  backups     = false
+  public_net {
+    ipv4_enabled = false
+    ipv6_enabled = false
+  }
+  network {
+    network_id = hcloud_network.service_network.id
+    ip         = "10.0.1.1"
+  }
+  network {
+    network_id = hcloud_network.db_network.id
+    ip         = "10.1.1.1"
+  }
 }
 
 ## Network
 
 # Create private network
-resource "hcloud_network" "hc_private" {
-  name     = "hc_private"
-  ip_range = var.ip_range
+resource "hcloud_network" "service_network" {
+  name     = "service_network"
+  ip_range = var.ip_range_web
+}
+resource "hcloud_network" "db_network" {
+  name     = "db_network"
+  ip_range = var.ip_range_services
 }
 # Create subnet for private network
-resource "hcloud_network_subnet" "hc_private_subnet" {
-  network_id   = hcloud_network.hc_private.id
+resource "hcloud_network_subnet" "service_network_subnet" {
+  network_id   = hcloud_network.service_network.id
   type         = "cloud"
   network_zone = "eu-central"
-  ip_range     = var.ip_range
+  ip_range     = var.ip_range_web
 }
-# Attach private network to VMs 
-#? Need to correct this
-resource "hcloud_server_network" "web_network" {
-  count     = 1
-  server_id = hcloud_server.web[count.index].id
-  subnet_id = hcloud_network_subnet.hc_private_subnet.id
+resource "hcloud_network_subnet" "db_network_subnet" {
+  network_id   = hcloud_network.db_network.id
+  type         = "cloud"
+  network_zone = "eu-central"
+  ip_range     = var.ip_range_services
 }
 
 # Create public static IP address
