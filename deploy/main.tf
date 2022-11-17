@@ -62,7 +62,7 @@ resource "hcloud_server" "web" {
     ip         = "10.0.1.0"
   }
 
-  # cloud-init config
+  # TODO: cloud-init config
   # user_data = file("user_data.yml")
 }
 
@@ -85,6 +85,28 @@ resource "hcloud_server" "services" {
   network {
     network_id = hcloud_network.db_network.id
     ip         = "10.1.1.1"
+  }
+}
+
+resource "hcloud_server" "db" {
+  count              = 1
+  name               = "db-server"
+  image              = var.os_type
+  server_type        = "cpx11"
+  datacenter         = var.datacenter
+  ssh_keys           = [hcloud_ssh_key.default.id]
+  backups            = true
+  # ! This will cause terraform to hung up on 'apply' or 'destroy' action once it's created.
+  # ! If you really need to modify the server, you can do it manually in the Hetzner Cloud Console.
+  delete_protection  = true
+  rebuild_protection = true
+  public_net {
+    ipv4_enabled = false
+    ipv6_enabled = false
+  }
+  network {
+    network_id = hcloud_network.db_network.id
+    ip         = "10.1.1.2"
   }
 }
 
