@@ -18,11 +18,11 @@ variable "os_type" {
   default = "ubuntu-22.04"
 }
 
-variable "ip_range_web" {
+variable "ip_range_services" {
   default = "10.0.0.0/16"
 }
 
-variable "ip_range_services" {
+variable "ip_range_db" {
   default = "10.1.0.0/16"
 }
 
@@ -93,24 +93,24 @@ resource "hcloud_server" "services" {
 # Create private network
 resource "hcloud_network" "service_network" {
   name     = "service_network"
-  ip_range = var.ip_range_web
+  ip_range = var.ip_range_services
 }
 resource "hcloud_network" "db_network" {
   name     = "db_network"
-  ip_range = var.ip_range_services
+  ip_range = var.ip_range_db
 }
 # Create subnet for private network
 resource "hcloud_network_subnet" "service_network_subnet" {
   network_id   = hcloud_network.service_network.id
   type         = "cloud"
   network_zone = "eu-central"
-  ip_range     = var.ip_range_web
+  ip_range     = var.ip_range_services
 }
 resource "hcloud_network_subnet" "db_network_subnet" {
   network_id   = hcloud_network.db_network.id
   type         = "cloud"
   network_zone = "eu-central"
-  ip_range     = var.ip_range_services
+  ip_range     = var.ip_range_db
 }
 
 # Create public static IP address
