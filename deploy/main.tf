@@ -64,8 +64,8 @@ resource "hcloud_firewall" "public_firewall" {
   }
 }
 
-resource "hcloud_firewall" "ssh_under_vpn_firewall" {
-  name = "ssh_under_vpn_firewall"
+resource "hcloud_firewall" "ssh_firewall" {
+  name = "ssh_firewall"
   rule {
     direction = "in"
     protocol  = "tcp"
@@ -97,7 +97,7 @@ resource "hcloud_server" "web" {
   }
   firewall_ids = [
     hcloud_firewall.public_firewall.id,
-    hcloud_firewall.ssh_under_vpn_firewall.id
+    hcloud_firewall.ssh_firewall.id
   ]
   # TODO: cloud-init config
   # user_data = file("user_data.yml")
@@ -123,7 +123,7 @@ resource "hcloud_server" "services" {
     network_id = hcloud_network.db_network.id
     ip         = "10.1.1.1"
   }
-  firewall_ids = [hcloud_firewall.ssh_under_vpn_firewall.id]
+  firewall_ids = [hcloud_firewall.ssh_firewall.id]
 }
 
 resource "hcloud_server" "db" {
@@ -146,7 +146,7 @@ resource "hcloud_server" "db" {
     network_id = hcloud_network.db_network.id
     ip         = "10.1.1.2"
   }
-  firewall_ids = [hcloud_firewall.ssh_under_vpn_firewall.id]
+  firewall_ids = [hcloud_firewall.ssh_firewall.id]
 }
 
 ## Network
