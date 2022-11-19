@@ -26,7 +26,6 @@ variable "ip_range_db" {
   default = "10.1.0.0/16"
 }
 
-# TODO: get DC name from https://docs.hetzner.cloud/#datacenters
 variable "datacenter" {
   default = "nbg1-dc3"
 }
@@ -41,7 +40,42 @@ resource "hcloud_ssh_key" "default" {
 }
 
 ## Firewall
-# TODO: Create firewall
+resource "hcloud_firewall" "public_firewall" {
+  name = "public_firewall"
+  rule {
+    direction = "in"
+    protocol  = "tcp"
+    port      = "80"
+    source_ips = [
+      "0.0.0.0/0",
+      "::/0"
+    ]
+    description = "HTTP"
+  }
+  rule {
+    direction = "in"
+    protocol  = "tcp"
+    port      = "443"
+    source_ips = [
+      "0.0.0.0/0",
+      "::/0"
+    ]
+    description = "HTTPS"
+  }
+}
+
+resource "hcloud_firewall" "ssh_under_vpn_firewall" {
+  name = "ssh_under_vpn_firewall"
+  rule {
+    direction = "in"
+    protocol  = "tcp"
+    port      = "22"
+    source_ips = [
+      format("%s/32",hcloud_primary_ip.public.ip_address)
+    ]
+    description = "SSH"
+  }
+}
 
 ## VMs
 
@@ -61,7 +95,10 @@ resource "hcloud_server" "web" {
     network_id = hcloud_network.service_network.id
     ip         = "10.0.1.0"
   }
-
+  firewall_ids = [
+    hcloud_firewall.public_firewall.id,
+    hcloud_firewall.ssh_under_vpn_firewall.id
+  ]
   # TODO: cloud-init config
   # user_data = file("user_data.yml")
 }
@@ -86,6 +123,7 @@ resource "hcloud_server" "services" {
     network_id = hcloud_network.db_network.id
     ip         = "10.1.1.1"
   }
+  firewall_ids = [hcloud_firewall.ssh_under_vpn_firewall.id]
 }
 
 resource "hcloud_server" "db" {
@@ -108,6 +146,7 @@ resource "hcloud_server" "db" {
     network_id = hcloud_network.db_network.id
     ip         = "10.1.1.2"
   }
+  firewall_ids = [hcloud_firewall.ssh_under_vpn_firewall.id]
 }
 
 ## Network
