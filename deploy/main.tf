@@ -99,8 +99,7 @@ resource "hcloud_server" "web" {
     hcloud_firewall.public_firewall.id,
     hcloud_firewall.ssh_firewall.id
   ]
-  # TODO: cloud-init config
-  # user_data = file("user_data.yml")
+  user_data = file("web/web-config.yml")
 }
 
 resource "hcloud_server" "services" {
@@ -124,6 +123,7 @@ resource "hcloud_server" "services" {
     ip         = "10.1.1.1"
   }
   firewall_ids = [hcloud_firewall.ssh_firewall.id]
+  user_data = file("services/services-config.yml")
 }
 
 resource "hcloud_server" "db" {
@@ -147,6 +147,7 @@ resource "hcloud_server" "db" {
     ip         = "10.1.1.2"
   }
   firewall_ids = [hcloud_firewall.ssh_firewall.id]
+  # TODO: add config for postgres
 }
 
 ## Network
