@@ -64,4 +64,4 @@ runcmd:
   # TODO: docker-compose up -d
   # TODO: make sure that after reboot, docker-compose up -d is run
   # TODO: certbot
-  # install nginx with ssl support
+  # TODO: add github webhook

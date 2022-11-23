@@ -48,3 +48,6 @@ override.tf.json
 *_override.tf.json
 .terraformrc
 terraform.rc
+
+# Ignore env files
+**/.env
