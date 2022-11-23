@@ -35,3 +35,19 @@ calendar-service/target
 *.njsproj
 *.sln
 *.sw?
+
+# Ignore terraform files
+**/.terraform/*
+*.tfstate
+*.tfstate.*
+*.tfvars
+*.tfvars.json
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+.terraformrc
+terraform.rc
+
+# Ignore env files
+**/*.env

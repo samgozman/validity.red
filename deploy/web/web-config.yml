@@ -1,0 +1,67 @@
+# cloud-config
+package_update: true
+package_upgrade: true
+packages:
+  - curl
+  # Basic nginx dependencies 
+  - build-essentia
+  - libpcre3
+  - libpcre3-dev
+  - zlib1g
+  - zlib1g-dev
+  - libssl-dev
+  - libgd-dev
+  - libxml2
+  - libxml2-dev
+  - uuid-dev
+  # Additional packages that may be needed for nginx modules
+  - libossp-uuid-dev
+  - libgeoip-dev
+  - libxslt-dev
+runcmd:
+  - ufw disable # disable firewall. Using VPS firewall instead
+  - curl -fsSL https://get.docker.com | sh # install docker
+  - wget https://nginx.org/download/nginx-1.23.2.tar.gz  # download nginx
+  - tar -zxvf nginx-1.23.2.tar.gz # extract nginx
+  - cd nginx-1.23.2 # change directory to nginx
+  - | # configure nginx
+    ./configure
+      --sbin-path=/usr/bin/nginx
+      --conf-path=/etc/nginx/nginx.conf
+      --error-log-path=/var/log/nginx/error.log
+      --http-log-path=/var/log/nginx/access.log
+      --lock-path=/var/lock/nginx.lock
+      --pid-path=/var/run/nginx.pid
+      --with-pcre
+      --with-http_ssl_module
+      --with-http_v2_module 
+  - make install
+  - | # Add nginx to systemd
+    cat >> /lib/systemd/system/nginx.service <<EOL
+    [Unit]
+    Description=The NGINX HTTP and reverse proxy server
+    After=syslog.target network-online.target remote-fs.target nss-lookup.target
+    Wants=network-online.target
+    [Service]
+    Type=forking
+    PIDFile=/var/run/nginx.pid
+    ExecStartPre=/usr/bin/nginx -t
+    ExecStart=/usr/bin/nginx
+    ExecReload=/usr/bin/nginx -s reload
+    ExecStop=/bin/kill -s QUIT $MAINPID
+    PrivateTmp=true
+    [Install]
+    WantedBy=multi-user.target
+    EOL
+  - cd .. # get out of nginx directory
+  - curl -o nginx.conf https://raw.githubusercontent.com/samgozman/validity.red/main/deploy/nginx.conf # download nginx config
+  - cp -rf nginx.conf /etc/nginx/nginx.conf
+  - systemctl start nginx # start nginx
+  - systemctl enable nginx # enable nginx on boot
+  - mkdir validityred
+  - cd validityred
+  - curl -o docker-compose.yml https://raw.githubusercontent.com/samgozman/validity.red/main/deploy/web/docker-compose.yml
+  # TODO: docker-compose up -d
+  # TODO: make sure that after reboot, docker-compose up -d is run
+  # TODO: certbot
+  # TODO: add github webhook
