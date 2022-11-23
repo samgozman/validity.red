@@ -1,0 +1,23 @@
+version: '3.8'
+# Production environment for web server
+
+services:
+  user-service:
+    image: 'ghcr.io/samgozman/validity.red/user-service:latest'
+    restart: always
+    env_file:
+      - users.env
+
+  document-service:
+    image: 'ghcr.io/samgozman/validity.red/document-service:latest'
+    restart: always
+    env_file:
+      - documents.env
+
+  calendar-service:
+    image: 'ghcr.io/samgozman/validity.red/calendar-service:latest'
+    restart: always
+    env_file:
+      - calendars.env
+    volumes:
+      - ./calendars/data/:/data/
