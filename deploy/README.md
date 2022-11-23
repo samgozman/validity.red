@@ -27,10 +27,10 @@ Lowest cost option is to use a single server for all services. This is the easie
 
 ## Create servers with Terraform
 
-1. Create `secrets.auto.tfvars` file in 'deploy' directory with the following content: `hcloud_token = "YOUR_HETZNER_TOKEN`
+1. Create `secrets.auto.tfvars` file in 'deploy' directory with the following content: `hcloud_token = "YOUR_HETZNER_TOKEN"`
 2. Run `terraform init` and then `terraform apply` in 'deploy' directory
 
 ## Deploy services
 
 Will be handled by CI/CD pipeline in GitHub Actions via webhooks. But you can do it manually - just don't forget to set
-environment variables id 'deploy' directory (as described in the `.sample` files).
+environment variables in 'deploy' directory (as described in the `.sample` files).
