@@ -182,6 +182,7 @@ resource "hcloud_primary_ip" "public" {
   type          = "ipv4"
   assignee_type = "server"
   auto_delete   = false
+  delete_protection  = true
 }
 
 ## Output
