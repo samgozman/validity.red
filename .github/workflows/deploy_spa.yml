@@ -1,0 +1,32 @@
+name: Deploy SPA
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy-spa:
+    runs-on: ubuntu-latest
+    env:
+      SSH_CONNECTION: ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}
+    steps:
+    - uses: actions/checkout@v3
+    - name: Download SPA artifact
+      uses: actions/download-artifact@v3
+      with:
+        name: frontend_service
+        path: ./artifacts
+
+    - name: Install SSH key
+      uses: shimataro/ssh-key-action@v2
+      with:
+        key: ${{ secrets.SSH_KEY }}
+        name: validityred_github
+        known_hosts: ${{ secrets.KNOWN_HOSTS }}
+
+    - name: copy artifact via rsync over SSH
+      run: rsync -r ./artifacts/frontend_service.tar $SSH_CONNECTION:./
+
+    - name: remove existing SPA files
+      run: ssh $SSH_CONNECTION "rm -r /validityred/dist"
+
+    - name: extract SPA files
+      run: ssh $SSH_CONNECTION "tar -xf ./frontend_service.tar -C /validityred"

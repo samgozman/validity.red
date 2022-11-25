@@ -39,6 +39,11 @@ resource "hcloud_ssh_key" "default" {
   public_key = file("~/.ssh/id_rsa.pub")
 }
 
+resource "hcloud_ssh_key" "github" {
+  name       = "key_for_github"
+  public_key = file("~/.ssh/validityred_github.pub")
+}
+
 ## Firewall
 resource "hcloud_firewall" "public_firewall" {
   name = "public_firewall"
@@ -85,7 +90,10 @@ resource "hcloud_server" "web" {
   image       = var.os_type
   server_type = "cpx11"
   datacenter  = var.datacenter
-  ssh_keys    = [hcloud_ssh_key.default.id]
+  ssh_keys    = [
+    hcloud_ssh_key.default.id,
+    hcloud_ssh_key.github.id
+  ]
   backups     = false
   public_net {
     ipv4_enabled = true
@@ -182,6 +190,7 @@ resource "hcloud_primary_ip" "public" {
   type          = "ipv4"
   assignee_type = "server"
   auto_delete   = false
+  delete_protection  = true
 }
 
 ## Output

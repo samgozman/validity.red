@@ -28,7 +28,8 @@ Lowest cost option is to use a single server for all services. This is the easie
 ## Create servers with Terraform
 
 1. Create `secrets.auto.tfvars` file in 'deploy' directory with the following content: `hcloud_token = "YOUR_HETZNER_TOKEN"`
-2. Run `terraform init` and then `terraform apply` in 'deploy' directory
+2. Create SSH keys for the servers: `id_rsa` and `validityred_github`
+3. Run `terraform init` and then `terraform apply` in 'deploy' directory
 
 ## Deploy services
 
