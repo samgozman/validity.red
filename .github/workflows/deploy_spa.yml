@@ -26,7 +26,7 @@ jobs:
       run: rsync -r ./artifacts/frontend_service.tar $SSH_CONNECTION:./
 
     - name: remove existing SPA files
-      run: ssh $SSH_CONNECTION "rm -r ./validityred/dist"
+      run: ssh $SSH_CONNECTION "rm -r /validityred/dist"
 
     - name: extract SPA files
-      run: ssh $SSH_CONNECTION "tar -xf ./frontend_service.tar -C ./validityred"
+      run: ssh $SSH_CONNECTION "tar -xf ./frontend_service.tar -C /validityred"
