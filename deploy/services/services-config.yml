@@ -1,4 +1,4 @@
-# cloud-config
+#cloud-config
 users:
   # Since this server is not publicly accessible, we can use a password-less user
   # for SSH access from the other servers in the same private network.
