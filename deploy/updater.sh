@@ -5,9 +5,19 @@
 # It should be copied to the "web" server by the `web/web-config.yml`
 
 # Copy .env files (created by the github "deploy" action) to the "services" server.
-rsync -r ./calendars.env ./documents.env ./users.env updater@10.0.1.1:./PROJECT_DIRECTORY
+rsync -r ./calendars.env ./documents.env ./users.env updater@10.0.1.1:/validityred
+# Copy .env files for "db" server
+rsync -r ./db.env updater@10.1.1.2:/validityred
 
-# Update containers on "services" server first
+# Update containers on the "db" server first
+ssh updater@10.1.1.2 "
+  cd /validityred
+  docker compose down
+  docker compose pull
+  docker compose up --build -d
+"
+
+# Update containers on "services" server
 ssh updater@10.0.1.1 "
   cd /validityred
   docker compose down

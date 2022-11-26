@@ -1,0 +1,16 @@
+#cloud-config
+users:
+  # Since this server is not publicly accessible, we can use a password-less user
+  # for SSH access from the other servers in the same private network.
+  - name: updater
+    sudo: ['ALL=(ALL) NOPASSWD:ALL']
+    groups: sudo
+    shell: /bin/bash
+package_update: true
+package_upgrade: true
+runcmd:
+  - curl -fsSL https://get.docker.com | sh # install docker
+  - mkdir /validityred
+  - cd /validityred # Create project folder and copy compose & updater files
+  - curl -o docker-compose.yml https://raw.githubusercontent.com/samgozman/validity.red/main/deploy/db/docker-compose.yml
+  - reboot

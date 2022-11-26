@@ -179,7 +179,7 @@ resource "hcloud_server" "db" {
     ip         = "10.1.1.2"
   }
   firewall_ids = [hcloud_firewall.ssh_firewall.id]
-  # TODO: add config for postgres
+  user_data = file("db/db-config.yml")
 }
 
 ## Network
