@@ -12,5 +12,5 @@ runcmd:
   - curl -fsSL https://get.docker.com | sh # install docker
   - mkdir /validityred
   - cd /validityred # Create project folder and copy compose & updater files
-  - curl -o docker-compose.yml https://raw.githubusercontent.com/samgozman/validity.red/main/deploy/services/docker-compose.yml
+  - curl -o docker-compose.yml https://raw.githubusercontent.com/samgozman/validity.red/main/deploy/db/docker-compose.yml
   - reboot

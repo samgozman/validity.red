@@ -1,4 +1,4 @@
-name: Build images and push to ghcr.io
+name: Build images
 on:
   workflow_dispatch:
 

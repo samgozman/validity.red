@@ -1,0 +1,34 @@
+name: Deploy services
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy-services:
+    runs-on: ubuntu-latest
+    env:
+      SSH_CONNECTION: ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Install SSH key
+        uses: shimataro/ssh-key-action@v2
+        with:
+          key: ${{ secrets.SSH_KEY }}
+          known_hosts: unnecessary
+
+      - name: Adding Known Hosts
+        run: ssh-keyscan -H ${{ secrets.SSH_HOST }}  >> ~/.ssh/known_hosts
+
+      - name: Create env files
+        run: |
+          echo "${{ secrets.DB_ENV_VARS }}" > db.env
+          echo "${{ secrets.SERVICES_CALENDARS_ENV_VARS }}" > calendars.env
+          echo "${{ secrets.SERVICES_DOCUMENTS_ENV_VARS }}" > documents.env
+          echo "${{ secrets.SERVICES_USERS_ENV_VARS }}" > users.env
+          echo "${{ secrets.GATEWAY_ENV_VARS }}" > gateway.env
+
+      - name: Copy .env files via rsync over SSH
+        run: rsync -r ./db.env ./calendars.env ./documents.env ./users.env ./gateway.env $SSH_CONNECTION:/validityred
+
+      - name: Run updater script
+        run: ssh $SSH_CONNECTION ". /validityred/updater.sh"
