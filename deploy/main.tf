@@ -121,6 +121,11 @@ resource "hcloud_server" "web" {
     network_id = hcloud_network.service_network.id
     ip         = "10.0.1.0"
   }
+  # This access is needed for the github actions to configure the server.
+  network {
+    network_id = hcloud_network.db_network.id
+    ip         = "10.1.1.0"
+  }
   firewall_ids = [
     hcloud_firewall.public_firewall.id,
     hcloud_firewall.ssh_firewall.id,
