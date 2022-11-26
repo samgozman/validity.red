@@ -4,7 +4,7 @@ package_upgrade: true
 packages:
   - curl
   # Basic nginx dependencies 
-  - build-essentia
+  - build-essential
   - libpcre3
   - libpcre3-dev
   - zlib1g
