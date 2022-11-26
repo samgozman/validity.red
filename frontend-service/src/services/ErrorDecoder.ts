@@ -19,10 +19,12 @@ export class ErrorDecoder {
       }
 
       if (error.response?.status && error.response?.status >= 500) {
+        console.error(error);
         // TODO: Log error to Sentry
       }
     } else {
       message = "An error occurred, please try again";
+      console.error(error);
       // TODO: Log error to Sentry
     }
 
