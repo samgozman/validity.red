@@ -1,8 +1,36 @@
-name: Deploy SPA
+name: Build & Deploy SPA
 on:
   workflow_dispatch:
 
 jobs:
+  build-spa:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Use Node.js 16.x
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16.x
+
+      - name: Install dependencies (+dev)
+        working-directory: ./frontend-service
+        run: npm ci
+
+      - name: Build SPA
+        working-directory: ./frontend-service
+        run: npm run build
+
+      - name: Tar dist files
+        working-directory: ./frontend-service
+        run: tar -cvf frontend_service.tar ./dist
+
+      # It will be available in the Actions tab for 90 days
+      - name: Publish SPA as an artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: frontend_service
+          path: ./frontend-service/frontend_service.tar
+
   deploy-spa:
     runs-on: ubuntu-latest
     env:
