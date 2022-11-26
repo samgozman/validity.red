@@ -65,6 +65,7 @@ runcmd:
   - chmod +x updater.sh
   # Create folder for static files
   - mkdir /srv/validityred
+  - reboot
   # TODO: docker compose up -d
   # TODO: make sure that after reboot, docker-compose up -d is run
   # TODO: certbot
