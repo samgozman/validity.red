@@ -8,7 +8,7 @@ services:
     ports:
       - "8080:80"
     env_file:
-      - .env
+      - gateway.env
     networks:
       - redis-network
     depends_on:
@@ -18,7 +18,7 @@ services:
     image: redis:6.2.7-alpine3.16
     restart: always
     env_file:
-      - .env
+      - gateway.env
     entrypoint: ["/bin/sh", "-c", "redis-server --appendonly yes --requirepass $${REDIS_PASSWORD} --maxmemory 256mb --maxmemory-policy allkeys-lru"]
     networks:
       - redis-network
