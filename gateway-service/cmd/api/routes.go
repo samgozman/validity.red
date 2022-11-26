@@ -11,7 +11,8 @@ import (
 )
 
 func (app *Config) routes() *gin.Engine {
-	g := gin.Default()
+	engine := gin.Default()
+	g := engine.Group("/api")
 
 	g.Use(cors.New(cors.Config{
 		// TODO: Set to validity.red domains
@@ -79,5 +80,5 @@ func (app *Config) routes() *gin.Engine {
 		auth.POST("/register", app.userRegister)
 	}
 
-	return g
+	return engine
 }
