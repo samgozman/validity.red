@@ -39,7 +39,7 @@ jobs:
         run: rsync -r ./frontend-service/frontend_service.tar $SSH_CONNECTION:./
 
       - name: remove existing SPA files
-        run: ssh $SSH_CONNECTION "rm -r /srv/validityred/dist"
+        run: ssh $SSH_CONNECTION "rm -r /srv/validityred/dist || true"
 
       - name: extract SPA files
         run: ssh $SSH_CONNECTION "tar -xf ./frontend_service.tar -C /srv/validityred"
