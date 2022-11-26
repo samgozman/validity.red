@@ -100,6 +100,20 @@ resource "hcloud_firewall" "ssh_firewall" {
   }
 }
 
+resource "hcloud_firewall" "db_firewall" {
+  name = "db_firewall"
+  rule {
+    direction = "in"
+    protocol  = "tcp"
+    port      = "5432"
+    source_ips = [
+      "10.1.1.1/32",
+      format("%s/32",hcloud_primary_ip.public.ip_address)
+    ]
+    description = "Postgres"
+  }
+}
+
 ## VMs
 
 resource "hcloud_server" "web" {
@@ -146,8 +160,8 @@ resource "hcloud_server" "services" {
   ]
   backups     = false
   public_net {
-    ipv4_enabled = false
-    ipv6_enabled = false
+    ipv4_enabled = true
+    ipv6_enabled = true
   }
   network {
     network_id = hcloud_network.service_network.id
@@ -177,14 +191,17 @@ resource "hcloud_server" "db" {
   delete_protection  = true
   rebuild_protection = true
   public_net {
-    ipv4_enabled = false
-    ipv6_enabled = false
+    ipv4_enabled = true
+    ipv6_enabled = true
   }
   network {
     network_id = hcloud_network.db_network.id
     ip         = "10.1.1.2"
   }
-  firewall_ids = [hcloud_firewall.ssh_firewall.id]
+  firewall_ids = [
+    hcloud_firewall.ssh_firewall.id,
+    hcloud_firewall.db_firewall.id
+  ]
   user_data = file("db/db-config.yml")
 }
 
