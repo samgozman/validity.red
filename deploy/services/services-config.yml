@@ -2,6 +2,7 @@
 package_update: true
 package_upgrade: true
 runcmd:
+  - ufw disable # disable firewall. Using VPS firewall instead
   - curl -fsSL https://get.docker.com | sh # install docker
   - mkdir /validityred
   - cd /validityred # Create project folder and copy compose & updater files
