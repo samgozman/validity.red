@@ -7,7 +7,7 @@
 # Copy .env files (created by the github "deploy" action) to the "services" server.
 rsync -r /validityred/calendars.env /validityred/documents.env /validityred/users.env root@10.0.1.1:/validityred
 # Copy .env files for "db" server
-rsync -r /validityred/db.env updater@10.1.1.2:/validityred
+rsync -r /validityred/db.env root@10.1.1.2:/validityred
 
 # Update containers on the "db" server first
 ssh root@10.1.1.2 "
