@@ -38,5 +38,12 @@ Lowest cost option is to use a single server for all services. This is the easie
 
 ## Deploy services
 
-Will be handled by CI/CD pipeline in GitHub Actions via webhooks. But you can do it manually - just don't forget to set
+Will be handled by CI/CD pipeline in GitHub Actions. But you can do it manually - just don't forget to set
 environment variables in 'deploy' directory (as described in the `.sample` files).
+
+To-do list for github deployment:
+
+- Create ENV variables in github Secrets section
+- Run publish.yml workflow to create docker images
+- Run deploy_services.yml workflow to deploy services
+- Run deploy_spa.yml to build and deploy SPA
