@@ -22,8 +22,10 @@ jobs:
       # ! Bad practice, but it works for now
       # ! This is a temporary solution to be able to connect to the
       # ! "services" from the "web" container
-      - name: Remove old fingerprint
-        run: ssh $SSH_CONNECTION "ssh-keygen -R ${{ secrets.SSH_HOST_SERVICES }} && ssh-keygen -R ${{ secrets.SSH_HOST_DB }}"
+      - name: Remove old fingerprint for SSH_HOST_SERVICES
+        run: ssh $SSH_CONNECTION "ssh-keygen -R ${{ secrets.SSH_HOST_SERVICES }} || true"
+      - name: Remove old fingerprint for SSH_HOST_SERVICES
+        run: ssh $SSH_CONNECTION "ssh-keygen -R ${{ secrets.SSH_HOST_DB }} || true"
       - name: Copy SSH private key
         run: rsync -r ~/.ssh/id_rsa $SSH_CONNECTION:~/.ssh/id_rsa
       - name: Adding Known Hosts for the "services" server
