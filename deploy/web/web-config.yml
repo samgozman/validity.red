@@ -63,6 +63,8 @@ runcmd:
   - curl -o docker-compose.yml https://raw.githubusercontent.com/samgozman/validity.red/main/deploy/web/docker-compose.yml
   - curl -o updater.sh https://raw.githubusercontent.com/samgozman/validity.red/main/deploy/updater.sh
   - chmod +x updater.sh
+  # Create folder for static files
+  - mkdir /srv/validityred
   # TODO: docker compose up -d
   # TODO: make sure that after reboot, docker-compose up -d is run
   # TODO: certbot
