@@ -20,6 +20,7 @@ services:
       REDIS_HOST: redis
       REDIS_PORT: 6379
       REDIS_PASSWORD: VWtWRVNWTmZVRUZUVTFkUFVrUQ==
+      JWT_SECRET: someSecretJwtKey
     networks:
       - gateway-network
       - redis-network
@@ -38,7 +39,6 @@ services:
       POSTGRES_USER: admin
       POSTGRES_PASSWORD: password
       POSTGRES_DB: users
-      JWT_SECRET: someSecretJwtKey
     networks:
       - gateway-network
       - users-network
