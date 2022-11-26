@@ -167,7 +167,10 @@ resource "hcloud_server" "db" {
   image              = var.os_type
   server_type        = "cpx11"
   datacenter         = var.datacenter
-  ssh_keys           = [hcloud_ssh_key.default.id]
+  ssh_keys           = [
+    hcloud_ssh_key.default.id,
+    hcloud_ssh_key.github.id
+  ]
   backups            = true
   # ! This will cause terraform to hung up on 'apply' or 'destroy' action once it's created.
   # ! If you really need to modify the server, you can do it manually in the Hetzner Cloud Console.
