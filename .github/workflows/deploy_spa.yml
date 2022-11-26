@@ -3,8 +3,10 @@ on:
   workflow_dispatch:
 
 jobs:
-  build-spa:
+  build-and-deploy-spa:
     runs-on: ubuntu-latest
+    env:
+      SSH_CONNECTION: ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}
     steps:
       - uses: actions/checkout@v3
       - name: Use Node.js 16.x
@@ -24,39 +26,27 @@ jobs:
         working-directory: ./frontend-service
         run: tar -cvf frontend_service.tar ./dist
 
+      - name: Install SSH key
+        uses: shimataro/ssh-key-action@v2
+        with:
+          key: ${{ secrets.SSH_KEY }}
+          known_hosts: unnecessary
+
+      - name: Adding Known Hosts
+        run: ssh-keyscan -H ${{ secrets.SSH_HOST }}  >> ~/.ssh/known_hosts
+
+      - name: copy archive via rsync over SSH
+        run: rsync -r ./frontend-service/frontend_service.tar $SSH_CONNECTION:./
+
+      - name: remove existing SPA files
+        run: ssh $SSH_CONNECTION "rm -r /srv/validityred/dist"
+
+      - name: extract SPA files
+        run: ssh $SSH_CONNECTION "tar -xf ./frontend_service.tar -C /srv/validityred"
+
       # It will be available in the Actions tab for 90 days
-      - name: Publish SPA as an artifact
+      - name: Publish SPA as an artifact (optional)
         uses: actions/upload-artifact@v3
         with:
           name: frontend_service
           path: ./frontend-service/frontend_service.tar
-
-  deploy-spa:
-    runs-on: ubuntu-latest
-    env:
-      SSH_CONNECTION: ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}
-    steps:
-    - uses: actions/checkout@v3
-    - name: Download SPA artifact
-      uses: actions/download-artifact@v3
-      with:
-        name: frontend_service
-        path: ./artifacts
-
-    - name: Install SSH key
-      uses: shimataro/ssh-key-action@v2
-      with:
-        key: ${{ secrets.SSH_KEY }}
-        known_hosts: unnecessary
-
-    - name: Adding Known Hosts
-      run: ssh-keyscan -H ${{ secrets.SSH_HOST }}  >> ~/.ssh/known_hosts
-
-    - name: copy artifact via rsync over SSH
-      run: rsync -r ./artifacts/frontend_service.tar $SSH_CONNECTION:./
-
-    - name: remove existing SPA files
-      run: ssh $SSH_CONNECTION "rm -r /srv/validityred/dist"
-
-    - name: extract SPA files
-      run: ssh $SSH_CONNECTION "tar -xf ./frontend_service.tar -C /srv/validityred"
