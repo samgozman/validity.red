@@ -10,13 +10,13 @@ rsync -r ./calendars.env ./documents.env ./users.env updater@10.0.1.1:./PROJECT_
 # Update containers on "services" server first
 ssh updater@10.0.1.1 "
   cd /validityred
-  docker-compose down
-  docker-compose pull
-  docker-compose up --build -d
+  docker compose down
+  docker compose pull
+  docker compose up --build -d
 "
 
 # Then do the same in the "web" server
 cd /validityred
-docker-compose down
-docker-compose pull
-docker-compose up --build -d
+docker compose down
+docker compose pull
+docker compose up --build -d
