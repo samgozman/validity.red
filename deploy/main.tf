@@ -69,6 +69,24 @@ resource "hcloud_firewall" "public_firewall" {
   }
 }
 
+#! This is a temporary firewall.
+#! It is used to allow SSH access to the server from the github actions.
+#! This firevall should be removed after the server is configured with VPN.
+#! SSH should be allowed only from the network IP range.
+#! See https://github.com/samgozman/validity.red/issues/106
+resource "hcloud_firewall" "ssh_firewall_public" {
+  name = "ssh_firewall_public"
+  rule {
+    direction = "in"
+    protocol  = "tcp"
+    port      = "22"
+    source_ips = [
+      "0.0.0.0/0",
+    ]
+    description = "SSH"
+  }
+}
+
 resource "hcloud_firewall" "ssh_firewall" {
   name = "ssh_firewall"
   rule {
@@ -105,7 +123,8 @@ resource "hcloud_server" "web" {
   }
   firewall_ids = [
     hcloud_firewall.public_firewall.id,
-    hcloud_firewall.ssh_firewall.id
+    hcloud_firewall.ssh_firewall.id,
+    hcloud_firewall.ssh_firewall_public.id,
   ]
   user_data = file("web/web-config.yml")
 }
