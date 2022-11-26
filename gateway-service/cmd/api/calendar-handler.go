@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"crypto/rand"
+	"fmt"
 	"log"
 	"net/http"
 	"time"
@@ -82,7 +83,7 @@ func (app *Config) getCalendarIcs(c *gin.Context) {
 
 	c.Writer.Header().Set("Content-Type", "text/calendar")
 	c.Writer.Header().Set("Content-Disposition", "attachment; filename=validity-calendar.ics")
-	c.Writer.Header().Set("Content-Length", string(rune(len(calendarIcs.Calendar))))
+	c.Writer.Header().Set("Content-Length", fmt.Sprint(len(calendarIcs.Calendar)))
 	c.Data(http.StatusOK, "text/calendar", calendarIcs.Calendar)
 }
 
