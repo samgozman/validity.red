@@ -140,7 +140,10 @@ resource "hcloud_server" "services" {
   image       = var.os_type
   server_type = "cpx11"
   datacenter  = var.datacenter
-  ssh_keys    = [hcloud_ssh_key.default.id]
+  ssh_keys    = [
+    hcloud_ssh_key.default.id,
+    hcloud_ssh_key.github.id
+  ]
   backups     = false
   public_net {
     ipv4_enabled = false
