@@ -12,7 +12,8 @@ rsync -r ./db.env updater@10.1.1.2:/validityred
 # Update containers on the "db" server first
 ssh updater@10.1.1.2 "
   cd /validityred
-  docker compose down
+  docker compose down || true
+  curl -o docker-compose.yml https://raw.githubusercontent.com/samgozman/validity.red/main/deploy/db/docker-compose.yml
   docker compose pull
   docker compose up --build -d
 "
@@ -20,13 +21,15 @@ ssh updater@10.1.1.2 "
 # Update containers on "services" server
 ssh updater@10.0.1.1 "
   cd /validityred
-  docker compose down
+  docker compose down || true
+  curl -o docker-compose.yml https://raw.githubusercontent.com/samgozman/validity.red/main/deploy/services/docker-compose.yml
   docker compose pull
   docker compose up --build -d
 "
 
 # Then do the same in the "web" server
 cd /validityred
-docker compose down
+docker compose down || true
+curl -o docker-compose.yml https://raw.githubusercontent.com/samgozman/validity.red/main/deploy/web/docker-compose.yml
 docker compose pull
 docker compose up --build -d
