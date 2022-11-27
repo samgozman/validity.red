@@ -4,6 +4,7 @@ import MainPageAppHero from "@/components/layout/MainPageAppHero.vue";
 import FeaturesRow from "@/components/elements/FeaturesRow.vue";
 import LeadingParagraph from "@/components/layout/LeadingParagraph.vue";
 import LogoText from "@/components/LogoText.vue";
+import { LogoGithub } from "@vicons/ionicons5";
 </script>
 
 <template>
@@ -42,7 +43,7 @@ import LogoText from "@/components/LogoText.vue";
             >
               Star on Github
               <span class="pl-2">
-                <ion-icon name="logo-github" size="large"></ion-icon>
+                <LogoGithub class="w-8" />
               </span>
             </a>
           </li>

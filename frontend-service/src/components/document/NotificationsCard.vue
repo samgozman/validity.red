@@ -1,5 +1,11 @@
 <script setup lang="ts">
 import { defineProps } from "vue";
+import {
+  NotificationsOutline,
+  CheckmarkSharp,
+  CloseSharp,
+  AddOutline,
+} from "@vicons/ionicons5";
 import NotificationItem from "./NotificationItem.vue";
 import type { INotification } from "./interfaces/INotification";
 defineProps<{
@@ -12,7 +18,7 @@ defineProps<{
   <div class="card shadow-lg bg-base-100">
     <div class="card-body">
       <h2 class="my-4 text-xl font-bold card-title">
-        <ion-icon name="notifications-outline" class="align-middle"></ion-icon>
+        <NotificationsOutline class="w-5 inline" />
         Notifications
       </h2>
       <p v-if="notifications.length === 0" class="text-center my-5">
@@ -42,10 +48,10 @@ defineProps<{
                 v-model="inputTime"
               />
               <button class="btn btn-square btn-primary" type="submit">
-                <ion-icon name="checkmark-sharp" class="text-xl"></ion-icon>
+                <CheckmarkSharp class="w-5" />
               </button>
               <button class="btn btn-square" @click="closeFromClicked">
-                <ion-icon name="close-sharp" class="text-xl"></ion-icon>
+                <CloseSharp class="w-5" />
               </button>
             </div>
           </div>
@@ -56,7 +62,7 @@ defineProps<{
         class="justify-center space-x-2 card-actions"
       >
         <button class="btn btn-primary btn-circle" @click="addButtonClicked">
-          <ion-icon name="add-outline" class="text-xl"></ion-icon>
+          <AddOutline class="w-5" />
         </button>
       </div>
       <div v-show="errorMsg" class="badge badge-error badge-outline w-full">

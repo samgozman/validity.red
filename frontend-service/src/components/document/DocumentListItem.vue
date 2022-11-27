@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { defineProps } from "vue";
 import { RouterLink } from "vue-router";
+import { TrashOutline } from "@vicons/ionicons5";
 import type { IDocument } from "./interfaces/IDocument";
 import ModalConfirmation from "../elements/ModalConfirmation.vue";
 import { DocumentType } from "./DocumentType";
@@ -36,7 +37,7 @@ defineProps<{
       </div>
       <div class="flex space-x-2 flex-0" :class="{ 'opacity-0': !isHovering }">
         <a :href="deleteAnchor" class="btn btn-sm btn-circle">
-          <ion-icon name="trash-outline" class="text-xl"></ion-icon>
+          <TrashOutline class="w-5" />
         </a>
       </div>
     </div>
