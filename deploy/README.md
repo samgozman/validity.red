@@ -42,3 +42,8 @@ To-do list for github deployment:
 - Run publish.yml workflow to create docker images
 - Run deploy_services.yml workflow to deploy services
 - Run deploy_spa.yml to build and deploy SPA
+
+## Monitor space usage
+
+- `df -h /dev/sda1` - show main disk usage
+- `df -h /dev/sdb` - show mounted volume usage
