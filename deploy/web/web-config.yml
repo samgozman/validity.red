@@ -55,7 +55,8 @@ runcmd:
     WantedBy=multi-user.target
     EOL
   - cd .. # get out of nginx directory
-  - curl -o nginx.conf https://raw.githubusercontent.com/samgozman/validity.red/main/deploy/nginx.conf # download nginx config
+  # download temporary nginx config
+  - curl -o nginx.conf https://raw.githubusercontent.com/samgozman/validity.red/main/deploy/web/nginx.conf
   - cp -rf nginx.conf /etc/nginx/nginx.conf
   - systemctl start nginx # start nginx
   - systemctl enable nginx # enable nginx on boot
@@ -78,5 +79,10 @@ runcmd:
       -d validity.red -d www.validity.red \
       -m sam@gozman.space \
       --webroot -w /srv/validityred/files
+  - cd /
+  # Download the final nginx config
+  - curl -o nginx.conf https://raw.githubusercontent.com/samgozman/validity.red/main/deploy/nginx.conf
+  - cp -rf nginx.conf /etc/nginx/nginx.conf
+  - systemctl reload nginx # restart nginx
   - reboot
   # TODO: make sure that after reboot, docker-compose up -d is run
