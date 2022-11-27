@@ -65,7 +65,17 @@ runcmd:
   - chmod +x updater.sh
   # Create folder for static files
   - mkdir /srv/validityred
+  - mkdir /srv/validityred/files
+  # Install certbot
+  - snap install core; snap refresh core
+  - snap install --classic certbot
+  - ln -s /snap/bin/certbot /usr/bin/certbot
+  # Create SSL certificate
+  - |
+    certbot certonly --noninteractive --agree-tos \
+      --cert-name validityred \
+      -d validity.red -d www.validity.red \
+      -m sam@gozman.space \
+      --webroot -w /srv/validityred/files
   - reboot
-  # TODO: docker compose up -d
   # TODO: make sure that after reboot, docker-compose up -d is run
-  # TODO: certbot
