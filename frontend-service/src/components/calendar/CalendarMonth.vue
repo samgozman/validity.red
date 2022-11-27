@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import CalendarDay from "./CalendarDay.vue";
 import { state } from "@/state";
+import { ChevronBackOutline, ChevronForwardOutline } from "@vicons/ionicons5";
 </script>
 
 <template>
@@ -12,10 +13,10 @@ import { state } from "@/state";
       <div class="flex items-center mt-4">
         <div class="flex ml-6">
           <button @click.prevent="prevMonth">
-            <ion-icon name="chevron-back-outline"></ion-icon>
+            <ChevronBackOutline class="w-6" />
           </button>
           <button @click.prevent="nextMonth">
-            <ion-icon name="chevron-forward-outline"></ion-icon>
+            <ChevronForwardOutline class="w-6" />
           </button>
         </div>
         <h2 v-show="!errorMsg" class="ml-2 text-xl font-bold leading-none">

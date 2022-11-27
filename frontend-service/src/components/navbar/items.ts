@@ -1,26 +1,35 @@
 import type { NavbarItem } from "@/components/navbar/interfaces/NavbarItem";
+import {
+  PlanetOutline,
+  SpeedometerOutline,
+  DocumentsOutline,
+  CubeOutline,
+  LogInOutline,
+  PersonAddOutline,
+  LogOutOutline,
+} from "@vicons/ionicons5";
 
 /** Main navbar items for upper menu */
 export const navbarItems: NavbarItem[] = [
   {
     name: "Home",
     url: { name: "home" },
-    iconClass: "planet-outline",
+    icon: PlanetOutline,
   },
   {
     name: "Dashboard",
     url: { name: "dashboard" },
-    iconClass: "speedometer-outline",
+    icon: SpeedometerOutline,
   },
   {
     name: "Documents",
     url: { name: "documents" },
-    iconClass: "documents-outline",
+    icon: DocumentsOutline,
   },
   {
     name: "About",
     url: { name: "about" },
-    iconClass: "cube-outline",
+    icon: CubeOutline,
   },
 ];
 
@@ -29,12 +38,12 @@ export const navbarItemsUser: NavbarItem[] = [
   {
     name: "Login",
     url: { name: "login" },
-    iconClass: "log-in-outline",
+    icon: LogInOutline,
   },
   {
     name: "Register",
     url: { name: "register" },
-    iconClass: "person-add-outline",
+    icon: PersonAddOutline,
   },
 ];
 
@@ -43,6 +52,6 @@ export const navbarItemsUserAuth: NavbarItem[] = [
   {
     name: "Logout",
     url: { name: "logout" },
-    iconClass: "log-out-outline",
+    icon: LogOutOutline,
   },
 ];

@@ -1,6 +1,11 @@
 <script setup lang="ts">
 import { RouterLink } from "vue-router";
 import {
+  MenuOutline,
+  AddOutline,
+  PersonCircleOutline,
+} from "@vicons/ionicons5";
+import {
   navbarItems,
   navbarItemsUser,
   navbarItemsUserAuth,
@@ -15,7 +20,7 @@ import { state } from "@/state";
     <div class="navbar-start">
       <div class="flex-none md:hidden">
         <label for="left-sidebar" class="btn btn-square btn-ghost">
-          <ion-icon name="menu-outline" size="large"></ion-icon>
+          <MenuOutline class="w-8" />
         </label>
       </div>
       <a class="btn btn-ghost normal-case text-xl"><LogoText /></a>
@@ -33,12 +38,12 @@ import { state } from "@/state";
         class="btn btn-circle mr-2 lg:mr-4 lg:rounded-full lg:w-max lg:px-4"
         to="/documents/create"
       >
-        <ion-icon name="add-outline" class="text-xl lg:mr-1"></ion-icon>
+        <AddOutline class="w-6 lg:mr-1" />
         <span class="hidden lg:block">Add new</span>
       </RouterLink>
       <div class="dropdown dropdown-end lg:mr-4">
         <label tabindex="0" class="btn btn-neutral btn-circle">
-          <ion-icon name="person-circle-outline" class="text-4xl"></ion-icon>
+          <PersonCircleOutline class="w-10" />
         </label>
         <ul
           tabindex="0"

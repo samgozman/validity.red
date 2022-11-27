@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { defineProps } from "vue";
 import { RouterLink } from "vue-router";
+import { DocumentOutline, DocumentTextOutline } from "@vicons/ionicons5";
 defineProps<{
   title: string;
 }>();
@@ -12,12 +13,12 @@ defineProps<{
     <ul>
       <li>
         <RouterLink to="/documents">
-          <ion-icon name="documents-outline" class="mr-1"></ion-icon>
+          <DocumentOutline class="w-4 mr-1" />
           Documents
         </RouterLink>
       </li>
       <li>
-        <ion-icon name="document-text-outline" class="mr-1"></ion-icon>
+        <DocumentTextOutline class="w-4 mr-1" />
         {{ title }}
       </li>
     </ul>

@@ -4,6 +4,17 @@ import MainPageAppHero from "@/components/layout/MainPageAppHero.vue";
 import FeaturesRow from "@/components/elements/FeaturesRow.vue";
 import LeadingParagraph from "@/components/layout/LeadingParagraph.vue";
 import LogoText from "@/components/LogoText.vue";
+import {
+  LogoGithub,
+  FileTrayFullOutline,
+  AlarmOutline,
+  CalendarOutline,
+  SpeedometerOutline,
+  HeartOutline,
+  ShieldCheckmarkOutline,
+  FingerPrintOutline,
+  CodeSlashOutline,
+} from "@vicons/ionicons5";
 </script>
 
 <template>
@@ -42,7 +53,7 @@ import LogoText from "@/components/LogoText.vue";
             >
               Star on Github
               <span class="pl-2">
-                <ion-icon name="logo-github" size="large"></ion-icon>
+                <LogoGithub class="w-8" />
               </span>
             </a>
           </li>
@@ -75,22 +86,22 @@ import LogoText from "@/components/LogoText.vue";
           {
             headline: 'Manage documents',
             text: 'Track the expiration dates of documents in one place. A large selection of document categories!',
-            iconStyle: 'file-tray-full-outline',
+            icon: FileTrayFullOutline,
           },
           {
             headline: 'Create notifications',
             text: `Create multiple notifications to make sure you don't miss it. It's easy and handy!`,
-            iconStyle: 'alarm-outline',
+            icon: AlarmOutline,
           },
           {
             headline: 'Sync with calendar',
             text: 'Our most favorite feature: Sync notifications with your calendar. Track reminders in the familiar UI.',
-            iconStyle: 'calendar-outline',
+            icon: CalendarOutline,
           },
           {
             headline: 'Handy dashboard',
             text: 'See upcoming expiration dates, statistics and more on a easy-to-use dashboard.',
-            iconStyle: 'speedometer-outline',
+            icon: SpeedometerOutline,
           },
         ]"
       />
@@ -108,22 +119,22 @@ import LogoText from "@/components/LogoText.vue";
           {
             headline: 'Free',
             text: 'Free. No charges. You can make a donation if you want to support the project.',
-            iconStyle: 'heart-outline',
+            icon: HeartOutline,
           },
           {
             headline: 'Private',
             text: 'Data is encrypted with AES-256 algorithm. We do not collect any personal information other than your email.',
-            iconStyle: 'shield-checkmark-outline',
+            icon: ShieldCheckmarkOutline,
           },
           {
             headline: 'No extra info',
             text: 'We do not ask you to provide any identifying information. Only the validity period of the document.',
-            iconStyle: 'finger-print-outline',
+            icon: FingerPrintOutline,
           },
           {
             headline: 'Open-Source',
             text: 'Completely open source. We are not hiding anything from you. In fact, you can join the development!',
-            iconStyle: 'code-slash-outline',
+            icon: CodeSlashOutline,
           },
         ]"
       />

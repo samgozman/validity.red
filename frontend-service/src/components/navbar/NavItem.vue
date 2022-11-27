@@ -12,7 +12,7 @@ defineProps<{
 <template>
   <li>
     <RouterLink :to="item.url" @click.prevent="closeDrawer">
-      <ion-icon :name="item.iconClass"></ion-icon> {{ item.name }}
+      <component :is="item.icon" class="w-4"></component> {{ item.name }}
     </RouterLink>
   </li>
 </template>

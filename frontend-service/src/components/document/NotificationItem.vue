@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { defineProps } from "vue";
+import { CloseOutline } from "@vicons/ionicons5";
 import ModalConfirmation from "../elements/ModalConfirmation.vue";
 import type { INotification } from "./interfaces/INotification";
 defineProps<{
@@ -11,7 +12,7 @@ defineProps<{
   <div class="indicator w-full">
     <div class="indicator-item indicator-middle indicator-end">
       <a :href="deleteAnchor" class="btn btn-xs btn-accent btn-circle">
-        <ion-icon name="close-outline" class="text-lg"></ion-icon>
+        <CloseOutline class="w-5" />
       </a>
     </div>
     <div

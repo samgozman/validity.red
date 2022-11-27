@@ -2,6 +2,7 @@
 import UsedTypesItem from "@/components/dashboard/UsedTypesItem.vue";
 import LatestDocumentsItem from "@/components/dashboard/LatestDocumentsItem.vue";
 import CalendarMonth from "@/components/calendar/CalendarMonth.vue";
+import { DocumentOutline, NotificationsOutline } from "@vicons/ionicons5";
 </script>
 
 <template>
@@ -43,7 +44,7 @@ import CalendarMonth from "@/components/calendar/CalendarMonth.vue";
     <div class="flex-col sm:flex-row items-center card-body">
       <div class="stat">
         <div class="stat-figure text-secondary stats-icon">
-          <ion-icon name="documents-outline"></ion-icon>
+          <DocumentOutline class="w-10" />
         </div>
         <div class="stat-title">Documents</div>
         <div class="stat-value">{{ stats.totalDocuments }}</div>
@@ -56,7 +57,7 @@ import CalendarMonth from "@/components/calendar/CalendarMonth.vue";
 
       <div class="stat">
         <div class="stat-figure text-secondary stats-icon">
-          <ion-icon name="notifications-outline"></ion-icon>
+          <NotificationsOutline class="w-10" />
         </div>
         <div class="stat-title">Notifications</div>
         <div class="stat-value">{{ stats.totalNotifications }}</div>

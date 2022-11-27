@@ -1,34 +1,55 @@
+import type { Component } from "vue";
+import {
+  DocumentOutline,
+  IdCardOutline,
+  TimerOutline,
+  SkullOutline,
+  ApertureOutline,
+  MedkitOutline,
+  HomeOutline,
+  CarSportOutline,
+  BodyOutline,
+  EarthOutline,
+  SchoolOutline,
+  BusinessOutline,
+  RibbonOutline,
+  CardOutline,
+  ReaderOutline,
+  QrCodeOutline,
+  ReceiptOutline,
+  TicketOutline,
+} from "@vicons/ionicons5";
+
 interface IDocumentType {
   name: string;
-  iconStyle: string;
+  icon: Component;
 }
 
 export class DocumentType {
-  // TODO: Decode it from `document.proto::Type` if possible
   /** Document types map */
   public static types = new Map<number, IDocumentType>([
-    [0, { name: "Document", iconStyle: "document-outline" }],
-    [1, { name: "Passport", iconStyle: "id-card-outline" }],
-    [2, { name: "Internal passport", iconStyle: "id-card-outline" }],
-    [3, { name: "Foreign passport", iconStyle: "id-card-outline" }],
-    [4, { name: "Identity card", iconStyle: "id-card-outline" }],
-    [5, { name: "Driving license", iconStyle: "timer-outline" }],
-    [6, { name: "Hunting license", iconStyle: "skull-outline" }],
-    [7, { name: "Firearms license", iconStyle: "aperture-outline" }],
-    [8, { name: "Medical insurance", iconStyle: "medkit-outline" }],
-    [9, { name: "Property insurance", iconStyle: "home-outline" }],
-    [10, { name: "Vehicle insurance", iconStyle: "car-sport-outline" }],
-    [11, { name: "Personal insurance", iconStyle: "body-outline" }],
-    [12, { name: "Visa", iconStyle: "earth-outline" }],
-    [13, { name: "Student visa", iconStyle: "school-outline" }],
-    [14, { name: "Work permit", iconStyle: "business-outline" }],
-    [15, { name: "Residence permit", iconStyle: "ribbon-outline" }],
-    [16, { name: "Credit card", iconStyle: "card-outline" }],
-    [17, { name: "Certificate", iconStyle: "reader-outline" }],
-    [18, { name: "Vaccination Certificate", iconStyle: "qr-code-outline" }],
-    [19, { name: "Warranty Certificate", iconStyle: "receipt-outline" }],
-    [20, { name: "Coupon", iconStyle: "ticket-outline" }],
-    [21, { name: "Other", iconStyle: "document-outline" }],
+    [0, { name: "Document", icon: DocumentOutline }],
+    [1, { name: "Passport", icon: IdCardOutline }],
+    [2, { name: "Internal passport", icon: IdCardOutline }],
+    [3, { name: "Foreign passport", icon: IdCardOutline }],
+    [4, { name: "Identity card", icon: IdCardOutline }],
+    [5, { name: "Driving license", icon: TimerOutline }],
+    [6, { name: "Hunting license", icon: SkullOutline }],
+    [7, { name: "Firearms license", icon: ApertureOutline }],
+    [8, { name: "Medical insurance", icon: MedkitOutline }],
+    [9, { name: "Property insurance", icon: HomeOutline }],
+    [10, { name: "Vehicle insurance", icon: CarSportOutline }],
+    [11, { name: "Personal insurance", icon: BodyOutline }],
+    [12, { name: "Visa", icon: EarthOutline }],
+    [13, { name: "Student visa", icon: SchoolOutline }],
+    [14, { name: "Work permit", icon: BusinessOutline }],
+    [15, { name: "Residence permit", icon: RibbonOutline }],
+    [16, { name: "Credit card", icon: CardOutline }],
+    [17, { name: "Certificate", icon: ReaderOutline }],
+    [18, { name: "Vaccination Certificate", icon: QrCodeOutline }],
+    [19, { name: "Warranty Certificate", icon: ReceiptOutline }],
+    [20, { name: "Coupon", icon: TicketOutline }],
+    [21, { name: "Other", icon: DocumentOutline }],
   ]);
 
   public static getName(typeId = 0): string {
@@ -36,8 +57,8 @@ export class DocumentType {
     return t ? t.name : "Unknown";
   }
 
-  public static getIconStyle(typeId = 0): string {
+  public static getIcon(typeId = 0): Component {
     const t = this.types.get(typeId);
-    return t ? t.iconStyle : "document-outline";
+    return t ? t.icon : DocumentOutline;
   }
 }
