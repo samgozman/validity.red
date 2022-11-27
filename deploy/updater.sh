@@ -22,3 +22,8 @@ docker compose down || true
 curl -o docker-compose.yml https://raw.githubusercontent.com/samgozman/validity.red/main/deploy/web/docker-compose.yml
 docker compose pull
 docker compose up --build -d
+
+# Update nginx confiruation
+curl -o nginx.conf https://raw.githubusercontent.com/samgozman/validity.red/main/deploy/nginx.conf
+cp -rf nginx.conf /etc/nginx/nginx.conf
+systemctl reload nginx
