@@ -14,9 +14,7 @@ interface IQueryMakerParams {
 
 export class QueryMaker {
   public readonly routeUrl: string;
-  // TODO: Set URL as HTTPS
-  // TODO: Get set URL from env
-  private readonly baseUrl = "http://validity.red/api";
+  private readonly baseUrl = import.meta.env.VITE_API_URL;
   private readonly axiosConfig: AxiosRequestConfig<unknown> = {
     // To pass Set-Cookie header
     withCredentials: true,
