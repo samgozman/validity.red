@@ -11,7 +11,10 @@ defineProps<{
 <template>
   <li class="w-full">
     <RouterLink :to="`/documents/${document.ID}`" class="flex justify-between">
-      <ion-icon :name="DocumentType.getIconStyle(document.type)"></ion-icon>
+      <component
+        :is="DocumentType.getIcon(document.type)"
+        class="w-4"
+      ></component>
       <span class="truncate">{{ document.title }}</span>
       <span>
         {{ new Date(document.expiresAt).toISOString().slice(0, 10) }}

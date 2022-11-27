@@ -11,7 +11,10 @@ defineProps<{
   <li class="px-4 py-1">
     <a class="flex justify-between">
       <span>
-        <ion-icon :name="DocumentType.getIconStyle(usedType.type)"></ion-icon>
+        <component
+          :is="DocumentType.getIcon(usedType.type)"
+          class="w-4 inline"
+        ></component>
         {{ DocumentType.getName(usedType.type) }}
       </span>
       <span>{{ usedType.count }}</span>

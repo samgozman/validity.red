@@ -19,10 +19,10 @@ defineProps<{
     <div class="flex-row items-center space-x-4 card-body">
       <div class="flex-1">
         <RouterLink :to="documentLink" class="card-title text-primary">
-          <ion-icon
-            :name="DocumentType.getIconStyle(document.type)"
-            class="text-base-content"
-          ></ion-icon>
+          <component
+            :is="DocumentType.getIcon(document.type)"
+            class="w-5 text-base-content"
+          ></component>
           {{ document.title }}
         </RouterLink>
         <p class="text-base-content text-opacity-80">
