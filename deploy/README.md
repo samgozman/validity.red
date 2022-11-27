@@ -5,22 +5,16 @@
 ```mermaid
 graph LR
     A((frontend-service <br/> gateway-service <br/> redis DB <br/>))
-    A--> |service_network| B((user-service <br/> document-service <br/> calendar-service <br/>))
-    B--> |db_network| C((users_postgres <br/> documents_postgres <br/>))
-    A--> |SSH for managing DB| C
+    A--> |service_network| B((user-service <br/> document-service <br/> calendar-service <br/> postgres DB <br/>))
+    B---C[(DB volume)]
 ```
 
 In the current deployment setup there are only 3 servers used:
 
 1. Public server - frontend-service, gateway-service, Redis DB
-2. Private server - user-service, document-service, calendar-service
-3. DB server - users_postgres, documents_postgres (database server)
+2. Private server - user-service, document-service, calendar-service, Postgres DB
 
-The idea is that only the public server is exposed to the internet. The private server is only accessible from the public server and the Postgres DB server is only accessible from the private server.
-
-But for the sake of more simple way of managing Postgres DB, the Public server also has SSH access to the DB server. This is not a bets practice, but it is a temporary solution for the time that the project is using self-managed Postgres DB.
-
-In any case, the Postgres DB server is not exposed to the internet. It is only accessible from the private network.
+The idea is that only the public server is exposed to the internet. The private server with DB is only accessible from the public server.
 
 ## Preferred server configuration
 
@@ -28,13 +22,14 @@ Lowest cost option is to use a single server for all services. This is the easie
 
 1. Public server: Ubuntu 22.04, 2 VCPU, 2 GB RAM, 20 GB SSD, IPv4, 1+ TB traffic
 2. Private server: Ubuntu 22.04, 2 VCPU, 2 GB RAM, 20 GB SSD
-3. DB server: Ubuntu 22.04, 2 VCPU, 2 GB RAM, 20 GB SSD, backups, persistent storage
+3. Volume: 10 GB, persistent
 
 ## Create servers with Terraform
 
 1. Create `secrets.auto.tfvars` file in 'deploy' directory with the following content: `hcloud_token = "YOUR_HETZNER_TOKEN"`
 2. Create SSH keys for the servers: `id_rsa` and `validityred_github`
 3. Run `terraform init` and then `terraform apply` in 'deploy' directory
+4. Edit name of the mounted volume in `services/docker-compose.yml` file. Unfortunately, hcloud does not support mounting volumes by name, so the name of the volume in the file system is generated from it's id. It can be changed later, but it's easier to leave it as it is. Today it's **HC_Volume_`${volume_id}`**.
 
 ## Deploy services
 
