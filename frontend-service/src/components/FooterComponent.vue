@@ -7,7 +7,7 @@
     <div>
       <div class="grid grid-flow-col gap-4">
         <a v-for:="button in socialButtons" :href="button.link" target="_blank">
-          <ion-icon :name="button.icon" class="text-2xl"></ion-icon>
+          <component :is="button.icon" class="w-6"></component>
         </a>
       </div>
     </div>
@@ -15,7 +15,14 @@
 </template>
 
 <script lang="ts">
+import type { Component } from "vue";
 import { defineComponent } from "vue";
+import {
+  LogoGithub,
+  LogoLinkedin,
+  LogoPaypal,
+  BeerOutline,
+} from "@vicons/ionicons5";
 
 export default defineComponent({
   data() {
@@ -23,16 +30,16 @@ export default defineComponent({
       socialButtons: [
         {
           link: "https://github.com/samgozman/validity.red",
-          icon: "logo-github",
+          icon: LogoGithub,
         },
         {
           link: "https://www.linkedin.com/in/samgozman/",
-          icon: "logo-linkedin",
+          icon: LogoLinkedin,
         },
-        { link: "https://paypal.me/sgozman", icon: "logo-paypal" },
-        { link: "https://ko-fi.com/samgozman", icon: "beer-outline" },
+        { link: "https://paypal.me/sgozman", icon: LogoPaypal },
+        { link: "https://ko-fi.com/samgozman", icon: BeerOutline },
       ] as {
-        icon: string;
+        icon: Component;
         link: string;
       }[],
     };
