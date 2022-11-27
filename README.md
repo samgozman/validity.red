@@ -8,7 +8,6 @@
 [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=samgozman_validity.red&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=samgozman_validity.red)
 [![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=samgozman_validity.red&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=samgozman_validity.red)
 
-
 ## Services
 
 ```mermaid
