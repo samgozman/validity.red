@@ -27,3 +27,14 @@ services:
       - ./calendars/data/:/data/
     ports:
       - "50051:50051"
+
+  postgres:
+    image: postgres:14.5-alpine3.16
+    restart: always
+    env_file:
+      - db.env
+    ports:
+      - "5432:5432"
+    volumes:
+      # Note: Edit path according to your server setup 
+      - /mnt/HC_Volume_25023848/:/var/lib/postgresql/data

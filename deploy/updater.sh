@@ -5,18 +5,7 @@
 # It should be copied to the "web" server by the `web/web-config.yml`
 
 # Copy .env files (created by the github "deploy" action) to the "services" server.
-rsync -r /validityred/calendars.env /validityred/documents.env /validityred/users.env root@10.0.1.1:/validityred
-# Copy .env files for "db" server
-rsync -r /validityred/db.env root@10.1.1.2:/validityred
-
-# Update containers on the "db" server first
-ssh root@10.1.1.2 "
-  cd /validityred
-  docker compose down || true
-  curl -o docker-compose.yml https://raw.githubusercontent.com/samgozman/validity.red/main/deploy/db/docker-compose.yml
-  docker compose pull
-  docker compose up --build -d
-"
+rsync -r /validityred/calendars.env /validityred/documents.env /validityred/users.env /validityred/db.env root@10.0.1.1:/validityred
 
 # Update containers on "services" server
 ssh root@10.0.1.1 "
