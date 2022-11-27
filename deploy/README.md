@@ -9,7 +9,7 @@ graph LR
     B---C[(DB volume)]
 ```
 
-In the current deployment setup there are only 3 servers used:
+In the current deployment setup there are only 2 servers used with one mounted volume for the database:
 
 1. Public server - frontend-service, gateway-service, Redis DB
 2. Private server - user-service, document-service, calendar-service, Postgres DB
