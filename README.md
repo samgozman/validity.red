@@ -2,6 +2,13 @@
 
 [![Unit tests](https://github.com/samgozman/validity.red/actions/workflows/unit_test.yml/badge.svg?branch=main)](https://github.com/samgozman/validity.red/actions/workflows/unit_test.yml)
 
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=samgozman_validity.red&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=samgozman_validity.red)
+[![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=samgozman_validity.red&metric=duplicated_lines_density)](https://sonarcloud.io/summary/new_code?id=samgozman_validity.red)
+[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=samgozman_validity.red&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=samgozman_validity.red)
+[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=samgozman_validity.red&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=samgozman_validity.red)
+[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=samgozman_validity.red&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=samgozman_validity.red)
+
+
 ## Services
 
 ```mermaid
