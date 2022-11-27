@@ -37,4 +37,4 @@ services:
       - "5432:5432"
     volumes:
       # Note: Edit path according to your server setup 
-      - /mnt/HC_Volume_25023848/:/var/lib/postgresql/data
+      - /mnt/HC_Volume_25024228/:/var/lib/postgresql/data
