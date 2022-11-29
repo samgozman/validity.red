@@ -17,7 +17,7 @@ import { state } from "@/state";
 
 <template>
   <div class="navbar bg-base-100">
-    <div class="navbar-start">
+    <div class="navbar-start md:w-[90%]">
       <div class="flex-none md:hidden">
         <label for="left-sidebar" class="btn btn-square btn-ghost">
           <MenuOutline class="w-8" />
