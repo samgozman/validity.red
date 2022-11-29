@@ -1,5 +1,6 @@
 # validity.red
 
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/5a121f3038ea4eda848bb5aedc97df90)](https://app.codacy.com/gh/samgozman/validity.red?utm_source=github.com&utm_medium=referral&utm_content=samgozman/validity.red&utm_campaign=Badge_Grade_Settings)
 [![Unit tests](https://github.com/samgozman/validity.red/actions/workflows/unit_test.yml/badge.svg?branch=main)](https://github.com/samgozman/validity.red/actions/workflows/unit_test.yml)
 
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=samgozman_validity.red&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=samgozman_validity.red)
