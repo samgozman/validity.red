@@ -4,7 +4,7 @@
       class="grid grid-cols-1 gap-6 py-5 lg:px-10 lg:grid-cols-3 lg:bg-base-200 rounded-box"
     >
       <div
-        class="card col-span-1 row-span-1 shadow-lg lg:col-span-2 bg-base-100"
+        class="card-card-compact card xl:card-normal col-span-1 row-span-1 shadow-lg lg:col-span-2 bg-base-100"
       >
         <div class="card-body form-control">
           <h2 class="card-title">Title</h2>
@@ -28,7 +28,7 @@
       </div>
 
       <div
-        class="card col-span-1 row-span-2 shadow-lg lg:col-span-1 bg-base-100"
+        class="card-card-compact card xl:card-normal col-span-1 row-span-2 shadow-lg lg:col-span-1 bg-base-100"
       >
         <div class="card-body">
           <h2 class="card-title">Document settings</h2>
@@ -55,12 +55,12 @@
       </div>
 
       <div
-        class="card col-span-1 row-span-2 shadow-lg lg:col-span-2 bg-base-100"
+        class="card-card-compact card xl:card-normal col-span-1 row-span-2 shadow-lg lg:col-span-2 bg-base-100"
       >
         <div class="card-body form-control">
           <h2 class="card-title">Description</h2>
           <textarea
-            class="textarea h-full"
+            class="textarea h-full min-h-[20vh]"
             placeholder="Description (optional)"
             maxlength="500"
             v-model="description"
@@ -79,7 +79,7 @@
         </div>
       </div>
       <div
-        class="card col-span-1 row-span-1 shadow-lg lg:col-span-1 bg-base-100"
+        class="card-card-compact card xl:card-normal col-span-1 row-span-1 shadow-lg lg:col-span-1 bg-base-100"
       >
         <div class="card-body">
           <div v-if="!isEditMode" class="form-control">
