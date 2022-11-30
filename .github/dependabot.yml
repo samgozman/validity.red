@@ -1,0 +1,64 @@
+version: 2
+
+updates:
+  - package-ecosystem: "npm"
+    directory: "/frontend-service"
+    schedule:
+      interval: "weekly"
+    target-branch: "main"
+    labels:
+      - "npm dependencies"
+      - "Vue SPA"
+
+  - package-ecosystem: "cargo"
+    directory: "/calendar-service"
+    schedule:
+      interval: "weekly"
+    target-branch: "main"
+    labels:
+      - "cargo dependencies"
+      - "calendar-service"
+
+  - package-ecosystem: "gomod"
+    directory: "/document-service"
+    schedule:
+      interval: "weekly"
+    target-branch: "main"
+    labels:
+      - "gomod dependencies"
+      - "document-service"
+
+  - package-ecosystem: "gomod"
+    directory: "/gateway-service"
+    schedule:
+      interval: "weekly"
+    target-branch: "main"
+    labels:
+      - "gomod dependencies"
+      - "gateway-service"
+
+  - package-ecosystem: "gomod"
+    directory: "/user-service"
+    schedule:
+      interval: "weekly"
+    target-branch: "main"
+    labels:
+      - "gomod dependencies"
+      - "user-service"
+
+  - package-ecosystem: "terraform"
+    directory: "/deploy"
+    schedule:
+      interval: "weekly"
+    target-branch: "main"
+    labels:
+      - "terraform dependencies"
+      - "deploy"
+
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    target-branch: "main"
+    labels:
+      - "github-actions dependencies"
