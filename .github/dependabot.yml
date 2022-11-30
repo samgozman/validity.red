@@ -6,6 +6,7 @@ updates:
     schedule:
       interval: "weekly"
     target-branch: "main"
+    open-pull-requests-limit: 3
     labels:
       - "npm dependencies"
       - "Vue SPA"
@@ -15,6 +16,7 @@ updates:
     schedule:
       interval: "weekly"
     target-branch: "main"
+    open-pull-requests-limit: 5
     labels:
       - "cargo dependencies"
       - "calendar-service"
@@ -24,6 +26,7 @@ updates:
     schedule:
       interval: "weekly"
     target-branch: "main"
+    open-pull-requests-limit: 5
     labels:
       - "gomod dependencies"
       - "document-service"
@@ -33,12 +36,14 @@ updates:
     schedule:
       interval: "weekly"
     target-branch: "main"
+    open-pull-requests-limit: 5
     labels:
       - "gomod dependencies"
       - "gateway-service"
 
   - package-ecosystem: "gomod"
     directory: "/user-service"
+    open-pull-requests-limit: 5
     schedule:
       interval: "weekly"
     target-branch: "main"
