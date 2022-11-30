@@ -24,39 +24,35 @@ defineProps<{
       <p v-if="notifications.length === 0" class="text-center my-5">
         Add notifications..
       </p>
-      <div>
-        <NotificationItem
-          v-for:="notification in notifications"
-          v-bind:key="notification.ID"
-          v-bind:notification="notification"
-          @refresh-notifications-event="refreshNotificationsEmit"
-        />
-      </div>
-      <div>
-        <form v-if="isFormActive" @submit.prevent="submit" class="mt-2">
-          <div class="form-control">
-            <div class="input-group">
-              <input
-                type="date"
-                :min="minDate"
-                class="input input-bordered w-full"
-                v-model="inputDate"
-              />
-              <input
-                type="time"
-                class="input input-bordered w-full"
-                v-model="inputTime"
-              />
-              <button class="btn btn-square btn-primary" type="submit">
-                <CheckmarkSharp class="w-5" />
-              </button>
-              <button class="btn btn-square" @click="closeFromClicked">
-                <CloseSharp class="w-5" />
-              </button>
-            </div>
+      <NotificationItem
+        v-for:="notification in notifications"
+        v-bind:key="notification.ID"
+        v-bind:notification="notification"
+        @refresh-notifications-event="refreshNotificationsEmit"
+      />
+      <form v-if="isFormActive" @submit.prevent="submit" class="mt-2">
+        <div class="form-control">
+          <div class="input-group">
+            <input
+              type="date"
+              :min="minDate"
+              class="input input-bordered w-[100vw]"
+              v-model="inputDate"
+            />
+            <input
+              type="time"
+              class="input input-bordered w-[50vw]"
+              v-model="inputTime"
+            />
+            <button class="btn btn-square btn-primary" type="submit">
+              <CheckmarkSharp class="w-5" />
+            </button>
+            <button class="btn btn-square" @click="closeFromClicked">
+              <CloseSharp class="w-5" />
+            </button>
           </div>
-        </form>
-      </div>
+        </div>
+      </form>
       <div
         v-if="isAddButtonActive"
         class="justify-center space-x-2 card-actions"

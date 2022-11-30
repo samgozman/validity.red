@@ -12,7 +12,7 @@ defineProps<{
 <template>
   <li>
     <RouterLink :to="item.url" @click.prevent="closeDrawer">
-      <component :is="item.icon" class="w-4"></component> {{ item.name }}
+      <component :is="item.icon" class="w-4 inline"></component> {{ item.name }}
     </RouterLink>
   </li>
 </template>

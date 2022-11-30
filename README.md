@@ -7,6 +7,7 @@
 [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=samgozman_validity.red&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=samgozman_validity.red)
 [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=samgozman_validity.red&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=samgozman_validity.red)
 [![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=samgozman_validity.red&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=samgozman_validity.red)
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/760a8bc3dd734e10b7b820cda8b6267f)](https://www.codacy.com/gh/samgozman/validity.red/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=samgozman/validity.red&amp;utm_campaign=Badge_Grade)
 
 ## Services
 

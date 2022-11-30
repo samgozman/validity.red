@@ -7,14 +7,14 @@ import { DocumentOutline, NotificationsOutline } from "@vicons/ionicons5";
 
 <template>
   <div
-    class="card col-span-full sm:col-span-4 row-span-1 shadow-lg compact bg-base-100"
+    class="card col-span-full xl:col-span-4 row-span-1 shadow-lg compact bg-base-100"
   >
     <div class="flex-row items-center card-body">
       <h3 class="text-xl font-bold">Sync with your calendar app</h3>
     </div>
   </div>
   <div
-    class="card col-span-full sm:col-span-3 row-span-1 shadow-lg compact bg-base-100"
+    class="card col-span-full xl:col-span-3 row-span-1 shadow-lg compact bg-base-100"
   >
     <div class="flex-col items-center card-body">
       <div class="form-control w-full md:flex-row">
