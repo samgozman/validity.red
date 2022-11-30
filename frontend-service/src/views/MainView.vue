@@ -49,6 +49,7 @@ import {
             <a
               href="https://github.com/samgozman/validity.red"
               target="_blank"
+              rel="noopener"
               class="btn border-none hover:bg-primary bg-primary ml-6 font-medium text-base-100 hover:opacity-70 transition duration-300 ease-in-out"
             >
               Star on Github

@@ -6,7 +6,12 @@
     </div>
     <div>
       <div class="grid grid-flow-col gap-4">
-        <a v-for:="button in socialButtons" :href="button.link" target="_blank">
+        <a
+          v-for:="button in socialButtons"
+          :href="button.link"
+          rel="noopener"
+          target="_blank"
+        >
           <component :is="{ ...button.icon }" class="w-6"></component>
         </a>
       </div>
