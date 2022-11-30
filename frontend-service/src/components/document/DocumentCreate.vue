@@ -46,7 +46,7 @@
             <input
               type="date"
               :min="minDate"
-              class="input input-bordered w-full"
+              class="input input-bordered w-[100vw]"
               v-model="expiresAt"
             />
             <span>Expiration</span>
