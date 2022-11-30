@@ -4,9 +4,9 @@ updates:
   - package-ecosystem: "npm"
     directory: "/frontend-service"
     schedule:
-      interval: "weekly"
+      interval: "monthly"
     target-branch: "main"
-    open-pull-requests-limit: 3
+    open-pull-requests-limit: 5
     labels:
       - "npm dependencies"
       - "Vue SPA"
