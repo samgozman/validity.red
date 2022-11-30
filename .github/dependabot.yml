@@ -7,9 +7,6 @@ updates:
       interval: "monthly"
     target-branch: "main"
     open-pull-requests-limit: 5
-    labels:
-      - "npm dependencies"
-      - "Vue SPA"
 
   - package-ecosystem: "cargo"
     directory: "/calendar-service"
@@ -17,9 +14,6 @@ updates:
       interval: "weekly"
     target-branch: "main"
     open-pull-requests-limit: 5
-    labels:
-      - "cargo dependencies"
-      - "calendar-service"
 
   - package-ecosystem: "gomod"
     directory: "/document-service"
@@ -27,9 +21,6 @@ updates:
       interval: "weekly"
     target-branch: "main"
     open-pull-requests-limit: 5
-    labels:
-      - "gomod dependencies"
-      - "document-service"
 
   - package-ecosystem: "gomod"
     directory: "/gateway-service"
@@ -37,9 +28,6 @@ updates:
       interval: "weekly"
     target-branch: "main"
     open-pull-requests-limit: 5
-    labels:
-      - "gomod dependencies"
-      - "gateway-service"
 
   - package-ecosystem: "gomod"
     directory: "/user-service"
@@ -47,23 +35,15 @@ updates:
     schedule:
       interval: "weekly"
     target-branch: "main"
-    labels:
-      - "gomod dependencies"
-      - "user-service"
 
   - package-ecosystem: "terraform"
     directory: "/deploy"
     schedule:
       interval: "weekly"
     target-branch: "main"
-    labels:
-      - "terraform dependencies"
-      - "deploy"
 
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
       interval: "weekly"
     target-branch: "main"
-    labels:
-      - "github-actions dependencies"
