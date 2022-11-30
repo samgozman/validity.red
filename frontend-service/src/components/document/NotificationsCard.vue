@@ -24,14 +24,12 @@ defineProps<{
       <p v-if="notifications.length === 0" class="text-center my-5">
         Add notifications..
       </p>
-      <div>
-        <NotificationItem
-          v-for:="notification in notifications"
-          v-bind:key="notification.ID"
-          v-bind:notification="notification"
-          @refresh-notifications-event="refreshNotificationsEmit"
-        />
-      </div>
+      <NotificationItem
+        v-for:="notification in notifications"
+        v-bind:key="notification.ID"
+        v-bind:notification="notification"
+        @refresh-notifications-event="refreshNotificationsEmit"
+      />
       <form v-if="isFormActive" @submit.prevent="submit" class="mt-2">
         <div class="form-control">
           <div class="input-group">
