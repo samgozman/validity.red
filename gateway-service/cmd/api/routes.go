@@ -12,9 +12,8 @@ import (
 
 func (app *Config) routes() *gin.Engine {
 	engine := gin.Default()
-	g := engine.Group("/api")
 
-	g.Use(cors.New(cors.Config{
+	engine.Use(cors.New(cors.Config{
 		// TODO: Set to validity.red domains
 		AllowOrigins:     []string{"https://*", "http://*"},
 		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"},
@@ -23,6 +22,8 @@ func (app *Config) routes() *gin.Engine {
 		MaxAge:           300,
 		AllowWildcard:    true,
 	}))
+
+	g := engine.Group("/api")
 
 	// Rate limiting
 	rate, err := limiter.NewRateFromFormatted("1000-H")
