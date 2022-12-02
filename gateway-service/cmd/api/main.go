@@ -17,6 +17,7 @@ type Options struct {
 	JWTAuthTTL         int    // JWT auth token TTL in seconds
 	JWTVerificationTTL int    // JWT email verification token TTL in seconds
 	AppUrl             string // Application API URL
+	Environment        string // Application environment (development or production)
 }
 
 type Config struct {
@@ -107,6 +108,7 @@ func main() {
 			JWTAuthTTL:         10 * 60,      // 10 minutes
 			JWTVerificationTTL: 24 * 60 * 60, // 24 hours
 			AppUrl:             os.Getenv("HOST_URL"),
+			Environment:        os.Getenv("ENVIRONMENT"),
 		},
 		token:           &token,
 		usersClient:     &usersClient,

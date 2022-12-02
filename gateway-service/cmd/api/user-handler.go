@@ -54,15 +54,17 @@ func (app *Config) userRegister(c *gin.Context) {
 		c.Error(err)
 		return
 	}
-	verificationLink := app.options.AppUrl + "/verify/" + verificationToken
 	// Save verification token to Redis with 24h TTL
 	app.redisClient.SetNX(
 		ctx,
 		"user:verification:"+res.UserId, verificationToken,
 		time.Second*time.Duration(app.options.JWTVerificationTTL),
 	)
-	// ! Do not send verification link in development mode
-	app.mailer.SendEmailVerification(requestPayload.Email, verificationLink)
+
+	if app.options.Environment == "production" {
+		verificationLink := app.options.AppUrl + "/verify/" + verificationToken
+		app.mailer.SendEmailVerification(requestPayload.Email, verificationLink)
+	}
 
 	c.Status(http.StatusCreated)
 }
