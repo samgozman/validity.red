@@ -13,7 +13,14 @@ import (
 	"github.com/samgozman/validity.red/broker/proto/user"
 )
 
+type Options struct {
+	JWTAuthTTL         int    // JWT auth token TTL in seconds
+	JWTVerificationTTL int    // JWT email verification token TTL in seconds
+	AppUrl             string // Application API URL
+}
+
 type Config struct {
+	options         Options
 	token           *token.TokenMaker
 	usersClient     *UsersClient
 	documentsClient *DocumentsClient
@@ -93,11 +100,14 @@ func main() {
 	// Create JWT token maker
 	token := token.TokenMaker{
 		Key: []byte(os.Getenv("JWT_SECRET")),
-		// 10 minutes 10 * 60
-		MaxAge: 10 * 60,
 	}
 
 	app := Config{
+		options: Options{
+			JWTAuthTTL:         10 * 60,      // 10 minutes
+			JWTVerificationTTL: 24 * 60 * 60, // 24 hours
+			AppUrl:             os.Getenv("HOST_URL"),
+		},
 		token:           &token,
 		usersClient:     &usersClient,
 		documentsClient: &documentsClient,

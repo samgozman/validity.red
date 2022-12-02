@@ -23,6 +23,7 @@ services:
       JWT_SECRET: someSecretJwtKey
       GIN_MODE: debug
       MAILERSEND_API_KEY:
+      HOST_URL: http://localhost:8080
     networks:
       - gateway-network
       - redis-network

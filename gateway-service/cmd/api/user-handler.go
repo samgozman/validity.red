@@ -34,7 +34,7 @@ func (app *Config) userRegister(c *gin.Context) {
 	}
 
 	// call service
-	_, err := app.usersClient.userService.Register(ctx, &user.RegisterRequest{
+	res, err := app.usersClient.userService.Register(ctx, &user.RegisterRequest{
 		RegisterEntry: &user.Register{
 			Email:    requestPayload.Email,
 			Password: requestPayload.Password,
@@ -47,7 +47,22 @@ func (app *Config) userRegister(c *gin.Context) {
 		return
 	}
 
-	// TODO: Send verification email
+	// Create verification token for the user to verify email
+	verificationToken, err := app.token.Generate(res.UserId, app.options.JWTVerificationTTL)
+	if err != nil {
+		log.Println("Error on calling user-service::Register::Generate token method:", err)
+		c.Error(err)
+		return
+	}
+	verificationLink := app.options.AppUrl + "/verify/" + verificationToken
+	// Save verification token to Redis with 24h TTL
+	app.redisClient.SetNX(
+		ctx,
+		"user:verification:"+res.UserId, verificationToken,
+		time.Second*time.Duration(app.options.JWTVerificationTTL),
+	)
+	// ! Do not send verification link in development mode
+	app.mailer.SendEmailVerification(requestPayload.Email, verificationLink)
 
 	c.Status(http.StatusCreated)
 }
@@ -78,7 +93,7 @@ func (app *Config) userLogin(c *gin.Context) {
 	}
 
 	// Generate JWT token
-	token, err := app.token.Generate(res.UserId)
+	token, err := app.token.Generate(res.UserId, app.options.JWTAuthTTL)
 	if err != nil {
 		log.Println("Error on calling gateway-service::token::Generate method:", err)
 		c.Error(err)
@@ -86,7 +101,7 @@ func (app *Config) userLogin(c *gin.Context) {
 	}
 
 	// write jwt token
-	c.SetCookie("token", token, app.token.MaxAge, "/", "", false, false)
+	c.SetCookie("token", token, app.options.JWTAuthTTL, "/", "", false, false)
 	c.JSON(http.StatusAccepted, struct {
 		CalendarId string `json:"calendarId"`
 		Timezone   string `json:"timezone"`
@@ -102,13 +117,13 @@ func (app *Config) userRefreshToken(c *gin.Context) {
 	tk, _ := c.Get("Token")
 
 	// Refresh JWT token
-	token, err := app.token.Refresh(tk.(string))
+	token, err := app.token.Refresh(tk.(string), app.options.JWTAuthTTL)
 	if err != nil {
 		log.Println("Error on calling gateway-service::token::Refresh method:", err)
 		c.Error(ErrUnauthorized)
 		return
 	}
 
-	c.SetCookie("token", token, app.token.MaxAge, "/", "", false, false)
+	c.SetCookie("token", token, app.options.JWTAuthTTL, "/", "", false, false)
 	c.Status(http.StatusAccepted)
 }
