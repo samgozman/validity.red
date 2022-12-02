@@ -22,6 +22,7 @@ services:
       REDIS_PASSWORD: VWtWRVNWTmZVRUZUVTFkUFVrUQ==
       JWT_SECRET: someSecretJwtKey
       GIN_MODE: debug
+      MAILERSEND_API_KEY:
     networks:
       - gateway-network
       - redis-network

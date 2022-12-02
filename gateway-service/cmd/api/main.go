@@ -6,6 +6,7 @@ import (
 	"os"
 
 	"github.com/go-redis/redis/v8"
+	"github.com/samgozman/validity.red/broker/internal/mailersend"
 	"github.com/samgozman/validity.red/broker/internal/token"
 	"github.com/samgozman/validity.red/broker/proto/calendar"
 	"github.com/samgozman/validity.red/broker/proto/document"
@@ -18,6 +19,7 @@ type Config struct {
 	documentsClient *DocumentsClient
 	calendarsClient *CalendarsClient
 	redisClient     *redis.Client
+	mailer          Mailer
 }
 
 type UsersClient struct {
@@ -83,6 +85,11 @@ func main() {
 		Password: os.Getenv("REDIS_PASSWORD"),
 	})
 
+	// Mailer
+	mailer := mailersend.MailerSend{
+		APIKey: os.Getenv("MAILERSEND_API_KEY"),
+	}
+
 	// Create JWT token maker
 	token := token.TokenMaker{
 		Key: []byte(os.Getenv("JWT_SECRET")),
@@ -96,6 +103,7 @@ func main() {
 		documentsClient: &documentsClient,
 		calendarsClient: &calendarsClient,
 		redisClient:     rdb,
+		mailer:          &mailer,
 	}
 
 	router := app.routes()
