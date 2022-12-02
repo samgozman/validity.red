@@ -54,7 +54,7 @@ func (app *Config) gRPCListen() {
 	}
 }
 
-func (us *UserServer) Register(ctx context.Context, req *proto.RegisterRequest) (*emptypb.Empty, error) {
+func (us *UserServer) Register(ctx context.Context, req *proto.RegisterRequest) (*proto.RegisterResponse, error) {
 	input := req.GetRegisterEntry()
 
 	// register user
@@ -69,7 +69,9 @@ func (us *UserServer) Register(ctx context.Context, req *proto.RegisterRequest) 
 	}
 
 	// return response
-	return &emptypb.Empty{}, nil
+	return &proto.RegisterResponse{
+		UserId: userPayload.ID.String(),
+	}, nil
 }
 
 func (as *AuthServer) Login(ctx context.Context, req *proto.AuthRequest) (*proto.AuthResponse, error) {

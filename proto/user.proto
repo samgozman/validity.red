@@ -52,13 +52,17 @@ message RegisterRequest {
 	Register registerEntry = 1;
 }
 
+message RegisterResponse {
+	string userId = 1;
+}
+
 // Describe the service available methods
 service AuthService {
 	rpc Login(AuthRequest) returns (AuthResponse);
 }
 
 service UserService {
-	rpc Register(RegisterRequest) returns (google.protobuf.Empty);
+	rpc Register(RegisterRequest) returns (RegisterResponse);
 	rpc GetCalendarOptions(GetCalendarIdRequest) returns (GetCalendarIdResponse);
 	rpc GetCalendarIv(GetCalendarIvRequest) returns (GetCalendarIvResponse);
 	rpc SetCalendarIv(SetCalendarIvRequest) returns (google.protobuf.Empty);
