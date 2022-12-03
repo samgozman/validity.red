@@ -98,6 +98,12 @@ func (app *Config) userLogin(c *gin.Context) {
 		return
 	}
 
+	// User's email should be verified before login
+	if !res.IsVerified {
+		c.Error(ErrEmailNotVerified)
+		return
+	}
+
 	// Generate JWT token
 	token, err := app.token.Generate(res.UserId, app.options.JWTAuthTTL)
 	if err != nil {
