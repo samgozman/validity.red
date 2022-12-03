@@ -131,7 +131,7 @@ func (us *UserServer) GetCalendarIv(ctx context.Context, req *proto.GetCalendarI
 	return res, nil
 }
 
-// SetCalendarId sets the iv_calendar field for the user with the given id
+// SetCalendarIv sets the iv_calendar field for the user with the given id
 func (us *UserServer) SetCalendarIv(ctx context.Context, req *proto.SetCalendarIvRequest) (*emptypb.Empty, error) {
 	err := us.App.Repo.Update(ctx, req.UserId, map[string]interface{}{
 		"iv_calendar": req.CalendarIv,

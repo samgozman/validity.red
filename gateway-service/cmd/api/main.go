@@ -1,3 +1,6 @@
+// API for validity.red service.
+// Gateway service is responsible for routing requests to the correct services,
+// authenticating users, sending emails, handle errors, etc.
 package main
 
 import (
