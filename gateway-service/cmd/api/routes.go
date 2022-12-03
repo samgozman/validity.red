@@ -17,7 +17,7 @@ func (app *Config) routes() *gin.Engine {
 		// TODO: Set to validity.red domains
 		AllowOrigins:     []string{"https://*", "http://*"},
 		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"},
-		AllowHeaders:     []string{"Authorization", "Content-Type"},
+		AllowHeaders:     []string{"Authorization", "Content-Type", "sentry-trace", "baggage"},
 		AllowCredentials: true,
 		MaxAge:           300,
 		AllowWildcard:    true,
