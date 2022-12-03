@@ -137,4 +137,16 @@ func (us *UserServer) SetCalendarIv(ctx context.Context, req *proto.SetCalendarI
 	return &emptypb.Empty{}, nil
 }
 
+func (us *UserServer) SetIsVerified(ctx context.Context, req *proto.SetIsVerifiedRequest) (*emptypb.Empty, error) {
+	err := us.App.Repo.Update(ctx, req.UserId, map[string]interface{}{
+		"is_verified": req.IsVerified,
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	return &emptypb.Empty{}, nil
+}
+
+// TODO: Combine all set & get methods
 // TODO: Edit - edit user info

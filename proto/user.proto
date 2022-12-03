@@ -56,6 +56,11 @@ message RegisterResponse {
 	string userId = 1;
 }
 
+message SetIsVerifiedRequest {
+	string userId = 1;
+	bool isVerified = 2;
+}
+
 // Describe the service available methods
 service AuthService {
 	rpc Login(AuthRequest) returns (AuthResponse);
@@ -63,9 +68,11 @@ service AuthService {
 
 service UserService {
 	rpc Register(RegisterRequest) returns (RegisterResponse);
+	// TODO: Refactor this to be a single methods: Get and Update
 	rpc GetCalendarOptions(GetCalendarIdRequest) returns (GetCalendarIdResponse);
 	rpc GetCalendarIv(GetCalendarIvRequest) returns (GetCalendarIvResponse);
 	rpc SetCalendarIv(SetCalendarIvRequest) returns (google.protobuf.Empty);
+	rpc SetIsVerified(SetIsVerifiedRequest) returns (google.protobuf.Empty);
 	// TODO: change password
 	// TODO: delete user data
 }
