@@ -79,6 +79,9 @@ func (app *Config) routes() *gin.Engine {
 	{
 		auth.POST("/login", app.userLogin)
 		auth.POST("/register", app.userRegister)
+		auth.POST("/verify", app.userVerifyEmail)
+		// TODO: In separate task
+		// auth.POST("/verify/resend", app.userVerifyResend)
 	}
 
 	return engine

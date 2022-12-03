@@ -21,6 +21,10 @@ type RegisterPayload struct {
 	Timezone string `json:"timezone" uri:"timezone" binding:"required,timezone"`
 }
 
+type EmailVerificationPayload struct {
+	Token string `json:"token" uri:"token" binding:"required,jwt"`
+}
+
 // Call Register method on `user-service`
 func (app *Config) userRegister(c *gin.Context) {
 	c.Writer.Header().Set("Content-Type", "application/json")
@@ -127,5 +131,56 @@ func (app *Config) userRefreshToken(c *gin.Context) {
 	}
 
 	c.SetCookie("token", token, app.options.JWTAuthTTL, "/", "", false, false)
+	c.Status(http.StatusAccepted)
+}
+
+// Verify user email by sended token
+func (app *Config) userVerifyEmail(c *gin.Context) {
+	c.Writer.Header().Set("Content-Type", "application/json")
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+	defer cancel()
+
+	json := EmailVerificationPayload{}
+
+	// Validate inputs
+	if err := c.BindJSON(&json); err != nil {
+		c.Error(ErrInvalidInputs)
+		return
+	}
+
+	// Validate token
+	userId, err := app.token.Verify(json.Token)
+	if err != nil {
+		c.Error(ErrUnauthorized)
+		return
+	}
+
+	// Check if token exists in Redis for this user
+	token, err := app.redisClient.Get(ctx, "user:verification:"+userId).Result()
+	if err != nil {
+		c.Error(ErrUnauthorized)
+		return
+	}
+
+	// Check if token is valid
+	if token != json.Token {
+		c.Error(ErrUnauthorized)
+		return
+	}
+
+	// Delete token from Redis
+	app.redisClient.Del(ctx, "user:verification:"+userId)
+
+	// Call user-service to verify user
+	_, err = app.usersClient.userService.SetIsVerified(ctx, &user.SetIsVerifiedRequest{
+		UserId:     userId,
+		IsVerified: true,
+	})
+	if err != nil {
+		log.Println("Error on calling user-service::SetIsVerified method:", err)
+		c.Error(err)
+		return
+	}
+
 	c.Status(http.StatusAccepted)
 }
