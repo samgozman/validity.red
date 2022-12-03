@@ -66,7 +66,7 @@ func (app *Config) userRegister(c *gin.Context) {
 	)
 
 	if app.options.Environment == "production" {
-		verificationLink := app.options.AppUrl + "/verify/" + verificationToken
+		verificationLink := app.options.AppUrl + "/verify?token=" + verificationToken
 		app.mailer.SendEmailVerification(requestPayload.Email, verificationLink)
 	}
 
