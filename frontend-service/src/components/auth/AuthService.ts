@@ -57,4 +57,22 @@ export class AuthService {
       throw new Error(message);
     }
   }
+
+  /**
+   * Verify user's email
+   * @param token verification JWT token
+   */
+  public static async userVerifyEmail(token: string): Promise<void> {
+    const payload = JSON.stringify({ token });
+
+    const res = await new QueryMaker({
+      route: "/auth/verify",
+      payload,
+    }).post();
+    const { error, message } = res.data;
+
+    if (error) {
+      throw new Error(message);
+    }
+  }
 }
