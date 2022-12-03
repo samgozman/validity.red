@@ -49,11 +49,5 @@ export default defineComponent({
       await RefreshToken.call();
     }, 30000);
   },
-  errorCaptured(err, vm, info) {
-    console.log("err:", err);
-    console.log("vm:", vm);
-    console.log("info:", info);
-    // TODO: Push error to Sentry
-  },
 });
 </script>
