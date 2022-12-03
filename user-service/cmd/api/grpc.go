@@ -78,7 +78,7 @@ func (as *AuthServer) Login(ctx context.Context, req *proto.AuthRequest) (*proto
 	input := req.GetAuthEntry()
 
 	// find user
-	u, err := as.App.Repo.FindOne(ctx, &user.User{Email: input.Email}, "id, password, calendar_id, timezone")
+	u, err := as.App.Repo.FindOne(ctx, &user.User{Email: input.Email}, "id, password, calendar_id, timezone, is_verified")
 	if err != nil {
 		return nil, err
 	}
@@ -95,6 +95,7 @@ func (as *AuthServer) Login(ctx context.Context, req *proto.AuthRequest) (*proto
 		UserId:     u.ID.String(),
 		CalendarId: u.CalendarID,
 		Timezone:   u.Timezone,
+		IsVerified: u.IsVerified,
 	}
 	return res, nil
 }

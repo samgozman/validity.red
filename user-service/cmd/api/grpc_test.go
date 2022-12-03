@@ -84,6 +84,7 @@ func TestAuthServer_Login(t *testing.T) {
 		UserId:     "434377cf-7509-4cc0-9895-0afa683f0e56",
 		CalendarId: "8gipfmoqt8mtucep",
 		Timezone:   "Europe/London",
+		IsVerified: true,
 	}
 
 	tests := []struct {
