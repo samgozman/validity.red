@@ -21,14 +21,14 @@ type JWTClaims struct {
 	jwt.StandardClaims
 }
 
-// Generates a JWT token for the user.
+// Generate - generates a JWT token for the user.
 //
 // maxAge - JWT token max age (in seconds)
-func (j *TokenMaker) Generate(userIdPayload string, maxAge int) (t string, err error) {
+func (j *TokenMaker) Generate(userID string, maxAge int) (t string, err error) {
 	expirationTime := time.Now().Add(time.Duration(maxAge) * time.Second).Unix()
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, JWTClaims{
-		UserID: userIdPayload,
+		UserID: userID,
 		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: expirationTime,
 		},
@@ -53,7 +53,7 @@ func (j *TokenMaker) Verify(tokenString string) (userId string, e error) {
 	return claims.UserID, nil
 }
 
-// Generates a JWT token for the user.
+// Refresh - generates new JWT token for the user.
 //
 // maxAge - JWT token max age (in seconds)
 func (j *TokenMaker) Refresh(tokenString string, maxAge int) (t string, err error) {

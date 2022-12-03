@@ -10,12 +10,15 @@ import (
 )
 
 // MailerSend integration
-
 type MailerSend struct {
 	APIKey string
 }
 
-func (m *MailerSend) SendEmailVerification(email, tokenUrl string) error {
+// SendEmailVerification sends email verification email to the user with the tokenURL
+// via MailerSend. The tokenURL is a link to the frontend with the token as a query param.
+//
+// TokenURL should be a full URL, e.g. https://validity.red/verify?token=123
+func (m *MailerSend) SendEmailVerification(email, tokenURL string) error {
 	client := ms.NewMailersend(m.APIKey)
 
 	ctx := context.Background()
@@ -42,7 +45,7 @@ func (m *MailerSend) SendEmailVerification(email, tokenUrl string) error {
 			Email: email,
 			Data: map[string]interface{}{
 				"name":             recipientName,
-				"confirmation_url": tokenUrl,
+				"confirmation_url": tokenURL,
 			},
 		},
 	}

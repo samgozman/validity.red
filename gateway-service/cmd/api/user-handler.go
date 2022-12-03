@@ -10,18 +10,18 @@ import (
 	"github.com/samgozman/validity.red/broker/proto/user"
 )
 
-type AuthPayload struct {
+type authPayload struct {
 	Email    string `json:"email" uri:"email" binding:"required,email"`
 	Password string `json:"password" uri:"password" binding:"required,min=8,max=64"`
 }
 
-type RegisterPayload struct {
+type registerPayload struct {
 	Email    string `json:"email" uri:"email" binding:"required,email"`
 	Password string `json:"password" uri:"password" binding:"required,min=8,max=64"`
 	Timezone string `json:"timezone" uri:"timezone" binding:"required,timezone"`
 }
 
-type EmailVerificationPayload struct {
+type emailVerificationPayload struct {
 	Token string `json:"token" uri:"token" binding:"required,jwt"`
 }
 
@@ -31,7 +31,7 @@ func (app *Config) userRegister(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
 
-	requestPayload := RegisterPayload{}
+	requestPayload := registerPayload{}
 	if err := c.BindJSON(&requestPayload); err != nil {
 		c.Error(ErrInvalidInputs)
 		return
@@ -66,7 +66,7 @@ func (app *Config) userRegister(c *gin.Context) {
 	)
 
 	if app.options.Environment == "production" {
-		verificationLink := app.options.AppUrl + "/verify?token=" + verificationToken
+		verificationLink := app.options.AppURL + "/verify?token=" + verificationToken
 		app.mailer.SendEmailVerification(requestPayload.Email, verificationLink)
 	}
 
@@ -79,7 +79,7 @@ func (app *Config) userLogin(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
 
-	requestPayload := AuthPayload{}
+	requestPayload := authPayload{}
 	if err := c.BindJSON(&requestPayload); err != nil {
 		c.Error(ErrInvalidInputs)
 		return
@@ -146,7 +146,7 @@ func (app *Config) userVerifyEmail(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
 
-	json := EmailVerificationPayload{}
+	json := emailVerificationPayload{}
 
 	// Validate inputs
 	if err := c.BindJSON(&json); err != nil {
@@ -155,14 +155,14 @@ func (app *Config) userVerifyEmail(c *gin.Context) {
 	}
 
 	// Validate token
-	userId, err := app.token.Verify(json.Token)
+	userID, err := app.token.Verify(json.Token)
 	if err != nil {
 		c.Error(ErrUnauthorized)
 		return
 	}
 
 	// Check if token exists in Redis for this user
-	token, err := app.redisClient.Get(ctx, "user:verification:"+userId).Result()
+	token, err := app.redisClient.Get(ctx, "user:verification:"+userID).Result()
 	if err != nil {
 		c.Error(ErrUnauthorized)
 		return
@@ -175,11 +175,11 @@ func (app *Config) userVerifyEmail(c *gin.Context) {
 	}
 
 	// Delete token from Redis
-	app.redisClient.Del(ctx, "user:verification:"+userId)
+	app.redisClient.Del(ctx, "user:verification:"+userID)
 
 	// Call user-service to verify user
 	_, err = app.usersClient.userService.SetIsVerified(ctx, &user.SetIsVerifiedRequest{
-		UserId:     userId,
+		UserId:     userID,
 		IsVerified: true,
 	})
 	if err != nil {
