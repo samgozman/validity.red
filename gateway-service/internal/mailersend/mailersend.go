@@ -1,4 +1,4 @@
-// Mailersend package is used to send emails via MailerSend 3rd party service.
+// Package mailersend is used to send emails via MailerSend 3rd party service.
 package mailersend
 
 import (
