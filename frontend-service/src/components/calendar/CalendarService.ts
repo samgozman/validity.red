@@ -1,3 +1,4 @@
+import { ResponseError } from "@/services/ErrorDecoder";
 import { QueryMaker, type IResponse } from "@/services/QueryMaker";
 import type { ICalendarNotification } from "./interfaces/ICalendarNotification";
 
@@ -18,7 +19,7 @@ export class CalendarService {
     const { error, message, calendar } = res.data;
 
     if (error) {
-      throw new Error(message);
+      throw new ResponseError(message);
     }
 
     return calendar;

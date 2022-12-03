@@ -1,3 +1,4 @@
+import { ResponseError } from "@/services/ErrorDecoder";
 import { QueryMaker, type IResponse } from "@/services/QueryMaker";
 import type { INotification } from "./interfaces/INotification";
 
@@ -29,7 +30,7 @@ export class NotificationService {
     const { error, message } = res.data;
 
     if (error) {
-      throw new Error(message);
+      throw new ResponseError(message);
     }
   }
 
@@ -44,7 +45,7 @@ export class NotificationService {
     const { error, message, notifications } = res.data;
 
     if (error) {
-      throw new Error(message);
+      throw new ResponseError(message);
     }
 
     return notifications || [];
@@ -66,7 +67,7 @@ export class NotificationService {
     const { error, message } = res.data;
 
     if (error) {
-      throw new Error(message);
+      throw new ResponseError(message);
     }
   }
 }
