@@ -1,4 +1,5 @@
 import { AxiosError } from "axios";
+import * as Sentry from "@sentry/vue";
 import type { Router } from "vue-router";
 
 /**
@@ -30,14 +31,14 @@ export class ErrorDecoder {
 
       if (error.response?.status >= 500) {
         console.error(error);
-        // TODO: Log error to Sentry
+        Sentry.captureException(error);
       }
 
       return String(error.response?.data?.message || error.message);
     }
 
     console.error(error);
-    // TODO: Log error to Sentry
+    Sentry.captureException(error);
 
     return "An error occurred, please try again";
   }
