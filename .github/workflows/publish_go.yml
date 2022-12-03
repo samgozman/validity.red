@@ -1,9 +1,9 @@
-name: Build images
+name: Build Go images
 on:
   workflow_dispatch:
 
 jobs:
-  build-and-publish:
+  build-and-publish-go:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -32,7 +32,7 @@ jobs:
           && export PATH="$PATH:$(go env GOPATH)/bin"
 
       - name: Build proto files
-        run: make grpc_init_go && make grpc_init_rust
+        run: make grpc_init_go
 
       - name: Build go services
         run: make build_go
@@ -55,8 +55,3 @@ jobs:
           docker build . -f document-service.Dockerfile -t ghcr.io/samgozman/validity.red/document-service:latest
           docker push ghcr.io/samgozman/validity.red/document-service:latest
 
-      - name: Build calendar-service
-        working-directory: ./calendar-service
-        run: |
-          docker build . -f calendar-service.Dockerfile -t ghcr.io/samgozman/validity.red/calendar-service:latest
-          docker push ghcr.io/samgozman/validity.red/calendar-service:latest

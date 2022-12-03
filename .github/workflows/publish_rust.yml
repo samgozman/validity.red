@@ -1,0 +1,30 @@
+name: Build Rust images
+on:
+  workflow_dispatch:
+
+jobs:
+  build-and-publish-rust:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup protoc
+        uses: arduino/setup-protoc@v1
+        with:
+          version: '3.x'
+
+      - name: Build proto files
+        run: make grpc_init_rust
+
+      - name: Build calendar-service
+        working-directory: ./calendar-service
+        run: |
+          docker build . -f calendar-service.Dockerfile -t ghcr.io/samgozman/validity.red/calendar-service:latest
+          docker push ghcr.io/samgozman/validity.red/calendar-service:latest
