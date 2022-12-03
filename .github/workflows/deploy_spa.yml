@@ -7,6 +7,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       SSH_CONNECTION: ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}
+      SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }} # Used by sentryVitePlugin to upload source maps
     steps:
       - uses: actions/checkout@v3
       - name: Use Node.js 16.x

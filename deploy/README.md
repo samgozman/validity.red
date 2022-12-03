@@ -38,7 +38,8 @@ environment variables in 'deploy' directory (as described in the `.sample` files
 
 To-do list for github deployment:
 
-- Create ENV variables in github Secrets section
+- Create ENV variables in github Secrets section (see .sample files in deploy directory)
+- Create env `SENTRY_AUTH_TOKEN` for Sentry plugin for SPA
 - Run publish.yml workflow to create docker images
 - Run deploy_services.yml workflow to deploy services
 - Run deploy_spa.yml to build and deploy SPA
