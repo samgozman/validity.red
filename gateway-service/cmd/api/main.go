@@ -1,3 +1,6 @@
+// API for validity.red service.
+// Gateway service is responsible for routing requests to the correct services,
+// authenticating users, sending emails, handle errors, etc.
 package main
 
 import (
@@ -6,18 +9,28 @@ import (
 	"os"
 
 	"github.com/go-redis/redis/v8"
+	"github.com/samgozman/validity.red/broker/internal/mailersend"
 	"github.com/samgozman/validity.red/broker/internal/token"
 	"github.com/samgozman/validity.red/broker/proto/calendar"
 	"github.com/samgozman/validity.red/broker/proto/document"
 	"github.com/samgozman/validity.red/broker/proto/user"
 )
 
+type options struct {
+	JWTAuthTTL         int    // JWT auth token TTL in seconds
+	JWTVerificationTTL int    // JWT email verification token TTL in seconds
+	AppURL             string // Application API URL
+	Environment        string // Application environment (development or production)
+}
+
 type Config struct {
+	options         options
 	token           *token.TokenMaker
 	usersClient     *UsersClient
 	documentsClient *DocumentsClient
 	calendarsClient *CalendarsClient
 	redisClient     *redis.Client
+	mailer          Mailer
 }
 
 type UsersClient struct {
@@ -83,19 +96,29 @@ func main() {
 		Password: os.Getenv("REDIS_PASSWORD"),
 	})
 
+	// Mailer
+	mailer := mailersend.MailerSend{
+		APIKey: os.Getenv("MAILERSEND_API_KEY"),
+	}
+
 	// Create JWT token maker
 	token := token.TokenMaker{
 		Key: []byte(os.Getenv("JWT_SECRET")),
-		// 10 minutes 10 * 60
-		MaxAge: 10 * 60,
 	}
 
 	app := Config{
+		options: options{
+			JWTAuthTTL:         10 * 60,      // 10 minutes
+			JWTVerificationTTL: 24 * 60 * 60, // 24 hours
+			AppURL:             os.Getenv("HOST_URL"),
+			Environment:        os.Getenv("ENVIRONMENT"),
+		},
 		token:           &token,
 		usersClient:     &usersClient,
 		documentsClient: &documentsClient,
 		calendarsClient: &calendarsClient,
 		redisClient:     rdb,
+		mailer:          &mailer,
 	}
 
 	router := app.routes()

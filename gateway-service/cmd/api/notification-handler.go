@@ -12,11 +12,11 @@ import (
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
-type NotificationPayload struct {
+type notificationPayload struct {
 	Date time.Time `json:"date" binding:"required"`
 }
 
-type NotificationModifyPayload struct {
+type notificationModifyPayload struct {
 	ID         string `uri:"id" binding:"required,uuid"`
 	DocumentId string `uri:"documentId" binding:"required,uuid"`
 }
@@ -37,7 +37,7 @@ func (app *Config) documentNotificationCreate(c *gin.Context) {
 		c.Error(ErrInvalidInputs)
 		return
 	}
-	notificationPayload := NotificationPayload{}
+	notificationPayload := notificationPayload{}
 	if err := c.BindJSON(&notificationPayload); err != nil {
 		c.Error(ErrInvalidInputs)
 		return
@@ -66,7 +66,7 @@ func (app *Config) documentNotificationDelete(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
 
-	uri := NotificationModifyPayload{}
+	uri := notificationModifyPayload{}
 
 	// get userId from context
 	userId, _ := c.Get("UserId")

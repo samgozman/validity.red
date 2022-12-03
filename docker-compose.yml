@@ -22,6 +22,9 @@ services:
       REDIS_PASSWORD: VWtWRVNWTmZVRUZUVTFkUFVrUQ==
       JWT_SECRET: someSecretJwtKey
       GIN_MODE: debug
+      MAILERSEND_API_KEY:
+      HOST_URL: http://localhost:8080
+      ENVIRONMENT: development
     networks:
       - gateway-network
       - redis-network

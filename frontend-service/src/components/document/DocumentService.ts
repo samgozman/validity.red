@@ -1,3 +1,4 @@
+import { ResponseError } from "@/services/ErrorDecoder";
 import { QueryMaker, type IResponse } from "@/services/QueryMaker";
 import type { IDocument } from "./interfaces/IDocument";
 
@@ -35,7 +36,7 @@ export class DocumentService {
     const { error, message } = res.data;
 
     if (error) {
-      throw new Error(message);
+      throw new ResponseError(message);
     }
   }
 
@@ -50,7 +51,7 @@ export class DocumentService {
     const { error, message, documents } = res.data;
 
     if (error) {
-      throw new Error(message);
+      throw new ResponseError(message);
     }
 
     // Short date format
@@ -68,7 +69,7 @@ export class DocumentService {
     const { error, message, document } = res.data;
 
     if (error) {
-      throw new Error(message);
+      throw new ResponseError(message);
     }
 
     // Short date format
@@ -87,7 +88,7 @@ export class DocumentService {
     const { error, message, documentId } = res.data;
 
     if (error) {
-      throw new Error(message);
+      throw new ResponseError(message);
     }
 
     return documentId;
@@ -103,7 +104,7 @@ export class DocumentService {
     const { error, message } = res.data;
 
     if (error) {
-      throw new Error(message);
+      throw new ResponseError(message);
     }
   }
 

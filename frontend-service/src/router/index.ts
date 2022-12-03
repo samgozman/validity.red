@@ -3,6 +3,7 @@ import MainView from "@/views/MainView.vue";
 import AboutView from "@/views/AboutView.vue";
 import LoginView from "@/views/LoginView.vue";
 import RegistrationView from "@/views/RegistrationView.vue";
+import EmailConfirmViewVue from "@/views/EmailConfirmView.vue";
 import { logout } from "@/services/Logout";
 
 const router = createRouter({
@@ -22,6 +23,11 @@ const router = createRouter({
       path: "/register",
       name: "register",
       component: RegistrationView,
+    },
+    {
+      path: "/verify",
+      name: "verify",
+      component: EmailConfirmViewVue,
     },
     {
       path: "/logout",

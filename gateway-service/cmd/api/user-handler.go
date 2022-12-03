@@ -10,15 +10,19 @@ import (
 	"github.com/samgozman/validity.red/broker/proto/user"
 )
 
-type AuthPayload struct {
+type authPayload struct {
 	Email    string `json:"email" uri:"email" binding:"required,email"`
 	Password string `json:"password" uri:"password" binding:"required,min=8,max=64"`
 }
 
-type RegisterPayload struct {
+type registerPayload struct {
 	Email    string `json:"email" uri:"email" binding:"required,email"`
 	Password string `json:"password" uri:"password" binding:"required,min=8,max=64"`
 	Timezone string `json:"timezone" uri:"timezone" binding:"required,timezone"`
+}
+
+type emailVerificationPayload struct {
+	Token string `json:"token" uri:"token" binding:"required,jwt"`
 }
 
 // Call Register method on `user-service`
@@ -27,14 +31,14 @@ func (app *Config) userRegister(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
 
-	requestPayload := RegisterPayload{}
+	requestPayload := registerPayload{}
 	if err := c.BindJSON(&requestPayload); err != nil {
 		c.Error(ErrInvalidInputs)
 		return
 	}
 
 	// call service
-	_, err := app.usersClient.userService.Register(ctx, &user.RegisterRequest{
+	res, err := app.usersClient.userService.Register(ctx, &user.RegisterRequest{
 		RegisterEntry: &user.Register{
 			Email:    requestPayload.Email,
 			Password: requestPayload.Password,
@@ -47,7 +51,24 @@ func (app *Config) userRegister(c *gin.Context) {
 		return
 	}
 
-	// TODO: Send verification email
+	// Create verification token for the user to verify email
+	verificationToken, err := app.token.Generate(res.UserId, app.options.JWTVerificationTTL)
+	if err != nil {
+		log.Println("Error on calling user-service::Register::Generate token method:", err)
+		c.Error(err)
+		return
+	}
+	// Save verification token to Redis with 24h TTL
+	app.redisClient.SetNX(
+		ctx,
+		"user:verification:"+res.UserId, verificationToken,
+		time.Second*time.Duration(app.options.JWTVerificationTTL),
+	)
+
+	if app.options.Environment == "production" {
+		verificationLink := app.options.AppURL + "/verify?token=" + verificationToken
+		app.mailer.SendEmailVerification(requestPayload.Email, verificationLink)
+	}
 
 	c.Status(http.StatusCreated)
 }
@@ -58,7 +79,7 @@ func (app *Config) userLogin(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
 
-	requestPayload := AuthPayload{}
+	requestPayload := authPayload{}
 	if err := c.BindJSON(&requestPayload); err != nil {
 		c.Error(ErrInvalidInputs)
 		return
@@ -77,8 +98,14 @@ func (app *Config) userLogin(c *gin.Context) {
 		return
 	}
 
+	// User's email should be verified before login
+	if !res.IsVerified {
+		c.Error(ErrEmailNotVerified)
+		return
+	}
+
 	// Generate JWT token
-	token, err := app.token.Generate(res.UserId)
+	token, err := app.token.Generate(res.UserId, app.options.JWTAuthTTL)
 	if err != nil {
 		log.Println("Error on calling gateway-service::token::Generate method:", err)
 		c.Error(err)
@@ -86,7 +113,7 @@ func (app *Config) userLogin(c *gin.Context) {
 	}
 
 	// write jwt token
-	c.SetCookie("token", token, app.token.MaxAge, "/", "", false, false)
+	c.SetCookie("token", token, app.options.JWTAuthTTL, "/", "", false, false)
 	c.JSON(http.StatusAccepted, struct {
 		CalendarId string `json:"calendarId"`
 		Timezone   string `json:"timezone"`
@@ -102,13 +129,64 @@ func (app *Config) userRefreshToken(c *gin.Context) {
 	tk, _ := c.Get("Token")
 
 	// Refresh JWT token
-	token, err := app.token.Refresh(tk.(string))
+	token, err := app.token.Refresh(tk.(string), app.options.JWTAuthTTL)
 	if err != nil {
 		log.Println("Error on calling gateway-service::token::Refresh method:", err)
 		c.Error(ErrUnauthorized)
 		return
 	}
 
-	c.SetCookie("token", token, app.token.MaxAge, "/", "", false, false)
+	c.SetCookie("token", token, app.options.JWTAuthTTL, "/", "", false, false)
+	c.Status(http.StatusAccepted)
+}
+
+// Verify user email by sended token
+func (app *Config) userVerifyEmail(c *gin.Context) {
+	c.Writer.Header().Set("Content-Type", "application/json")
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+	defer cancel()
+
+	json := emailVerificationPayload{}
+
+	// Validate inputs
+	if err := c.BindJSON(&json); err != nil {
+		c.Error(ErrInvalidInputs)
+		return
+	}
+
+	// Validate token
+	userID, err := app.token.Verify(json.Token)
+	if err != nil {
+		c.Error(ErrUnauthorized)
+		return
+	}
+
+	// Check if token exists in Redis for this user
+	token, err := app.redisClient.Get(ctx, "user:verification:"+userID).Result()
+	if err != nil {
+		c.Error(ErrUnauthorized)
+		return
+	}
+
+	// Check if token is valid
+	if token != json.Token {
+		c.Error(ErrUnauthorized)
+		return
+	}
+
+	// Delete token from Redis
+	app.redisClient.Del(ctx, "user:verification:"+userID)
+
+	// Call user-service to verify user
+	_, err = app.usersClient.userService.SetIsVerified(ctx, &user.SetIsVerifiedRequest{
+		UserId:     userID,
+		IsVerified: true,
+	})
+	if err != nil {
+		log.Println("Error on calling user-service::SetIsVerified method:", err)
+		c.Error(err)
+		return
+	}
+
 	c.Status(http.StatusAccepted)
 }

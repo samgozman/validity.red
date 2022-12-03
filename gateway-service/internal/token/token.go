@@ -13,8 +13,7 @@ var (
 )
 
 type TokenMaker struct {
-	Key    []byte // JWT secret key
-	MaxAge int    // JWT token max age in seconds
+	Key []byte // JWT secret key
 }
 
 type JWTClaims struct {
@@ -22,12 +21,14 @@ type JWTClaims struct {
 	jwt.StandardClaims
 }
 
-// Generates a JWT token for the user
-func (j *TokenMaker) Generate(userIdPayload string) (t string, err error) {
-	expirationTime := time.Now().Add(time.Duration(j.MaxAge) * time.Second).Unix()
+// Generate - generates a JWT token for the user.
+//
+// maxAge - JWT token max age (in seconds)
+func (j *TokenMaker) Generate(userID string, maxAge int) (t string, err error) {
+	expirationTime := time.Now().Add(time.Duration(maxAge) * time.Second).Unix()
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, JWTClaims{
-		UserID: userIdPayload,
+		UserID: userID,
 		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: expirationTime,
 		},
@@ -52,7 +53,10 @@ func (j *TokenMaker) Verify(tokenString string) (userId string, e error) {
 	return claims.UserID, nil
 }
 
-func (j *TokenMaker) Refresh(tokenString string) (t string, err error) {
+// Refresh - generates new JWT token for the user.
+//
+// maxAge - JWT token max age (in seconds)
+func (j *TokenMaker) Refresh(tokenString string, maxAge int) (t string, err error) {
 	claims, err := j.parse(tokenString)
 	if err != nil {
 		return "", err
@@ -62,7 +66,7 @@ func (j *TokenMaker) Refresh(tokenString string) (t string, err error) {
 	// TODO: Return previous token if it's far from expired
 
 	// Create new token with current payload
-	return j.Generate(claims.UserID)
+	return j.Generate(claims.UserID, maxAge)
 }
 
 // Parse token string and return decoded JWTClaims

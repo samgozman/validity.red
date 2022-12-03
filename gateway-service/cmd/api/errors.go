@@ -8,19 +8,22 @@ import (
 )
 
 var (
-	ErrUnauthorized  = errors.New("authentication failed")
-	ErrInvalidInputs = errors.New("invalid inputs")
+	ErrUnauthorized     = errors.New("authentication failed")
+	ErrInvalidInputs    = errors.New("invalid inputs")
+	ErrEmailNotVerified = errors.New("email not verified")
 )
 
 var ErrorsArr = []error{
 	ErrUnauthorized,
 	ErrInvalidInputs,
+	ErrEmailNotVerified,
 }
 
 // Map error types to HTTP status codes
 var ErrorStatus = map[error]int{
-	ErrUnauthorized:  http.StatusUnauthorized,
-	ErrInvalidInputs: http.StatusBadRequest,
+	ErrUnauthorized:     http.StatusUnauthorized,
+	ErrInvalidInputs:    http.StatusBadRequest,
+	ErrEmailNotVerified: http.StatusUnauthorized,
 }
 
 // Map gRPC codes to HTTP status codes.

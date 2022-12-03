@@ -1,6 +1,7 @@
 import type { IResponse } from "@/services/QueryMaker";
 import { QueryMaker } from "@/services/QueryMaker";
 import { setCalendarId, setUsersTimezone } from "@/state";
+import { ResponseError } from "@/services/ErrorDecoder";
 
 interface IAuthCredentials {
   email: string;
@@ -34,7 +35,7 @@ export class AuthService {
     setUsersTimezone(timezone);
 
     if (error) {
-      throw new Error(message);
+      throw new ResponseError(message);
     }
   }
 
@@ -54,7 +55,25 @@ export class AuthService {
     const { error, message } = res.data;
 
     if (error) {
-      throw new Error(message);
+      throw new ResponseError(message);
+    }
+  }
+
+  /**
+   * Verify user's email
+   * @param token verification JWT token
+   */
+  public static async userVerifyEmail(token: string): Promise<void> {
+    const payload = JSON.stringify({ token });
+
+    const res = await new QueryMaker({
+      route: "/auth/verify",
+      payload,
+    }).post();
+    const { error, message } = res.data;
+
+    if (error) {
+      throw new ResponseError(message);
     }
   }
 }

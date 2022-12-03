@@ -54,7 +54,8 @@ func (app *Config) gRPCListen() {
 	}
 }
 
-func (us *UserServer) Register(ctx context.Context, req *proto.RegisterRequest) (*emptypb.Empty, error) {
+// Register - creates a new user and returns it's entity
+func (us *UserServer) Register(ctx context.Context, req *proto.RegisterRequest) (*proto.RegisterResponse, error) {
 	input := req.GetRegisterEntry()
 
 	// register user
@@ -69,14 +70,17 @@ func (us *UserServer) Register(ctx context.Context, req *proto.RegisterRequest) 
 	}
 
 	// return response
-	return &emptypb.Empty{}, nil
+	return &proto.RegisterResponse{
+		UserId: userPayload.ID.String(),
+	}, nil
 }
 
+// Login - verifies user credentials and returns it's entity
 func (as *AuthServer) Login(ctx context.Context, req *proto.AuthRequest) (*proto.AuthResponse, error) {
 	input := req.GetAuthEntry()
 
 	// find user
-	u, err := as.App.Repo.FindOne(ctx, &user.User{Email: input.Email}, "id, password, calendar_id, timezone")
+	u, err := as.App.Repo.FindOne(ctx, &user.User{Email: input.Email}, "id, password, calendar_id, timezone, is_verified")
 	if err != nil {
 		return nil, err
 	}
@@ -93,10 +97,12 @@ func (as *AuthServer) Login(ctx context.Context, req *proto.AuthRequest) (*proto
 		UserId:     u.ID.String(),
 		CalendarId: u.CalendarID,
 		Timezone:   u.Timezone,
+		IsVerified: u.IsVerified,
 	}
 	return res, nil
 }
 
+// GetCalendarOptions gets the calendar field for the user with the given id
 func (us *UserServer) GetCalendarOptions(ctx context.Context, req *proto.GetCalendarIdRequest) (*proto.GetCalendarIdResponse, error) {
 	userId, _ := uuid.Parse(req.UserId)
 	u, err := us.App.Repo.FindOne(ctx, &user.User{ID: userId}, "calendar_id, iv_calendar, timezone")
@@ -112,6 +118,7 @@ func (us *UserServer) GetCalendarOptions(ctx context.Context, req *proto.GetCale
 	return res, nil
 }
 
+// GetCalendarIv gets the iv_calendar field for the user with the given id
 func (us *UserServer) GetCalendarIv(ctx context.Context, req *proto.GetCalendarIvRequest) (*proto.GetCalendarIvResponse, error) {
 	u, err := us.App.Repo.FindOne(ctx, &user.User{CalendarID: req.CalendarId}, "iv_calendar")
 	if err != nil {
@@ -124,6 +131,7 @@ func (us *UserServer) GetCalendarIv(ctx context.Context, req *proto.GetCalendarI
 	return res, nil
 }
 
+// SetCalendarIv sets the iv_calendar field for the user with the given id
 func (us *UserServer) SetCalendarIv(ctx context.Context, req *proto.SetCalendarIvRequest) (*emptypb.Empty, error) {
 	err := us.App.Repo.Update(ctx, req.UserId, map[string]interface{}{
 		"iv_calendar": req.CalendarIv,
@@ -135,4 +143,17 @@ func (us *UserServer) SetCalendarIv(ctx context.Context, req *proto.SetCalendarI
 	return &emptypb.Empty{}, nil
 }
 
+// SetIsVerified sets the is_verified field to true for the user with the given id
+func (us *UserServer) SetIsVerified(ctx context.Context, req *proto.SetIsVerifiedRequest) (*emptypb.Empty, error) {
+	err := us.App.Repo.Update(ctx, req.UserId, map[string]interface{}{
+		"is_verified": req.IsVerified,
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	return &emptypb.Empty{}, nil
+}
+
+// TODO: Combine all set & get methods
 // TODO: Edit - edit user info

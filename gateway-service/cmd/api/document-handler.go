@@ -14,14 +14,14 @@ import (
 
 // ? Maybe use alpha-num-unicode rule for string fields?
 
-type DocumentCreate struct {
+type documentCreate struct {
 	Type        int32     `json:"type" binding:"required,number"`
 	Title       string    `json:"title" binding:"required,max=100"`
 	Description string    `json:"description" binding:"max=500"`
 	ExpiresAt   time.Time `json:"expiresAt" binding:"required"`
 }
 
-type DocumentEdit struct {
+type documentEdit struct {
 	ID          string    `json:"id" binding:"required,uuid"`
 	Type        int32     `json:"type" binding:"required,number"`
 	Title       string    `json:"title" binding:"required,max=100"`
@@ -37,7 +37,7 @@ func (app *Config) documentCreate(c *gin.Context) {
 	// get userId from context
 	userId, _ := c.Get("UserId")
 
-	documentPayload := DocumentCreate{}
+	documentPayload := documentCreate{}
 	if err := c.BindJSON(&documentPayload); err != nil {
 		c.Error(ErrInvalidInputs)
 		return
@@ -74,7 +74,7 @@ func (app *Config) documentEdit(c *gin.Context) {
 	// get userId from context
 	userId, _ := c.Get("UserId")
 
-	documentPayload := DocumentEdit{}
+	documentPayload := documentEdit{}
 	if err := c.BindJSON(&documentPayload); err != nil {
 		c.Error(ErrInvalidInputs)
 		return

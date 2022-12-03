@@ -1,3 +1,4 @@
+import { ResponseError } from "@/services/ErrorDecoder";
 import { QueryMaker, type IResponse } from "@/services/QueryMaker";
 import type { IDashboardStats } from "./interfaces/IDashboardStats";
 
@@ -18,7 +19,7 @@ export class DashboardService {
     } = res.data;
 
     if (error) {
-      throw new Error(message);
+      throw new ResponseError(message);
     }
 
     for (const d of latestDocuments) {
