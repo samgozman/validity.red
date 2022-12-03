@@ -1,6 +1,7 @@
 import type { IResponse } from "@/services/QueryMaker";
 import { QueryMaker } from "@/services/QueryMaker";
 import { setCalendarId, setUsersTimezone } from "@/state";
+import { ResponseError } from "@/services/ErrorDecoder";
 
 interface IAuthCredentials {
   email: string;
@@ -34,7 +35,7 @@ export class AuthService {
     setUsersTimezone(timezone);
 
     if (error) {
-      throw new Error(message);
+      throw new ResponseError(message);
     }
   }
 
@@ -54,7 +55,7 @@ export class AuthService {
     const { error, message } = res.data;
 
     if (error) {
-      throw new Error(message);
+      throw new ResponseError(message);
     }
   }
 
@@ -72,7 +73,7 @@ export class AuthService {
     const { error, message } = res.data;
 
     if (error) {
-      throw new Error(message);
+      throw new ResponseError(message);
     }
   }
 }

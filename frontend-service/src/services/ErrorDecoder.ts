@@ -1,6 +1,16 @@
 import { AxiosError } from "axios";
 import type { Router } from "vue-router";
 
+/**
+ * Custom error class for handling expected errors
+ */
+export class ResponseError extends Error {
+  constructor(message: string) {
+    super(message);
+    Object.setPrototypeOf(this, ResponseError.prototype);
+  }
+}
+
 export class ErrorDecoder {
   /**
    * Decode error from Axios and return a string.
@@ -10,24 +20,25 @@ export class ErrorDecoder {
    * @returns string error message for user
    */
   public static async decode(error: unknown, router?: Router): Promise<string> {
-    let message = "";
-    if (error instanceof AxiosError) {
-      message = String(error.response?.data?.message || error.message);
-
+    if (error instanceof ResponseError) {
+      return error.message;
+    }
+    if (error instanceof AxiosError && error.response?.status) {
       if (error.response?.status === 404 && router) {
         router.push("/404");
       }
 
-      if (error.response?.status && error.response?.status >= 500) {
+      if (error.response?.status >= 500) {
         console.error(error);
         // TODO: Log error to Sentry
       }
-    } else {
-      message = "An error occurred, please try again";
-      console.error(error);
-      // TODO: Log error to Sentry
+
+      return String(error.response?.data?.message || error.message);
     }
 
-    return message;
+    console.error(error);
+    // TODO: Log error to Sentry
+
+    return "An error occurred, please try again";
   }
 }
