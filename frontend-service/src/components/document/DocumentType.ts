@@ -18,6 +18,7 @@ import {
   QrCodeOutline,
   ReceiptOutline,
   TicketOutline,
+  BusOutline,
 } from "@vicons/ionicons5";
 
 interface IDocumentType {
@@ -49,7 +50,8 @@ export class DocumentType {
     [18, { name: "Vaccination Certificate", icon: QrCodeOutline }],
     [19, { name: "Warranty Certificate", icon: ReceiptOutline }],
     [20, { name: "Coupon", icon: TicketOutline }],
-    [21, { name: "Other", icon: DocumentOutline }],
+    [21, { name: "Travel card", icon: BusOutline }],
+    [255, { name: "Other", icon: DocumentOutline }],
   ]);
 
   public static getName(typeId = 0): string {

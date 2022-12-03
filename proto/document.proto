@@ -28,7 +28,8 @@ enum Type {
 	VACCINATION_CERTIFICATE = 18;
 	WARRANTY_CERTIFICATE = 19;
 	COUPON = 20;
-	OTHER = 21;
+	TRAVEL_CARD = 21;
+	OTHER = 255;
 }
 
 message Document {
