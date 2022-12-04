@@ -69,7 +69,6 @@ func (us *UserServer) Register(ctx context.Context, req *proto.RegisterRequest) 
 	}
 	err := us.App.Repo.InsertOne(ctx, &userPayload)
 	if err != nil {
-		sentry.CaptureException(err)
 		return nil, err
 	}
 
@@ -86,7 +85,6 @@ func (as *AuthServer) Login(ctx context.Context, req *proto.AuthRequest) (*proto
 	// find user
 	u, err := as.App.Repo.FindOne(ctx, &user.User{Email: input.Email}, "id, password, calendar_id, timezone, is_verified")
 	if err != nil {
-		sentry.CaptureException(err)
 		return nil, err
 	}
 
@@ -112,7 +110,6 @@ func (us *UserServer) GetCalendarOptions(ctx context.Context, req *proto.GetCale
 	userId, _ := uuid.Parse(req.UserId)
 	u, err := us.App.Repo.FindOne(ctx, &user.User{ID: userId}, "calendar_id, iv_calendar, timezone")
 	if err != nil {
-		sentry.CaptureException(err)
 		return nil, err
 	}
 
@@ -128,7 +125,6 @@ func (us *UserServer) GetCalendarOptions(ctx context.Context, req *proto.GetCale
 func (us *UserServer) GetCalendarIv(ctx context.Context, req *proto.GetCalendarIvRequest) (*proto.GetCalendarIvResponse, error) {
 	u, err := us.App.Repo.FindOne(ctx, &user.User{CalendarID: req.CalendarId}, "iv_calendar")
 	if err != nil {
-		sentry.CaptureException(err)
 		return nil, err
 	}
 
@@ -144,7 +140,6 @@ func (us *UserServer) SetCalendarIv(ctx context.Context, req *proto.SetCalendarI
 		"iv_calendar": req.CalendarIv,
 	})
 	if err != nil {
-		sentry.CaptureException(err)
 		return nil, err
 	}
 
@@ -157,7 +152,6 @@ func (us *UserServer) SetIsVerified(ctx context.Context, req *proto.SetIsVerifie
 		"is_verified": req.IsVerified,
 	})
 	if err != nil {
-		sentry.CaptureException(err)
 		return nil, err
 	}
 
