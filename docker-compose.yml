@@ -43,6 +43,7 @@ services:
       POSTGRES_USER: admin
       POSTGRES_PASSWORD: password
       POSTGRES_DB: users
+      SENTRY_DSN: 
     networks:
       - gateway-network
       - users-network
