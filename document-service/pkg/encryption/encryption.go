@@ -7,6 +7,8 @@ import (
 	"crypto/rand"
 	"encoding/hex"
 	"errors"
+
+	"github.com/getsentry/sentry-go"
 )
 
 var (
@@ -30,6 +32,7 @@ func EncryptAES(key []byte, iv []byte, text string) (string, error) {
 	bytesText := PKCS5Padding([]byte(text))
 	block, err := aes.NewCipher(key)
 	if err != nil {
+		sentry.CaptureException(err)
 		return "", err
 	}
 
@@ -53,11 +56,13 @@ func DecryptAES(key []byte, iv []byte, cipherText string) (string, error) {
 
 	cipherTextDecoded, err := hex.DecodeString(cipherText)
 	if err != nil {
+		sentry.CaptureException(err)
 		return "", err
 	}
 
 	block, err := aes.NewCipher(key)
 	if err != nil {
+		sentry.CaptureException(err)
 		return "", err
 	}
 
@@ -87,6 +92,7 @@ func GenerateRandomIV(length uint) ([]byte, error) {
 	_, err := rand.Read(b)
 
 	if err != nil {
+		sentry.CaptureException(err)
 		return nil, err
 	}
 
