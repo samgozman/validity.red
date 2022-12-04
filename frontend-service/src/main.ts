@@ -19,6 +19,15 @@ Sentry.init({
   ],
   tracesSampleRate: 0.2,
   sampleRate: 1.0,
+  ignoreErrors: [
+    // Random plugins/extensions
+    "top.GLOBALS",
+  ],
+  denyUrls: [
+    // Chrome extensions
+    /extensions\//i,
+    /^chrome:\/\//i,
+  ],
 });
 
 app.use(router);
