@@ -5,6 +5,7 @@ import (
 	"errors"
 	"time"
 
+	"github.com/getsentry/sentry-go"
 	"github.com/google/uuid"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -74,6 +75,8 @@ func (db *NotificationDB) InsertOne(ctx context.Context, n *Notification) error 
 			errors.Is(res.Error, gorm.ErrInvalidValueOfLength) {
 			return status.Error(codes.InvalidArgument, "invalid notification data")
 		}
+
+		sentry.CaptureException(res.Error)
 		return status.Error(codes.Internal, res.Error.Error())
 	}
 
@@ -87,6 +90,7 @@ func (db *NotificationDB) DeleteOne(ctx context.Context, n *Notification) error 
 		Delete(&Notification{})
 
 	if res.Error != nil {
+		sentry.CaptureException(res.Error)
 		return status.Error(codes.Internal, res.Error.Error())
 	}
 
@@ -107,6 +111,7 @@ func (db *NotificationDB) FindAll(ctx context.Context, documentID uuid.UUID) ([]
 		Find(&notifications)
 
 	if res.Error != nil {
+		sentry.CaptureException(res.Error)
 		return nil, status.Error(codes.Internal, res.Error.Error())
 	}
 
@@ -124,6 +129,7 @@ func (db *NotificationDB) Count(ctx context.Context, documentID uuid.UUID) (int6
 		Count(&count)
 
 	if res.Error != nil {
+		sentry.CaptureException(res.Error)
 		return 0, status.Error(codes.Internal, res.Error.Error())
 	}
 
@@ -141,6 +147,7 @@ func (db *NotificationDB) CountAll(ctx context.Context, userID uuid.UUID) (int64
 		Count(&count)
 
 	if res.Error != nil {
+		sentry.CaptureException(res.Error)
 		return 0, status.Error(codes.Internal, res.Error.Error())
 	}
 
@@ -157,6 +164,7 @@ func (db *NotificationDB) FindAllForUser(ctx context.Context, userID uuid.UUID) 
 		Find(&notifications)
 
 	if res.Error != nil {
+		sentry.CaptureException(res.Error)
 		return nil, status.Error(codes.Internal, res.Error.Error())
 	}
 

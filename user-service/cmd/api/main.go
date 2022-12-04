@@ -2,8 +2,10 @@ package main
 
 import (
 	"log"
+	"os"
 	"time"
 
+	"github.com/getsentry/sentry-go"
 	"github.com/samgozman/validity.red/user/internal/models/user"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -14,6 +16,16 @@ type Config struct {
 }
 
 func main() {
+	err := sentry.Init(sentry.ClientOptions{
+		Dsn:              os.Getenv("SENTRY_DSN"),
+		TracesSampleRate: 0.2,
+		SampleRate:       1.0,
+	})
+	if err != nil {
+		log.Fatalf("sentry.Init: %s", err)
+	}
+	defer sentry.Flush(2 * time.Second)
+
 	// Connect to SQL server
 	db := connectToDB()
 	if db == nil {
@@ -21,7 +33,7 @@ func main() {
 	}
 
 	//Automatic migration for users table
-	err := db.Table("users").AutoMigrate(&user.User{})
+	err = db.Table("users").AutoMigrate(&user.User{})
 	if err != nil {
 		panic(err)
 	}

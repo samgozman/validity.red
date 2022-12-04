@@ -7,6 +7,7 @@ import (
 	"net"
 	"os"
 
+	"github.com/getsentry/sentry-go"
 	"github.com/google/uuid"
 	"github.com/samgozman/validity.red/user/internal/models/user"
 	proto "github.com/samgozman/validity.red/user/proto"
@@ -35,6 +36,7 @@ var gRpcPort = os.Getenv("GRPC_PORT")
 func (app *Config) gRPCListen() {
 	lis, err := net.Listen("tcp", fmt.Sprintf(":%s", gRpcPort))
 	if err != nil {
+		sentry.CaptureException(err)
 		log.Fatalf("failed to listen for gRPC: %v", err)
 	}
 
@@ -50,6 +52,7 @@ func (app *Config) gRPCListen() {
 	log.Printf("GRPC server listening on port %s", gRpcPort)
 
 	if err := s.Serve(lis); err != nil {
+		sentry.CaptureException(err)
 		log.Fatalf("failed to listen for gRPC: %v", err)
 	}
 }

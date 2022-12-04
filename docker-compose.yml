@@ -25,6 +25,7 @@ services:
       MAILERSEND_API_KEY:
       HOST_URL: http://localhost:8080
       ENVIRONMENT: development
+      SENTRY_DSN: 
     networks:
       - gateway-network
       - redis-network
@@ -43,6 +44,7 @@ services:
       POSTGRES_USER: admin
       POSTGRES_PASSWORD: password
       POSTGRES_DB: users
+      SENTRY_DSN: 
     networks:
       - gateway-network
       - users-network
@@ -62,6 +64,7 @@ services:
       POSTGRES_PASSWORD: password
       POSTGRES_DB: documents
       ENCRYPTION_KEY: 8dHWTNSAsGaaD7JbqVubF1aWVWGJYF3q
+      SENTRY_DSN:
     networks:
       - gateway-network
       - documents-network

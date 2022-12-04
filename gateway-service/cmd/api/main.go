@@ -7,7 +7,9 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"time"
 
+	"github.com/getsentry/sentry-go"
 	"github.com/go-redis/redis/v8"
 	"github.com/samgozman/validity.red/broker/internal/mailersend"
 	"github.com/samgozman/validity.red/broker/internal/token"
@@ -48,6 +50,16 @@ type CalendarsClient struct {
 }
 
 func main() {
+	err := sentry.Init(sentry.ClientOptions{
+		Dsn:              os.Getenv("SENTRY_DSN"),
+		TracesSampleRate: 0.2,
+		SampleRate:       1.0,
+	})
+	if err != nil {
+		log.Fatalf("sentry.Init: %s", err)
+	}
+	defer sentry.Flush(2 * time.Second)
+
 	// USERS CLIENT SECTION - START //
 	userServiceConn, err := connectToService(os.Getenv("USER_GRPC_HOST"), os.Getenv("USER_GRPC_PORT"))
 	if err != nil {

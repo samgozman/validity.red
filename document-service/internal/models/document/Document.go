@@ -8,6 +8,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/getsentry/sentry-go"
 	"github.com/google/uuid"
 	"github.com/samgozman/validity.red/document/internal/models/notification"
 	"github.com/samgozman/validity.red/document/pkg/encryption"
@@ -83,16 +84,19 @@ func (d *Document) Encrypt() error {
 	// TODO: Do not encrypt description if it is empty
 	iv_description, err := encryption.GenerateRandomIV(encryption.BlockSize)
 	if err != nil {
+		sentry.CaptureException(err)
 		return status.Error(codes.Internal, err.Error())
 	}
 
 	encryptedTitle, err := encryption.EncryptAES(EncryptionKey, iv_title, d.Title)
 	if err != nil {
+		sentry.CaptureException(err)
 		return status.Error(codes.Internal, err.Error())
 	}
 
 	encryptedDesc, err := encryption.EncryptAES(EncryptionKey, iv_description, d.Description)
 	if err != nil {
+		sentry.CaptureException(err)
 		return status.Error(codes.Internal, err.Error())
 	}
 
@@ -108,6 +112,7 @@ func (d *Document) Decrypt() error {
 	if d.IV_Title != nil {
 		title, err := encryption.DecryptAES(EncryptionKey, d.IV_Title, d.Title)
 		if err != nil {
+			sentry.CaptureException(err)
 			return status.Error(codes.Internal, err.Error())
 		}
 		d.Title = string(title)
@@ -116,6 +121,7 @@ func (d *Document) Decrypt() error {
 	if d.IV_Description != nil {
 		desc, err := encryption.DecryptAES(EncryptionKey, d.IV_Description, d.Description)
 		if err != nil {
+			sentry.CaptureException(err)
 			return status.Error(codes.Internal, err.Error())
 		}
 		d.Description = string(desc)
@@ -174,6 +180,7 @@ func (db *DocumentDB) InsertOne(ctx context.Context, d *Document) error {
 			errors.Is(res.Error, gorm.ErrInvalidValueOfLength) {
 			return status.Error(codes.InvalidArgument, "invalid document data")
 		}
+		sentry.CaptureException(res.Error)
 		return status.Error(codes.Internal, res.Error.Error())
 	}
 
@@ -197,6 +204,7 @@ func (db *DocumentDB) UpdateOne(ctx context.Context, d *Document) error {
 			errors.Is(res.Error, gorm.ErrInvalidValueOfLength) {
 			return status.Error(codes.InvalidArgument, "invalid document data")
 		}
+		sentry.CaptureException(res.Error)
 		return status.Error(codes.Internal, res.Error.Error())
 	}
 
@@ -219,6 +227,7 @@ func (db *DocumentDB) DeleteOne(ctx context.Context, d *Document) error {
 		Delete(&Document{ID: d.ID, UserID: d.UserID})
 
 	if res.Error != nil {
+		sentry.CaptureException(res.Error)
 		return status.Error(codes.Internal, res.Error.Error())
 	}
 
@@ -241,6 +250,7 @@ func (db *DocumentDB) FindOne(ctx context.Context, d *Document) error {
 		if errors.Is(res.Error, gorm.ErrRecordNotFound) {
 			return status.Error(codes.NotFound, "document not found")
 		}
+		sentry.CaptureException(res.Error)
 		return status.Error(codes.Internal, res.Error.Error())
 	}
 
@@ -264,6 +274,7 @@ func (db *DocumentDB) Exists(ctx context.Context, d *Document) (bool, error) {
 		if errors.Is(res.Error, gorm.ErrRecordNotFound) {
 			return false, status.Error(codes.NotFound, "document not found")
 		}
+		sentry.CaptureException(res.Error)
 		return false, status.Error(codes.Internal, res.Error.Error())
 	}
 
@@ -281,6 +292,7 @@ func (db *DocumentDB) FindAll(ctx context.Context, userId uuid.UUID) ([]Document
 		Find(&documents)
 
 	if res.Error != nil {
+		sentry.CaptureException(res.Error)
 		return nil, status.Error(codes.Internal, res.Error.Error())
 	}
 
@@ -298,6 +310,7 @@ func (db *DocumentDB) Count(ctx context.Context, userId uuid.UUID) (int64, error
 		Count(&count)
 
 	if res.Error != nil {
+		sentry.CaptureException(res.Error)
 		return 0, status.Error(codes.Internal, res.Error.Error())
 	}
 
@@ -316,6 +329,7 @@ func (db *DocumentDB) CountTypes(ctx context.Context, userId uuid.UUID) ([]*prot
 		Scan(&types)
 
 	if res.Error != nil {
+		sentry.CaptureException(res.Error)
 		return nil, status.Error(codes.Internal, res.Error.Error())
 	}
 
@@ -340,6 +354,7 @@ func (db *DocumentDB) FindLatest(ctx context.Context, userId uuid.UUID, limit in
 		if errors.Is(res.Error, gorm.ErrRecordNotFound) {
 			return nil, status.Error(codes.NotFound, "document not found")
 		}
+		sentry.CaptureException(res.Error)
 		return nil, status.Error(codes.Internal, res.Error.Error())
 	}
 

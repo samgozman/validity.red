@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"github.com/badoux/checkmail"
+	"github.com/getsentry/sentry-go"
 	"github.com/google/uuid"
 	"golang.org/x/crypto/bcrypt"
 	"google.golang.org/grpc/codes"
@@ -104,6 +105,7 @@ func (user *User) BeforeCreate(tx *gorm.DB) error {
 func (user *User) BeforeSave(tx *gorm.DB) error {
 	hashedPassword, err := Hash(user.Password)
 	if err != nil {
+		sentry.CaptureException(err)
 		return err
 	}
 	user.Password = string(hashedPassword)
@@ -124,6 +126,7 @@ func (u *PostgresRepository) InsertOne(ctx context.Context, user *User) error {
 			return status.Error(codes.AlreadyExists, "user is already exists")
 		}
 
+		sentry.CaptureException(res.Error)
 		return status.Error(codes.Internal, res.Error.Error())
 	}
 
@@ -154,6 +157,7 @@ func (u *PostgresRepository) FindOne(ctx context.Context, query *User, fields st
 		}
 		return nil, status.Error(codes.NotFound, "user not found")
 	}
+	sentry.CaptureException(res.Error)
 	return nil, status.Error(codes.Internal, res.Error.Error())
 }
 
@@ -169,6 +173,7 @@ func (u *PostgresRepository) Update(ctx context.Context, userId string, fields m
 			errors.Is(res.Error, gorm.ErrInvalidValueOfLength) {
 			return status.Error(codes.InvalidArgument, "invalid user data")
 		}
+		sentry.CaptureException(res.Error)
 		return status.Error(codes.Internal, res.Error.Error())
 	}
 	if res.RowsAffected == 0 {
