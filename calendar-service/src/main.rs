@@ -75,6 +75,17 @@ impl Calendar for CalendarService {
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    // Sentry integration
+    let _guard = sentry::init((
+        env::var("SENTRY_DSN").expect("Expected SENTRY_DSN to be set"),
+        sentry::ClientOptions {
+            release: sentry::release_name!(),
+            sample_rate: 1.0,
+            traces_sample_rate: 0.2,
+            ..Default::default()
+        },
+    ));
+
     println!("Starting calendars server...");
     let grpc_port = env::var("GRPC_PORT").expect("Expected GRPC_PORT to be set");
     let addr = format!("0.0.0.0:{}", grpc_port).parse()?;

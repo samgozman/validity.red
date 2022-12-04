@@ -80,6 +80,7 @@ services:
       RUST_BACKTRACE: true
       GRPC_PORT: 50051
       ENCRYPTION_KEY: f149VI7P9EsUkirKOnGNy9YKQtbZKEAj
+      SENTRY_DSN: 
     volumes:
       - ./calendar-service/data/:/data/
     networks:
