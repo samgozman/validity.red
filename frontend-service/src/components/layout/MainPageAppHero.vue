@@ -12,7 +12,7 @@
         <div class="flex justify-center bg-base-100">
           <div class="carousel w-full">
             <div id="slide1" class="carousel-item relative w-full">
-              <img src="/img/example.png" class="w-full" />
+              <img src="/img/example.webp" class="w-full" />
             </div>
           </div>
         </div>
