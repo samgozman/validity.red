@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import DocumentListItem from "./DocumentListItem.vue";
+import { RouterLink } from "vue-router";
+import { AddOutline } from "@vicons/ionicons5";
 </script>
 
 <template>
@@ -8,6 +10,7 @@ import DocumentListItem from "./DocumentListItem.vue";
   </div>
   <div
     class="grid grid-cols-1 gap-6 py-6 lg:p-10 md:grid-cols-2 xl:grid-cols-3 lg:bg-base-200 rounded-box"
+    v-if="documents.length"
   >
     <DocumentListItem
       v-for="document in documents"
@@ -15,6 +18,15 @@ import DocumentListItem from "./DocumentListItem.vue";
       v-bind:document="document"
       @refresh-documents-event="refresh"
     />
+  </div>
+  <div v-else class="grid items-center justify-items-center h-full">
+    <RouterLink
+      class="btn btn-lg mr-4 rounded-full w-max px-4"
+      to="/documents/create"
+    >
+      <AddOutline class="w-6 lg:mr-1" />
+      <span class="lg:block">Add first document</span>
+    </RouterLink>
   </div>
 </template>
 
