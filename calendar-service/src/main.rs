@@ -77,7 +77,7 @@ impl Calendar for CalendarService {
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     // Sentry integration
     let _guard = sentry::init((
-        env::var("SENTRY_DSN").expect("Expected SENTRY_DSN to be set"),
+        env::var("SENTRY_DSN").unwrap(),
         sentry::ClientOptions {
             release: sentry::release_name!(),
             sample_rate: 1.0,
