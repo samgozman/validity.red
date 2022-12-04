@@ -272,7 +272,7 @@ func (db *DocumentDB) Exists(ctx context.Context, d *Document) (bool, error) {
 
 // Find all documents by UserID
 func (db *DocumentDB) FindAll(ctx context.Context, userId uuid.UUID) ([]Document, error) {
-	var documents []Document
+	var documents = []Document{}
 
 	res := db.Conn.
 		WithContext(ctx).
@@ -306,8 +306,7 @@ func (db *DocumentDB) Count(ctx context.Context, userId uuid.UUID) (int64, error
 
 // Get count for all used document types
 func (db *DocumentDB) CountTypes(ctx context.Context, userId uuid.UUID) ([]*proto.DocumentTypesCount, error) {
-	var types []*proto.DocumentTypesCount
-	// TODO: Refactor in gorm ORM style if possible
+	var types = []*proto.DocumentTypesCount{}
 	res := db.Conn.
 		WithContext(ctx).
 		Raw(
@@ -325,7 +324,7 @@ func (db *DocumentDB) CountTypes(ctx context.Context, userId uuid.UUID) ([]*prot
 
 // Find top N latest documents sorted by expiration date
 func (db *DocumentDB) FindLatest(ctx context.Context, userId uuid.UUID, limit int) ([]Document, error) {
-	var documents []Document
+	var documents = []Document{}
 
 	// TODO: Specify attributes to fetch
 	res := db.Conn.

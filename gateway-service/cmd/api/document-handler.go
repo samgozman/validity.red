@@ -223,7 +223,9 @@ func (app *Config) documentGetStatistics(c *gin.Context) {
 
 	statistics.TotalDocuments = getStats.Total
 	statistics.LatestDocuments = utils.ConvertDocumentsToJSON(getStats.LatestDocuments)
-	statistics.UsedTypes = getStats.Types
+	// Nasty fix to return empty array instead of null.
+	// For some reason, even after initializing this array of pointers, it returns null.
+	statistics.UsedTypes = append([]*document.DocumentTypesCount{}, getStats.Types...)
 
 	totalNotificationsCount, err := app.documentsClient.notificationService.CountAll(
 		ctx,

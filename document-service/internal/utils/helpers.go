@@ -8,7 +8,7 @@ import (
 )
 
 func ConvertNotificationsToProtoFormat(n *[]notification.Notification) []*proto.Notification {
-	var result []*proto.Notification
+	var result = []*proto.Notification{}
 
 	for _, n := range *n {
 		result = append(result, &proto.Notification{
@@ -22,7 +22,7 @@ func ConvertNotificationsToProtoFormat(n *[]notification.Notification) []*proto.
 }
 
 func ConvertDocumentsToProtoFormat(d *[]document.Document) []*proto.Document {
-	var result []*proto.Document
+	var result = []*proto.Document{}
 
 	for _, d := range *d {
 		result = append(result, &proto.Document{

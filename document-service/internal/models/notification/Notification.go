@@ -98,7 +98,7 @@ func (db *NotificationDB) DeleteOne(ctx context.Context, n *Notification) error 
 }
 
 func (db *NotificationDB) FindAll(ctx context.Context, documentID uuid.UUID) ([]Notification, error) {
-	var notifications []Notification
+	var notifications = []Notification{}
 
 	res := db.Conn.
 		WithContext(ctx).
@@ -148,7 +148,7 @@ func (db *NotificationDB) CountAll(ctx context.Context, userID uuid.UUID) (int64
 }
 
 func (db *NotificationDB) FindAllForUser(ctx context.Context, userID uuid.UUID) ([]Notification, error) {
-	var notifications []Notification
+	var notifications = []Notification{}
 
 	res := db.Conn.
 		WithContext(ctx).
