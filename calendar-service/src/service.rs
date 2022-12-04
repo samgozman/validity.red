@@ -157,8 +157,8 @@ pub mod calendar {
         use super::*;
         use crate::calendar::CalendarEntity;
         use prost_types::Timestamp;
-        use std::env;
         use serial_test::serial;
+        use std::env;
 
         #[test]
         fn test_create_event() {
