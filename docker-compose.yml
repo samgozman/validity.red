@@ -25,6 +25,7 @@ services:
       MAILERSEND_API_KEY:
       HOST_URL: http://localhost:8080
       ENVIRONMENT: development
+      SENTRY_DSN: 
     networks:
       - gateway-network
       - redis-network

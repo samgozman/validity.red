@@ -7,6 +7,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/getsentry/sentry-go"
 	ms "github.com/mailersend/mailersend-go"
 )
 
@@ -61,10 +62,14 @@ func (m *MailerSend) SendEmailVerification(email, tokenURL string) error {
 
 	res, err := client.Email.Send(ctx, message)
 	if err != nil {
-		return fmt.Errorf("error sending email to '%s': %s", email, err)
+		ef := fmt.Errorf("error sending email to '%s': %s", email, err)
+		sentry.CaptureException(ef)
+		return ef
 	}
 	if res.StatusCode != 202 {
-		return fmt.Errorf("error sending email to '%s': %s", email, res.Body)
+		ef := fmt.Errorf("error sending email to '%s': %s", email, err)
+		sentry.CaptureException(ef)
+		return ef
 	}
 
 	return nil

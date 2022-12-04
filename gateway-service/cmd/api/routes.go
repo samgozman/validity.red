@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 
+	sentrygin "github.com/getsentry/sentry-go/gin"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/ulule/limiter/v3"
@@ -22,6 +23,8 @@ func (app *Config) routes() *gin.Engine {
 		MaxAge:           300,
 		AllowWildcard:    true,
 	}))
+
+	engine.Use(sentrygin.New(sentrygin.Options{}))
 
 	g := engine.Group("/api")
 

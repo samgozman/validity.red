@@ -4,6 +4,8 @@ import (
 	"errors"
 	"net/http"
 
+	"github.com/getsentry/sentry-go"
+	sentrygin "github.com/getsentry/sentry-go/gin"
 	"github.com/gin-gonic/gin"
 	"google.golang.org/grpc/status"
 )
@@ -34,7 +36,14 @@ func (app *Config) ErrorHandler() gin.HandlerFunc {
 
 			// If error is of type from gRPC
 			if st, ok := status.FromError(unwrappedErr); ok {
-				c.AbortWithStatusJSON(RPCStatus[st.Code()], gin.H{
+				status := RPCStatus[st.Code()]
+				// Capture all 500 errors to Sentry
+				if hub := sentrygin.GetHubFromContext(c); hub != nil && status >= 500 {
+					hub.WithScope(func(scope *sentry.Scope) {
+						hub.CaptureException(unwrappedErr)
+					})
+				}
+				c.AbortWithStatusJSON(status, gin.H{
 					"error":   true,
 					"message": st.Message(),
 				})
@@ -42,9 +51,13 @@ func (app *Config) ErrorHandler() gin.HandlerFunc {
 			}
 		}
 
-		// TODO: Send all internal errors to Sentry
-
 		// if not returned yet => return 500
+		if hub := sentrygin.GetHubFromContext(c); hub != nil {
+			hub.WithScope(func(scope *sentry.Scope) {
+				scope.SetExtra("errType", "Partially handled internal error")
+				hub.CaptureException(c.Errors[0].Err)
+			})
+		}
 		c.AbortWithStatus(http.StatusInternalServerError)
 	}
 }
