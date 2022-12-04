@@ -364,7 +364,9 @@ func TestDocumentServer_GetAll(t *testing.T) {
 		UserID: "458c9061-5262-48b7-9b87-e47fa64d654c",
 	}
 
-	okRes := &proto.ResponseDocumentsList{}
+	okRes := &proto.ResponseDocumentsList{
+		Documents: []*proto.Document{},
+	}
 
 	tests := []struct {
 		name     string
@@ -433,7 +435,9 @@ func TestDocumentServer_GetUserStatistics(t *testing.T) {
 		UserID: "458c9061-5262-48b7-9b87-e47fa64d654c",
 	}
 
-	okRes := &proto.ResponseDocumentsStatistics{}
+	okRes := &proto.ResponseDocumentsStatistics{
+		LatestDocuments: []*proto.Document{},
+	}
 
 	tests := []struct {
 		name     string

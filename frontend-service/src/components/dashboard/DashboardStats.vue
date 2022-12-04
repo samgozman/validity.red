@@ -72,13 +72,17 @@ import { DocumentOutline, NotificationsOutline } from "@vicons/ionicons5";
       <h3 class="card-title text-primary text-left w-full px-4">
         Most used types
       </h3>
-      <ul class="w-full sm:max-h-36 overflow-y-auto">
+      <ul
+        v-if="stats.usedTypes.length"
+        class="w-full sm:max-h-36 overflow-y-auto"
+      >
         <UsedTypesItem
           v-for="usedType in stats.usedTypes"
           v-bind:key="usedType.type"
           v-bind:usedType="usedType"
         />
       </ul>
+      <p v-else class="h-full">Add any documents</p>
     </div>
   </div>
   <div class="card col-span-2 row-span-4 shadow-lg compact bg-base-100">
@@ -86,13 +90,17 @@ import { DocumentOutline, NotificationsOutline } from "@vicons/ionicons5";
       <h3 class="card-title text-primary text-left w-full px-4">
         Latest documents
       </h3>
-      <ul class="menu flex-row w-full sm:max-h-36 overflow-y-auto">
+      <ul
+        v-if="stats.latestDocuments.length"
+        class="menu flex-row w-full sm:max-h-36 overflow-y-auto"
+      >
         <LatestDocumentsItem
           v-for="document in stats.latestDocuments"
           v-bind:key="document.ID"
           v-bind:document="document"
         />
       </ul>
+      <p v-else class="h-full">Add any documents</p>
     </div>
   </div>
   <div class="card col-span-3 row-span-1 shadow-lg compact bg-base-100">
