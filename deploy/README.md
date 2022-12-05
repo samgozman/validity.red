@@ -44,7 +44,7 @@ To-do list for github deployment:
 - Run deploy_services.yml workflow to deploy services
 - Run deploy_spa.yml to build and deploy SPA
 
-## Monitor space usage
+## Add monitoring configuration
 
-- `df -h /dev/sda1` - show main disk usage
-- `df -h /dev/sdb` - show mounted volume usage
+For monitoring, I use NewRelic and Sentry. Sentry integration is already configured in the services,
+you just need to provide DSN to get it work. As for the NewRelic, you need to install the agent on the server by official instructions.
