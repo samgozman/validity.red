@@ -18,7 +18,7 @@ The idea is that only the public server is exposed to the internet. The private 
 
 ## Preferred server configuration
 
-Lowest cost option is to use a single server for all services. This is the easiest to setup and maintain. The main downside is that the server data will be more vulnerable. Besides, only DB server will need backups and persistent storage.
+The lowest cost option is to use a single server for all services. This is the easiest to setup and maintain. The main downside is that the server data will be more vulnerable. Besides, only the DB server will need backups and persistent storage.
 
 1. Public server: Ubuntu 22.04, 2 VCPU, 2 GB RAM, 20 GB SSD, IPv4, 1+ TB traffic
 2. Private server: Ubuntu 22.04, 2 VCPU, 2 GB RAM, 20 GB SSD
@@ -34,7 +34,7 @@ Lowest cost option is to use a single server for all services. This is the easie
 ## Deploy services
 
 Will be handled by CI/CD pipeline in GitHub Actions. But you can do it manually - just don't forget to set
-environment variables in 'deploy' directory (as described in the `.sample` files).
+environment variables in the 'deploy' directory (as described in the `.sample` files).
 
 To-do list for github deployment:
 
