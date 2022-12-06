@@ -72,17 +72,14 @@ import { DocumentOutline, NotificationsOutline } from "@vicons/ionicons5";
       <h3 class="card-title text-primary text-left w-full px-4">
         Most used types
       </h3>
-      <ul
-        v-if="stats.usedTypes.length"
-        class="w-full sm:max-h-36 overflow-y-auto"
-      >
+      <ul class="w-full sm:max-h-36 overflow-y-auto">
         <UsedTypesItem
           v-for="usedType in stats.usedTypes"
           v-bind:key="usedType.type"
           v-bind:usedType="usedType"
         />
       </ul>
-      <p v-else class="h-full">Add any documents</p>
+      <p v-show="!isDocumentsAvailable" class="h-full">Add any documents</p>
     </div>
   </div>
   <div class="card col-span-2 row-span-4 shadow-lg compact bg-base-100">
@@ -90,17 +87,14 @@ import { DocumentOutline, NotificationsOutline } from "@vicons/ionicons5";
       <h3 class="card-title text-primary text-left w-full px-4">
         Latest documents
       </h3>
-      <ul
-        v-if="stats.latestDocuments.length"
-        class="menu flex-row w-full sm:max-h-36 overflow-y-auto"
-      >
+      <ul class="menu flex-row w-full sm:max-h-36 overflow-y-auto">
         <LatestDocumentsItem
           v-for="document in stats.latestDocuments"
           v-bind:key="document.ID"
           v-bind:document="document"
         />
       </ul>
-      <p v-else class="h-full">Add any documents</p>
+      <p v-show="!isDocumentsAvailable" class="h-full">Add any documents</p>
     </div>
   </div>
   <div class="card col-span-3 row-span-1 shadow-lg compact bg-base-100">
@@ -137,6 +131,7 @@ import { state } from "@/state";
 
 interface VueData {
   stats: IDashboardStats;
+  isDocumentsAvailable: boolean;
   avgNotifications: number;
   calendarId: string | null;
   icsRoute: string;
@@ -148,6 +143,7 @@ export default defineComponent({
   data(): VueData {
     return {
       stats: {} as IDashboardStats,
+      isDocumentsAvailable: false,
       avgNotifications: 0,
       calendarId: state.value.user.calendarId,
       icsRoute: "",
@@ -165,6 +161,8 @@ export default defineComponent({
         this.stats = await DashboardService.getStats();
         this.avgNotifications =
           this.stats.totalNotifications / this.stats.totalDocuments || 0;
+
+        this.isDocumentsAvailable = this.stats.totalDocuments > 0;
       } catch (error) {
         this.errorMsg = await ErrorDecoder.decode(error);
       }
