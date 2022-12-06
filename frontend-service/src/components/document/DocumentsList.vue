@@ -9,8 +9,8 @@ import { AddOutline } from "@vicons/ionicons5";
     Error: {{ errorMsg }}
   </div>
   <div
+    v-show="isDocumentsAvailable"
     class="grid grid-cols-1 gap-6 py-6 lg:p-10 md:grid-cols-2 xl:grid-cols-3 lg:bg-base-200 rounded-box"
-    v-if="documents.length"
   >
     <DocumentListItem
       v-for="document in documents"
@@ -19,7 +19,10 @@ import { AddOutline } from "@vicons/ionicons5";
       @refresh-documents-event="refresh"
     />
   </div>
-  <div v-else class="grid items-center justify-items-center h-full">
+  <div
+    v-show="!isDocumentsAvailable"
+    class="grid items-center justify-items-center h-full"
+  >
     <RouterLink
       class="btn btn-lg mr-4 rounded-full w-max px-4"
       to="/documents/create"
@@ -38,6 +41,7 @@ import { ErrorDecoder } from "@/services/ErrorDecoder";
 
 interface VueData {
   documents: IDocument[];
+  isDocumentsAvailable: boolean;
   errorMsg: string;
 }
 
@@ -45,6 +49,8 @@ export default defineComponent({
   data(): VueData {
     return {
       documents: [],
+      // To fix button from flickering
+      isDocumentsAvailable: true,
       errorMsg: "",
     };
   },
@@ -54,6 +60,8 @@ export default defineComponent({
       try {
         const documents = await DocumentService.getAll();
         this.documents = documents;
+
+        this.isDocumentsAvailable = documents.length > 0;
       } catch (error) {
         this.errorMsg = await ErrorDecoder.decode(error);
       }
