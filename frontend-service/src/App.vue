@@ -47,7 +47,7 @@ export default defineComponent({
     // Run token refresh task in background
     setInterval(async () => {
       await RefreshToken.call();
-    }, 30000);
+    }, 180_000); // every 3 minutes
   },
 });
 </script>
