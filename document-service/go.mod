@@ -3,6 +3,7 @@ module github.com/samgozman/validity.red/document
 go 1.19
 
 require (
+	github.com/getsentry/sentry-go v0.15.0
 	github.com/google/uuid v1.3.0
 	google.golang.org/grpc v1.49.0
 	google.golang.org/protobuf v1.28.1
@@ -11,7 +12,6 @@ require (
 )
 
 require (
-	github.com/getsentry/sentry-go v0.15.0 // indirect
 	github.com/gofrs/uuid v4.2.0+incompatible // indirect
 	github.com/golang/protobuf v1.5.2 // indirect
 	github.com/jackc/chunkreader/v2 v2.0.1 // indirect
