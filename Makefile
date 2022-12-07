@@ -26,6 +26,12 @@ down:
 	docker-compose down
 	@echo "Done!"
 
+# start SPA dev server
+spa_run_dev:
+	@echo "Starting SPA dev server..."
+	cd ./frontend-service && npm run dev
+	@echo "Done!"
+
 # build proto files and copy them into Go services
 grpc_init_go:
 	@echo "Remove old gateway-service/proto folder"
