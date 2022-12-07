@@ -101,7 +101,7 @@ router.beforeEach(async (to) => {
     to.name !== "login"
   ) {
     // redirect the user to the login page
-    return { name: "login" };
+    return { name: "login", query: { redirect: to.fullPath } };
   }
 });
 
