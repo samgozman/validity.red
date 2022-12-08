@@ -11,9 +11,9 @@ defineProps<{
 
 <template>
   <div class="relative flex flex-col bg-base-100 group">
-    <span class="mx-2 my-1 text-xs font-bold">{{ indexDay }}</span>
+    <span class="mx-1 md:mx-2 my-1 text-xs font-bold">{{ indexDay }}</span>
     <!-- Notifications -->
-    <div class="flex flex-col px-1 py-1 overflow-auto">
+    <div class="flex flex-col px-1 md:py-1 overflow-auto">
       <CalendarNotificationItem
         v-for="(item, index) in notifications"
         v-bind:key="index"
