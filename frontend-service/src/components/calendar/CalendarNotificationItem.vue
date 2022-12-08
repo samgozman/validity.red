@@ -4,26 +4,33 @@ import { RouterLink } from "vue-router";
 import type { ICalendarNotification } from "./interfaces/ICalendarNotification";
 defineProps<{
   notification: ICalendarNotification;
-  tz: string;
 }>();
 </script>
 
 <template>
   <RouterLink
     :to="`/documents/${notification.documentID}`"
-    class="flex items-center flex-shrink-0 h-5 px-1 text-xs hover:bg-base-300"
+    class="flex items-center flex-shrink-0 h-3 md:h-5 md:px-1 text-ultra-small md:text-xs hover:bg-base-300"
   >
-    <span class="ml-2 font-light leading-none hidden md:block">
+    <span class="font-light leading-none hidden md:block md:ml-2">
       {{
         new Date(notification.notificationDate).toLocaleTimeString("en-GB", {
           hour: "2-digit",
           minute: "2-digit",
-          timeZone: tz,
         })
       }}
     </span>
-    <span class="ml-2 font-medium leading-none truncate">
+    <span class="font-medium leading-none truncate md:ml-2">
       {{ notification.documentTitle }}
     </span>
   </RouterLink>
 </template>
+
+<style>
+@media (max-width: 768px) {
+  .text-ultra-small {
+    font-size: 0.5rem;
+    line-height: 0.75rem;
+  }
+}
+</style>

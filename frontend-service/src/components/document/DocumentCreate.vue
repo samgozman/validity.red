@@ -195,6 +195,7 @@ export default defineComponent({
           await this.createDocument(expirationDate);
           // 3. Create default notification if needed
           if (this.createDefaultNotification) {
+            expirationDate.setHours(10);
             await NotificationService.createOne({
               date: expirationDate,
               documentId: this.documentId,
