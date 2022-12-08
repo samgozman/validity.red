@@ -4,7 +4,6 @@ import { RouterLink } from "vue-router";
 import type { ICalendarNotification } from "./interfaces/ICalendarNotification";
 defineProps<{
   notification: ICalendarNotification;
-  tz: string;
 }>();
 </script>
 
@@ -18,7 +17,6 @@ defineProps<{
         new Date(notification.notificationDate).toLocaleTimeString("en-GB", {
           hour: "2-digit",
           minute: "2-digit",
-          timeZone: tz,
         })
       }}
     </span>

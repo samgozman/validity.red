@@ -6,7 +6,6 @@ defineProps<{
   /** Day of the month number */
   indexDay: number;
   notifications: ICalendarNotification[];
-  tz: string;
 }>();
 </script>
 
@@ -19,7 +18,6 @@ defineProps<{
         v-for="(item, index) in notifications"
         v-bind:key="index"
         v-bind:notification="item"
-        v-bind:tz="tz"
       />
     </div>
   </div>
