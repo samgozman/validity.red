@@ -39,4 +39,4 @@ services:
       # Note: Edit path according to your server setup 
       - /mnt/HC_Volume_25024228/db_data:/var/lib/postgresql/data
       # Store temporary backups in the server
-      - /backup/postgres:/backup
+      - /backup/:/backup
