@@ -12,7 +12,7 @@ defineProps<{
 <template>
   <div class="card shadow-lg bg-base-100">
     <div class="card-body">
-      <h2 class="my-4 text-4xl font-bold card-title">{{ document.title }}</h2>
+      <h2 class="my-4 text-3xl font-bold card-title">{{ document.title }}</h2>
       <div class="mb-4 space-x-2 card-actions">
         <div class="badge badge-lg badge-ghost">
           <component

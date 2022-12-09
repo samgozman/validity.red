@@ -25,6 +25,14 @@ func (ds *NotificationServer) Create(ctx context.Context, req *proto.Notificatio
 		return nil, err
 	}
 
+	// Check if user has reached the limit of notifications
+	count, err := ds.App.Notifications.Count(ctx, documentID)
+	if err != nil {
+		return nil, err
+	}
+	if count >= ds.App.limits.MaxNotificationsPerDocument {
+		return nil, ErrMaxNotificationsLimit
+	}
 	// create notification
 	n := notification.Notification{
 		UserID:     userID,

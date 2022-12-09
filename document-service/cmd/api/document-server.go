@@ -25,6 +25,15 @@ func (ds *DocumentServer) Create(ctx context.Context, req *proto.DocumentCreateR
 		return nil, ErrInvalidUserId
 	}
 
+	// Check if user has reached the limit of documents
+	count, err := ds.App.Documents.Count(ctx, userID)
+	if err != nil {
+		return nil, err
+	}
+	if count >= ds.App.limits.MaxDocumentsPerUser {
+		return nil, ErrMaxDocumentsLimit
+	}
+
 	// register document
 	d := document.Document{
 		UserID:      userID,

@@ -4,13 +4,11 @@ import { ChevronBackOutline, ChevronForwardOutline } from "@vicons/ionicons5";
 </script>
 
 <template>
-  <div
-    class="flex flex-grow w-full min-h-[300px] h-[60vh] sm:h-[85vh] md:h-[70vh] xl:h-[60vh]"
-  >
+  <div class="flex flex-grow w-full">
     <div class="flex flex-col flex-grow">
       <!-- Header -->
       <div class="flex items-center mt-4">
-        <div class="flex ml-6">
+        <div class="flex">
           <button @click.prevent="prevMonth">
             <ChevronBackOutline class="w-6" />
           </button>
