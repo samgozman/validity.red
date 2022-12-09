@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  deploy-services:
+  backup-db:
     runs-on: ubuntu-latest
     env:
       SSH_CONNECTION: ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}
