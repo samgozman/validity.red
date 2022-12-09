@@ -8,7 +8,7 @@ import { ChevronBackOutline, ChevronForwardOutline } from "@vicons/ionicons5";
     <div class="flex flex-col flex-grow">
       <!-- Header -->
       <div class="flex items-center mt-4">
-        <div class="flex ml-6">
+        <div class="flex">
           <button @click.prevent="prevMonth">
             <ChevronBackOutline class="w-6" />
           </button>
