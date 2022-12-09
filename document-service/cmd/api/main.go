@@ -12,7 +12,14 @@ import (
 	"gorm.io/gorm"
 )
 
+// Limit user documents and notifications count
+type limits struct {
+	MaxDocumentsPerUser         int64
+	MaxNotificationsPerDocument int64
+}
+
 type Config struct {
+	limits        limits
 	Documents     document.DocumentRepository
 	Notifications notification.NotificationRepository
 }
@@ -41,7 +48,12 @@ func main() {
 	}
 
 	// Create app
-	app := Config{}
+	app := Config{
+		limits: limits{
+			MaxDocumentsPerUser:         100,
+			MaxNotificationsPerDocument: 10,
+		},
+	}
 	app.setupRepo(db)
 
 	// Start gRPC server
