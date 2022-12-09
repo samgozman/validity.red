@@ -11,6 +11,10 @@ import (
 var testApp Config
 
 func TestMain(m *testing.M) {
+	testApp.limits = limits{
+		MaxDocumentsPerUser:         100,
+		MaxNotificationsPerDocument: 10,
+	}
 	testApp.Documents = document_mocks.NewDocumentDBTest(nil)
 	testApp.Notifications = notification_mocks.NewNotificationDBTest(nil)
 	os.Exit(m.Run())
