@@ -13,6 +13,6 @@ docker exec validityred-postgres-1 bash -c 'pg_dump -h localhost --port 5432 --d
 export B2_APPLICATION_KEY_ID="$(</validityred/b2-app-key-id.txt)"
 export B2_APPLICATION_KEY="$(</validityred/b2-app-key.txt)"
 b2 authorize-account
-b2 sync "/backup/validityred.sql" "b2://validityred/validityred.sql"
+b2 sync "/backup/" "b2://validityred/postgres/"
 # Delete backup from container
 rm -f /backup/validityred.sql || true
