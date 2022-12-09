@@ -1,0 +1,48 @@
+name: Backup DB
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy-services:
+    runs-on: ubuntu-latest
+    env:
+      SSH_CONNECTION: ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}
+      SSH_CONNECTION_SERVICES: ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST_SERVICES }}
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Install SSH key
+        uses: shimataro/ssh-key-action@v2
+        with:
+          key: ${{ secrets.SSH_KEY }}
+          known_hosts: unnecessary
+
+      - name: Adding Known Hosts
+        run: ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
+
+      # ! Bad practice, but it works for now
+      # ! This is a temporary solution to be able to connect to the
+      # ! "services" from the "web" container
+      - name: Remove old fingerprint for SSH_HOST_SERVICES
+        run: ssh $SSH_CONNECTION "ssh-keygen -R ${{ secrets.SSH_HOST_SERVICES }} || true"
+      - name: Copy SSH private key
+        run: rsync -r ~/.ssh/id_rsa $SSH_CONNECTION:~/.ssh/id_rsa
+      - name: Adding Known Hosts for the "services" server
+        run: ssh $SSH_CONNECTION "ssh-keyscan -H ${{ secrets.SSH_HOST_SERVICES }} >> ~/.ssh/known_hosts"
+
+      - name: Create env files
+        run: |
+          echo "${{ secrets.B2_APPLICATION_KEY_ID }}" > b2-app-key-id.txt
+          echo "${{ secrets.B2_APPLICATION_KEY }}" > b2-app-key.txt
+
+      - name: Copy b2 .txt files via rsync over SSH to the "web" server
+        run: rsync -r ./b2-app-key-id.txt ./b2-app-key.txt $SSH_CONNECTION:/validityred
+
+      - name: Copy b2 .txt files from the "web" server to the "services" server
+        run: ssh $SSH_CONNECTION "rsync -r /validityred/b2-app-key-id.txt /validityred/b2-app-key.txt ${{ secrets.SSH_HOST_SERVICES }}:/validityred"
+
+      - name: Remove b2 .txt files from the "web" server
+        run: ssh $SSH_CONNECTION "rm /validityred/b2-app-key-id.txt /validityred/b2-app-key.txt"
+
+      - name: Run backup script (ssh to "web" server and ssh from "web" to "services" to run backup.sh)
+        run: ssh $SSH_CONNECTION "ssh $SSH_CONNECTION_SERVICES '. /validityred/backup.sh'"

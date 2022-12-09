@@ -7,6 +7,7 @@ graph LR
     A((frontend-service <br/> gateway-service <br/> redis DB <br/>))
     A--> |service_network| B((user-service <br/> document-service <br/> calendar-service <br/> postgres DB <br/>))
     B---C[(DB volume)]
+    D[s3 Block Storage] -.- B
 ```
 
 In the current deployment setup there are only 2 servers used with one mounted volume for the database:
@@ -15,6 +16,8 @@ In the current deployment setup there are only 2 servers used with one mounted v
 2. Private server - user-service, document-service, calendar-service, Postgres DB
 
 The idea is that only the public server is exposed to the internet. The private server with DB is only accessible from the public server.
+
+The database is backed up to the s3 compatible storage - BackBlaze in this case, every day. BackBlaze bucket should be created manually as I see no use in creating it with Terraform with their current provider.
 
 ## Preferred server configuration
 
@@ -38,11 +41,13 @@ environment variables in the 'deploy' directory (as described in the `.sample` f
 
 To-do list for github deployment:
 
-- Create ENV variables in github Secrets section (see .sample files in deploy directory)
+- Create ENV variables in github Secrets section (see .sample files in deploy directory): DB_ENV_VARS, GATEWAY_ENV_VARS, SERVICES_CALENDARS_ENV_VARS, SERVICES_DOCUMENTS_ENV_VARS, SERVICES_USERS_ENV_VARS
 - Create env `SENTRY_AUTH_TOKEN` for Sentry plugin for SPA
+- Create env `B2_APPLICATION_KEY_ID` and `B2_APPLICATION_KEY` for BackBlaze backups for DB
 - Run publish.yml workflow to create docker images
 - Run deploy_services.yml workflow to deploy services
 - Run deploy_spa.yml to build and deploy SPA
+- Run backup_db.yml to create DB backup and to pass BackBlaze ENV variables to the server
 
 ## Add monitoring configuration
 

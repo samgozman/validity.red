@@ -112,6 +112,7 @@ services:
       - "5433:5432"
     volumes:
       - ./document-service/db-data/postgres/:/var/lib/postgresql/data
+      - ./document-service/db-data/backup/:/backup
 
   redis:
     image: redis:6.2.7-alpine3.16
