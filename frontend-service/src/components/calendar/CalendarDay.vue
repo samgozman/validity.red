@@ -10,7 +10,7 @@ defineProps<{
 </script>
 
 <template>
-  <div class="relative flex flex-col bg-base-100 group">
+  <div class="relative flex flex-col bg-base-100 group h-12 md:h-24">
     <span class="mx-1 md:mx-2 my-1 text-xs font-bold">{{ indexDay }}</span>
     <!-- Notifications -->
     <div class="flex flex-col px-1 md:py-1 overflow-auto">
