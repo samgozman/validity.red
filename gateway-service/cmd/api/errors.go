@@ -17,6 +17,7 @@ var (
 var ErrorsArr = []error{
 	ErrUnauthorized,
 	ErrInvalidInputs,
+	ErrInvalidCaptcha,
 	ErrEmailNotVerified,
 }
 
@@ -24,6 +25,7 @@ var ErrorsArr = []error{
 var ErrorStatus = map[error]int{
 	ErrUnauthorized:     http.StatusUnauthorized,
 	ErrInvalidInputs:    http.StatusBadRequest,
+	ErrInvalidCaptcha:   http.StatusBadRequest,
 	ErrEmailNotVerified: http.StatusUnauthorized,
 }
 
