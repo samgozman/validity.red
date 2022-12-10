@@ -26,6 +26,7 @@ services:
       HOST_URL: http://localhost:8080
       ENVIRONMENT: development
       SENTRY_DSN: 
+      HCAPTCHA_SECRET: 0x0000000000000000000000000000000000000000
     networks:
       - gateway-network
       - redis-network

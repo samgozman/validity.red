@@ -11,6 +11,7 @@ import (
 
 	"github.com/getsentry/sentry-go"
 	"github.com/go-redis/redis/v8"
+	"github.com/kataras/hcaptcha"
 	"github.com/samgozman/validity.red/broker/internal/mailersend"
 	"github.com/samgozman/validity.red/broker/internal/token"
 	"github.com/samgozman/validity.red/broker/proto/calendar"
@@ -33,6 +34,7 @@ type Config struct {
 	calendarsClient *CalendarsClient
 	redisClient     *redis.Client
 	mailer          Mailer
+	hcaptcha        *hcaptcha.Client
 }
 
 type UsersClient struct {
@@ -131,6 +133,7 @@ func main() {
 		calendarsClient: &calendarsClient,
 		redisClient:     rdb,
 		mailer:          &mailer,
+		hcaptcha:        hcaptcha.New(os.Getenv("HCAPTCHA_SECRET")),
 	}
 
 	router := app.routes()
