@@ -2,7 +2,6 @@ import { createRouter, createWebHistory } from "vue-router";
 import MainView from "@/views/MainView.vue";
 import AboutView from "@/views/AboutView.vue";
 import LoginView from "@/views/LoginView.vue";
-import RegistrationView from "@/views/RegistrationView.vue";
 import EmailConfirmViewVue from "@/views/EmailConfirmView.vue";
 import { logout } from "@/services/Logout";
 
@@ -22,7 +21,7 @@ const router = createRouter({
     {
       path: "/register",
       name: "register",
-      component: RegistrationView,
+      component: () => import("@/views/RegistrationView.vue"),
     },
     {
       path: "/verify",
