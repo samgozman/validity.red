@@ -41,6 +41,7 @@ const hCaptchaKey = import.meta.env.VITE_HCAPTCHA_SITE_KEY;
         class="flex justify-center mb-2"
         :sitekey="hCaptchaKey"
         @verify="onCaptchaVerified"
+        @expired="onCaptchaExpired"
       ></vue-hcaptcha>
       <button
         class="btn btn-primary"
@@ -92,12 +93,14 @@ export default defineComponent({
           this.$router.push("/");
         }, 7000);
       } catch (error) {
-        this.hCaptchaToken = "";
         this.errorMsg = await ErrorDecoder.decode(error);
       }
     },
     onCaptchaVerified(token: string) {
       this.hCaptchaToken = token;
+    },
+    onCaptchaExpired() {
+      this.hCaptchaToken = "";
     },
   },
   beforeMount() {
