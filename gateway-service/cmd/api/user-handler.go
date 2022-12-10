@@ -2,10 +2,12 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"net/http"
 	"time"
 
+	"github.com/getsentry/sentry-go"
 	"github.com/gin-gonic/gin"
 	"github.com/samgozman/validity.red/broker/proto/user"
 )
@@ -40,6 +42,7 @@ func (app *Config) userRegister(c *gin.Context) {
 
 	hr := app.hcaptcha.VerifyToken(requestPayload.HCaptchaResponse)
 	if !hr.Success {
+		sentry.CaptureException(fmt.Errorf("hCaptcha errors: %s", hr.ErrorCodes))
 		c.Error(ErrInvalidCaptcha)
 		return
 	}
