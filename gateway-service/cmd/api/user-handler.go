@@ -16,9 +16,10 @@ type authPayload struct {
 }
 
 type registerPayload struct {
-	Email    string `json:"email" uri:"email" binding:"required,email"`
-	Password string `json:"password" uri:"password" binding:"required,min=8,max=64"`
-	Timezone string `json:"timezone" uri:"timezone" binding:"required,timezone"`
+	Email            string `json:"email" uri:"email" binding:"required,email"`
+	Password         string `json:"password" uri:"password" binding:"required,min=8,max=64"`
+	Timezone         string `json:"timezone" uri:"timezone" binding:"required,timezone"`
+	HCaptchaResponse string `json:"hcaptcha" uri:"hcaptcha" binding:"required,min=36,max=36"`
 }
 
 type emailVerificationPayload struct {
@@ -34,6 +35,12 @@ func (app *Config) userRegister(c *gin.Context) {
 	requestPayload := registerPayload{}
 	if err := c.BindJSON(&requestPayload); err != nil {
 		c.Error(ErrInvalidInputs)
+		return
+	}
+
+	hr := app.hcaptcha.VerifyToken(requestPayload.HCaptchaResponse)
+	if !hr.Success {
+		c.Error(ErrInvalidCaptcha)
 		return
 	}
 

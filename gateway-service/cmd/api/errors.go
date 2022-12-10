@@ -10,6 +10,7 @@ import (
 var (
 	ErrUnauthorized     = errors.New("authentication failed")
 	ErrInvalidInputs    = errors.New("invalid inputs")
+	ErrInvalidCaptcha   = errors.New("invalid captcha")
 	ErrEmailNotVerified = errors.New("email not verified")
 )
 
