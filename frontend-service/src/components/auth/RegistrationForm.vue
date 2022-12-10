@@ -36,8 +36,9 @@ const hCaptchaKey = import.meta.env.VITE_HCAPTCHA_SITE_KEY;
     <div v-show="errorMsg" class="badge badge-error badge-outline w-full">
       {{ errorMsg }}
     </div>
-    <div class="form-control mt-6">
+    <div class="form-control mt-3">
       <vue-hcaptcha
+        class="flex justify-center mb-2"
         :sitekey="hCaptchaKey"
         @verify="onCaptchaVerified"
       ></vue-hcaptcha>
