@@ -19,7 +19,7 @@ type registerPayload struct {
 	Email            string `json:"email" uri:"email" binding:"required,email"`
 	Password         string `json:"password" uri:"password" binding:"required,min=8,max=64"`
 	Timezone         string `json:"timezone" uri:"timezone" binding:"required,timezone"`
-	HCaptchaResponse string `json:"hcaptcha" uri:"hcaptcha" binding:"required,min=36,max=36"`
+	HCaptchaResponse string `json:"hcaptcha" uri:"hcaptcha" binding:"required"`
 }
 
 type emailVerificationPayload struct {
