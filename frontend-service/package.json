@@ -10,6 +10,7 @@
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore"
   },
   "dependencies": {
+    "@hcaptcha/vue3-hcaptcha": "^1.0.1",
     "@sentry/tracing": "^7.23.0",
     "@sentry/vue": "^7.23.0",
     "@vicons/ionicons5": "=0.12.0",

@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import timezones from "timezones-list";
+import VueHcaptcha from "@hcaptcha/vue3-hcaptcha";
 import InputLabel from "../elements/InputLabel.vue";
+const hCaptchaKey = import.meta.env.VITE_HCAPTCHA_SITE_KEY;
 </script>
 
 <template>
@@ -35,9 +37,15 @@ import InputLabel from "../elements/InputLabel.vue";
       {{ errorMsg }}
     </div>
     <div class="form-control mt-6">
+      <vue-hcaptcha
+        :sitekey="hCaptchaKey"
+        @verify="onCaptchaVerified"
+      ></vue-hcaptcha>
       <button
         class="btn btn-primary"
-        :disabled="password.length < 6 || email.length < 4"
+        :disabled="
+          password.length < 6 || email.length < 4 || hCaptchaToken === ''
+        "
         type="submit"
       >
         Sign up
@@ -62,6 +70,7 @@ export default defineComponent({
       password: "",
       errorMsg: "",
       selectedTz: "",
+      hCaptchaToken: "",
       showForm: true,
     };
   },
@@ -74,6 +83,7 @@ export default defineComponent({
           email: this.email,
           password: this.password,
           timezone: tzCode,
+          hcaptcha: this.hCaptchaToken,
         });
 
         this.showForm = false;
@@ -81,8 +91,12 @@ export default defineComponent({
           this.$router.push("/");
         }, 7000);
       } catch (error) {
+        this.hCaptchaToken = "";
         this.errorMsg = await ErrorDecoder.decode(error);
       }
+    },
+    onCaptchaVerified(token: string) {
+      this.hCaptchaToken = token;
     },
   },
   beforeMount() {

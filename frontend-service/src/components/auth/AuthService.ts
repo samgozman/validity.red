@@ -10,6 +10,8 @@ interface IAuthCredentials {
 
 interface IRegisterCredentials extends IAuthCredentials {
   timezone: string;
+  // hCaptcha response token
+  hcaptcha: string;
 }
 
 interface IAuthResponse extends IResponse {
