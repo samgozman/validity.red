@@ -42,6 +42,7 @@ import Footer from "@/components/FooterComponent.vue";
               : navbarItemsUser"
             v-bind:key="item.name"
             :item="item"
+            :isMobile="true"
           />
         </ul>
       </div>
