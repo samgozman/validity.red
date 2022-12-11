@@ -42,7 +42,7 @@ export class CalendarService {
     ).getDate();
 
     const calendarMonth = new Map<number, ICalendarNotification[]>();
-    for (let day = 1; day < daysInMonth; day++) {
+    for (let day = 1; day <= daysInMonth; day++) {
       // Find associated notifications for this day
       const notifications = events.filter((n) => {
         const notificationDate = new Date(n.notificationDate.split("T")[0]);
