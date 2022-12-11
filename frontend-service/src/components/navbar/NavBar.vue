@@ -4,6 +4,7 @@ import {
   MenuOutline,
   AddOutline,
   PersonCircleOutline,
+  LogInOutline,
 } from "@vicons/ionicons5";
 import {
   navbarItems,
@@ -35,13 +36,22 @@ import { state } from "@/state";
     <div class="navbar-center"></div>
     <div class="navbar-end">
       <RouterLink
-        class="btn btn-circle mr-2 lg:mr-4 lg:rounded-full lg:w-max lg:px-4"
+        class="btn mr-2 lg:mr-4 rounded-full w-max px-4"
+        :class="{ hidden: state.user.isAuthenticated }"
+        to="/login"
+      >
+        <LogInOutline class="w-6 mr-1" />
+        <span>Sign in</span>
+      </RouterLink>
+      <RouterLink
+        class="hidden btn btn-circle mr-2 lg:mr-4 lg:rounded-full lg:w-max lg:px-4"
+        :class="{ flex: state.user.isAuthenticated }"
         to="/documents/create"
       >
         <AddOutline class="w-6 lg:mr-1" />
         <span class="hidden lg:block">Add new</span>
       </RouterLink>
-      <div class="dropdown dropdown-end lg:mr-4">
+      <div class="hidden md:flex dropdown dropdown-end lg:mr-4">
         <label tabindex="0" class="btn btn-neutral btn-circle">
           <PersonCircleOutline class="w-10" />
         </label>

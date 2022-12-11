@@ -1,6 +1,11 @@
 <script setup lang="ts">
 import { RouterView } from "vue-router";
-import { navbarItems } from "@/components/navbar/items";
+import {
+  navbarItems,
+  navbarItemsUser,
+  navbarItemsUserAuth,
+} from "@/components/navbar/items";
+import { state } from "@/state";
 import NavBar from "@/components/navbar/NavBar.vue";
 import NavItem from "@/components/navbar/NavItem.vue";
 import Footer from "@/components/FooterComponent.vue";
@@ -20,14 +25,26 @@ import Footer from "@/components/FooterComponent.vue";
     </div>
     <div class="drawer-side">
       <label for="left-sidebar" class="drawer-overlay"></label>
-      <ul class="menu p-4 overflow-y-auto w-80 bg-base-100">
-        <NavItem
-          v-for="item in navbarItems"
-          v-bind:key="item.name"
-          :item="item"
-          :isMobile="true"
-        />
-      </ul>
+      <div class="menu p-4 overflow-y-auto w-80 bg-base-100">
+        <ul>
+          <NavItem
+            v-for="item in navbarItems"
+            v-bind:key="item.name"
+            :item="item"
+            :isMobile="true"
+          />
+        </ul>
+        <div class="divider">User section</div>
+        <ul>
+          <NavItem
+            v-for="item in state.user.isAuthenticated
+              ? navbarItemsUserAuth
+              : navbarItemsUser"
+            v-bind:key="item.name"
+            :item="item"
+          />
+        </ul>
+      </div>
     </div>
   </div>
 </template>
