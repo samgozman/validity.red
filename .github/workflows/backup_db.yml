@@ -30,19 +30,11 @@ jobs:
       - name: Adding Known Hosts for the "services" server
         run: ssh $SSH_CONNECTION "ssh-keyscan -H ${{ secrets.SSH_HOST_SERVICES }} >> ~/.ssh/known_hosts"
 
-      - name: Create env files
-        run: |
-          echo "${{ secrets.B2_APPLICATION_KEY_ID }}" > b2-app-key-id.txt
-          echo "${{ secrets.B2_APPLICATION_KEY }}" > b2-app-key.txt
-
-      - name: Copy b2 .txt files via rsync over SSH to the "web" server
-        run: rsync -r ./b2-app-key-id.txt ./b2-app-key.txt $SSH_CONNECTION:/validityred
-
-      - name: Copy b2 .txt files from the "web" server to the "services" server
-        run: ssh $SSH_CONNECTION "rsync -r /validityred/b2-app-key-id.txt /validityred/b2-app-key.txt ${{ secrets.SSH_HOST_SERVICES }}:/validityred"
-
-      - name: Remove b2 .txt files from the "web" server
-        run: ssh $SSH_CONNECTION "rm /validityred/b2-app-key-id.txt /validityred/b2-app-key.txt"
+      - name: Authenticate "services" server with BackBlaze
+        run: ssh $SSH_CONNECTION "ssh $SSH_CONNECTION_SERVICES '
+          export B2_APPLICATION_KEY_ID=${{ secrets.B2_APPLICATION_KEY_ID }} &&
+          export B2_APPLICATION_KEY=${{ secrets.B2_APPLICATION_KEY }} &&
+          b2 authorize-account'"
 
       - name: Run backup script (ssh to "web" server and ssh from "web" to "services" to run backup.sh)
         run: ssh $SSH_CONNECTION "ssh $SSH_CONNECTION_SERVICES '. /validityred/backup.sh'"

@@ -5,7 +5,7 @@ packages:
   - python3-pip 
 write_files:
   - content: |
-      0 0 * * * root . /validityred/backup.sh
+      0 0 * * * root . /validityred/backup.sh >> /validityred/backup.log 2>&1
     path: /etc/crontab
     append: true
 runcmd:
