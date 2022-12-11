@@ -44,8 +44,8 @@ import { state } from "@/state";
         <span>Sign in</span>
       </RouterLink>
       <RouterLink
-        class="hidden btn btn-circle mr-2 lg:mr-4 lg:rounded-full lg:w-max lg:px-4"
-        :class="{ flex: state.user.isAuthenticated }"
+        class="btn btn-circle mr-2 lg:mr-4 lg:rounded-full lg:w-max lg:px-4"
+        :class="{ hidden: !state.user.isAuthenticated }"
         to="/documents/create"
       >
         <AddOutline class="w-6 lg:mr-1" />
