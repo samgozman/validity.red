@@ -3,7 +3,6 @@ import { RouterLink } from "vue-router";
 import MainPageAppHero from "@/components/layout/MainPageAppHero.vue";
 import FeaturesRow from "@/components/elements/FeaturesRow.vue";
 import LeadingParagraph from "@/components/layout/LeadingParagraph.vue";
-import LogoText from "@/components/LogoText.vue";
 import {
   LogoGithub,
   FileTrayFullOutline,
@@ -160,8 +159,8 @@ import {
               us.
             </LeadingParagraph>
             <LeadingParagraph class="pb-6">
-              Join the <LogoText /> and never forget to update documents on time
-              again!
+              Join the <strong>Validity.Red</strong> and never forget to update
+              documents on time again!
             </LeadingParagraph>
             <RouterLink to="/register" class="btn btn-primary btn-wide btn-lg">
               Get Started
