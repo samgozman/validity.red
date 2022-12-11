@@ -9,7 +9,11 @@ import { LogoGithub, BeerOutline } from "@vicons/ionicons5";
       <h2 class="pt-6">About Validity.Red</h2>
       <p>
         👋 Hi! My name is Sam Gozman, creator of the Validity.Red
-        <a href="https://github.com/samgozman/validity.red" target="_blank">
+        <a
+          href="https://github.com/samgozman/validity.red"
+          rel="noopener"
+          target="_blank"
+        >
           open-source
         </a>
         web app.
@@ -38,7 +42,11 @@ import { LogoGithub, BeerOutline } from "@vicons/ionicons5";
         That's why I've made my project available on GitHub for anyone to
         contribute to. If you have ideas for new features or ways to improve our
         app, I encourage you to share them on our
-        <a href="https://github.com/samgozman/validity.red" target="_blank">
+        <a
+          href="https://github.com/samgozman/validity.red"
+          rel="noopener"
+          target="_blank"
+        >
           GitHub page</a
         >.
       </p>
@@ -47,6 +55,7 @@ import { LogoGithub, BeerOutline } from "@vicons/ionicons5";
       <a
         class="btn mr-2 w-full sm:w-auto mb-3"
         href="https://github.com/samgozman/validity.red"
+        rel="noopener"
         target="_blank"
       >
         <LogoGithub class="w-8 pr-2" />
@@ -55,6 +64,7 @@ import { LogoGithub, BeerOutline } from "@vicons/ionicons5";
       <a
         class="btn btn-warning w-full sm:w-auto mb-3"
         href="https://ko-fi.com/samgozman"
+        rel="noopener"
         target="_blank"
       >
         <BeerOutline class="w-8 pr-2" />
