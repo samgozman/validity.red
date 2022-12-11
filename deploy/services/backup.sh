@@ -10,9 +10,6 @@
 # Create backup
 docker exec validityred-postgres-1 bash -c 'pg_dump -h localhost --port 5432 --dbname $POSTGRES_DB -U $POSTGRES_USER > /backup/validityred.sql'
 # Copy backup to BackBlaze
-export B2_APPLICATION_KEY_ID="$(</validityred/b2-app-key-id.txt)"
-export B2_APPLICATION_KEY="$(</validityred/b2-app-key.txt)"
-b2 authorize-account
 b2 sync "/backup/" "b2://validityred/postgres/"
 # Delete backup from container
 rm -f /backup/validityred.sql || true
