@@ -60,6 +60,7 @@ export default defineComponent({
       try {
         this.errorMsg = "";
         this.document = await DocumentService.getOne(this.documentId);
+        this.$emit("setDocumentTitle", this.document.title);
       } catch (error) {
         this.errorMsg = await ErrorDecoder.decode(error, this.$router);
       }

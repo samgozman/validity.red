@@ -171,3 +171,14 @@ import {
     </div>
   </div>
 </template>
+
+<script lang="ts">
+import { defineComponent } from "vue";
+
+export default defineComponent({
+  created() {
+    document.title =
+      "Validity.Red - manage expiration dates for your documents";
+  },
+});
+</script>

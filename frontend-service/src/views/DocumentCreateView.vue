@@ -8,3 +8,13 @@ import StandardContainer from "@/components/layout/StandardContainer.vue";
     <DocumentCreate />
   </StandardContainer>
 </template>
+
+<script lang="ts">
+import { defineComponent } from "vue";
+
+export default defineComponent({
+  created() {
+    document.title = "Create document | Validity.Red";
+  },
+});
+</script>

@@ -73,3 +73,13 @@ import { LogoGithub, BeerOutline } from "@vicons/ionicons5";
     </div>
   </StandardContainer>
 </template>
+
+<script lang="ts">
+import { defineComponent } from "vue";
+
+export default defineComponent({
+  created() {
+    document.title = "About | Validity.Red";
+  },
+});
+</script>

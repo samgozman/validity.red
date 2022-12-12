@@ -5,6 +5,21 @@ import StandardContainer from "@/components/layout/StandardContainer.vue";
 
 <template>
   <StandardContainer>
-    <DocumentFullBlock />
+    <DocumentFullBlock @setDocumentTitle="setDocumentTitle" />
   </StandardContainer>
 </template>
+
+<script lang="ts">
+import { defineComponent } from "vue";
+
+export default defineComponent({
+  methods: {
+    setDocumentTitle(title: string) {
+      document.title = title + " | Validity.Red";
+    },
+  },
+  created() {
+    document.title = "Document | Validity.Red";
+  },
+});
+</script>
