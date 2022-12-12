@@ -4,7 +4,7 @@ go 1.19
 
 require (
 	github.com/badoux/checkmail v1.2.1
-	github.com/getsentry/sentry-go v0.15.0
+	github.com/getsentry/sentry-go v0.16.0
 	github.com/google/uuid v1.3.0
 	golang.org/x/crypto v0.0.0-20220926161630-eccd6366d1be
 	google.golang.org/grpc v1.49.0
