@@ -12,3 +12,13 @@ import DashboardStats from "@/components/dashboard/DashboardStats.vue";
     </div>
   </StandardContainer>
 </template>
+
+<script lang="ts">
+import { defineComponent } from "vue";
+
+export default defineComponent({
+  created() {
+    document.title = "Dashboard | Validity.Red";
+  },
+});
+</script>

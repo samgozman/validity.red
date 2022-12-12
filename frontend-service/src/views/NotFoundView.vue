@@ -23,3 +23,13 @@ import StandardContainer from "@/components/layout/StandardContainer.vue";
     </div>
   </StandardContainer>
 </template>
+
+<script lang="ts">
+import { defineComponent } from "vue";
+
+export default defineComponent({
+  created() {
+    document.title = "Page not found | Validity.Red";
+  },
+});
+</script>

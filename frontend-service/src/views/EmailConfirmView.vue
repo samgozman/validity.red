@@ -8,3 +8,13 @@ import StandardContainer from "@/components/layout/StandardContainer.vue";
     <EmailConfirmation />
   </StandardContainer>
 </template>
+
+<script lang="ts">
+import { defineComponent } from "vue";
+
+export default defineComponent({
+  created() {
+    document.title = "Email confirmation | Validity.Red";
+  },
+});
+</script>

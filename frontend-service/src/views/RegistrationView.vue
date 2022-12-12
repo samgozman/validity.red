@@ -12,3 +12,13 @@ import HeroCard from "@/components/layout/HeroCard.vue";
     </HeroCard>
   </StandardContainer>
 </template>
+
+<script lang="ts">
+import { defineComponent } from "vue";
+
+export default defineComponent({
+  created() {
+    document.title = "Registration | Validity.Red";
+  },
+});
+</script>
