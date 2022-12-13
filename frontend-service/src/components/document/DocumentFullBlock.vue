@@ -55,6 +55,7 @@ export default defineComponent({
       errorMsg: "",
     };
   },
+  emits: ["setDocumentTitle"],
   methods: {
     async fetchDocument() {
       try {
