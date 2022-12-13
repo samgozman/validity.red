@@ -8,7 +8,7 @@ import { LogoGithub, BeerOutline } from "@vicons/ionicons5";
     <article class="prose lg:prose-xl">
       <h2 class="pt-6">About Validity.Red</h2>
       <p>
-        👋 Hi! My name is Sam Gozman, creator of the Validity.Red
+        👋 Hi! My name is Sam, creator of the Validity.Red
         <a
           href="https://github.com/samgozman/validity.red"
           rel="noopener"
