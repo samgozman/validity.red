@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { RouterLink } from "vue-router";
 import UsedTypesItem from "@/components/dashboard/UsedTypesItem.vue";
 import LatestDocumentsItem from "@/components/dashboard/LatestDocumentsItem.vue";
 import CalendarMonth from "@/components/calendar/CalendarMonth.vue";
@@ -98,6 +99,9 @@ import { DocumentOutline, NotificationsOutline } from "@vicons/ionicons5";
         />
       </ul>
       <p v-show="!isDocumentsAvailable" class="h-full">Add any documents</p>
+      <RouterLink to="/documents" class="btn btn-sm w-full btn-primary">
+        View all documents
+      </RouterLink>
     </div>
   </div>
   <div class="card col-span-3 row-span-1 shadow-lg compact bg-base-100">
