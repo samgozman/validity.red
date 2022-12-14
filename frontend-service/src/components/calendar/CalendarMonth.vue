@@ -55,6 +55,7 @@ import { defineComponent } from "vue";
 import type { ICalendarNotification } from "./interfaces/ICalendarNotification";
 import { CalendarService } from "./CalendarService";
 import { ErrorDecoder } from "@/services/ErrorDecoder";
+import { setCalendarCurrentDate, state } from "@/state";
 
 export default defineComponent({
   data() {
@@ -68,6 +69,10 @@ export default defineComponent({
   },
   methods: {
     async refresh() {
+      this.currentDate = state.value.user.calendarCurrentDate
+        ? new Date(state.value.user.calendarCurrentDate)
+        : new Date();
+      setCalendarCurrentDate(this.currentDate.toString());
       this.setCurrentDateString(this.currentDate);
       this.errorMsg = "";
       try {
@@ -83,10 +88,12 @@ export default defineComponent({
     },
     prevMonth() {
       this.currentDate.setMonth(this.currentDate.getMonth() - 1);
+      setCalendarCurrentDate(this.currentDate.toString());
       this.refresh();
     },
     nextMonth() {
       this.currentDate.setMonth(this.currentDate.getMonth() + 1);
+      setCalendarCurrentDate(this.currentDate.toString());
       this.refresh();
     },
     setCurrentDateString(date: Date) {

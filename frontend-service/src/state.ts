@@ -4,6 +4,7 @@ interface IUserState {
   isAuthenticated: boolean;
   timezone: string;
   calendarId: string;
+  calendarCurrentDate: string;
 }
 
 export const state = ref({
@@ -31,5 +32,10 @@ export const setUsersTimezone = (value: string) => {
 
 export const setCalendarId = (value: string) => {
   state.value.user.calendarId = value;
+  localStorage.setItem("user", JSON.stringify(state.value.user));
+};
+
+export const setCalendarCurrentDate = (value: string) => {
+  state.value.user.calendarCurrentDate = value;
   localStorage.setItem("user", JSON.stringify(state.value.user));
 };
