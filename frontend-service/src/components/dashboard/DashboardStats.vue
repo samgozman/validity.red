@@ -99,7 +99,7 @@ import { DocumentOutline, NotificationsOutline } from "@vicons/ionicons5";
         />
       </ul>
       <p v-show="!isDocumentsAvailable" class="h-full">Add any documents</p>
-      <RouterLink to="/documents" class="btn btn-sm w-full btn-primary">
+      <RouterLink to="/documents" class="btn xl:btn-sm w-full btn-primary">
         View all documents
       </RouterLink>
     </div>
