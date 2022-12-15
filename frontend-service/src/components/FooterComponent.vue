@@ -1,5 +1,21 @@
+<script setup lang="ts">
+import { RouterLink } from "vue-router";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import { navbarItems } from "@/components/navbar/items";
+</script>
+
 <template>
   <footer class="footer footer-center p-10 bg-primary text-primary-content">
+    <div class="grid sm:grid-flow-col gap-4">
+      <RouterLink
+        v-for:="item in navbarItems"
+        :to="item.url"
+        class="link link-hover"
+      >
+        <component :is="item.icon" class="w-3 inline"></component>
+        {{ item.name }}
+      </RouterLink>
+    </div>
     <div>
       <p class="font-bold">Validity.RED</p>
       <p>Copyright © 2022 - All right reserved</p>
