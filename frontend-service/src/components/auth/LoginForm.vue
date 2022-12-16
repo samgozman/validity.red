@@ -65,7 +65,9 @@ export default defineComponent({
           password: this.password,
         });
         setIsAuthenticated(true);
-        this.$router.push((this.$route.query.redirect as string) || "/");
+        this.$router.push(
+          (this.$route.query.redirect as string) || "/dashboard"
+        );
       } catch (error) {
         this.errorMsg = await ErrorDecoder.decode(error);
       }
