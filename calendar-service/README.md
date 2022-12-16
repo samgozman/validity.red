@@ -11,6 +11,7 @@ The calendar service is connected only to the gateway service via gRPC and Proto
 
 - [rust-analyzer](https://marketplace.visualstudio.com/items?itemName=rust-lang.rust-analyzer)
 - [crates](https://marketplace.visualstudio.com/items?itemName=serayuzgur.crates)
+- [Better TOML](https://marketplace.visualstudio.com/items?itemName=bungcip.better-toml)
 - [Code Spell Checker](https://marketplace.visualstudio.com/items?itemName=streetsidesoftware.code-spell-checker)
 - [Better Comments](https://marketplace.visualstudio.com/items?itemName=aaron-bond.better-comments)
 
