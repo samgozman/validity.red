@@ -39,7 +39,7 @@ func (app *Config) documentCreate(c *gin.Context) {
 
 	documentPayload := documentCreate{}
 	if err := c.BindJSON(&documentPayload); err != nil {
-		c.Error(ErrInvalidInputs)
+		_ = c.Error(ErrInvalidInputs)
 		return
 	}
 
@@ -55,7 +55,7 @@ func (app *Config) documentCreate(c *gin.Context) {
 	})
 	if err != nil {
 		log.Println("Error on calling document-service::Create method:", err)
-		c.Error(err)
+		_ = c.Error(err)
 		return
 	}
 
@@ -76,7 +76,7 @@ func (app *Config) documentEdit(c *gin.Context) {
 
 	documentPayload := documentEdit{}
 	if err := c.BindJSON(&documentPayload); err != nil {
-		c.Error(ErrInvalidInputs)
+		_ = c.Error(ErrInvalidInputs)
 		return
 	}
 
@@ -93,7 +93,7 @@ func (app *Config) documentEdit(c *gin.Context) {
 	})
 	if err != nil {
 		log.Println("Error on calling document-service::Edit method:", err)
-		c.Error(err)
+		_ = c.Error(err)
 		return
 	}
 
@@ -112,7 +112,7 @@ func (app *Config) documentDelete(c *gin.Context) {
 		DocumentId string `uri:"documentId" binding:"required,uuid"`
 	}{}
 	if err := c.BindUri(&uri); err != nil {
-		c.Error(ErrInvalidInputs)
+		_ = c.Error(ErrInvalidInputs)
 		return
 	}
 
@@ -123,7 +123,7 @@ func (app *Config) documentDelete(c *gin.Context) {
 	})
 	if err != nil {
 		log.Println("Error on calling document-service::Delete method:", err)
-		c.Error(err)
+		_ = c.Error(err)
 		return
 	}
 
@@ -142,7 +142,7 @@ func (app *Config) documentGetOne(c *gin.Context) {
 		DocumentId string `uri:"documentId" binding:"required,uuid"`
 	}{}
 	if err := c.BindUri(&uri); err != nil {
-		c.Error(ErrInvalidInputs)
+		_ = c.Error(ErrInvalidInputs)
 		return
 	}
 
@@ -153,7 +153,7 @@ func (app *Config) documentGetOne(c *gin.Context) {
 	})
 	if err != nil {
 		log.Println("Error on calling document-service::GetOne method:", err)
-		c.Error(err)
+		_ = c.Error(err)
 		return
 	}
 
@@ -185,7 +185,7 @@ func (app *Config) documentGetAll(c *gin.Context) {
 	})
 	if err != nil {
 		log.Println("Error on calling document-service::GetAll method:", err)
-		c.Error(err)
+		_ = c.Error(err)
 		return
 	}
 
@@ -217,7 +217,7 @@ func (app *Config) documentGetStatistics(c *gin.Context) {
 	})
 	if err != nil {
 		log.Println("Error on calling document-service::GetUserStatistics method:", err)
-		c.Error(err)
+		_ = c.Error(err)
 		return
 	}
 
@@ -235,7 +235,7 @@ func (app *Config) documentGetStatistics(c *gin.Context) {
 	)
 	if err != nil {
 		log.Println("Error on calling document-service::notification::CountAll method:", err)
-		c.Error(err)
+		_ = c.Error(err)
 		return
 	}
 	statistics.TotalNotifications = totalNotificationsCount.Count

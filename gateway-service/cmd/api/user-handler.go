@@ -36,14 +36,14 @@ func (app *Config) userRegister(c *gin.Context) {
 
 	requestPayload := registerPayload{}
 	if err := c.BindJSON(&requestPayload); err != nil {
-		c.Error(ErrInvalidInputs)
+		_ = c.Error(ErrInvalidInputs)
 		return
 	}
 
 	hr := app.hcaptcha.VerifyToken(requestPayload.HCaptchaResponse)
 	if !hr.Success {
 		sentry.CaptureException(fmt.Errorf("hCaptcha errors: %s", hr.ErrorCodes))
-		c.Error(ErrInvalidCaptcha)
+		_ = c.Error(ErrInvalidCaptcha)
 		return
 	}
 
@@ -57,7 +57,7 @@ func (app *Config) userRegister(c *gin.Context) {
 	})
 	if err != nil {
 		log.Println("Error on calling user-service::Register method:", err)
-		c.Error(err)
+		_ = c.Error(err)
 		return
 	}
 
@@ -65,7 +65,7 @@ func (app *Config) userRegister(c *gin.Context) {
 	verificationToken, err := app.token.Generate(res.UserId, app.options.JWTVerificationTTL)
 	if err != nil {
 		log.Println("Error on calling user-service::Register::Generate token method:", err)
-		c.Error(err)
+		_ = c.Error(err)
 		return
 	}
 	// Save verification token to Redis with 24h TTL
@@ -77,7 +77,10 @@ func (app *Config) userRegister(c *gin.Context) {
 
 	if app.options.Environment == "production" {
 		verificationLink := app.options.AppURL + "/verify?token=" + verificationToken
-		app.mailer.SendEmailVerification(requestPayload.Email, verificationLink)
+		err := app.mailer.SendEmailVerification(requestPayload.Email, verificationLink)
+		if err != nil {
+			sentry.CaptureException(fmt.Errorf("SendEmailVerification error: %s", err))
+		}
 	}
 
 	c.Status(http.StatusCreated)
@@ -91,7 +94,7 @@ func (app *Config) userLogin(c *gin.Context) {
 
 	requestPayload := authPayload{}
 	if err := c.BindJSON(&requestPayload); err != nil {
-		c.Error(ErrInvalidInputs)
+		_ = c.Error(ErrInvalidInputs)
 		return
 	}
 
@@ -104,13 +107,13 @@ func (app *Config) userLogin(c *gin.Context) {
 	})
 	if err != nil {
 		log.Println("Error on calling user-service::Login method:", err)
-		c.Error(err)
+		_ = c.Error(err)
 		return
 	}
 
 	// User's email should be verified before login
 	if !res.IsVerified {
-		c.Error(ErrEmailNotVerified)
+		_ = c.Error(ErrEmailNotVerified)
 		return
 	}
 
@@ -118,7 +121,7 @@ func (app *Config) userLogin(c *gin.Context) {
 	token, err := app.token.Generate(res.UserId, app.options.JWTAuthTTL)
 	if err != nil {
 		log.Println("Error on calling gateway-service::token::Generate method:", err)
-		c.Error(err)
+		_ = c.Error(err)
 		return
 	}
 
@@ -143,7 +146,7 @@ func (app *Config) userRefreshToken(c *gin.Context) {
 	token, err := app.token.Refresh(tk.(string), app.options.JWTAuthTTL)
 	if err != nil {
 		log.Println("Error on calling gateway-service::token::Refresh method:", err)
-		c.Error(ErrUnauthorized)
+		_ = c.Error(ErrUnauthorized)
 		return
 	}
 
@@ -162,27 +165,27 @@ func (app *Config) userVerifyEmail(c *gin.Context) {
 
 	// Validate inputs
 	if err := c.BindJSON(&json); err != nil {
-		c.Error(ErrInvalidInputs)
+		_ = c.Error(ErrInvalidInputs)
 		return
 	}
 
 	// Validate token
 	userID, err := app.token.Verify(json.Token)
 	if err != nil {
-		c.Error(ErrUnauthorized)
+		_ = c.Error(ErrUnauthorized)
 		return
 	}
 
 	// Check if token exists in Redis for this user
 	token, err := app.redisClient.Get(ctx, "user:verification:"+userID).Result()
 	if err != nil {
-		c.Error(ErrUnauthorized)
+		_ = c.Error(ErrUnauthorized)
 		return
 	}
 
 	// Check if token is valid
 	if token != json.Token {
-		c.Error(ErrUnauthorized)
+		_ = c.Error(ErrUnauthorized)
 		return
 	}
 
@@ -196,7 +199,7 @@ func (app *Config) userVerifyEmail(c *gin.Context) {
 	})
 	if err != nil {
 		log.Println("Error on calling user-service::SetIsVerified method:", err)
-		c.Error(err)
+		_ = c.Error(err)
 		return
 	}
 

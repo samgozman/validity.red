@@ -28,7 +28,7 @@ func (app *Config) getCalendar(c *gin.Context) {
 	})
 	if err != nil {
 		log.Println("Error on calling GetAll method for getCalendar:", err)
-		c.Error(err)
+		_ = c.Error(err)
 		return
 	}
 
@@ -37,7 +37,7 @@ func (app *Config) getCalendar(c *gin.Context) {
 	})
 	if err != nil {
 		log.Println("Error on calling Notification.GetAllForUser method for getCalendar:", err)
-		c.Error(err)
+		_ = c.Error(err)
 		return
 	}
 
@@ -67,7 +67,7 @@ func (app *Config) getCalendarIcs(c *gin.Context) {
 	})
 	if err != nil {
 		log.Println("Error on calling UserService.GetCalendarIv method for getCalendarIcs:", err)
-		c.Error(err)
+		_ = c.Error(err)
 		return
 	}
 
@@ -77,7 +77,7 @@ func (app *Config) getCalendarIcs(c *gin.Context) {
 	})
 	if err != nil {
 		log.Println("Error on calling GetCalendar method for getCalendarIcs:", err)
-		c.Error(err)
+		_ = c.Error(err)
 		return
 	}
 
@@ -126,7 +126,11 @@ func (app *Config) updateIcsCalendar(userId string) {
 
 	// Create new IV
 	ivCalendar := make([]byte, 12)
-	rand.Read(ivCalendar)
+	_, err = rand.Read(ivCalendar)
+	if err != nil {
+		log.Println("Error on generating IV:", err)
+		return
+	}
 
 	// Call rust service to create ics
 	_, err = app.calendarsClient.calendarService.CreateCalendar(ctx, &calendar.CreateCalendarRequest{

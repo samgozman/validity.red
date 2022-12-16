@@ -34,12 +34,12 @@ func (app *Config) documentNotificationCreate(c *gin.Context) {
 	userId, _ := c.Get("UserId")
 	// Validate inputs
 	if err := c.BindUri(&uri); err != nil {
-		c.Error(ErrInvalidInputs)
+		_ = c.Error(ErrInvalidInputs)
 		return
 	}
 	notificationPayload := notificationPayload{}
 	if err := c.BindJSON(&notificationPayload); err != nil {
-		c.Error(ErrInvalidInputs)
+		_ = c.Error(ErrInvalidInputs)
 		return
 	}
 
@@ -53,7 +53,7 @@ func (app *Config) documentNotificationCreate(c *gin.Context) {
 	})
 	if err != nil {
 		log.Println("Error on calling document-service::notification::Create method:", err)
-		c.Error(err)
+		_ = c.Error(err)
 		return
 	}
 
@@ -72,7 +72,7 @@ func (app *Config) documentNotificationDelete(c *gin.Context) {
 	userId, _ := c.Get("UserId")
 	// Validate inputs
 	if err := c.BindUri(&uri); err != nil {
-		c.Error(ErrInvalidInputs)
+		_ = c.Error(ErrInvalidInputs)
 		return
 	}
 
@@ -86,7 +86,7 @@ func (app *Config) documentNotificationDelete(c *gin.Context) {
 	})
 	if err != nil {
 		log.Println("Error on calling document-service::notification::Delete method:", err)
-		c.Error(err)
+		_ = c.Error(err)
 		return
 	}
 
@@ -107,7 +107,7 @@ func (app *Config) documentNotificationGetAll(c *gin.Context) {
 	userId, _ := c.Get("UserId")
 	// Validate inputs
 	if err := c.BindUri(&uri); err != nil {
-		c.Error(ErrInvalidInputs)
+		_ = c.Error(ErrInvalidInputs)
 		return
 	}
 
@@ -118,7 +118,7 @@ func (app *Config) documentNotificationGetAll(c *gin.Context) {
 	})
 	if err != nil {
 		log.Println("Error on calling document-service::notification::GetAll method:", err)
-		c.Error(err)
+		_ = c.Error(err)
 		return
 	}
 
