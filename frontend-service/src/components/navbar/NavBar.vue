@@ -28,7 +28,9 @@ import { state } from "@/state";
       </RouterLink>
       <ul class="hidden md:flex menu menu-horizontal p-0">
         <NavItem
-          v-for="item in navbarItems"
+          v-for="item in navbarItems.filter((item) => {
+            return state.user.isAuthenticated ? item.name !== 'Home' : true;
+          })"
           v-bind:key="item.name"
           :item="item"
         />

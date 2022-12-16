@@ -28,7 +28,9 @@ import Footer from "@/components/FooterComponent.vue";
       <div class="menu p-4 overflow-y-auto w-80 bg-base-100">
         <ul>
           <NavItem
-            v-for="item in navbarItems"
+            v-for="item in navbarItems.filter((item) => {
+              return state.user.isAuthenticated ? item.name !== 'Home' : true;
+            })"
             v-bind:key="item.name"
             :item="item"
             :isMobile="true"
