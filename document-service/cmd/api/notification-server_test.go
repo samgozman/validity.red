@@ -17,6 +17,7 @@ func TestNotificationServer_Create(t *testing.T) {
 		App                                    *Config
 		UnimplementedNotificationServiceServer proto.UnimplementedNotificationServiceServer
 	}
+
 	type args struct {
 		ctx context.Context
 		req *proto.NotificationCreateRequest
@@ -58,7 +59,7 @@ func TestNotificationServer_Create(t *testing.T) {
 				},
 			},
 			wantErr:  true,
-			errorMsg: ErrInvalidUserId,
+			errorMsg: ErrInvalidUserID,
 		},
 		{
 			name:   "should fail if documentId is incorrect",
@@ -73,7 +74,7 @@ func TestNotificationServer_Create(t *testing.T) {
 				},
 			},
 			wantErr:  true,
-			errorMsg: ErrInvalidDocumentId,
+			errorMsg: ErrInvalidDocumentID,
 		},
 		{
 			name:   "should fail if documentId is not exists",
@@ -119,6 +120,7 @@ func TestNotificationServer_Delete(t *testing.T) {
 		App                                    *Config
 		UnimplementedNotificationServiceServer proto.UnimplementedNotificationServiceServer
 	}
+
 	type args struct {
 		ctx context.Context
 		req *proto.NotificationCreateRequest
@@ -161,7 +163,7 @@ func TestNotificationServer_Delete(t *testing.T) {
 				},
 			},
 			wantErr:  true,
-			errorMsg: ErrInvalidUserId,
+			errorMsg: ErrInvalidUserID,
 		},
 		{
 			name:   "should fail if documentId is incorrect",
@@ -176,7 +178,7 @@ func TestNotificationServer_Delete(t *testing.T) {
 				},
 			},
 			wantErr:  true,
-			errorMsg: ErrInvalidDocumentId,
+			errorMsg: ErrInvalidDocumentID,
 		},
 		{
 			name:   "should fail if notificationId is incorrect",
@@ -192,7 +194,7 @@ func TestNotificationServer_Delete(t *testing.T) {
 				},
 			},
 			wantErr:  true,
-			errorMsg: ErrInvalidNotificationId,
+			errorMsg: ErrInvalidNotificationID,
 		},
 		{
 			name:   "should fail if documentId is not exists",
@@ -239,6 +241,7 @@ func TestNotificationServer_GetAll(t *testing.T) {
 		App                                    *Config
 		UnimplementedNotificationServiceServer proto.UnimplementedNotificationServiceServer
 	}
+
 	type args struct {
 		ctx context.Context
 		req *proto.NotificationsRequest
@@ -283,7 +286,7 @@ func TestNotificationServer_GetAll(t *testing.T) {
 				},
 			},
 			wantErr:  true,
-			errorMsg: ErrInvalidUserId,
+			errorMsg: ErrInvalidUserID,
 		},
 		{
 			name:   "should fail if documentId is incorrect",
@@ -296,7 +299,7 @@ func TestNotificationServer_GetAll(t *testing.T) {
 				},
 			},
 			wantErr:  true,
-			errorMsg: ErrInvalidDocumentId,
+			errorMsg: ErrInvalidDocumentID,
 		},
 		{
 			name:   "should fail if documentId is not exists",
@@ -343,6 +346,7 @@ func TestNotificationServer_Count(t *testing.T) {
 		App                                    *Config
 		UnimplementedNotificationServiceServer proto.UnimplementedNotificationServiceServer
 	}
+
 	type args struct {
 		ctx context.Context
 		req *proto.NotificationsCountRequest
@@ -382,7 +386,7 @@ func TestNotificationServer_Count(t *testing.T) {
 				},
 			},
 			wantErr:  true,
-			errorMsg: ErrInvalidUserId,
+			errorMsg: ErrInvalidUserID,
 		},
 		{
 			name:   "should fail if documentId is incorrect",
@@ -395,7 +399,7 @@ func TestNotificationServer_Count(t *testing.T) {
 				},
 			},
 			wantErr:  true,
-			errorMsg: ErrInvalidDocumentId,
+			errorMsg: ErrInvalidDocumentID,
 		},
 	}
 	for _, tt := range tests {
@@ -425,6 +429,7 @@ func TestNotificationServer_checkInputsAndDocumentExistence(t *testing.T) {
 		App                                    *Config
 		UnimplementedNotificationServiceServer proto.UnimplementedNotificationServiceServer
 	}
+
 	type args struct {
 		ctx context.Context
 		uID string
@@ -465,7 +470,7 @@ func TestNotificationServer_checkInputsAndDocumentExistence(t *testing.T) {
 				uID: "wrongUID",
 			},
 			wantErr:  true,
-			errorMsg: ErrInvalidUserId,
+			errorMsg: ErrInvalidUserID,
 		},
 		{
 			name:   "should fail if documentId is invalid",
@@ -476,7 +481,7 @@ func TestNotificationServer_checkInputsAndDocumentExistence(t *testing.T) {
 				uID: uID.String(),
 			},
 			wantErr:  true,
-			errorMsg: ErrInvalidDocumentId,
+			errorMsg: ErrInvalidDocumentID,
 		},
 		{
 			name:   "should fail if document is not found",
@@ -520,6 +525,7 @@ func TestNotificationServer_CountAll(t *testing.T) {
 		App                                    *Config
 		UnimplementedNotificationServiceServer proto.UnimplementedNotificationServiceServer
 	}
+
 	type args struct {
 		ctx context.Context
 		req *proto.NotificationsAllRequest
@@ -557,7 +563,7 @@ func TestNotificationServer_CountAll(t *testing.T) {
 				},
 			},
 			wantErr:  true,
-			errorMsg: ErrInvalidUserId,
+			errorMsg: ErrInvalidUserID,
 		},
 	}
 	for _, tt := range tests {
@@ -587,6 +593,7 @@ func TestNotificationServer_GetAllForUser(t *testing.T) {
 		App                                    *Config
 		UnimplementedNotificationServiceServer proto.UnimplementedNotificationServiceServer
 	}
+
 	type args struct {
 		ctx context.Context
 		req *proto.NotificationsAllRequest
@@ -629,7 +636,7 @@ func TestNotificationServer_GetAllForUser(t *testing.T) {
 				},
 			},
 			wantErr:  true,
-			errorMsg: ErrInvalidUserId,
+			errorMsg: ErrInvalidUserID,
 		},
 	}
 	for _, tt := range tests {

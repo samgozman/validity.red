@@ -13,8 +13,8 @@ type DocumentRepository interface {
 	DeleteOne(ctx context.Context, d *Document) error
 	FindOne(ctx context.Context, d *Document) error
 	Exists(ctx context.Context, d *Document) (bool, error)
-	FindAll(ctx context.Context, userId uuid.UUID) ([]Document, error)
-	Count(ctx context.Context, userId uuid.UUID) (int64, error)
-	CountTypes(ctx context.Context, userId uuid.UUID) ([]*proto.DocumentTypesCount, error)
-	FindLatest(ctx context.Context, userId uuid.UUID, limit int) ([]Document, error)
+	FindAll(ctx context.Context, userID uuid.UUID) ([]Document, error)
+	Count(ctx context.Context, userID uuid.UUID) (int64, error)
+	CountTypes(ctx context.Context, userID uuid.UUID) ([]*proto.DocumentTypesCount, error)
+	FindLatest(ctx context.Context, userID uuid.UUID, limit int) ([]Document, error)
 }

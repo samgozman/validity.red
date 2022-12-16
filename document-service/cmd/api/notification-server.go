@@ -30,6 +30,7 @@ func (ds *NotificationServer) Create(ctx context.Context, req *proto.Notificatio
 	if err != nil {
 		return nil, err
 	}
+
 	if count >= ds.App.limits.MaxNotificationsPerDocument {
 		return nil, ErrMaxNotificationsLimit
 	}
@@ -60,7 +61,7 @@ func (ds *NotificationServer) Delete(ctx context.Context, req *proto.Notificatio
 
 	notificationID, err := uuid.Parse(input.GetID())
 	if err != nil {
-		return nil, ErrInvalidNotificationId
+		return nil, ErrInvalidNotificationID
 	}
 
 	// delete notification
@@ -99,6 +100,7 @@ func (ds *NotificationServer) GetAll(
 	res := &proto.ResponseNotificationsList{
 		Notifications: utils.ConvertNotificationsToProtoFormat(&notifications),
 	}
+
 	return res, nil
 }
 
@@ -119,6 +121,7 @@ func (ds *NotificationServer) Count(
 	res := &proto.ResponseCount{
 		Count: count,
 	}
+
 	return res, nil
 }
 
@@ -128,7 +131,7 @@ func (ds *NotificationServer) CountAll(
 ) (*proto.ResponseCount, error) {
 	userID, err := uuid.Parse(req.GetUserID())
 	if err != nil {
-		return nil, ErrInvalidUserId
+		return nil, ErrInvalidUserID
 	}
 
 	count, err := ds.App.Notifications.CountAll(ctx, userID)
@@ -139,6 +142,7 @@ func (ds *NotificationServer) CountAll(
 	res := &proto.ResponseCount{
 		Count: count,
 	}
+
 	return res, nil
 }
 
@@ -148,7 +152,7 @@ func (ds *NotificationServer) GetAllForUser(
 ) (*proto.ResponseNotificationsList, error) {
 	userID, err := uuid.Parse(req.GetUserID())
 	if err != nil {
-		return nil, ErrInvalidUserId
+		return nil, ErrInvalidUserID
 	}
 
 	// Find all notifications
@@ -161,10 +165,11 @@ func (ds *NotificationServer) GetAllForUser(
 	res := &proto.ResponseNotificationsList{
 		Notifications: utils.ConvertNotificationsToProtoFormat(&notifications),
 	}
+
 	return res, nil
 }
 
-// Helper to parse userId and documentId and validate document existence
+// Helper to parse userId and documentId and validate document existence.
 func (ds *NotificationServer) checkInputsAndDocumentExistence(
 	ctx context.Context,
 	uID string,
@@ -172,16 +177,17 @@ func (ds *NotificationServer) checkInputsAndDocumentExistence(
 ) (
 	userID uuid.UUID,
 	documentID uuid.UUID,
-	error error,
+	e error,
 ) {
 	// Validate input arguments
 	userID, err := uuid.Parse(uID)
 	if err != nil {
-		return uuid.Nil, uuid.Nil, ErrInvalidUserId
+		return uuid.Nil, uuid.Nil, ErrInvalidUserID
 	}
+
 	documentID, err = uuid.Parse(dID)
 	if err != nil {
-		return uuid.Nil, uuid.Nil, ErrInvalidDocumentId
+		return uuid.Nil, uuid.Nil, ErrInvalidDocumentID
 	}
 
 	// Check if that document exists
@@ -190,9 +196,11 @@ func (ds *NotificationServer) checkInputsAndDocumentExistence(
 		UserID: userID,
 	}
 	isDocumentExist, err := ds.App.Documents.Exists(ctx, &d)
+
 	if err != nil {
 		return uuid.Nil, uuid.Nil, err
 	}
+
 	if !isDocumentExist {
 		return uuid.Nil, uuid.Nil, ErrDocumentNotFound
 	}

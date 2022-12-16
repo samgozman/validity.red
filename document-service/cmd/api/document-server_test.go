@@ -17,6 +17,7 @@ func TestDocumentServer_Create(t *testing.T) {
 		App                                *Config
 		UnimplementedDocumentServiceServer proto.UnimplementedDocumentServiceServer
 	}
+
 	type args struct {
 		ctx context.Context
 		req *proto.DocumentCreateRequest
@@ -62,7 +63,7 @@ func TestDocumentServer_Create(t *testing.T) {
 				},
 			},
 			wantErr:  true,
-			errorMsg: ErrInvalidUserId,
+			errorMsg: ErrInvalidUserID,
 		},
 	}
 	for _, tt := range tests {
@@ -92,6 +93,7 @@ func TestDocumentServer_Edit(t *testing.T) {
 		App                                *Config
 		UnimplementedDocumentServiceServer proto.UnimplementedDocumentServiceServer
 	}
+
 	type args struct {
 		ctx context.Context
 		req *proto.DocumentCreateRequest
@@ -136,7 +138,7 @@ func TestDocumentServer_Edit(t *testing.T) {
 				},
 			},
 			wantErr:  true,
-			errorMsg: ErrInvalidUserId,
+			errorMsg: ErrInvalidUserID,
 		},
 		{
 			name:   "should fail if documentId is incorrect",
@@ -151,7 +153,7 @@ func TestDocumentServer_Edit(t *testing.T) {
 				},
 			},
 			wantErr:  true,
-			errorMsg: ErrInvalidDocumentId,
+			errorMsg: ErrInvalidDocumentID,
 		},
 	}
 	for _, tt := range tests {
@@ -181,6 +183,7 @@ func TestDocumentServer_Delete(t *testing.T) {
 		App                                *Config
 		UnimplementedDocumentServiceServer proto.UnimplementedDocumentServiceServer
 	}
+
 	type args struct {
 		ctx context.Context
 		req *proto.DocumentRequest
@@ -220,7 +223,7 @@ func TestDocumentServer_Delete(t *testing.T) {
 				},
 			},
 			wantErr:  true,
-			errorMsg: ErrInvalidUserId,
+			errorMsg: ErrInvalidUserID,
 		},
 		{
 			name:   "should fail if documentId is incorrect",
@@ -233,7 +236,7 @@ func TestDocumentServer_Delete(t *testing.T) {
 				},
 			},
 			wantErr:  true,
-			errorMsg: ErrInvalidDocumentId,
+			errorMsg: ErrInvalidDocumentID,
 		},
 	}
 	for _, tt := range tests {
@@ -263,6 +266,7 @@ func TestDocumentServer_GetOne(t *testing.T) {
 		App                                *Config
 		UnimplementedDocumentServiceServer proto.UnimplementedDocumentServiceServer
 	}
+
 	type args struct {
 		ctx context.Context
 		req *proto.DocumentRequest
@@ -312,7 +316,7 @@ func TestDocumentServer_GetOne(t *testing.T) {
 				},
 			},
 			wantErr:  true,
-			errorMsg: ErrInvalidUserId,
+			errorMsg: ErrInvalidUserID,
 		},
 		{
 			name:   "should fail if documentId is incorrect",
@@ -325,7 +329,7 @@ func TestDocumentServer_GetOne(t *testing.T) {
 				},
 			},
 			wantErr:  true,
-			errorMsg: ErrInvalidDocumentId,
+			errorMsg: ErrInvalidDocumentID,
 		},
 	}
 	for _, tt := range tests {
@@ -355,6 +359,7 @@ func TestDocumentServer_GetAll(t *testing.T) {
 		App                                *Config
 		UnimplementedDocumentServiceServer proto.UnimplementedDocumentServiceServer
 	}
+
 	type args struct {
 		ctx context.Context
 		req *proto.DocumentsRequest
@@ -396,7 +401,7 @@ func TestDocumentServer_GetAll(t *testing.T) {
 				},
 			},
 			wantErr:  true,
-			errorMsg: ErrInvalidUserId,
+			errorMsg: ErrInvalidUserID,
 		},
 	}
 	for _, tt := range tests {
@@ -426,6 +431,7 @@ func TestDocumentServer_GetUserStatistics(t *testing.T) {
 		App                                *Config
 		UnimplementedDocumentServiceServer proto.UnimplementedDocumentServiceServer
 	}
+
 	type args struct {
 		ctx context.Context
 		req *proto.DocumentsRequest
@@ -467,7 +473,7 @@ func TestDocumentServer_GetUserStatistics(t *testing.T) {
 				},
 			},
 			wantErr:  true,
-			errorMsg: ErrInvalidUserId,
+			errorMsg: ErrInvalidUserID,
 		},
 	}
 	for _, tt := range tests {

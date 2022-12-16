@@ -86,6 +86,7 @@ func TestDecryptAES(t *testing.T) {
 		iv         []byte
 		cipherText string
 	}
+
 	tests := []struct {
 		name    string
 		args    args
@@ -147,6 +148,7 @@ func TestPKCS5Padding(t *testing.T) {
 	type args struct {
 		src []byte
 	}
+
 	tests := []struct {
 		name string
 		args args
@@ -171,6 +173,7 @@ func TestPKCS5UnPadding(t *testing.T) {
 	type args struct {
 		src []byte
 	}
+
 	tests := []struct {
 		name string
 		args args
@@ -195,6 +198,7 @@ func TestGenerateRandomIV(t *testing.T) {
 	type args struct {
 		length uint
 	}
+
 	tests := []struct {
 		name    string
 		args    args

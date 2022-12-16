@@ -31,6 +31,7 @@ func EncryptAES(key []byte, iv []byte, text string) (string, error) {
 
 	bytesText := PKCS5Padding([]byte(text))
 	block, err := aes.NewCipher(key)
+
 	if err != nil {
 		sentry.CaptureException(err)
 		return "", err
@@ -39,6 +40,7 @@ func EncryptAES(key []byte, iv []byte, text string) (string, error) {
 	ciphertext := make([]byte, len(bytesText))
 	mode := cipher.NewCBCEncrypter(block, iv)
 	mode.CryptBlocks(ciphertext, bytesText)
+
 	return hex.EncodeToString(ciphertext), nil
 }
 
@@ -68,6 +70,7 @@ func DecryptAES(key []byte, iv []byte, cipherText string) (string, error) {
 
 	mode := cipher.NewCBCDecrypter(block, iv)
 	mode.CryptBlocks([]byte(cipherTextDecoded), []byte(cipherTextDecoded))
+
 	return string(PKCS5UnPadding(cipherTextDecoded)), nil
 }
 
@@ -76,17 +79,19 @@ func DecryptAES(key []byte, iv []byte, cipherText string) (string, error) {
 func PKCS5Padding(src []byte) []byte {
 	padding := BlockSize - len(src)%BlockSize
 	padtext := bytes.Repeat([]byte{byte(padding)}, padding)
+
 	return append(src, padtext...)
 }
 
-// Remove padding bytes (usually after decode)
+// Remove padding bytes (usually after decode).
 func PKCS5UnPadding(src []byte) []byte {
 	length := len(src)
 	unpadding := int(src[length-1])
+
 	return src[:(length - unpadding)]
 }
 
-// Generate pseudorandom IV bytes array
+// Generate pseudorandom IV bytes array.
 func GenerateRandomIV(length uint) ([]byte, error) {
 	b := make([]byte, length)
 	_, err := rand.Read(b)

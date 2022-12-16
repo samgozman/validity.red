@@ -1,4 +1,4 @@
-package notification_mocks
+package notificationmocks
 
 import (
 	"context"

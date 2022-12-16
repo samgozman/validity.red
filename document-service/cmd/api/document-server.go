@@ -11,6 +11,8 @@ import (
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
+const NumberOfLatestDocuments = 5
+
 type DocumentServer struct {
 	App *Config
 	// Necessary parameter to insure backwards compatibility
@@ -22,7 +24,7 @@ func (ds *DocumentServer) Create(ctx context.Context, req *proto.DocumentCreateR
 
 	userID, err := uuid.Parse(input.UserID)
 	if err != nil {
-		return nil, ErrInvalidUserId
+		return nil, ErrInvalidUserID
 	}
 
 	// Check if user has reached the limit of documents
@@ -30,6 +32,7 @@ func (ds *DocumentServer) Create(ctx context.Context, req *proto.DocumentCreateR
 	if err != nil {
 		return nil, err
 	}
+
 	if count >= ds.App.limits.MaxDocumentsPerUser {
 		return nil, ErrMaxDocumentsLimit
 	}
@@ -43,6 +46,7 @@ func (ds *DocumentServer) Create(ctx context.Context, req *proto.DocumentCreateR
 		ExpiresAt:   input.ExpiresAt.AsTime(),
 	}
 	err = ds.App.Documents.InsertOne(ctx, &d)
+
 	if err != nil {
 		return nil, err
 	}
@@ -51,6 +55,7 @@ func (ds *DocumentServer) Create(ctx context.Context, req *proto.DocumentCreateR
 	res := &proto.ResponseDocumentCreate{
 		DocumentId: d.ID.String(),
 	}
+
 	return res, nil
 }
 
@@ -60,12 +65,12 @@ func (ds *DocumentServer) Edit(ctx context.Context, req *proto.DocumentCreateReq
 	// Decode values
 	id, err := uuid.Parse(input.ID)
 	if err != nil {
-		return nil, ErrInvalidDocumentId
+		return nil, ErrInvalidDocumentID
 	}
 
 	userID, err := uuid.Parse(input.UserID)
 	if err != nil {
-		return nil, ErrInvalidUserId
+		return nil, ErrInvalidUserID
 	}
 
 	// update document
@@ -78,6 +83,7 @@ func (ds *DocumentServer) Edit(ctx context.Context, req *proto.DocumentCreateReq
 		ExpiresAt:   input.ExpiresAt.AsTime(),
 	}
 	err = ds.App.Documents.UpdateOne(ctx, &d)
+
 	if err != nil {
 		return nil, err
 	}
@@ -89,12 +95,12 @@ func (ds *DocumentServer) Delete(ctx context.Context, req *proto.DocumentRequest
 	// Decode values
 	id, err := uuid.Parse(req.GetDocumentID())
 	if err != nil {
-		return nil, ErrInvalidDocumentId
+		return nil, ErrInvalidDocumentID
 	}
 
 	userID, err := uuid.Parse(req.GetUserID())
 	if err != nil {
-		return nil, ErrInvalidUserId
+		return nil, ErrInvalidUserID
 	}
 
 	// delete document
@@ -103,6 +109,7 @@ func (ds *DocumentServer) Delete(ctx context.Context, req *proto.DocumentRequest
 		UserID: userID,
 	}
 	err = ds.App.Documents.DeleteOne(ctx, &d)
+
 	if err != nil {
 		return nil, err
 	}
@@ -114,12 +121,12 @@ func (ds *DocumentServer) GetOne(ctx context.Context, req *proto.DocumentRequest
 	// Decode values
 	id, err := uuid.Parse(req.GetDocumentID())
 	if err != nil {
-		return nil, ErrInvalidDocumentId
+		return nil, ErrInvalidDocumentID
 	}
 
 	userID, err := uuid.Parse(req.GetUserID())
 	if err != nil {
-		return nil, ErrInvalidUserId
+		return nil, ErrInvalidUserID
 	}
 
 	// Find document
@@ -128,6 +135,7 @@ func (ds *DocumentServer) GetOne(ctx context.Context, req *proto.DocumentRequest
 		UserID: userID,
 	}
 	err = ds.App.Documents.FindOne(ctx, &d)
+
 	if err != nil {
 		return nil, err
 	}
@@ -143,13 +151,14 @@ func (ds *DocumentServer) GetOne(ctx context.Context, req *proto.DocumentRequest
 			ExpiresAt:   timestamppb.New(d.ExpiresAt),
 		},
 	}
+
 	return res, nil
 }
 
 func (ds *DocumentServer) GetAll(ctx context.Context, req *proto.DocumentsRequest) (*proto.ResponseDocumentsList, error) {
 	userID, err := uuid.Parse(req.GetUserID())
 	if err != nil {
-		return nil, ErrInvalidUserId
+		return nil, ErrInvalidUserID
 	}
 
 	// Find all documents
@@ -162,6 +171,7 @@ func (ds *DocumentServer) GetAll(ctx context.Context, req *proto.DocumentsReques
 	res := &proto.ResponseDocumentsList{
 		Documents: utils.ConvertDocumentsToProtoFormat(&documents),
 	}
+
 	return res, nil
 }
 
@@ -171,7 +181,7 @@ func (ds *DocumentServer) GetUserStatistics(
 ) (*proto.ResponseDocumentsStatistics, error) {
 	userID, err := uuid.Parse(req.GetUserID())
 	if err != nil {
-		return nil, ErrInvalidUserId
+		return nil, ErrInvalidUserID
 	}
 
 	total, err := ds.App.Documents.Count(ctx, userID)
@@ -184,7 +194,7 @@ func (ds *DocumentServer) GetUserStatistics(
 		return nil, err
 	}
 
-	latest, err := ds.App.Documents.FindLatest(ctx, userID, 5)
+	latest, err := ds.App.Documents.FindLatest(ctx, userID, NumberOfLatestDocuments)
 	if err != nil {
 		return nil, err
 	}

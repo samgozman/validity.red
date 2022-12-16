@@ -1,4 +1,4 @@
-package document_mocks
+package documentmocks
 
 import (
 	"context"
@@ -35,31 +35,30 @@ func (db *DocumentDBTest) FindOne(ctx context.Context, d *document.Document) err
 	return nil
 }
 
-// Checks if document is already exists in database
 func (db *DocumentDBTest) Exists(ctx context.Context, d *document.Document) (bool, error) {
 	if d.ID.String() != "434377cf-7509-4cc0-9895-0afa683f0e56" {
 		return false, nil
 	}
+
 	return true, nil
 }
 
-// Find all documents by UserID
-func (db *DocumentDBTest) FindAll(ctx context.Context, userId uuid.UUID) ([]document.Document, error) {
+func (db *DocumentDBTest) FindAll(ctx context.Context, userID uuid.UUID) ([]document.Document, error) {
 	var documents []document.Document
 
 	return documents, nil
 }
 
-func (db *DocumentDBTest) Count(ctx context.Context, userId uuid.UUID) (int64, error) {
+func (db *DocumentDBTest) Count(ctx context.Context, userID uuid.UUID) (int64, error) {
 	return 0, nil
 }
 
-func (db *DocumentDBTest) CountTypes(ctx context.Context, userId uuid.UUID) ([]*proto.DocumentTypesCount, error) {
+func (db *DocumentDBTest) CountTypes(ctx context.Context, userID uuid.UUID) ([]*proto.DocumentTypesCount, error) {
 	var types []*proto.DocumentTypesCount
 	return types, nil
 }
 
-func (db *DocumentDBTest) FindLatest(ctx context.Context, userId uuid.UUID, limit int) ([]document.Document, error) {
+func (db *DocumentDBTest) FindLatest(ctx context.Context, userID uuid.UUID, limit int) ([]document.Document, error) {
 	var documents []document.Document
 	return documents, nil
 }

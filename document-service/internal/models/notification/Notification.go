@@ -31,20 +31,22 @@ type Notification struct {
 	UpdatedAt  time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"updated_at,omitempty"`
 }
 
-// Prepare Notification object before inserting into database
+// Prepare Notification object before inserting into database.
 func (n *Notification) Prepare() {
 	n.CreatedAt = time.Now()
 	n.UpdatedAt = time.Now()
 }
 
-// Validate Notification object before inserting into database
+// Validate Notification object before inserting into database.
 func (n *Notification) Validate() error {
 	if n.UserID == uuid.Nil {
 		return status.Error(codes.InvalidArgument, "user_id is required")
 	}
+
 	if n.DocumentID == uuid.Nil {
 		return status.Error(codes.InvalidArgument, "document_id is required")
 	}
+
 	if n.Date.IsZero() {
 		return status.Error(codes.InvalidArgument, "date is required")
 	}
@@ -66,7 +68,7 @@ func (n *Notification) BeforeCreate(tx *gorm.DB) error {
 	return nil
 }
 
-// Insert one Notification object into database
+// Insert one Notification object into database.
 func (db *NotificationDB) InsertOne(ctx context.Context, n *Notification) error {
 	res := db.Conn.WithContext(ctx).Create(&n)
 	if res.Error != nil {
@@ -77,6 +79,7 @@ func (db *NotificationDB) InsertOne(ctx context.Context, n *Notification) error 
 		}
 
 		sentry.CaptureException(res.Error)
+
 		return status.Error(codes.Internal, res.Error.Error())
 	}
 
@@ -118,7 +121,7 @@ func (db *NotificationDB) FindAll(ctx context.Context, documentID uuid.UUID) ([]
 	return notifications, nil
 }
 
-// Count notifications for a given document
+// Count notifications for a given document.
 func (db *NotificationDB) Count(ctx context.Context, documentID uuid.UUID) (int64, error) {
 	var count int64
 
@@ -136,7 +139,7 @@ func (db *NotificationDB) Count(ctx context.Context, documentID uuid.UUID) (int6
 	return count, nil
 }
 
-// Count all notifications for a given user
+// Count all notifications for a given user.
 func (db *NotificationDB) CountAll(ctx context.Context, userID uuid.UUID) (int64, error) {
 	var count int64
 

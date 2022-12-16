@@ -17,12 +17,12 @@ func TestConvertNotificationsToProtoFormat(t *testing.T) {
 		n *[]notification.Notification
 	}
 
-	expectedId, _ := uuid.Parse("884a2112-09a7-4469-bf13-9e9a25b58eab")
-	expectedDocumentId, _ := uuid.Parse("7a14e144-120c-4e1e-9447-ece46378c1dd")
+	expectedID, _ := uuid.Parse("884a2112-09a7-4469-bf13-9e9a25b58eab")
+	expectedDocumentID, _ := uuid.Parse("7a14e144-120c-4e1e-9447-ece46378c1dd")
 
 	originalNotification := notification.Notification{
-		ID:         expectedId,
-		DocumentID: expectedDocumentId,
+		ID:         expectedID,
+		DocumentID: expectedDocumentID,
 		Date:       time.Unix(1662204865, 0),
 	}
 
@@ -66,12 +66,12 @@ func TestConvertDocumentsToProtoFormat(t *testing.T) {
 		d *[]document.Document
 	}
 
-	expectedUserId, _ := uuid.Parse("884a2112-09a7-4469-bf13-9e9a25b58eab")
-	expectedDocumentId, _ := uuid.Parse("7a14e144-120c-4e1e-9447-ece46378c1dd")
+	expectedUserID, _ := uuid.Parse("884a2112-09a7-4469-bf13-9e9a25b58eab")
+	expectedDocumentID, _ := uuid.Parse("7a14e144-120c-4e1e-9447-ece46378c1dd")
 
 	originalDocument := document.Document{
-		ID:        expectedDocumentId,
-		UserID:    expectedUserId,
+		ID:        expectedDocumentID,
+		UserID:    expectedUserID,
 		Type:      1,
 		Title:     "Some title",
 		ExpiresAt: time.Unix(1662204865, 0),
