@@ -63,6 +63,12 @@ grpc_init_rust:
 lint_rust:
 	rustfmt calendar-service/src/*.rs --edition 2021
 
+# Build rust
+build_rust:
+	@echo "Building rust services..."
+	cd ./calendar-service && cargo build
+	@echo "Done!"
+
 ## builds the gateway binary as a linux executable
 build_gateway:
 	@echo "Building broker binary..."
