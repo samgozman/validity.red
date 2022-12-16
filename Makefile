@@ -63,6 +63,15 @@ grpc_init_rust:
 lint_rust:
 	rustfmt calendar-service/src/*.rs --edition 2021
 
+# Lint go services
+lint_go:
+	@echo "Lint documents service:"
+	cd ./document-service && golangci-lint run
+	@echo "Lint users service:"
+	cd ./user-service && golangci-lint run
+	@echo "Lint gateway service:"
+	cd ./gateway-service && golangci-lint run
+
 # Build rust
 build_rust:
 	@echo "Building rust services..."
