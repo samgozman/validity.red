@@ -31,7 +31,7 @@ make build_rust
 ### Run for Development
 
 This project is running in the docker-compose as a part of the project.
-You can the project with the following command from the project root:
+You can run the project with the following command from the project root:
 
 ```sh
 make up_build
