@@ -1,25 +1,18 @@
 # frontend-service
 
-This template should help get you started developing with Vue 3 in Vite.
+This service is the frontend SPA for [Validity.Red](https://validity.red), written in [Vue 3](https://v3.vuejs.org/) with [TypeScript](https://www.typescriptlang.org/). In production, it is served by [Nginx](https://www.nginx.com/) as a static site.
 
 ## Recommended IDE Setup
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur) + [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin).
+[VSCode](https://code.visualstudio.com/) with the following plugins:
 
-## Type Support for `.vue` Imports in TS
-
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin) to make the TypeScript language service aware of `.vue` types.
-
-If the standalone TypeScript plugin doesn't feel fast enough to you, Volar has also implemented a [Take Over Mode](https://github.com/johnsoncodehk/volar/discussions/471#discussioncomment-1361669) that is more performant. You can enable it by the following steps:
-
-1. Disable the built-in TypeScript Extension
-    1) Run `Extensions: Show Built-in Extensions` from VSCode's command palette
-    2) Find `TypeScript and JavaScript Language Features`, right click and select `Disable (Workspace)`
-2. Reload the VSCode window by running `Developer: Reload Window` from the command palette.
-
-## Customize configuration
-
-See [Vite Configuration Reference](https://vitejs.dev/config/).
+- [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar)
+- [TypeScript Vue Plugin](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin)
+- [Prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)
+- [Code Spell Checker](https://marketplace.visualstudio.com/items?itemName=streetsidesoftware.code-spell-checker)
+- [ESLint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint)
+- [Tailwind CSS IntelliSense](https://marketplace.visualstudio.com/items?itemName=bradlc.vscode-tailwindcss)
+- [Better Comments](https://marketplace.visualstudio.com/items?itemName=aaron-bond.better-comments)
 
 ## Project Setup
 
@@ -34,6 +27,12 @@ npm run dev
 ```
 
 ### Type-Check, Compile and Minify for Production
+
+This will normally be done by the [CI/CD pipeline](https://github.com/samgozman/validity.red/blob/main/.github/workflows/deploy_spa.yml), but you can run it locally if you want.
+
+For that, you will need to set the `SENTRY_AUTH_TOKEN` environment variable which is used by `sentryVitePlugin` to upload source maps. You can get the token from [here](https://sentry.io/settings/account/api/auth-tokens/).
+
+If you do not wish to create a Sentry project just for a local production build, you can remove the `sentryVitePlugin` from `vite.config.ts`.
 
 ```sh
 npm run build
