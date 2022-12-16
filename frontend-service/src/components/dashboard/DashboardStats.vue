@@ -106,22 +106,18 @@ import { DocumentOutline, NotificationsOutline } from "@vicons/ionicons5";
   </div>
   <div class="card col-span-3 row-span-1 shadow-lg compact bg-base-100">
     <div class="flex-col sm:flex-row items-center card-body">
-      <p v-show="!errorMsg">App version and link to changelog</p>
-      <span v-show="errorMsg" class="badge badge-error badge-outline w-full">
-        Error: {{ errorMsg }}
+      <p v-show="errorMsgs">Export Validity.Red calendar .ics file</p>
+      <span
+        v-for:="error in errorMsgs"
+        class="badge badge-error badge-outline w-full"
+      >
+        Error: {{ error }}
       </span>
-    </div>
-  </div>
-  <div
-    v-if="calendarId"
-    class="card col-span-full row-span-1 shadow-lg compact bg-base-100"
-  >
-    <div class="flex-col sm:flex-row items-center card-body">
-      <p v-show="!errorMsgIcs">Export Validity.Red calendar .ics file</p>
-      <span v-show="errorMsgIcs" class="badge badge-error badge-outline w-full">
-        Error: {{ errorMsgIcs }}
-      </span>
-      <button @click.prevent="getIcs" href="#" class="btn btn-primary btn-sm">
+      <button
+        v-show="errorMsgs"
+        @click.prevent="getIcs"
+        class="btn btn-primary btn-sm"
+      >
         Export calendar
       </button>
     </div>
@@ -142,8 +138,7 @@ interface VueData {
   avgNotifications: number;
   calendarId: string | null;
   icsRoute: string;
-  errorMsg: string;
-  errorMsgIcs: string;
+  errorMsgs: string[];
 }
 
 export default defineComponent({
@@ -154,13 +149,12 @@ export default defineComponent({
       avgNotifications: 0,
       calendarId: state.value.user.calendarId,
       icsRoute: "",
-      errorMsg: "",
-      errorMsgIcs: "",
+      errorMsgs: [],
     };
   },
   methods: {
     async refresh() {
-      this.errorMsg = "";
+      this.errorMsgs = [];
       this.icsRoute = new QueryMaker({
         route: `/ics/${this.calendarId}`,
       }).routeUrl;
@@ -171,11 +165,11 @@ export default defineComponent({
 
         this.isDocumentsAvailable = this.stats.totalDocuments > 0;
       } catch (error) {
-        this.errorMsg = await ErrorDecoder.decode(error);
+        this.errorMsgs.push(await ErrorDecoder.decode(error));
       }
     },
     async getIcs() {
-      this.errorMsgIcs = "";
+      this.errorMsgs = [];
       try {
         const data = await DashboardService.getIcsFile(this.calendarId || "");
         // For some reason, the blob storage is not working properly
@@ -193,7 +187,7 @@ export default defineComponent({
         // And there for not trying to open the file in the calendar app. (and may not work on mobile)
         // So to fix this, we need to find a way to use a file server instead or proxy the original request link.
       } catch (error) {
-        this.errorMsgIcs = await ErrorDecoder.decode(error);
+        this.errorMsgs.push(await ErrorDecoder.decode(error));
       }
     },
     copyToClipboard() {

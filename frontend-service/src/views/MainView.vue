@@ -3,6 +3,7 @@ import { RouterLink } from "vue-router";
 import MainPageAppHero from "@/components/layout/MainPageAppHero.vue";
 import FeaturesRow from "@/components/elements/FeaturesRow.vue";
 import LeadingParagraph from "@/components/layout/LeadingParagraph.vue";
+import ContrastButton from "@/components/elements/ContrastButton.vue";
 import {
   LogoGithub,
   FileTrayFullOutline,
@@ -14,6 +15,7 @@ import {
   FingerPrintOutline,
   CodeSlashOutline,
 } from "@vicons/ionicons5";
+import { state } from "@/state";
 </script>
 
 <template>
@@ -37,12 +39,12 @@ import {
         </p>
         <ul class="flex flex-wrap items-center justify-center mb-10">
           <li>
-            <RouterLink
-              to="/register"
-              class="btn border-none md:px-10 bg-base-100 text-primary hover:shadow-lg hover:bg-primary hover:text-base-100 font-medium transition duration-300 ease-in-out"
-            >
-              Register
-            </RouterLink>
+            <ContrastButton
+              v-if="state.user.isAuthenticated"
+              location="/dashboard"
+              name="Dashboard"
+            />
+            <ContrastButton v-else location="/register" name="Register" />
           </li>
           <li>
             <a

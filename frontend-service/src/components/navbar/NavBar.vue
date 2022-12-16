@@ -20,10 +20,17 @@ import { state } from "@/state";
           <MenuOutline class="w-8" />
         </label>
       </div>
-      <a class="btn btn-ghost normal-case text-xl"><LogoText /></a>
+      <RouterLink
+        class="btn btn-ghost normal-case text-xl"
+        :to="state.user.isAuthenticated ? '/dashboard' : '/'"
+      >
+        <LogoText />
+      </RouterLink>
       <ul class="hidden md:flex menu menu-horizontal p-0">
         <NavItem
-          v-for="item in navbarItems"
+          v-for="item in navbarItems.filter((item) => {
+            return state.user.isAuthenticated ? item.name !== 'Home' : true;
+          })"
           v-bind:key="item.name"
           :item="item"
         />
