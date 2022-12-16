@@ -22,8 +22,16 @@ npm install
 
 ### Compile and Hot-Reload for Development
 
+From the service directory, run:
+
 ```sh
 npm run dev
+```
+
+or from the project root, run:
+
+```sh
+make spa_run_dev
 ```
 
 ### Type-Check, Compile and Minify for Production
