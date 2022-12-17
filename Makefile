@@ -78,6 +78,14 @@ build_rust:
 	cd ./calendar-service && cargo build
 	@echo "Done!"
 
+# Download depenedncies for all Go services
+download_go_deps:
+	@echo "Download depenedncies for Go services..."
+	cd ./document-service && go mod download
+	cd ./user-service && go mod download
+	cd ./gateway-service && go mod download
+	@echo "Done!"
+
 ## builds the gateway binary as a linux executable
 build_gateway:
 	@echo "Building broker binary..."
