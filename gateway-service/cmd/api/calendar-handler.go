@@ -172,7 +172,7 @@ func createCalendar(
 	documents []*document.Document,
 	notifications []*document.Notification,
 ) []*calendar.CalendarEntity {
-	var calendarArr = make([]*calendar.CalendarEntity, len(notifications))
+	var calendarArr = []*calendar.CalendarEntity{}
 
 	for _, notification := range notifications {
 		d := findDocumentByID(documents, notification.DocumentID)
