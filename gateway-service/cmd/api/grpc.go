@@ -10,8 +10,12 @@ import (
 	"google.golang.org/grpc/credentials/insecure"
 )
 
+const BackOffDuration = 2 * time.Second
+const BackOffAttempts = 10
+
 func connectToService(name, port string) (*grpc.ClientConn, error) {
 	url := fmt.Sprintf("%s:%s", name, port)
+
 	var counts uint8
 
 	for {
@@ -28,12 +32,13 @@ func connectToService(name, port string) (*grpc.ClientConn, error) {
 			return conn, nil
 		}
 
-		if counts > 10 {
+		if counts > BackOffAttempts {
 			return nil, err
 		}
 
 		log.Printf("Backing off connection to '%s' for two seconds...", name)
-		time.Sleep(2 * time.Second)
+		time.Sleep(BackOffDuration)
+
 		continue
 	}
 }

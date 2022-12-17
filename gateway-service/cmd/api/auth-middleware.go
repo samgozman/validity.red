@@ -6,12 +6,12 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// Middleware that checks if the user is authenticated
-// and passes the UserId to the next handler via context
+// AuthGuard middleware that checks if the user is authenticated
+// and passes the UserId to the next handler via context.
 func (app *Config) AuthGuard() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var (
-			userId string
+			userID string
 			token  string
 		)
 
@@ -22,15 +22,15 @@ func (app *Config) AuthGuard() gin.HandlerFunc {
 			return
 		}
 
-		// Verify token and decode UserId from it
-		userId, err = app.token.Verify(token)
+		// Verify token and decode UserID from it
+		userID, err = app.token.Verify(token)
 		if err != nil {
 			c.AbortWithStatus(http.StatusUnauthorized)
 			return
 		}
 
 		// Add decoded user id for the context
-		c.Set("UserId", userId)
+		c.Set("UserId", userID)
 		c.Set("Token", token)
 
 		c.Next()

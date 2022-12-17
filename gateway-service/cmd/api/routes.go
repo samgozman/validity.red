@@ -12,6 +12,8 @@ import (
 )
 
 func (app *Config) routes() *gin.Engine {
+	const requestMaxAge = 300
+
 	engine := gin.Default()
 
 	engine.Use(cors.New(cors.Config{
@@ -20,7 +22,7 @@ func (app *Config) routes() *gin.Engine {
 		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"},
 		AllowHeaders:     []string{"Authorization", "Content-Type", "sentry-trace", "baggage"},
 		AllowCredentials: true,
-		MaxAge:           300,
+		MaxAge:           requestMaxAge,
 		AllowWildcard:    true,
 	}))
 

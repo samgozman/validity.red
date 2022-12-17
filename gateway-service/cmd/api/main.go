@@ -60,6 +60,7 @@ func main() {
 	if err != nil {
 		log.Fatalf("sentry.Init: %s", err)
 	}
+
 	defer sentry.Flush(2 * time.Second)
 
 	// USERS CLIENT SECTION - START //
@@ -138,6 +139,7 @@ func main() {
 
 	router := app.routes()
 	err = router.Run(fmt.Sprintf(":%s", os.Getenv("GATEWAY_PORT")))
+
 	if err != nil {
 		log.Panic(err)
 	}

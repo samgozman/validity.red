@@ -27,10 +27,12 @@ func (app *Config) ErrorHandler() gin.HandlerFunc {
 				if !errors.Is(unwrappedErr, errType) {
 					continue
 				}
+
 				c.AbortWithStatusJSON(ErrorStatus[errType], gin.H{
 					"error":   true,
 					"message": errType.Error(),
 				})
+
 				return
 			}
 
@@ -43,10 +45,12 @@ func (app *Config) ErrorHandler() gin.HandlerFunc {
 						hub.CaptureException(unwrappedErr)
 					})
 				}
+
 				c.AbortWithStatusJSON(status, gin.H{
 					"error":   true,
 					"message": st.Message(),
 				})
+
 				return
 			}
 		}
@@ -58,6 +62,7 @@ func (app *Config) ErrorHandler() gin.HandlerFunc {
 				hub.CaptureException(c.Errors[0].Err)
 			})
 		}
+
 		c.AbortWithStatus(http.StatusInternalServerError)
 	}
 }

@@ -4,6 +4,7 @@ package mailersend
 import (
 	"context"
 	"fmt"
+	"net/http"
 	"strings"
 	"time"
 
@@ -11,7 +12,7 @@ import (
 	ms "github.com/mailersend/mailersend-go"
 )
 
-// MailerSend integration
+// MailerSend integration.
 type MailerSend struct {
 	APIKey string
 }
@@ -21,10 +22,12 @@ type MailerSend struct {
 //
 // TokenURL should be a full URL, e.g. https://validity.red/verify?token=123
 func (m *MailerSend) SendEmailVerification(email, tokenURL string) error {
-	client := ms.NewMailersend(m.APIKey)
+	const requestTimeout = 5 * time.Second
 
+	client := ms.NewMailersend(m.APIKey)
 	ctx := context.Background()
-	ctx, cancel := context.WithTimeout(ctx, 5*time.Second)
+
+	ctx, cancel := context.WithTimeout(ctx, requestTimeout)
 	defer cancel()
 
 	subject := "Confirm your email | Validity.Red"
@@ -62,13 +65,16 @@ func (m *MailerSend) SendEmailVerification(email, tokenURL string) error {
 
 	res, err := client.Email.Send(ctx, message)
 	if err != nil {
-		ef := fmt.Errorf("error sending email to '%s': %s", email, err)
+		ef := fmt.Errorf("error sending email to '%s': %w", email, err)
 		sentry.CaptureException(ef)
+
 		return ef
 	}
-	if res.StatusCode != 202 {
-		ef := fmt.Errorf("error sending email to '%s': %s", email, err)
+
+	if res.StatusCode != http.StatusAccepted {
+		ef := fmt.Errorf("error sending email to '%s': %w", email, err)
 		sentry.CaptureException(ef)
+
 		return ef
 	}
 

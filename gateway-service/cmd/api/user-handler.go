@@ -28,9 +28,10 @@ type emailVerificationPayload struct {
 	Token string `json:"token" uri:"token" binding:"required,jwt"`
 }
 
-// Call Register method on `user-service`
+// Call Register method on `user-service`.
 func (app *Config) userRegister(c *gin.Context) {
 	c.Writer.Header().Set("Content-Type", "application/json")
+
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
 
@@ -43,7 +44,9 @@ func (app *Config) userRegister(c *gin.Context) {
 	hr := app.hcaptcha.VerifyToken(requestPayload.HCaptchaResponse)
 	if !hr.Success {
 		sentry.CaptureException(fmt.Errorf("hCaptcha errors: %s", hr.ErrorCodes))
+
 		_ = c.Error(ErrInvalidCaptcha)
+
 		return
 	}
 
@@ -58,6 +61,7 @@ func (app *Config) userRegister(c *gin.Context) {
 	if err != nil {
 		log.Println("Error on calling user-service::Register method:", err)
 		_ = c.Error(err)
+
 		return
 	}
 
@@ -66,6 +70,7 @@ func (app *Config) userRegister(c *gin.Context) {
 	if err != nil {
 		log.Println("Error on calling user-service::Register::Generate token method:", err)
 		_ = c.Error(err)
+
 		return
 	}
 	// Save verification token to Redis with 24h TTL
@@ -78,17 +83,19 @@ func (app *Config) userRegister(c *gin.Context) {
 	if app.options.Environment == "production" {
 		verificationLink := app.options.AppURL + "/verify?token=" + verificationToken
 		err := app.mailer.SendEmailVerification(requestPayload.Email, verificationLink)
+
 		if err != nil {
-			sentry.CaptureException(fmt.Errorf("SendEmailVerification error: %s", err))
+			sentry.CaptureException(fmt.Errorf("SendEmailVerification error: %w", err))
 		}
 	}
 
 	c.Status(http.StatusCreated)
 }
 
-// Call Login method on `user-service`
+// Call Login method on `user-service`.
 func (app *Config) userLogin(c *gin.Context) {
 	c.Writer.Header().Set("Content-Type", "application/json")
+
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
 
@@ -108,6 +115,7 @@ func (app *Config) userLogin(c *gin.Context) {
 	if err != nil {
 		log.Println("Error on calling user-service::Login method:", err)
 		_ = c.Error(err)
+
 		return
 	}
 
@@ -122,6 +130,7 @@ func (app *Config) userLogin(c *gin.Context) {
 	if err != nil {
 		log.Println("Error on calling gateway-service::token::Generate method:", err)
 		_ = c.Error(err)
+
 		return
 	}
 
@@ -129,15 +138,15 @@ func (app *Config) userLogin(c *gin.Context) {
 	c.SetSameSite(http.SameSiteLaxMode)
 	c.SetCookie("token", token, app.options.JWTAuthTTL, "/", "", false, false)
 	c.JSON(http.StatusAccepted, struct {
-		CalendarId string `json:"calendarId"`
+		CalendarID string `json:"calendarId"`
 		Timezone   string `json:"timezone"`
 	}{
-		CalendarId: res.CalendarId,
+		CalendarID: res.CalendarId,
 		Timezone:   res.Timezone,
 	})
 }
 
-// Refresh current user JWT token
+// Refresh current user JWT token.
 func (app *Config) userRefreshToken(c *gin.Context) {
 	// get token from context
 	tk, _ := c.Get("Token")
@@ -146,7 +155,9 @@ func (app *Config) userRefreshToken(c *gin.Context) {
 	token, err := app.token.Refresh(tk.(string), app.options.JWTAuthTTL)
 	if err != nil {
 		log.Println("Error on calling gateway-service::token::Refresh method:", err)
+
 		_ = c.Error(ErrUnauthorized)
+
 		return
 	}
 
@@ -155,9 +166,10 @@ func (app *Config) userRefreshToken(c *gin.Context) {
 	c.Status(http.StatusAccepted)
 }
 
-// Verify user email by sended token
+// Verify user email by sended token.
 func (app *Config) userVerifyEmail(c *gin.Context) {
 	c.Writer.Header().Set("Content-Type", "application/json")
+
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
 
@@ -200,6 +212,7 @@ func (app *Config) userVerifyEmail(c *gin.Context) {
 	if err != nil {
 		log.Println("Error on calling user-service::SetIsVerified method:", err)
 		_ = c.Error(err)
+
 		return
 	}
 

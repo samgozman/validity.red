@@ -15,29 +15,33 @@ import (
 	"github.com/samgozman/validity.red/broker/proto/user"
 )
 
-// TODO: add pagination by month
+// TODO: add pagination by month.
 func (app *Config) getCalendar(c *gin.Context) {
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	const requestTimeout = 5 * time.Second
+
+	ctx, cancel := context.WithTimeout(context.Background(), requestTimeout)
 	defer cancel()
 
-	// get userId from context
-	userId, _ := c.Get("UserId")
+	// get userID from context
+	userID, _ := c.Get("UserId")
 
 	documents, err := app.documentsClient.documentService.GetAll(ctx, &document.DocumentsRequest{
-		UserID: userId.(string),
+		UserID: userID.(string),
 	})
 	if err != nil {
 		log.Println("Error on calling GetAll method for getCalendar:", err)
 		_ = c.Error(err)
+
 		return
 	}
 
 	notifications, err := app.documentsClient.notificationService.GetAllForUser(ctx, &document.NotificationsAllRequest{
-		UserID: userId.(string),
+		UserID: userID.(string),
 	})
 	if err != nil {
 		log.Println("Error on calling Notification.GetAllForUser method for getCalendar:", err)
 		_ = c.Error(err)
+
 		return
 	}
 
@@ -68,6 +72,7 @@ func (app *Config) getCalendarIcs(c *gin.Context) {
 	if err != nil {
 		log.Println("Error on calling UserService.GetCalendarIv method for getCalendarIcs:", err)
 		_ = c.Error(err)
+
 		return
 	}
 
@@ -78,6 +83,7 @@ func (app *Config) getCalendarIcs(c *gin.Context) {
 	if err != nil {
 		log.Println("Error on calling GetCalendar method for getCalendarIcs:", err)
 		_ = c.Error(err)
+
 		return
 	}
 
@@ -87,16 +93,20 @@ func (app *Config) getCalendarIcs(c *gin.Context) {
 	c.Data(http.StatusOK, "text/calendar", calendarIcs.Calendar)
 }
 
-// Creates users full calendar and saves it to the file system
-func (app *Config) updateIcsCalendar(userId string) {
-	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+// Creates users full calendar and saves it to the file system.
+func (app *Config) updateIcsCalendar(userID string) {
+	const requestTimeout = 3 * time.Second
+
+	const calendarIVLength = 12
+
+	ctx, cancel := context.WithTimeout(context.Background(), requestTimeout)
 	defer cancel()
 
 	// TODO: Send all errors from this route to Sentry
 
 	// 1. get user's calendar id
-	calendarIdResp, err := app.usersClient.userService.GetCalendarOptions(ctx, &user.GetCalendarIdRequest{
-		UserId: userId,
+	calendarIDResp, err := app.usersClient.userService.GetCalendarOptions(ctx, &user.GetCalendarIdRequest{
+		UserId: userID,
 	})
 	if err != nil {
 		log.Println("Error on calling UserService.GetCalendarOptions:", err)
@@ -105,7 +115,7 @@ func (app *Config) updateIcsCalendar(userId string) {
 
 	// 2. get documents
 	documents, err := app.documentsClient.documentService.GetAll(ctx, &document.DocumentsRequest{
-		UserID: userId,
+		UserID: userID,
 	})
 	if err != nil {
 		log.Println("Error on calling GetAll method:", err)
@@ -114,7 +124,7 @@ func (app *Config) updateIcsCalendar(userId string) {
 
 	// 3. get notifications
 	notifications, err := app.documentsClient.notificationService.GetAllForUser(ctx, &document.NotificationsAllRequest{
-		UserID: userId,
+		UserID: userID,
 	})
 	if err != nil {
 		log.Println("Error on calling Notification.GetAllForUser:", err)
@@ -125,7 +135,8 @@ func (app *Config) updateIcsCalendar(userId string) {
 	calendarArr := createCalendar(documents.Documents, notifications.Notifications)
 
 	// Create new IV
-	ivCalendar := make([]byte, 12)
+	ivCalendar := make([]byte, calendarIVLength)
+
 	_, err = rand.Read(ivCalendar)
 	if err != nil {
 		log.Println("Error on generating IV:", err)
@@ -134,10 +145,10 @@ func (app *Config) updateIcsCalendar(userId string) {
 
 	// Call rust service to create ics
 	_, err = app.calendarsClient.calendarService.CreateCalendar(ctx, &calendar.CreateCalendarRequest{
-		CalendarID:       calendarIdResp.CalendarId,
+		CalendarID:       calendarIDResp.CalendarId,
 		CalendarIV:       ivCalendar,
 		CalendarEntities: calendarArr,
-		Timezone:         calendarIdResp.Timezone,
+		Timezone:         calendarIDResp.Timezone,
 	})
 	if err != nil {
 		log.Println("Error on calling CalendarService.CreateCalendar:", err)
@@ -146,7 +157,7 @@ func (app *Config) updateIcsCalendar(userId string) {
 
 	// Update user's IV
 	_, err = app.usersClient.userService.SetCalendarIv(ctx, &user.SetCalendarIvRequest{
-		UserId:     userId,
+		UserId:     userID,
 		CalendarIv: ivCalendar,
 	})
 	if err != nil {
@@ -156,15 +167,16 @@ func (app *Config) updateIcsCalendar(userId string) {
 }
 
 // Combine array of documents with array of notifications
-// into array of CalendarEntity
+// into array of CalendarEntity.
 func createCalendar(
 	documents []*document.Document,
 	notifications []*document.Notification,
 ) []*calendar.CalendarEntity {
-	var calendarArr []*calendar.CalendarEntity
+	var calendarArr = make([]*calendar.CalendarEntity, len(notifications))
 
 	for _, notification := range notifications {
 		d := findDocumentByID(documents, notification.DocumentID)
+
 		calendarArr = append(calendarArr, &calendar.CalendarEntity{
 			DocumentID:       d.ID,
 			NotificationID:   notification.ID,
@@ -177,7 +189,7 @@ func createCalendar(
 	return calendarArr
 }
 
-// Find document by ID in array of documents
+// Find document by ID in array of documents.
 func findDocumentByID(documents []*document.Document, id string) *document.Document {
 	for _, document := range documents {
 		if document.ID == id {

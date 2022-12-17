@@ -21,7 +21,7 @@ var ErrorsArr = []error{
 	ErrEmailNotVerified,
 }
 
-// Map error types to HTTP status codes
+// ErrorStatus map error types to HTTP status codes.
 var ErrorStatus = map[error]int{
 	ErrUnauthorized:     http.StatusUnauthorized,
 	ErrInvalidInputs:    http.StatusBadRequest,
@@ -29,7 +29,7 @@ var ErrorStatus = map[error]int{
 	ErrEmailNotVerified: http.StatusUnauthorized,
 }
 
-// Map gRPC codes to HTTP status codes.
+// RPCStatus maps gRPC codes to HTTP status codes.
 var RPCStatus = map[codes.Code]int{
 	codes.OK:                 http.StatusOK,
 	codes.Canceled:           http.StatusConflict, // ?

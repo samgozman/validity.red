@@ -23,7 +23,7 @@ type JWTClaims struct {
 
 // Generate - generates a JWT token for the user.
 //
-// maxAge - JWT token max age (in seconds)
+// maxAge - JWT token max age (in seconds).
 func (j *TokenMaker) Generate(userID string, maxAge int) (t string, err error) {
 	expirationTime := time.Now().Add(time.Duration(maxAge) * time.Second).Unix()
 
@@ -43,8 +43,8 @@ func (j *TokenMaker) Generate(userID string, maxAge int) (t string, err error) {
 	return tokenString, nil
 }
 
-// Verifies a JWT token and returns decoded UserId
-func (j *TokenMaker) Verify(tokenString string) (userId string, e error) {
+// Verifies a JWT token and returns decoded UserID.
+func (j *TokenMaker) Verify(tokenString string) (userID string, e error) {
 	claims, err := j.parse(tokenString)
 	if err != nil {
 		return "", err
@@ -55,7 +55,7 @@ func (j *TokenMaker) Verify(tokenString string) (userId string, e error) {
 
 // Refresh - generates new JWT token for the user.
 //
-// maxAge - JWT token max age (in seconds)
+// maxAge - JWT token max age (in seconds).
 func (j *TokenMaker) Refresh(tokenString string, maxAge int) (t string, err error) {
 	claims, err := j.parse(tokenString)
 	if err != nil {
@@ -69,7 +69,7 @@ func (j *TokenMaker) Refresh(tokenString string, maxAge int) (t string, err erro
 	return j.Generate(claims.UserID, maxAge)
 }
 
-// Parse token string and return decoded JWTClaims
+// Parse token string and return decoded JWTClaims.
 func (j *TokenMaker) parse(tokenString string) (*JWTClaims, error) {
 	claims := &JWTClaims{}
 
@@ -78,6 +78,7 @@ func (j *TokenMaker) parse(tokenString string) (*JWTClaims, error) {
 		if !ok {
 			return nil, ErrInvalidToken
 		}
+
 		return j.Key, nil
 	}
 

@@ -42,9 +42,9 @@ func ConvertDocumentsToJSON(ds []*document.Document) []*document.DocumentJSON {
 }
 
 func ConvertCalendarToJSON(cl []*calendar.CalendarEntity) []*calendar.CalendarEntityJSON {
-	var calendarJson = []*calendar.CalendarEntityJSON{}
+	var calendarJSON = []*calendar.CalendarEntityJSON{}
 	for _, n := range cl {
-		calendarJson = append(calendarJson, &calendar.CalendarEntityJSON{
+		calendarJSON = append(calendarJSON, &calendar.CalendarEntityJSON{
 			DocumentID:       n.DocumentID,
 			DocumentTitle:    n.DocumentTitle,
 			NotificationDate: ParseProtobufDateToString(n.NotificationDate),
@@ -52,5 +52,5 @@ func ConvertCalendarToJSON(cl []*calendar.CalendarEntity) []*calendar.CalendarEn
 		})
 	}
 
-	return calendarJson
+	return calendarJSON
 }

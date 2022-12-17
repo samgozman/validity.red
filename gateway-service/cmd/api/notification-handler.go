@@ -18,27 +18,28 @@ type notificationPayload struct {
 
 type notificationModifyPayload struct {
 	ID         string `uri:"id" binding:"required,uuid"`
-	DocumentId string `uri:"documentId" binding:"required,uuid"`
+	DocumentID string `uri:"documentId" binding:"required,uuid"`
 }
 
-// Call Create method on Notification in `document-service`
+// Call Create method on Notification in `document-service`.
 func (app *Config) documentNotificationCreate(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
 
 	uri := struct {
-		DocumentId string `uri:"documentId" binding:"required,uuid"`
+		DocumentID string `uri:"documentId" binding:"required,uuid"`
 	}{}
 
-	// get userId from context
-	userId, _ := c.Get("UserId")
+	// get userID from context
+	userID, _ := c.Get("UserId")
 	// Validate inputs
 	if err := c.BindUri(&uri); err != nil {
 		_ = c.Error(ErrInvalidInputs)
 		return
 	}
-	notificationPayload := notificationPayload{}
-	if err := c.BindJSON(&notificationPayload); err != nil {
+
+	payload := notificationPayload{}
+	if err := c.BindJSON(&payload); err != nil {
 		_ = c.Error(ErrInvalidInputs)
 		return
 	}
@@ -46,30 +47,32 @@ func (app *Config) documentNotificationCreate(c *gin.Context) {
 	// call service
 	_, err := app.documentsClient.notificationService.Create(ctx, &document.NotificationCreateRequest{
 		NotificationEntry: &document.Notification{
-			DocumentID: uri.DocumentId,
-			Date:       timestamppb.New(notificationPayload.Date),
+			DocumentID: uri.DocumentID,
+			Date:       timestamppb.New(payload.Date),
 		},
-		UserID: userId.(string),
+		UserID: userID.(string),
 	})
 	if err != nil {
 		log.Println("Error on calling document-service::notification::Create method:", err)
 		_ = c.Error(err)
+
 		return
 	}
 
-	go app.updateIcsCalendar(userId.(string))
+	go app.updateIcsCalendar(userID.(string))
 	c.Status(http.StatusCreated)
 }
 
-// Call Delete method on Notification in `document-service`
+// Call Delete method on Notification in `document-service`.
 func (app *Config) documentNotificationDelete(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
 
 	uri := notificationModifyPayload{}
 
-	// get userId from context
-	userId, _ := c.Get("UserId")
+	// get userID from context
+	userID, _ := c.Get("UserId")
+
 	// Validate inputs
 	if err := c.BindUri(&uri); err != nil {
 		_ = c.Error(ErrInvalidInputs)
@@ -80,31 +83,33 @@ func (app *Config) documentNotificationDelete(c *gin.Context) {
 	_, err := app.documentsClient.notificationService.Delete(ctx, &document.NotificationCreateRequest{
 		NotificationEntry: &document.Notification{
 			ID:         uri.ID,
-			DocumentID: uri.DocumentId,
+			DocumentID: uri.DocumentID,
 		},
-		UserID: userId.(string),
+		UserID: userID.(string),
 	})
 	if err != nil {
 		log.Println("Error on calling document-service::notification::Delete method:", err)
 		_ = c.Error(err)
+
 		return
 	}
 
-	go app.updateIcsCalendar(userId.(string))
+	go app.updateIcsCalendar(userID.(string))
 	c.Status(http.StatusOK)
 }
 
-// Call GetAll method on Notification in `document-service`
+// Call GetAll method on Notification in `document-service`.
 func (app *Config) documentNotificationGetAll(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
 
 	uri := struct {
-		DocumentId string `uri:"documentId" binding:"required,uuid"`
+		DocumentID string `uri:"documentId" binding:"required,uuid"`
 	}{}
 
-	// get userId from context
-	userId, _ := c.Get("UserId")
+	// get userID from context
+	userID, _ := c.Get("UserId")
+
 	// Validate inputs
 	if err := c.BindUri(&uri); err != nil {
 		_ = c.Error(ErrInvalidInputs)
@@ -113,12 +118,13 @@ func (app *Config) documentNotificationGetAll(c *gin.Context) {
 
 	// call service
 	res, err := app.documentsClient.notificationService.GetAll(ctx, &document.NotificationsRequest{
-		DocumentID: uri.DocumentId,
-		UserID:     userId.(string),
+		DocumentID: uri.DocumentID,
+		UserID:     userID.(string),
 	})
 	if err != nil {
 		log.Println("Error on calling document-service::notification::GetAll method:", err)
 		_ = c.Error(err)
+
 		return
 	}
 

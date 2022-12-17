@@ -29,13 +29,13 @@ type documentEdit struct {
 	ExpiresAt   time.Time `json:"expiresAt" binding:"required"`
 }
 
-// Call Create method on `document-service`
+// Call Create method on `document-service`.
 func (app *Config) documentCreate(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
 
-	// get userId from context
-	userId, _ := c.Get("UserId")
+	// get userID from context
+	userID, _ := c.Get("UserId")
 
 	documentPayload := documentCreate{}
 	if err := c.BindJSON(&documentPayload); err != nil {
@@ -46,7 +46,7 @@ func (app *Config) documentCreate(c *gin.Context) {
 	// call service
 	res, err := app.documentsClient.documentService.Create(ctx, &document.DocumentCreateRequest{
 		DocumentEntry: &document.Document{
-			UserID:      userId.(string),
+			UserID:      userID.(string),
 			Title:       documentPayload.Title,
 			Type:        document.Type(documentPayload.Type),
 			Description: documentPayload.Description,
@@ -56,23 +56,24 @@ func (app *Config) documentCreate(c *gin.Context) {
 	if err != nil {
 		log.Println("Error on calling document-service::Create method:", err)
 		_ = c.Error(err)
+
 		return
 	}
 
 	c.JSON(http.StatusCreated, struct {
-		DocumentId string `json:"documentId"`
+		DocumentID string `json:"documentId"`
 	}{
-		DocumentId: res.DocumentId,
+		DocumentID: res.DocumentId,
 	})
 }
 
-// Call Edit method on `document-service`
+// Call Edit method on `document-service`.
 func (app *Config) documentEdit(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
 
-	// get userId from context
-	userId, _ := c.Get("UserId")
+	// get userID from context
+	userID, _ := c.Get("UserId")
 
 	documentPayload := documentEdit{}
 	if err := c.BindJSON(&documentPayload); err != nil {
@@ -84,7 +85,7 @@ func (app *Config) documentEdit(c *gin.Context) {
 	_, err := app.documentsClient.documentService.Edit(ctx, &document.DocumentCreateRequest{
 		DocumentEntry: &document.Document{
 			ID:          documentPayload.ID,
-			UserID:      userId.(string),
+			UserID:      userID.(string),
 			Title:       documentPayload.Title,
 			Type:        document.Type(documentPayload.Type),
 			Description: documentPayload.Description,
@@ -94,23 +95,25 @@ func (app *Config) documentEdit(c *gin.Context) {
 	if err != nil {
 		log.Println("Error on calling document-service::Edit method:", err)
 		_ = c.Error(err)
+
 		return
 	}
 
-	go app.updateIcsCalendar(userId.(string))
+	go app.updateIcsCalendar(userID.(string))
 	c.Status(http.StatusCreated)
 }
 
-// Call Delete method on `document-service`
+// Call Delete method on `document-service`.
 func (app *Config) documentDelete(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
 
-	// get userId from context
-	userId, _ := c.Get("UserId")
+	// get userID from context
+	userID, _ := c.Get("UserId")
 	uri := struct {
-		DocumentId string `uri:"documentId" binding:"required,uuid"`
+		DocumentID string `uri:"documentId" binding:"required,uuid"`
 	}{}
+
 	if err := c.BindUri(&uri); err != nil {
 		_ = c.Error(ErrInvalidInputs)
 		return
@@ -118,29 +121,31 @@ func (app *Config) documentDelete(c *gin.Context) {
 
 	// call service
 	_, err := app.documentsClient.documentService.Delete(ctx, &document.DocumentRequest{
-		DocumentID: uri.DocumentId,
-		UserID:     userId.(string),
+		DocumentID: uri.DocumentID,
+		UserID:     userID.(string),
 	})
 	if err != nil {
 		log.Println("Error on calling document-service::Delete method:", err)
 		_ = c.Error(err)
+
 		return
 	}
 
-	go app.updateIcsCalendar(userId.(string))
+	go app.updateIcsCalendar(userID.(string))
 	c.Status(http.StatusOK)
 }
 
-// Call GetOne method on `document-service`
+// Call GetOne method on `document-service`.
 func (app *Config) documentGetOne(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
 
-	// get userId from context
-	userId, _ := c.Get("UserId")
+	// get userID from context
+	userID, _ := c.Get("UserId")
 	uri := struct {
-		DocumentId string `uri:"documentId" binding:"required,uuid"`
+		DocumentID string `uri:"documentId" binding:"required,uuid"`
 	}{}
+
 	if err := c.BindUri(&uri); err != nil {
 		_ = c.Error(ErrInvalidInputs)
 		return
@@ -148,12 +153,13 @@ func (app *Config) documentGetOne(c *gin.Context) {
 
 	// call service
 	res, err := app.documentsClient.documentService.GetOne(ctx, &document.DocumentRequest{
-		DocumentID: uri.DocumentId,
-		UserID:     userId.(string),
+		DocumentID: uri.DocumentID,
+		UserID:     userID.(string),
 	})
 	if err != nil {
 		log.Println("Error on calling document-service::GetOne method:", err)
 		_ = c.Error(err)
+
 		return
 	}
 
@@ -171,21 +177,22 @@ func (app *Config) documentGetOne(c *gin.Context) {
 	})
 }
 
-// Call GetAll method on `document-service`
+// Call GetAll method on `document-service`.
 func (app *Config) documentGetAll(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
 
-	// get userId from context
-	userId, _ := c.Get("UserId")
+	// get userID from context
+	userID, _ := c.Get("UserId")
 
 	// call service
 	res, err := app.documentsClient.documentService.GetAll(ctx, &document.DocumentsRequest{
-		UserID: userId.(string),
+		UserID: userID.(string),
 	})
 	if err != nil {
 		log.Println("Error on calling document-service::GetAll method:", err)
 		_ = c.Error(err)
+
 		return
 	}
 
@@ -196,13 +203,13 @@ func (app *Config) documentGetAll(c *gin.Context) {
 	})
 }
 
-// TODO: Cache this route
+// TODO: Cache this route.
 func (app *Config) documentGetStatistics(c *gin.Context) {
-	ctx, cancel := context.WithTimeout(context.Background(), 2*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
 
-	// get userId from context
-	userId, _ := c.Get("UserId")
+	// get userID from context
+	userID, _ := c.Get("UserId")
 
 	var statistics struct {
 		TotalDocuments     int64                          `json:"totalDocuments"`
@@ -213,11 +220,12 @@ func (app *Config) documentGetStatistics(c *gin.Context) {
 
 	// call services
 	getStats, err := app.documentsClient.documentService.GetUserStatistics(ctx, &document.DocumentsRequest{
-		UserID: userId.(string),
+		UserID: userID.(string),
 	})
 	if err != nil {
 		log.Println("Error on calling document-service::GetUserStatistics method:", err)
 		_ = c.Error(err)
+
 		return
 	}
 
@@ -230,14 +238,16 @@ func (app *Config) documentGetStatistics(c *gin.Context) {
 	totalNotificationsCount, err := app.documentsClient.notificationService.CountAll(
 		ctx,
 		&document.NotificationsAllRequest{
-			UserID: userId.(string),
+			UserID: userID.(string),
 		},
 	)
 	if err != nil {
 		log.Println("Error on calling document-service::notification::CountAll method:", err)
 		_ = c.Error(err)
+
 		return
 	}
+
 	statistics.TotalNotifications = totalNotificationsCount.Count
 
 	c.JSON(http.StatusOK, statistics)
