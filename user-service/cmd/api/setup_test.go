@@ -12,5 +12,6 @@ var testApp Config
 func TestMain(m *testing.M) {
 	repo := mocks.NewPostgresTestRepository(nil)
 	testApp.Repo = repo
+
 	os.Exit(m.Run())
 }

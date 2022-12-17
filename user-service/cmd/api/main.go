@@ -24,6 +24,7 @@ func main() {
 	if err != nil {
 		log.Fatalf("sentry.Init: %s", err)
 	}
+
 	defer sentry.Flush(2 * time.Second)
 
 	// Connect to SQL server
@@ -49,6 +50,7 @@ func main() {
 
 func connectToDB() *gorm.DB {
 	var counts uint8
+
 	for {
 		connection, err := gorm.Open(postgres.New(postgres.Config{
 			DSN: getPostgresDSN(),
@@ -68,6 +70,7 @@ func connectToDB() *gorm.DB {
 
 		log.Println("Backing off for three seconds...")
 		time.Sleep(3 * time.Second)
+
 		continue
 	}
 }

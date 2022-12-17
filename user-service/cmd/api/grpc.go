@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"log"
 	"net"
@@ -12,7 +13,6 @@ import (
 	"github.com/samgozman/validity.red/user/internal/models/user"
 	proto "github.com/samgozman/validity.red/user/proto"
 	"golang.org/x/crypto/bcrypt"
-
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -31,10 +31,10 @@ type UserServer struct {
 	proto.UnimplementedUserServiceServer
 }
 
-var gRpcPort = os.Getenv("GRPC_PORT")
+var gRPCPort = os.Getenv("GRPC_PORT")
 
 func (app *Config) gRPCListen() {
-	lis, err := net.Listen("tcp", fmt.Sprintf(":%s", gRpcPort))
+	lis, err := net.Listen("tcp", fmt.Sprintf(":%s", gRPCPort))
 	if err != nil {
 		sentry.CaptureException(err)
 		log.Fatalf("failed to listen for gRPC: %v", err)
@@ -49,7 +49,7 @@ func (app *Config) gRPCListen() {
 		App: app,
 	})
 
-	log.Printf("GRPC server listening on port %s", gRpcPort)
+	log.Printf("GRPC server listening on port %s", gRPCPort)
 
 	if err := s.Serve(lis); err != nil {
 		sentry.CaptureException(err)
@@ -57,7 +57,7 @@ func (app *Config) gRPCListen() {
 	}
 }
 
-// Register - creates a new user and returns it's entity
+// Register - creates a new user and returns it's entity.
 func (us *UserServer) Register(ctx context.Context, req *proto.RegisterRequest) (*proto.RegisterResponse, error) {
 	input := req.GetRegisterEntry()
 
@@ -67,6 +67,7 @@ func (us *UserServer) Register(ctx context.Context, req *proto.RegisterRequest) 
 		Password: input.Password,
 		Timezone: input.Timezone,
 	}
+
 	err := us.App.Repo.InsertOne(ctx, &userPayload)
 	if err != nil {
 		return nil, err
@@ -78,7 +79,7 @@ func (us *UserServer) Register(ctx context.Context, req *proto.RegisterRequest) 
 	}, nil
 }
 
-// Login - verifies user credentials and returns it's entity
+// Login - verifies user credentials and returns it's entity.
 func (as *AuthServer) Login(ctx context.Context, req *proto.AuthRequest) (*proto.AuthResponse, error) {
 	input := req.GetAuthEntry()
 
@@ -90,7 +91,7 @@ func (as *AuthServer) Login(ctx context.Context, req *proto.AuthRequest) (*proto
 
 	// verify password
 	err = user.VerifyPassword(u.Password, input.Password)
-	if err != nil && err == bcrypt.ErrMismatchedHashAndPassword {
+	if err != nil && errors.Is(err, bcrypt.ErrMismatchedHashAndPassword) {
 		return nil, status.Error(codes.Unauthenticated, "authentication failed")
 	}
 
@@ -102,26 +103,29 @@ func (as *AuthServer) Login(ctx context.Context, req *proto.AuthRequest) (*proto
 		Timezone:   u.Timezone,
 		IsVerified: u.IsVerified,
 	}
+
 	return res, nil
 }
 
-// GetCalendarOptions gets the calendar field for the user with the given id
+// GetCalendarOptions gets the calendar field for the user with the given id.
 func (us *UserServer) GetCalendarOptions(ctx context.Context, req *proto.GetCalendarIdRequest) (*proto.GetCalendarIdResponse, error) {
-	userId, _ := uuid.Parse(req.UserId)
-	u, err := us.App.Repo.FindOne(ctx, &user.User{ID: userId}, "calendar_id, iv_calendar, timezone")
+	userID, _ := uuid.Parse(req.UserId)
+
+	u, err := us.App.Repo.FindOne(ctx, &user.User{ID: userID}, "calendar_id, iv_calendar, timezone")
 	if err != nil {
 		return nil, err
 	}
 
 	res := &proto.GetCalendarIdResponse{
 		CalendarId: u.CalendarID,
-		CalendarIv: u.IV_Calendar,
+		CalendarIv: u.IVCalendar,
 		Timezone:   u.Timezone,
 	}
+
 	return res, nil
 }
 
-// GetCalendarIv gets the iv_calendar field for the user with the given id
+// GetCalendarIv gets the iv_calendar field for the user with the given id.
 func (us *UserServer) GetCalendarIv(ctx context.Context, req *proto.GetCalendarIvRequest) (*proto.GetCalendarIvResponse, error) {
 	u, err := us.App.Repo.FindOne(ctx, &user.User{CalendarID: req.CalendarId}, "iv_calendar")
 	if err != nil {
@@ -129,12 +133,13 @@ func (us *UserServer) GetCalendarIv(ctx context.Context, req *proto.GetCalendarI
 	}
 
 	res := &proto.GetCalendarIvResponse{
-		CalendarIv: u.IV_Calendar,
+		CalendarIv: u.IVCalendar,
 	}
+
 	return res, nil
 }
 
-// SetCalendarIv sets the iv_calendar field for the user with the given id
+// SetCalendarIv sets the iv_calendar field for the user with the given id.
 func (us *UserServer) SetCalendarIv(ctx context.Context, req *proto.SetCalendarIvRequest) (*emptypb.Empty, error) {
 	err := us.App.Repo.Update(ctx, req.UserId, map[string]interface{}{
 		"iv_calendar": req.CalendarIv,
@@ -146,7 +151,7 @@ func (us *UserServer) SetCalendarIv(ctx context.Context, req *proto.SetCalendarI
 	return &emptypb.Empty{}, nil
 }
 
-// SetIsVerified sets the is_verified field to true for the user with the given id
+// SetIsVerified sets the is_verified field to true for the user with the given id.
 func (us *UserServer) SetIsVerified(ctx context.Context, req *proto.SetIsVerifiedRequest) (*emptypb.Empty, error) {
 	err := us.App.Repo.Update(ctx, req.UserId, map[string]interface{}{
 		"is_verified": req.IsVerified,

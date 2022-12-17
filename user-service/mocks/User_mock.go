@@ -19,29 +19,29 @@ func NewPostgresTestRepository(db *gorm.DB) *PostgresTestRepository {
 	}
 }
 
-// Insert one User object into database
 func (u *PostgresTestRepository) InsertOne(ctx context.Context, user *user.User) error {
 	user.ID, _ = uuid.Parse("434377cf-7509-4cc0-9895-0afa683f0e56")
 	return nil
 }
 
 func (u *PostgresTestRepository) FindOne(ctx context.Context, query *user.User, fields string) (*user.User, error) {
-	userId, _ := uuid.Parse("434377cf-7509-4cc0-9895-0afa683f0e56")
+	userID, _ := uuid.Parse("434377cf-7509-4cc0-9895-0afa683f0e56")
+
 	user := &user.User{
-		ID:          userId,
-		Email:       "me@example.com",
-		Password:    "",
-		IsVerified:  true,
-		CalendarID:  "8gipfmoqt8mtucep",
-		IV_Calendar: make([]byte, 12),
-		Timezone:    "Europe/London",
-		CreatedAt:   time.Now(),
-		UpdatedAt:   time.Now(),
+		ID:         userID,
+		Email:      "me@example.com",
+		Password:   "",
+		IsVerified: true,
+		CalendarID: "8gipfmoqt8mtucep",
+		IVCalendar: make([]byte, user.IVCalendarLength),
+		Timezone:   "Europe/London",
+		CreatedAt:  time.Now(),
+		UpdatedAt:  time.Now(),
 	}
 
 	return user, nil
 }
 
-func (u *PostgresTestRepository) Update(ctx context.Context, userId string, fields map[string]interface{}) error {
+func (u *PostgresTestRepository) Update(ctx context.Context, userID string, fields map[string]interface{}) error {
 	return nil
 }

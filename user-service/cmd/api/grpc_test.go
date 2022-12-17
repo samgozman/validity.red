@@ -13,6 +13,7 @@ func TestUserServer_Register(t *testing.T) {
 		App                            *Config
 		UnimplementedUserServiceServer proto.UnimplementedUserServiceServer
 	}
+
 	type args struct {
 		ctx context.Context
 		req *proto.RegisterRequest
@@ -68,6 +69,7 @@ func TestAuthServer_Login(t *testing.T) {
 		App                            *Config
 		UnimplementedAuthServiceServer proto.UnimplementedAuthServiceServer
 	}
+
 	type args struct {
 		ctx context.Context
 		req *proto.AuthRequest

@@ -21,14 +21,14 @@ func TestUser_Prepare(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			u := &User{
-				ID:          tt.user.ID,
-				Email:       tt.user.Email,
-				Password:    tt.user.Password,
-				IsVerified:  tt.user.IsVerified,
-				CalendarID:  tt.user.CalendarID,
-				IV_Calendar: tt.user.IV_Calendar,
-				CreatedAt:   tt.user.CreatedAt,
-				UpdatedAt:   tt.user.UpdatedAt,
+				ID:         tt.user.ID,
+				Email:      tt.user.Email,
+				Password:   tt.user.Password,
+				IsVerified: tt.user.IsVerified,
+				CalendarID: tt.user.CalendarID,
+				IVCalendar: tt.user.IVCalendar,
+				CreatedAt:  tt.user.CreatedAt,
+				UpdatedAt:  tt.user.UpdatedAt,
 			}
 			u.Prepare()
 			if u.Email != tt.wantUser.Email {
@@ -87,14 +87,14 @@ func TestUser_Validate(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			u := &User{
-				ID:          tt.user.ID,
-				Email:       tt.user.Email,
-				Password:    tt.user.Password,
-				IsVerified:  tt.user.IsVerified,
-				CalendarID:  tt.user.CalendarID,
-				IV_Calendar: tt.user.IV_Calendar,
-				CreatedAt:   tt.user.CreatedAt,
-				UpdatedAt:   tt.user.UpdatedAt,
+				ID:         tt.user.ID,
+				Email:      tt.user.Email,
+				Password:   tt.user.Password,
+				IsVerified: tt.user.IsVerified,
+				CalendarID: tt.user.CalendarID,
+				IVCalendar: tt.user.IVCalendar,
+				CreatedAt:  tt.user.CreatedAt,
+				UpdatedAt:  tt.user.UpdatedAt,
 			}
 			if err := u.Validate(); (err != nil) != tt.wantErr {
 				t.Errorf("User.Validate() error = %v, wantErr %v", err, tt.wantErr)
@@ -107,6 +107,7 @@ func TestHash(t *testing.T) {
 	type args struct {
 		password string
 	}
+
 	tests := []struct {
 		name    string
 		args    args
@@ -203,14 +204,14 @@ func TestUser_BeforeCreate(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			u := &User{
-				ID:          tt.user.ID,
-				Email:       tt.user.Email,
-				Password:    tt.user.Password,
-				IsVerified:  tt.user.IsVerified,
-				CalendarID:  tt.user.CalendarID,
-				IV_Calendar: tt.user.IV_Calendar,
-				CreatedAt:   tt.user.CreatedAt,
-				UpdatedAt:   tt.user.UpdatedAt,
+				ID:         tt.user.ID,
+				Email:      tt.user.Email,
+				Password:   tt.user.Password,
+				IsVerified: tt.user.IsVerified,
+				CalendarID: tt.user.CalendarID,
+				IVCalendar: tt.user.IVCalendar,
+				CreatedAt:  tt.user.CreatedAt,
+				UpdatedAt:  tt.user.UpdatedAt,
 			}
 			if err := u.BeforeCreate(tt.args.tx); (err != nil) != tt.wantErr {
 				t.Errorf("User.BeforeCreate() error = %v, wantErr %v", err, tt.wantErr)
@@ -254,14 +255,14 @@ func TestUser_BeforeSave(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			u := &User{
-				ID:          tt.user.ID,
-				Email:       tt.user.Email,
-				Password:    tt.user.Password,
-				IsVerified:  tt.user.IsVerified,
-				CalendarID:  tt.user.CalendarID,
-				IV_Calendar: tt.user.IV_Calendar,
-				CreatedAt:   tt.user.CreatedAt,
-				UpdatedAt:   tt.user.UpdatedAt,
+				ID:         tt.user.ID,
+				Email:      tt.user.Email,
+				Password:   tt.user.Password,
+				IsVerified: tt.user.IsVerified,
+				CalendarID: tt.user.CalendarID,
+				IVCalendar: tt.user.IVCalendar,
+				CreatedAt:  tt.user.CreatedAt,
+				UpdatedAt:  tt.user.UpdatedAt,
 			}
 			_ = u.BeforeCreate(tt.args.tx)
 			if err := u.BeforeSave(tt.args.tx); (err != nil) != tt.wantErr {
