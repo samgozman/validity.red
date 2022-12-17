@@ -86,6 +86,12 @@ download_go_deps:
 	cd ./gateway-service && go mod download
 	@echo "Done!"
 
+# Download NPM dependecies for SPA
+download_npm_deps:
+	@echo "Download depenedncies for Go services..."
+	cd ./frontend-service && npm ci
+	@echo "Done!"
+
 ## builds the gateway binary as a linux executable
 build_gateway:
 	@echo "Building broker binary..."
