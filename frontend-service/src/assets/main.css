@@ -9,6 +9,7 @@ body {
 /* Fix for 100vh bug on ios safari */
 @supports (-webkit-touch-callout: none) {
   .h-screen {
-    height: -webkit-fill-available;
+    height: 100dvh;
+    /* height: -webkit-fill-available; */
   }
 }
