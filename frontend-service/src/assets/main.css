@@ -5,3 +5,9 @@
 body {
   touch-action: pan-y;
 }
+
+/* Fix scrolling freeze bug on mobile */
+body {
+  overscroll-behavior: none;
+  overflow: hidden;
+}
