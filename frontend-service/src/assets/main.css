@@ -6,12 +6,12 @@ body {
   touch-action: pan-y;
 }
 
-.drawer {
-  height:unset;
-}
-
-.drawer-toggle ~ .drawer-side {
-  max-height: max-content;
+/* Fix for 100vh bug on ios safari */
+@supports (-webkit-touch-callout: none) {
+  .h-screen {
+    height: 100dvh;
+    /* height: -webkit-fill-available; */
+  }
 }
 
 body {
