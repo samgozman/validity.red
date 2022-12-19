@@ -13,3 +13,7 @@ body {
 .drawer-toggle ~ .drawer-side {
   max-height: max-content;
 }
+
+body {
+  overscroll-behavior: none;
+}
