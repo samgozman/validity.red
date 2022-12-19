@@ -8,36 +8,6 @@ import (
 	"gorm.io/gorm"
 )
 
-func TestDocument_Prepare(t *testing.T) {
-	tests := []struct {
-		name     string
-		document *Document
-		wantDoc  *Document
-	}{
-		{
-			name:     "Trim text",
-			document: &Document{Title: "  title 1 ", Description: "  des  "},
-			wantDoc:  &Document{Title: "title 1", Description: "des"},
-		},
-		{
-			name:     "Escape special characters",
-			document: &Document{Title: "<script>alert('Title 1');</script>", Description: "call(des)"},
-			wantDoc:  &Document{Title: "\\<script\\>alert\\('Title 1'\\)\\;\\<\\/script\\>", Description: "call\\(des\\)"},
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			tt.document.Prepare()
-			if tt.document.Title != tt.wantDoc.Title || tt.document.Description != tt.wantDoc.Description {
-				t.Errorf(
-					"Document.Prepare() want T '%v' and D '%v', but get T '%v' D '%v'",
-					tt.wantDoc.Title, tt.wantDoc.Description, tt.document.Title, tt.document.Description,
-				)
-			}
-		})
-	}
-}
-
 func TestDocument_Validate(t *testing.T) {
 	tests := []struct {
 		name     string
