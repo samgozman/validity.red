@@ -111,6 +111,7 @@ func (db *NotificationDB) FindAll(ctx context.Context, documentID uuid.UUID) ([]
 		WithContext(ctx).
 		Model(&Notification{}).
 		Where(&Notification{DocumentID: documentID}).
+		Order("date ASC").
 		Find(&notifications)
 
 	if res.Error != nil {
