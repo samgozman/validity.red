@@ -29,7 +29,7 @@ import { state } from "@/state";
           class="text-base-100 font-bold text-2xl md:text-3xl lg:text-4xl 2xl:text-5xl md:leading-snug mb-8"
         >
           Keep track of the document's validity period. Completely free, private
-          Open-Source.
+          and Open-Source.
         </h1>
         <p
           class="text-base-200 text-base sm:text-lg sm:leading-relaxed md:text-xl md:leading-relaxed mx-auto mb-10"
