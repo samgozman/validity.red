@@ -28,7 +28,7 @@ import { state } from "@/state";
         <h1
           class="text-base-100 font-bold text-2xl md:text-3xl lg:text-4xl 2xl:text-5xl md:leading-snug mb-8"
         >
-          Keep track on documents validity period. Completely free, private and
+          Keep track of the document's validity period. Completely free, private
           Open-Source.
         </h1>
         <p
