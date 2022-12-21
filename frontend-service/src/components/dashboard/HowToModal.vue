@@ -118,5 +118,57 @@ defineProps<{
         </p>
       </div>
     </div>
+
+    <!-- Google Calendar how-to -->
+    <div
+      class="collapse collapse-arrow border border-base-300 bg-base-100 rounded-box mb-3"
+    >
+      <input type="checkbox" />
+      <div class="collapse-title text-xl font-medium">
+        Sync with Google Calendar
+      </div>
+      <div class="collapse-content">
+        <p>
+          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Unde nihil
+          earum eos?
+        </p>
+        <img
+          src="/img/howto/google_01.webp"
+          alt="Google calendar"
+          class="max-w-xl"
+        />
+        <p>
+          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Unde nihil
+          earum eos?
+        </p>
+        <img
+          src="/img/howto/google_02.webp"
+          alt="Google calendar - subscription to Validity.Red from url"
+          class="max-w-xl"
+        />
+        <p>
+          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Unde nihil
+          earum eos?
+        </p>
+        <img
+          src="/img/howto/google_03.webp"
+          alt="Google calendar - add Validity.Red subscription"
+          class="max-w-xl"
+        />
+        <p>
+          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Unde nihil
+          earum eos?
+        </p>
+        <img
+          src="/img/howto/google_04.webp"
+          alt="Google calendar - edit Validity.Red notifications"
+          class="max-w-xl"
+        />
+        <p>
+          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Unde nihil
+          earum eos?
+        </p>
+      </div>
+    </div>
   </ModalBig>
 </template>
