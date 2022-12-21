@@ -31,7 +31,7 @@ defineProps<{
         <img
           src="/img/howto/macos_01.webp"
           alt="MacOs calendar - add new Validity.Red subscription"
-          class="max-w-xl"
+          class="w-full max-w-xl"
         />
         <p>
           Lorem ipsum dolor sit amet, consectetur adipisicing elit. Unde nihil
@@ -40,7 +40,7 @@ defineProps<{
         <img
           src="/img/howto/macos_02.webp"
           alt="MacOs calendar - edit subscription to Validity.Red"
-          class="max-w-xl"
+          class="w-full max-w-xl"
         />
         <p>
           Lorem ipsum dolor sit amet, consectetur adipisicing elit. Unde nihil
@@ -49,7 +49,7 @@ defineProps<{
         <img
           src="/img/howto/macos_03.webp"
           alt="MacOs calendar - view Validity.Red notifications"
-          class="max-w-xl"
+          class="w-full max-w-xl"
         />
         <p>
           Lorem ipsum dolor sit amet, consectetur adipisicing elit. Unde nihil
@@ -74,7 +74,7 @@ defineProps<{
         <img
           src="/img/howto/ios_01.jpeg"
           alt="IOS calendar - calendar"
-          class="max-w-[16rem]"
+          class="w-full max-w-[16rem]"
         />
         <p>
           Lorem ipsum dolor sit amet, consectetur adipisicing elit. Unde nihil
@@ -83,7 +83,7 @@ defineProps<{
         <img
           src="/img/howto/ios_02.jpeg"
           alt="IOS calendar - calendars list  view"
-          class="max-w-[16rem]"
+          class="w-full max-w-[16rem]"
         />
         <p>
           Lorem ipsum dolor sit amet, consectetur adipisicing elit. Unde nihil
@@ -92,7 +92,7 @@ defineProps<{
         <img
           src="/img/howto/ios_03.jpeg"
           alt="IOS calendar - add new Validity.Red subscription"
-          class="max-w-[16rem]"
+          class="w-full max-w-[16rem]"
         />
         <p>
           Lorem ipsum dolor sit amet, consectetur adipisicing elit. Unde nihil
@@ -101,7 +101,7 @@ defineProps<{
         <img
           src="/img/howto/ios_04.jpeg"
           alt="IOS calendar - add new Validity.Red subscription"
-          class="max-w-[16rem]"
+          class="w-full max-w-[16rem]"
         />
         <p>
           Lorem ipsum dolor sit amet, consectetur adipisicing elit. Unde nihil
@@ -110,7 +110,7 @@ defineProps<{
         <img
           src="/img/howto/ios_05.jpeg"
           alt="IOS calendar - edit Validity.Red subscription options"
-          class="max-w-[16rem]"
+          class="w-full max-w-[16rem]"
         />
         <p>
           Lorem ipsum dolor sit amet, consectetur adipisicing elit. Unde nihil
@@ -135,7 +135,7 @@ defineProps<{
         <img
           src="/img/howto/google_01.webp"
           alt="Google calendar"
-          class="max-w-xl"
+          class="w-full max-w-xl"
         />
         <p>
           Lorem ipsum dolor sit amet, consectetur adipisicing elit. Unde nihil
@@ -144,7 +144,7 @@ defineProps<{
         <img
           src="/img/howto/google_02.webp"
           alt="Google calendar - subscription to Validity.Red from url"
-          class="max-w-xl"
+          class="w-full max-w-xl"
         />
         <p>
           Lorem ipsum dolor sit amet, consectetur adipisicing elit. Unde nihil
@@ -153,7 +153,7 @@ defineProps<{
         <img
           src="/img/howto/google_03.webp"
           alt="Google calendar - add Validity.Red subscription"
-          class="max-w-xl"
+          class="w-full max-w-xl"
         />
         <p>
           Lorem ipsum dolor sit amet, consectetur adipisicing elit. Unde nihil
@@ -162,7 +162,7 @@ defineProps<{
         <img
           src="/img/howto/google_04.webp"
           alt="Google calendar - edit Validity.Red notifications"
-          class="max-w-xl"
+          class="w-full max-w-xl"
         />
         <p>
           Lorem ipsum dolor sit amet, consectetur adipisicing elit. Unde nihil
