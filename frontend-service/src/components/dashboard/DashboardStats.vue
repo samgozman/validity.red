@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { RouterLink } from "vue-router";
+import { DocumentOutline, NotificationsOutline } from "@vicons/ionicons5";
 import UsedTypesItem from "@/components/dashboard/UsedTypesItem.vue";
 import LatestDocumentsItem from "@/components/dashboard/LatestDocumentsItem.vue";
 import CalendarMonth from "@/components/calendar/CalendarMonth.vue";
-import { DocumentOutline, NotificationsOutline } from "@vicons/ionicons5";
+import HowToModal from "@/components/dashboard/HowToModal.vue";
 </script>
 
 <template>
@@ -33,7 +34,10 @@ import { DocumentOutline, NotificationsOutline } from "@vicons/ionicons5";
             Copy link
           </button>
         </div>
-        <button class="btn mt-3 md:ml-3 md:mt-0">How to sync?</button>
+        <a href="#open-how-to-modal" class="btn mt-3 md:ml-3 md:mt-0">
+          How to sync?
+        </a>
+        <HowToModal modalId="open-how-to-modal" />
       </div>
     </div>
   </div>
