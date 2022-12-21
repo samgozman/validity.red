@@ -73,7 +73,7 @@ defineProps<{
         </p>
         <img
           src="/img/howto/ios_01.jpeg"
-          alt="MacOs calendar - ios calendar"
+          alt="IOS calendar - calendar"
           class="max-w-[16rem]"
         />
         <p>
@@ -82,7 +82,7 @@ defineProps<{
         </p>
         <img
           src="/img/howto/ios_02.jpeg"
-          alt="MacOs calendar - ios calendars list  view"
+          alt="IOS calendar - calendars list  view"
           class="max-w-[16rem]"
         />
         <p>
@@ -91,7 +91,7 @@ defineProps<{
         </p>
         <img
           src="/img/howto/ios_03.jpeg"
-          alt="MacOs calendar - add new Validity.Red subscription"
+          alt="IOS calendar - add new Validity.Red subscription"
           class="max-w-[16rem]"
         />
         <p>
@@ -100,7 +100,7 @@ defineProps<{
         </p>
         <img
           src="/img/howto/ios_04.jpeg"
-          alt="MacOs calendar - add new Validity.Red subscription to ios calendar"
+          alt="IOS calendar - add new Validity.Red subscription"
           class="max-w-[16rem]"
         />
         <p>
@@ -109,7 +109,7 @@ defineProps<{
         </p>
         <img
           src="/img/howto/ios_05.jpeg"
-          alt="MacOs calendar - edit Validity.Red subscription options"
+          alt="IOS calendar - edit Validity.Red subscription options"
           class="max-w-[16rem]"
         />
         <p>
