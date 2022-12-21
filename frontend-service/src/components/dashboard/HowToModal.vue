@@ -17,7 +17,7 @@ defineProps<{
     </p>
     <!-- MacOs how-to -->
     <div
-      class="collapse collapse-arrow border border-base-300 bg-base-100 rounded-box"
+      class="collapse collapse-arrow border border-base-300 bg-base-100 rounded-box mb-3"
     >
       <input type="checkbox" />
       <div class="collapse-title text-xl font-medium">
@@ -50,6 +50,67 @@ defineProps<{
           src="/img/howto/macos_03.webp"
           alt="MacOs calendar - view Validity.Red notifications"
           class="max-w-xl"
+        />
+        <p>
+          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Unde nihil
+          earum eos?
+        </p>
+      </div>
+    </div>
+
+    <!-- IOS how-to -->
+    <div
+      class="collapse collapse-arrow border border-base-300 bg-base-100 rounded-box mb-3"
+    >
+      <input type="checkbox" />
+      <div class="collapse-title text-xl font-medium">
+        Sync with IOS Calendar
+      </div>
+      <div class="collapse-content">
+        <p>
+          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Unde nihil
+          earum eos?
+        </p>
+        <img
+          src="/img/howto/ios_01.jpeg"
+          alt="MacOs calendar - ios calendar"
+          class="max-w-[16rem]"
+        />
+        <p>
+          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Unde nihil
+          earum eos?
+        </p>
+        <img
+          src="/img/howto/ios_02.jpeg"
+          alt="MacOs calendar - ios calendars list  view"
+          class="max-w-[16rem]"
+        />
+        <p>
+          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Unde nihil
+          earum eos?
+        </p>
+        <img
+          src="/img/howto/ios_03.jpeg"
+          alt="MacOs calendar - add new Validity.Red subscription"
+          class="max-w-[16rem]"
+        />
+        <p>
+          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Unde nihil
+          earum eos?
+        </p>
+        <img
+          src="/img/howto/ios_04.jpeg"
+          alt="MacOs calendar - add new Validity.Red subscription to ios calendar"
+          class="max-w-[16rem]"
+        />
+        <p>
+          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Unde nihil
+          earum eos?
+        </p>
+        <img
+          src="/img/howto/ios_05.jpeg"
+          alt="MacOs calendar - edit Validity.Red subscription options"
+          class="max-w-[16rem]"
         />
         <p>
           Lorem ipsum dolor sit amet, consectetur adipisicing elit. Unde nihil
