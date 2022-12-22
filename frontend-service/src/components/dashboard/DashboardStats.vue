@@ -4,7 +4,6 @@ import { DocumentOutline, NotificationsOutline } from "@vicons/ionicons5";
 import UsedTypesItem from "@/components/dashboard/UsedTypesItem.vue";
 import LatestDocumentsItem from "@/components/dashboard/LatestDocumentsItem.vue";
 import CalendarMonth from "@/components/calendar/CalendarMonth.vue";
-import HowToModal from "@/components/dashboard/HowToModal.vue";
 </script>
 
 <template>
@@ -129,7 +128,7 @@ import HowToModal from "@/components/dashboard/HowToModal.vue";
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, defineAsyncComponent } from "vue";
 import { DashboardService } from "./DashboardService";
 import type { IDashboardStats } from "./interfaces/IDashboardStats";
 import { ErrorDecoder } from "@/services/ErrorDecoder";
@@ -146,6 +145,11 @@ interface VueData {
 }
 
 export default defineComponent({
+  components: {
+    HowToModal: defineAsyncComponent(
+      () => import("@/components/dashboard/HowToModal.vue")
+    ),
+  },
   data(): VueData {
     return {
       stats: {} as IDashboardStats,
