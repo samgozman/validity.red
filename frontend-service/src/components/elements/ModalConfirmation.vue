@@ -1,4 +1,3 @@
-deleteOne
 <script setup lang="ts">
 import { defineProps } from "vue";
 defineProps<{
@@ -9,13 +8,13 @@ defineProps<{
 </script>
 
 <template>
-  <div v-bind:id="modalId" class="modal">
+  <div v-bind:id="modalId" class="modal modal-bottom sm:modal-middle">
     <div class="modal-box">
       <p>
         {{ message }}
         <strong>{{ actionName }}</strong> ?
       </p>
-      <div class="modal-action">
+      <div class="modal-action justify-between sm:justify-end">
         <a href="#" class="btn btn-primary" @click.prevent="clickConfirm"
           >Confirm</a
         >
