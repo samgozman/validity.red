@@ -32,6 +32,7 @@ func (db *DocumentDBTest) DeleteOne(ctx context.Context, d *document.Document) e
 }
 
 func (db *DocumentDBTest) FindOne(ctx context.Context, d *document.Document) error {
+	d.Type = proto.Type_DEFAULT_DOCUMENT.Enum()
 	return nil
 }
 

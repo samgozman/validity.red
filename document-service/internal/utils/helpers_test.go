@@ -69,10 +69,12 @@ func TestConvertDocumentsToProtoFormat(t *testing.T) {
 	expectedUserID, _ := uuid.Parse("884a2112-09a7-4469-bf13-9e9a25b58eab")
 	expectedDocumentID, _ := uuid.Parse("7a14e144-120c-4e1e-9447-ece46378c1dd")
 
+	var docType proto.Type = 1
+
 	originalDocument := document.Document{
 		ID:        expectedDocumentID,
 		UserID:    expectedUserID,
-		Type:      1,
+		Type:      &docType,
 		Title:     "Some title",
 		ExpiresAt: time.Unix(1662204865, 0),
 	}

@@ -37,7 +37,7 @@ const MaxDescriptionLength = 500
 type Document struct {
 	ID            uuid.UUID                   `gorm:"primarykey;type:uuid;not null;" json:"id,omitempty"`
 	UserID        uuid.UUID                   `gorm:"type:uuid;index;not null;" json:"user_id,omitempty"`
-	Type          proto.Type                  `gorm:"type:int;default:0" json:"type,omitempty"`
+	Type          *proto.Type                 `gorm:"type:int;default:0" json:"type,omitempty"`
 	Title         string                      `gorm:"not null;" json:"title,omitempty"`
 	Description   string                      `gorm:"" json:"description,omitempty"`
 	IVTitle       []byte                      `gorm:"size:16;" json:"iv_title,omitempty"`

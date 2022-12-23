@@ -41,7 +41,7 @@ func (ds *DocumentServer) Create(ctx context.Context, req *proto.DocumentCreateR
 	d := document.Document{
 		UserID:      userID,
 		Title:       input.Title,
-		Type:        input.Type,
+		Type:        &input.Type,
 		Description: input.Description,
 		ExpiresAt:   input.ExpiresAt.AsTime(),
 	}
@@ -78,7 +78,7 @@ func (ds *DocumentServer) Edit(ctx context.Context, req *proto.DocumentCreateReq
 		ID:          id,
 		UserID:      userID,
 		Title:       input.Title,
-		Type:        input.Type,
+		Type:        &input.Type,
 		Description: input.Description,
 		ExpiresAt:   input.ExpiresAt.AsTime(),
 	}
@@ -146,7 +146,7 @@ func (ds *DocumentServer) GetOne(ctx context.Context, req *proto.DocumentRequest
 			ID:          d.ID.String(),
 			UserID:      d.UserID.String(),
 			Title:       d.Title,
-			Type:        d.Type,
+			Type:        *d.Type,
 			Description: d.Description,
 			ExpiresAt:   timestamppb.New(d.ExpiresAt),
 		},
