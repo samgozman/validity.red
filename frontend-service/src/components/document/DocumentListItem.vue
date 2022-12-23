@@ -17,7 +17,7 @@ defineProps<{
     @mouseout="isHovering = false"
   >
     <div class="flex-row items-center space-x-4 card-body">
-      <div class="flex-1">
+      <div class="flex-1 w-[80%]">
         <RouterLink :to="documentLink" class="card-title text-primary">
           <component
             :is="DocumentType.getIcon(document.type)"
@@ -25,7 +25,7 @@ defineProps<{
           ></component>
           {{ document.title }}
         </RouterLink>
-        <p class="text-base-content text-opacity-80">
+        <p class="text-base-content text-opacity-80 truncate">
           {{ document.description }}
         </p>
         <p v-show="errorMsg" class="badge badge-error badge-outline w-full">
