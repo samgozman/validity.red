@@ -22,9 +22,11 @@ defineProps<{
           {{ DocumentType.getName(document.type) }}
         </div>
       </div>
-      <p>
-        {{ document.description }}
-      </p>
+      <textarea
+        class="textarea h-full min-h-[20vh]"
+        :value="document.description"
+        readonly
+      ></textarea>
       <div class="justify-end space-x-2 card-actions">
         <RouterLink
           :to="`/documents/${document.ID}/edit`"
