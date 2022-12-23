@@ -15,7 +15,7 @@ import (
 // ? Maybe use alpha-num-unicode rule for string fields?
 
 type documentCreate struct {
-	Type        int32     `json:"type" binding:"required,number"`
+	Type        int32     `json:"type" binding:"number,min=0,max=255"`
 	Title       string    `json:"title" binding:"required,max=100"`
 	Description string    `json:"description" binding:"max=500"`
 	ExpiresAt   time.Time `json:"expiresAt" binding:"required"`
@@ -23,7 +23,7 @@ type documentCreate struct {
 
 type documentEdit struct {
 	ID          string    `json:"id" binding:"required,uuid"`
-	Type        int32     `json:"type" binding:"required,number"`
+	Type        int32     `json:"type" binding:"number,min=0,max=255"`
 	Title       string    `json:"title" binding:"required,max=100"`
 	Description string    `json:"description" binding:"max=500"`
 	ExpiresAt   time.Time `json:"expiresAt" binding:"required"`
