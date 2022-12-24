@@ -12,7 +12,7 @@ import Footer from "@/components/FooterComponent.vue";
 </script>
 
 <template>
-  <div class="drawer h-screen bg-base-200">
+  <div class="drawer h-screen-safe bg-base-200">
     <input id="left-sidebar" type="checkbox" class="drawer-toggle" />
     <div class="drawer-content flex flex-col">
       <header class="bg-base-100">
@@ -23,7 +23,7 @@ import Footer from "@/components/FooterComponent.vue";
       <RouterView />
       <Footer />
     </div>
-    <div class="drawer-side">
+    <div class="drawer-side max-h-screen-safe">
       <label for="left-sidebar" class="drawer-overlay"></label>
       <div class="menu p-4 overflow-y-auto w-80 bg-base-100">
         <ul>

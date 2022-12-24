@@ -11,3 +11,18 @@ body {
   overscroll-behavior: none;
   overflow: hidden;
 }
+
+/* Fix 100vh problem on touch devices */
+@supports (-webkit-touch-callout: none) {
+  .min-h-screen-safe {
+    min-height: -webkit-fill-available;
+  }
+
+  .max-h-screen-safe {
+    max-height: -webkit-fill-available;
+  }
+
+  .h-screen-safe {
+    height: -webkit-fill-available;
+  }
+}
