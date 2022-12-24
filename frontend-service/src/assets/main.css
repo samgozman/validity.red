@@ -21,8 +21,4 @@ body {
   .max-h-screen-safe {
     max-height: -webkit-fill-available;
   }
-
-  .h-screen-safe {
-    height: -webkit-fill-available;
-  }
 }

@@ -12,7 +12,7 @@ import Footer from "@/components/FooterComponent.vue";
 </script>
 
 <template>
-  <div class="drawer h-screen-safe bg-base-200">
+  <div class="drawer bg-base-200">
     <input id="left-sidebar" type="checkbox" class="drawer-toggle" />
     <div class="drawer-content flex flex-col">
       <header class="bg-base-100">
