@@ -26,7 +26,7 @@ import { LogoGithub, BeerOutline } from "@vicons/ionicons5";
       <p>
         I know how important it is to
         <strong>keep track of expiration dates</strong> for things like
-        passports, driver's licenses, and insurance policies, and I want to make
+        passports, driver's licenses, and insurance policies, and I want to
         make it as easy as possible for users to stay organized. With this app,
         you can easily set up notifications for when a document is set to
         expire. These notifications can be
