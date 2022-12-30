@@ -3,7 +3,7 @@ import { RouterLink } from "vue-router";
 </script>
 
 <template>
-  <div class="hero min-h-screen bg-base-200">
+  <div class="hero min-h-screen min-h-screen-safe bg-base-200">
     <div class="hero-content flex-col lg:flex-row-reverse min-w-full">
       <div class="card flex-shrink-0 w-full max-w-md shadow-2xl bg-base-100">
         <div class="card-body">

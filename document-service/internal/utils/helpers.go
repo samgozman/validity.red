@@ -29,7 +29,7 @@ func ConvertDocumentsToProtoFormat(d *[]document.Document) []*proto.Document {
 			ID:          d.ID.String(),
 			UserID:      d.UserID.String(),
 			Title:       d.Title,
-			Type:        d.Type,
+			Type:        *d.Type,
 			Description: d.Description,
 			ExpiresAt:   timestamppb.New(d.ExpiresAt),
 		})

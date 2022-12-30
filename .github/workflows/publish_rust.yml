@@ -16,9 +16,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Setup protoc
-        uses: arduino/setup-protoc@v1
-        with:
-          version: '3.x'
+        run: sudo apt install -y protobuf-compiler
 
       - name: Build proto files
         run: make grpc_init_rust

@@ -12,7 +12,7 @@ import Footer from "@/components/FooterComponent.vue";
 </script>
 
 <template>
-  <div class="drawer h-screen bg-base-200">
+  <div class="drawer bg-base-200">
     <input id="left-sidebar" type="checkbox" class="drawer-toggle" />
     <div class="drawer-content flex flex-col">
       <header class="bg-base-100">
@@ -23,7 +23,7 @@ import Footer from "@/components/FooterComponent.vue";
       <RouterView />
       <Footer />
     </div>
-    <div class="drawer-side">
+    <div class="drawer-side max-h-screen-safe">
       <label for="left-sidebar" class="drawer-overlay"></label>
       <div class="menu p-4 overflow-y-auto w-80 bg-base-100">
         <ul>
@@ -67,7 +67,7 @@ export default defineComponent({
     // Run token refresh task in background
     setInterval(async () => {
       await RefreshToken.call();
-    }, 180_000); // every 3 minutes
+    }, 120_000); // every 2 minutes
   },
 });
 </script>

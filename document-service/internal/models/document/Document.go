@@ -4,8 +4,6 @@ import (
 	"context"
 	"errors"
 	"os"
-	"regexp"
-	"strings"
 	"time"
 
 	"github.com/getsentry/sentry-go"
@@ -39,7 +37,7 @@ const MaxDescriptionLength = 500
 type Document struct {
 	ID            uuid.UUID                   `gorm:"primarykey;type:uuid;not null;" json:"id,omitempty"`
 	UserID        uuid.UUID                   `gorm:"type:uuid;index;not null;" json:"user_id,omitempty"`
-	Type          proto.Type                  `gorm:"type:int;default:0" json:"type,omitempty"`
+	Type          *proto.Type                 `gorm:"type:int;default:0" json:"type,omitempty"`
 	Title         string                      `gorm:"not null;" json:"title,omitempty"`
 	Description   string                      `gorm:"" json:"description,omitempty"`
 	IVTitle       []byte                      `gorm:"size:16;" json:"iv_title,omitempty"`
@@ -48,13 +46,6 @@ type Document struct {
 	Notifications []notification.Notification `gorm:"foreignKey:DocumentID;constraint:OnUpdate:CASCADE,OnDelete:SET NULL;references:ID" json:"notifications,omitempty"`
 	CreatedAt     time.Time                   `gorm:"default:CURRENT_TIMESTAMP" json:"created_at,omitempty"`
 	UpdatedAt     time.Time                   `gorm:"default:CURRENT_TIMESTAMP" json:"updated_at,omitempty"`
-}
-
-// Prepare Document object before inserting into database.
-func (d *Document) Prepare() {
-	escapeCharacters := regexp.MustCompile(`(?m)<|>|\(|\)|;|\\|\/`)
-	d.Title = escapeCharacters.ReplaceAllString(strings.TrimSpace(d.Title), "\\$0")
-	d.Description = escapeCharacters.ReplaceAllString(strings.TrimSpace(d.Description), "\\$0")
 }
 
 // Validate Document object before inserting into database.
@@ -143,8 +134,6 @@ func (d *Document) BeforeCreate(tx *gorm.DB) error {
 	// Create UUID ID.
 	d.ID = uuid.New()
 
-	d.Prepare()
-
 	err := d.Validate()
 	if err != nil {
 		return status.Error(codes.Internal, err.Error())
@@ -159,10 +148,7 @@ func (d *Document) BeforeCreate(tx *gorm.DB) error {
 }
 
 func (d *Document) BeforeUpdate(tx *gorm.DB) error {
-	d.Prepare()
-
 	// TODO: Add validation for update event
-
 	err := d.Encrypt()
 	if err != nil {
 		return status.Error(codes.Internal, err.Error())

@@ -4,4 +4,19 @@
 
 body {
   touch-action: pan-y;
+
+  /* Fix scrolling freeze bug on mobile */
+  overscroll-behavior: none;
+  overflow: hidden;
+}
+
+/* Fix 100vh problem on touch devices */
+@supports (-webkit-touch-callout: none) {
+  .min-h-screen-safe {
+    min-height: -webkit-fill-available;
+  }
+
+  .max-h-screen-safe {
+    max-height: -webkit-fill-available;
+  }
 }

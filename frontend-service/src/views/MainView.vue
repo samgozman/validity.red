@@ -28,8 +28,8 @@ import { state } from "@/state";
         <h1
           class="text-base-100 font-bold text-2xl md:text-3xl lg:text-4xl 2xl:text-5xl md:leading-snug mb-8"
         >
-          Keep track on documents validity period. Completely free, private and
-          Open-Source.
+          Keep track of the document's validity period. Completely free, private
+          and Open-Source.
         </h1>
         <p
           class="text-base-200 text-base sm:text-lg sm:leading-relaxed md:text-xl md:leading-relaxed mx-auto mb-10"
@@ -150,11 +150,11 @@ import { state } from "@/state";
               Start managing expiration dates!
             </h3>
             <LeadingParagraph class="py-6">
-              Has it ever happened to you that when you were going abroad, and
-              your visa ran out? You decided to rent a car, but your driver's
-              license ran out a week ago? Or your health insurance ended at the
-              most inopportune moment and your bank card also expired as well?
-              And all of a sudden!
+              Has it ever happened to you when you were going abroad, and your
+              visa ran out? You decided to rent a car, but your driver's license
+              ran out a week ago. Or did your health insurance end at the most
+              inopportune moment and your bank card also expired? And all of a
+              sudden!
             </LeadingParagraph>
             <LeadingParagraph class="pb-6">
               Sounds like a nightmare! Something similar has happened to all of
