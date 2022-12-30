@@ -10,13 +10,21 @@ body {
   overflow: hidden;
 }
 
+.fullscreen {
+  position: fixed;
+  top: 0px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+.drawer-toggle ~ .drawer-side {
+  max-height: 100%;
+}
+
 /* Fix 100vh problem on touch devices */
 @supports (-webkit-touch-callout: none) {
   .min-h-screen-safe {
     min-height: -webkit-fill-available;
-  }
-
-  .max-h-screen-safe {
-    max-height: -webkit-fill-available;
   }
 }
