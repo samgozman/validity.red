@@ -8,7 +8,7 @@ require (
 	github.com/gin-gonic/gin v1.8.2
 	github.com/go-redis/redis/v8 v8.11.5
 	github.com/kataras/hcaptcha v0.0.2
-	github.com/ulule/limiter/v3 v3.10.0
+	github.com/ulule/limiter/v3 v3.11.0
 	google.golang.org/grpc v1.52.0
 	google.golang.org/protobuf v1.28.1
 )
@@ -30,6 +30,7 @@ require (
 	github.com/onsi/gomega v1.24.1 // indirect
 	github.com/pelletier/go-toml/v2 v2.0.6 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
+	github.com/redis/go-redis/v9 v9.0.1 // indirect
 	github.com/ugorji/go/codec v1.2.7 // indirect
 	golang.org/x/crypto v0.4.0 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
