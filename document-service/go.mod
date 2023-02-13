@@ -7,7 +7,7 @@ require (
 	github.com/google/uuid v1.3.0
 	google.golang.org/grpc v1.52.0
 	google.golang.org/protobuf v1.28.1
-	gorm.io/driver/postgres v1.4.6
+	gorm.io/driver/postgres v1.4.7
 	gorm.io/gorm v1.24.3
 )
 
