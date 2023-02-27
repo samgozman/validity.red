@@ -80,7 +80,7 @@ runcmd:
       -m sam@gozman.space \
       --webroot -w /srv/validityred/files
   # Create system cron job to update SSL certificate
-  - /bin/bash -c 'echo "0 12 * * * /usr/bin/certbot renew --quiet" >> /etc/crontab'
+  - /bin/bash -c 'echo "0 12 * * * /usr/bin/certbot renew --quiet && systemctl reload nginx" >> /etc/crontab'
   - cd /
   # Download the final nginx config
   - curl -o nginx.conf https://raw.githubusercontent.com/samgozman/validity.red/main/deploy/nginx.conf
