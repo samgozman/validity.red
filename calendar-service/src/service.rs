@@ -76,7 +76,7 @@ pub mod calendar {
             calendar.add_event(event);
         }
 
-        return calendar.to_string();
+        calendar.to_string()
     }
 
     /// It creates a file with the given name and writes the given data to it
@@ -149,7 +149,7 @@ pub mod calendar {
 
         // ? CATEGORIES?
 
-        return event;
+        event
     }
 
     #[cfg(test)]
@@ -157,8 +157,8 @@ pub mod calendar {
         use super::*;
         use crate::calendar::CalendarEntity;
         use prost_types::Timestamp;
-        use std::env;
         use serial_test::serial;
+        use std::env;
 
         #[test]
         fn test_create_event() {

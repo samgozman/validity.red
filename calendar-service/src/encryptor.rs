@@ -68,7 +68,7 @@ pub fn decrypt(data: &[u8], key: &[u8; 32], iv: &[u8; 12]) -> Result<String, Box
         .expect("u8 to String transformation failed")
         .to_string();
 
-    return Ok(decoded);
+    Ok(decoded)
 }
 
 /// Add padding bytes for the message to make it divisible by the block size
@@ -86,7 +86,7 @@ fn pkcs5_padding(src: &[u8]) -> Vec<u8> {
     let padtext = vec![padding as u8; padding];
     let mut result = src.to_vec();
     result.append(&mut padtext.to_vec());
-    return result;
+    result
 }
 
 /// Remove padding bytes from the end of the slice (used after decryption)
@@ -107,7 +107,7 @@ fn pkcs5_unpadding(src: &[u8]) -> Vec<u8> {
             length, unpadding
         );
     }
-    (&src[..(length - unpadding)]).to_vec()
+    (src[..(length - unpadding)]).to_vec()
 }
 
 #[cfg(test)]
