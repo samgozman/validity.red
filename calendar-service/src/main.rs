@@ -29,13 +29,14 @@ impl Calendar for CalendarService {
         iv.copy_from_slice(&request_iv[0..12]);
 
         let file = service::calendar::read(request.get_ref().calendar_id.as_str(), &iv);
-        if file.is_err() {
-            Err(file.err().unwrap())
-        } else {
-            let reply = calendar::GetCalendarResponse {
-                calendar: file.unwrap().as_bytes().to_vec(),
-            };
-            Ok(Response::new(reply))
+        match file.is_err() {
+            true => Err(Status::internal(file.err().unwrap().to_string())),
+            false => {
+                let reply = calendar::GetCalendarResponse {
+                    calendar: file.unwrap().as_bytes().to_vec(),
+                };
+                Ok(Response::new(reply))
+            }
         }
     }
 
@@ -51,18 +52,13 @@ impl Calendar for CalendarService {
         iv.copy_from_slice(&request_iv[0..12]);
 
         let timezone_input = &request.get_ref().timezone.parse::<Tz>();
-        let timezone: Tz;
-        if timezone_input.is_err() {
-            return Err(Status::invalid_argument("Invalid timezone value"));
-        } else {
-            timezone = timezone_input.as_ref().unwrap().clone();
-        }
-
-        let calendar_ics =
-            service::calendar::create(&request.get_ref().calendar_entities.clone(), timezone);
+        let timezone: Tz = match timezone_input.is_err() {
+            true => return Err(Status::invalid_argument("Invalid timezone value")),
+            false => *timezone_input.as_ref().unwrap(),
+        };
 
         let write_check = service::calendar::write(
-            calendar_ics.to_string(),
+            service::calendar::create(&request.get_ref().calendar_entities.clone(), timezone),
             request.get_ref().calendar_id.as_str(),
             &iv,
         );
