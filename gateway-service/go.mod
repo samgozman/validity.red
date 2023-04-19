@@ -10,7 +10,7 @@ require (
 	github.com/kataras/hcaptcha v0.0.2
 	github.com/ulule/limiter/v3 v3.10.0
 	google.golang.org/grpc v1.54.0
-	google.golang.org/protobuf v1.28.1
+	google.golang.org/protobuf v1.30.0
 )
 
 require (
