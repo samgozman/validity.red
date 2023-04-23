@@ -93,20 +93,6 @@ resource "hcloud_firewall" "ssh_firewall" {
   }
 }
 
-resource "hcloud_firewall" "db_firewall" {
-  name = "db_firewall"
-  rule {
-    direction = "in"
-    protocol  = "tcp"
-    port      = "5432"
-    source_ips = [
-      "10.1.1.1/32",
-      format("%s/32",hcloud_primary_ip.public.ip_address)
-    ]
-    description = "Postgres"
-  }
-}
-
 ## VMs
 
 resource "hcloud_server" "validity" {
