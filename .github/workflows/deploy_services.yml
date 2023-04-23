@@ -19,16 +19,6 @@ jobs:
       - name: Adding Known Hosts
         run: ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
 
-      # ! Bad practice, but it works for now
-      # ! This is a temporary solution to be able to connect to the
-      # ! "services" from the "web" container
-      - name: Remove old fingerprint for SSH_HOST_SERVICES
-        run: ssh $SSH_CONNECTION "ssh-keygen -R ${{ secrets.SSH_HOST_SERVICES }} || true"
-      - name: Copy SSH private key
-        run: rsync -r ~/.ssh/id_rsa $SSH_CONNECTION:~/.ssh/id_rsa
-      - name: Adding Known Hosts for the "services" server
-        run: ssh $SSH_CONNECTION "ssh-keyscan -H ${{ secrets.SSH_HOST_SERVICES }} >> ~/.ssh/known_hosts"
-
       - name: Create env files
         run: |
           echo "${{ secrets.DB_ENV_VARS }}" > db.env
