@@ -8,7 +8,7 @@ services:
     ports:
       - "8080:80"
     env_file:
-      - gateway.env
+      - ./config/gateway.env
     networks:
       - redis-network
       - users-network
@@ -21,7 +21,7 @@ services:
     image: 'ghcr.io/samgozman/validity.red/user-service:latest'
     restart: always
     env_file:
-      - users.env
+      - ./config/users.env
     ports:
       - "50001:50001"
     networks:
@@ -34,7 +34,7 @@ services:
     image: 'ghcr.io/samgozman/validity.red/document-service:latest'
     restart: always
     env_file:
-      - documents.env
+      - ./config/documents.env
     ports:
       - "50002:50002"
     networks:
@@ -47,7 +47,7 @@ services:
     image: 'ghcr.io/samgozman/validity.red/calendar-service:latest'
     restart: always
     env_file:
-      - calendars.env
+      - ./config/calendars.env
     volumes:
       - ./calendars/data/:/data/
     ports:
@@ -59,7 +59,7 @@ services:
     image: postgres:14.5-alpine3.16
     restart: always
     env_file:
-      - db.env
+      - ./config/db.env
     ports:
       - "5432:5432"
     networks:
@@ -74,7 +74,7 @@ services:
     image: redis:6.2.7-alpine3.16
     restart: always
     env_file:
-      - gateway.env
+      - ./config/gateway.env
     entrypoint: ["/bin/sh", "-c", "redis-server --appendonly yes --requirepass $${REDIS_PASSWORD} --maxmemory 256mb --maxmemory-policy allkeys-lru"]
     networks:
       - redis-network
