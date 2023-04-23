@@ -1,6 +1,6 @@
 import { createApp } from "vue";
 import { init as sentryInit, vueRouterInstrumentation } from "@sentry/vue";
-import { BrowserTracing } from "@sentry/tracing";
+import { BrowserTracing } from "@sentry/browser";
 import App from "./App.vue";
 import router from "./router";
 
