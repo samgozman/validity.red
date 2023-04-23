@@ -28,7 +28,7 @@ jobs:
           echo "${{ secrets.GATEWAY_ENV_VARS }}" > gateway.env
 
       - name: Copy .env files via rsync over SSH
-        run: rsync -r ./db.env ./calendars.env ./documents.env ./users.env ./gateway.env $SSH_CONNECTION:/validityred
+        run: rsync -r ./db.env ./calendars.env ./documents.env ./users.env ./gateway.env $SSH_CONNECTION:/validityred/config
 
       - name: Run updater script
         run: ssh $SSH_CONNECTION ". /validityred/updater.sh"
