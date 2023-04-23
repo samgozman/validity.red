@@ -1,7 +1,7 @@
 pub mod calendar {
     use crate::calendar::CalendarEntity;
     use crate::encryptor::{decrypt, encrypt};
-    use chrono::TimeZone;
+    use chrono::{LocalResult, TimeZone};
     use chrono_tz::Tz;
     use ics::properties::{Description, DtEnd, DtStart, Summary};
     use ics::{escape_text, Event, ICalendar};
@@ -128,7 +128,11 @@ pub mod calendar {
         // TODO: Use ics standard timezone options instead of manual offset
         // Convert timestamp to DateTime
         let dt_start = calendar_event.notification_date.clone().unwrap();
-        let dt_start = tz.timestamp(dt_start.seconds, dt_start.nanos as u32);
+        let dt_start = match tz.timestamp_opt(dt_start.seconds, dt_start.nanos as u32) {
+            LocalResult::Single(dt) => dt,
+            LocalResult::None => panic!("Invalid timestamp"),
+            LocalResult::Ambiguous(_, _) => panic!("Ambiguous timestamp"),
+        };
 
         // End date is 1 hour after start date
         let dt_end = dt_start + chrono::Duration::hours(1);
