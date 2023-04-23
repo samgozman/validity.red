@@ -65,6 +65,8 @@ resource "hcloud_firewall" "public_firewall" {
   }
 }
 
+#! This is a temporary firewall.
+#! It is used to allow SSH access to the server from the github actions.
 resource "hcloud_firewall" "ssh_firewall_public" {
   name = "ssh_firewall_public"
   rule {
