@@ -99,7 +99,9 @@ func (app *Config) documentEdit(c *gin.Context) {
 		return
 	}
 
-	go app.updateIcsCalendar(userID.(string))
+	go func() {
+		_, _ = app.updateIcsCalendar(userID.(string))
+	}()
 	c.Status(http.StatusCreated)
 }
 
@@ -131,7 +133,9 @@ func (app *Config) documentDelete(c *gin.Context) {
 		return
 	}
 
-	go app.updateIcsCalendar(userID.(string))
+	go func() {
+		_, _ = app.updateIcsCalendar(userID.(string))
+	}()
 	c.Status(http.StatusOK)
 }
 
