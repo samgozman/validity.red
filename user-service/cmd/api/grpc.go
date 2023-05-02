@@ -127,13 +127,14 @@ func (us *UserServer) GetCalendarOptions(ctx context.Context, req *proto.GetCale
 
 // GetCalendarIv gets the iv_calendar field for the user with the given id.
 func (us *UserServer) GetCalendarIv(ctx context.Context, req *proto.GetCalendarIvRequest) (*proto.GetCalendarIvResponse, error) {
-	u, err := us.App.Repo.FindOne(ctx, &user.User{CalendarID: req.CalendarId}, "iv_calendar")
+	u, err := us.App.Repo.FindOne(ctx, &user.User{CalendarID: req.CalendarId}, "iv_calendar, id")
 	if err != nil {
 		return nil, err
 	}
 
 	res := &proto.GetCalendarIvResponse{
 		CalendarIv: u.IVCalendar,
+		UserId:     u.ID.String(),
 	}
 
 	return res, nil
