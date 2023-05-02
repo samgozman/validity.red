@@ -21,11 +21,18 @@ packages:
   - libgeoip-dev
   - libxslt-dev
 write_files:
-  # Create backup cron job
-  # Create system cron job to update SSL certificate
   - content: |
-      0 0 * * * root . /validityred/backup.sh >> /validityred/backup.log 2>&1
-      0 12 * * * /usr/bin/certbot renew --quiet && systemctl reload nginx
+      #!/bin/bash
+      /usr/bin/certbot renew --quiet && systemctl reload nginx
+    path: /etc/cron.daily/certbot
+    permissions: '0755'
+  - content: |
+      #!/bin/bash
+      . /validityred/backup.sh >> /validityred/backup.log 2>&1
+    path: /etc/cron.daily/validityred-backup
+    permissions: '0755'
+  - content: |
+      25 4    * * *   root    cd / && run-parts --report /etc/cron.daily
     path: /etc/crontab
     append: true
 runcmd:
