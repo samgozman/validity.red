@@ -13,6 +13,8 @@ import (
 	"github.com/samgozman/validity.red/broker/proto/calendar"
 	"github.com/samgozman/validity.red/broker/proto/document"
 	"github.com/samgozman/validity.red/broker/proto/user"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 // TODO: add pagination by month.
@@ -81,10 +83,29 @@ func (app *Config) getCalendarIcs(c *gin.Context) {
 		CalendarIV: ivResp.CalendarIv,
 	})
 	if err != nil {
-		log.Println("Error on calling GetCalendar method for getCalendarIcs:", err)
-		_ = c.Error(err)
+		if st, ok := status.FromError(err); ok && st.Code() != codes.NotFound {
+			// Create calendar
+			newCalendarIv, err := app.updateIcsCalendar(ivResp.UserId)
+			if err != nil {
+				_ = c.Error(err)
+				return
+			}
 
-		return
+			// Fetch calendar
+			calendarIcs, err = app.calendarsClient.calendarService.GetCalendar(ctx, &calendar.GetCalendarRequest{
+				CalendarID: uri.ID,
+				CalendarIV: newCalendarIv,
+			})
+			if err != nil {
+				_ = c.Error(err)
+				return
+			}
+		} else {
+			log.Println("Error on calling GetCalendar method for getCalendarIcs:", err)
+			_ = c.Error(err)
+
+			return
+		}
 	}
 
 	c.Writer.Header().Set("Content-Type", "text/calendar")
@@ -94,7 +115,7 @@ func (app *Config) getCalendarIcs(c *gin.Context) {
 }
 
 // Creates users full calendar and saves it to the file system.
-func (app *Config) updateIcsCalendar(userID string) {
+func (app *Config) updateIcsCalendar(userID string) (iv []byte, err error) {
 	const requestTimeout = 3 * time.Second
 
 	const calendarIVLength = 12
@@ -110,7 +131,7 @@ func (app *Config) updateIcsCalendar(userID string) {
 	})
 	if err != nil {
 		log.Println("Error on calling UserService.GetCalendarOptions:", err)
-		return
+		return nil, err
 	}
 
 	// 2. get documents
@@ -119,7 +140,7 @@ func (app *Config) updateIcsCalendar(userID string) {
 	})
 	if err != nil {
 		log.Println("Error on calling GetAll method:", err)
-		return
+		return nil, err
 	}
 
 	// 3. get notifications
@@ -128,7 +149,7 @@ func (app *Config) updateIcsCalendar(userID string) {
 	})
 	if err != nil {
 		log.Println("Error on calling Notification.GetAllForUser:", err)
-		return
+		return nil, err
 	}
 
 	// 4. create calendar
@@ -140,7 +161,7 @@ func (app *Config) updateIcsCalendar(userID string) {
 	_, err = rand.Read(ivCalendar)
 	if err != nil {
 		log.Println("Error on generating IV:", err)
-		return
+		return nil, err
 	}
 
 	// Call rust service to create ics
@@ -152,7 +173,7 @@ func (app *Config) updateIcsCalendar(userID string) {
 	})
 	if err != nil {
 		log.Println("Error on calling CalendarService.CreateCalendar:", err)
-		return
+		return nil, err
 	}
 
 	// Update user's IV
@@ -162,8 +183,10 @@ func (app *Config) updateIcsCalendar(userID string) {
 	})
 	if err != nil {
 		log.Println("Error on calling UserService.SetCalendarIv:", err)
-		return
+		return nil, err
 	}
+
+	return ivCalendar, nil
 }
 
 // Combine array of documents with array of notifications
