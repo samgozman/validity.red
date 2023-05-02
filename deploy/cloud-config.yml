@@ -31,6 +31,10 @@ write_files:
       . /validityred/backup.sh >> /validityred/backup.log 2>&1
     path: /etc/cron.daily/validityred-backup
     permissions: '0755'
+  - content: |
+      25 4    * * *   root    cd / && run-parts --report /etc/cron.daily
+    path: /etc/crontab
+    append: true
 runcmd:
   - ufw disable # disable firewall. Using VPS firewall instead
   # Install b2 cli
