@@ -68,7 +68,7 @@ func (n *Notification) BeforeCreate(tx *gorm.DB) error {
 	return nil
 }
 
-// Insert one Notification object into database.
+// InsertOne - insert one Notification object into database.
 func (db *NotificationDB) InsertOne(ctx context.Context, n *Notification) error {
 	res := db.Conn.WithContext(ctx).Create(&n)
 	if res.Error != nil {
@@ -105,7 +105,7 @@ func (db *NotificationDB) DeleteOne(ctx context.Context, n *Notification) error 
 }
 
 func (db *NotificationDB) FindAll(ctx context.Context, documentID uuid.UUID) ([]Notification, error) {
-	var notifications = []Notification{}
+	var notifications []Notification
 
 	res := db.Conn.
 		WithContext(ctx).
@@ -140,7 +140,7 @@ func (db *NotificationDB) Count(ctx context.Context, documentID uuid.UUID) (int6
 	return count, nil
 }
 
-// Count all notifications for a given user.
+// CountAll - count all notifications for a given user.
 func (db *NotificationDB) CountAll(ctx context.Context, userID uuid.UUID) (int64, error) {
 	var count int64
 
@@ -159,7 +159,7 @@ func (db *NotificationDB) CountAll(ctx context.Context, userID uuid.UUID) (int64
 }
 
 func (db *NotificationDB) FindAllForUser(ctx context.Context, userID uuid.UUID) ([]Notification, error) {
-	var notifications = []Notification{}
+	var notifications []Notification
 
 	res := db.Conn.
 		WithContext(ctx).

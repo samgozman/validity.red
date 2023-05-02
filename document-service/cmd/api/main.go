@@ -20,8 +20,8 @@ type limits struct {
 
 type Config struct {
 	limits        limits
-	Documents     document.DocumentRepository
-	Notifications notification.NotificationRepository
+	Documents     document.Repository
+	Notifications notification.Repository
 }
 
 func main() {

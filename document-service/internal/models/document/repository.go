@@ -7,7 +7,7 @@ import (
 	proto "github.com/samgozman/validity.red/document/proto"
 )
 
-type DocumentRepository interface {
+type Repository interface {
 	InsertOne(ctx context.Context, d *Document) error
 	UpdateOne(ctx context.Context, d *Document) error
 	DeleteOne(ctx context.Context, d *Document) error

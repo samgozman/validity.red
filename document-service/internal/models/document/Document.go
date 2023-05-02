@@ -166,7 +166,7 @@ func (d *Document) AfterFind(tx *gorm.DB) error {
 	return nil
 }
 
-// Insert one Document object into database.
+// InsertOne - insert one Document object into database.
 func (db *DocumentDB) InsertOne(ctx context.Context, d *Document) error {
 	res := db.Conn.WithContext(ctx).Create(&d)
 	if res.Error != nil {
@@ -214,10 +214,6 @@ func (db *DocumentDB) UpdateOne(ctx context.Context, d *Document) error {
 	return nil
 }
 
-// TODO: Implement "soft delete" feature
-// TODO: Allow users to restore a document after deletion
-// TODO: Delete documents with DeletedAt timestamp > 14d with CRON job
-// @see: https://gorm.io/docs/delete.html#Soft-Delete.
 func (db *DocumentDB) DeleteOne(ctx context.Context, d *Document) error {
 	res := db.Conn.
 		WithContext(ctx).
@@ -237,7 +233,6 @@ func (db *DocumentDB) DeleteOne(ctx context.Context, d *Document) error {
 	return nil
 }
 
-// Find one document.
 func (db *DocumentDB) FindOne(ctx context.Context, d *Document) error {
 	res := db.Conn.
 		WithContext(ctx).
@@ -258,7 +253,7 @@ func (db *DocumentDB) FindOne(ctx context.Context, d *Document) error {
 	return nil
 }
 
-// Checks if document is already exists in database.
+// Exists - checks if document is already exists in database.
 func (db *DocumentDB) Exists(ctx context.Context, d *Document) (bool, error) {
 	var exist struct {
 		Found bool
@@ -287,7 +282,7 @@ func (db *DocumentDB) Exists(ctx context.Context, d *Document) (bool, error) {
 
 // Find all documents by UserID.
 func (db *DocumentDB) FindAll(ctx context.Context, userID uuid.UUID) ([]Document, error) {
-	var documents = []Document{}
+	var documents []Document
 
 	res := db.Conn.
 		WithContext(ctx).
@@ -321,7 +316,7 @@ func (db *DocumentDB) Count(ctx context.Context, userID uuid.UUID) (int64, error
 	return count, nil
 }
 
-// Get count for all used document types.
+// CountTypes - get count for all used document types.
 func (db *DocumentDB) CountTypes(ctx context.Context, userID uuid.UUID) ([]*proto.DocumentTypesCount, error) {
 	var types = []*proto.DocumentTypesCount{}
 	res := db.Conn.
@@ -340,9 +335,9 @@ func (db *DocumentDB) CountTypes(ctx context.Context, userID uuid.UUID) ([]*prot
 	return types, nil
 }
 
-// Find top N latest documents sorted by expiration date.
+// FindLatest - find top N latest documents sorted by expiration date.
 func (db *DocumentDB) FindLatest(ctx context.Context, userID uuid.UUID, limit int) ([]Document, error) {
-	var documents = []Document{}
+	var documents []Document
 
 	// TODO: Specify attributes to fetch
 	res := db.Conn.

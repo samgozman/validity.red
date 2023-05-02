@@ -6,7 +6,7 @@ import (
 	"github.com/google/uuid"
 )
 
-type NotificationRepository interface {
+type Repository interface {
 	InsertOne(ctx context.Context, n *Notification) error
 	DeleteOne(ctx context.Context, n *Notification) error
 	FindAll(ctx context.Context, documentID uuid.UUID) ([]Notification, error)
