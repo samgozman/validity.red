@@ -17,7 +17,7 @@ var (
 
 const BlockSize = aes.BlockSize
 
-// Encrypt "text" string with AES
+// EncryptAES - encrypt "text" string with AES
 //
 // "key" - should be the AES key, either 16, 24, or 32 bytes to select AES-128, AES-192, or AES-256.
 //
@@ -44,7 +44,7 @@ func EncryptAES(key []byte, iv []byte, text string) (string, error) {
 	return hex.EncodeToString(ciphertext), nil
 }
 
-// Decrypt "cipherText" string with AES
+// DecryptAES - decrypt "cipherText" string with AES
 //
 // "key" - should be the AES key, either 16, 24, or 32 bytes to select AES-128, AES-192, or AES-256.
 //
@@ -74,7 +74,7 @@ func DecryptAES(key []byte, iv []byte, cipherText string) (string, error) {
 	return string(PKCS5UnPadding(cipherTextDecoded)), nil
 }
 
-// Add padding bytes for the message to make it
+// PKCS5Padding - add padding bytes for the message to make it
 // divisible by the block size before encryption.
 func PKCS5Padding(src []byte) []byte {
 	padding := BlockSize - len(src)%BlockSize
@@ -83,7 +83,7 @@ func PKCS5Padding(src []byte) []byte {
 	return append(src, padtext...)
 }
 
-// Remove padding bytes (usually after decode).
+// PKCS5UnPadding - remove padding bytes (usually after decode).
 func PKCS5UnPadding(src []byte) []byte {
 	length := len(src)
 	unpadding := int(src[length-1])
@@ -91,7 +91,7 @@ func PKCS5UnPadding(src []byte) []byte {
 	return src[:(length - unpadding)]
 }
 
-// Generate pseudorandom IV bytes array.
+// GenerateRandomIV - generate pseudorandom IV bytes array.
 func GenerateRandomIV(length uint) ([]byte, error) {
 	b := make([]byte, length)
 	_, err := rand.Read(b)
