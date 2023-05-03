@@ -41,13 +41,13 @@ func (app *Config) userRegister(c *gin.Context) {
 		return
 	}
 
-	hr := app.hcaptcha.VerifyToken(requestPayload.HCaptchaResponse)
-	if !hr.Success {
-		sentry.CaptureException(fmt.Errorf("hCaptcha errors: %s", hr.ErrorCodes))
-
-		_ = c.Error(ErrInvalidCaptcha)
-
-		return
+	// If environment is not production, skip captcha verification
+	if app.options.Environment == "production" {
+		if hr := app.hcaptcha.VerifyToken(requestPayload.HCaptchaResponse); !hr.Success {
+			sentry.CaptureException(fmt.Errorf("hCaptcha errors: %s", hr.ErrorCodes))
+			_ = c.Error(ErrInvalidCaptcha)
+			return
+		}
 	}
 
 	// call service

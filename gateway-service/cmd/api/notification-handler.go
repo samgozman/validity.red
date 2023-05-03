@@ -59,7 +59,9 @@ func (app *Config) documentNotificationCreate(c *gin.Context) {
 		return
 	}
 
-	go app.updateIcsCalendar(userID.(string))
+	go func() {
+		_, _ = app.updateIcsCalendar(userID.(string))
+	}()
 	c.Status(http.StatusCreated)
 }
 
@@ -94,7 +96,9 @@ func (app *Config) documentNotificationDelete(c *gin.Context) {
 		return
 	}
 
-	go app.updateIcsCalendar(userID.(string))
+	go func() {
+		_, _ = app.updateIcsCalendar(userID.(string))
+	}()
 	c.Status(http.StatusOK)
 }
 

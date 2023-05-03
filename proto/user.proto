@@ -23,6 +23,7 @@ message GetCalendarIvRequest {
 
 message GetCalendarIvResponse {
 	bytes calendarIv = 1;
+	string userId = 2;
 }
 
 message GetCalendarIdResponse {
