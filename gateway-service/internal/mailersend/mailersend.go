@@ -20,7 +20,7 @@ type MailerSend struct {
 // SendEmailVerification sends email verification email to the user with the tokenURL
 // via MailerSend. The tokenURL is a link to the frontend with the token as a query param.
 //
-// TokenURL should be a full URL, e.g. https://validity.red/verify?token=123
+// TokenURL should be a full URL, e.g. https://validity.extr.app/verify?token=123
 func (m *MailerSend) SendEmailVerification(email, tokenURL string) error {
 	const requestTimeout = 5 * time.Second
 
@@ -30,12 +30,12 @@ func (m *MailerSend) SendEmailVerification(email, tokenURL string) error {
 	ctx, cancel := context.WithTimeout(ctx, requestTimeout)
 	defer cancel()
 
-	subject := "Confirm your email | Validity.Red"
+	subject := "Confirm your email | Validity"
 	recipientName := strings.Split(email, "@")[0]
 
 	from := ms.From{
-		Name:  "Validity.Red",
-		Email: "noreply@validity.red",
+		Name:  "Validity",
+		Email: "noreply@validity.extr.app",
 	}
 
 	recipients := []ms.Recipient{
