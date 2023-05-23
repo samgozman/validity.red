@@ -26,4 +26,4 @@ jobs:
           b2 authorize-account"
 
       - name: Run backup script
-        run: ssh $SSH_CONNECTION ". /validityred/backup.sh"
+        run: ssh $SSH_CONNECTION ". /validity/backup.sh"

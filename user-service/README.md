@@ -1,6 +1,6 @@
 # user-service
 
-This service is the user service for [Validity.Red](https://validity.red), written in [Go](https://go.dev).
+This service is the user service for [Validity](https://validity.extr.app), written in [Go](https://go.dev).
 It is used for CRUD operations on user entities.
 
 The user service is connected to the gateway service via gRPC and Protobuf.

@@ -14,7 +14,7 @@ sentryInit({
   integrations: [
     new BrowserTracing({
       routingInstrumentation: vueRouterInstrumentation(router),
-      tracePropagationTargets: ["localhost", "validity.red", /^\//],
+      tracePropagationTargets: ["localhost", "validity.extr.app", /^\//],
     }),
   ],
   tracesSampleRate: 0.2,

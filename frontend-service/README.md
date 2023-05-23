@@ -1,6 +1,6 @@
 # frontend-service
 
-This service is the frontend SPA for [Validity.Red](https://validity.red), written in [Vue 3](https://v3.vuejs.org/) with [TypeScript](https://www.typescriptlang.org/). In production, it is served by [Nginx](https://www.nginx.com/) as a static site.
+This service is the frontend SPA for [Validity](https://validity.extr.app), written in [Vue 3](https://v3.vuejs.org/) with [TypeScript](https://www.typescriptlang.org/). In production, it is served by [Nginx](https://www.nginx.com/) as a static site.
 
 ## Recommended IDE Setup
 

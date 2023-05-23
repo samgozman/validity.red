@@ -8,8 +8,8 @@
 ## They are used to authorize the b2 cli. They will be applied first time from github actions.
 
 # Create backup
-docker exec validityred-postgres-1 bash -c 'pg_dump -h localhost --port 5432 --dbname $POSTGRES_DB -U $POSTGRES_USER > /backup/validityred.sql'
+docker exec validity-postgres-1 bash -c 'pg_dump -h localhost --port 5432 --dbname $POSTGRES_DB -U $POSTGRES_USER > /backup/validity.sql'
 # Copy backup to BackBlaze
 b2 sync "/backup/" "b2://validityred/postgres/"
 # Delete backup from container
-rm -f /backup/validityred.sql || true
+rm -f /backup/validity.sql || true

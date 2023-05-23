@@ -17,7 +17,7 @@ import { navbarItems } from "@/components/navbar/items";
       </RouterLink>
     </div>
     <div>
-      <p class="font-bold">Validity.RED</p>
+      <p class="font-bold">Validity</p>
       <p>Copyright © 2022 - All right reserved</p>
     </div>
     <div>

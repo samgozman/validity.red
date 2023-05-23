@@ -1,6 +1,6 @@
 # gateway-service
 
-This service is the gateway service for [Validity.Red](https://validity.red), written in [Go](https://go.dev).
+This service is the gateway service for [Validity](https://validity.extr.app), written in [Go](https://go.dev).
 It is used to provide a REST API for the frontend service.
 
 The gateway service is connected to the user service, document service and calendar service via gRPC and Protobuf.

@@ -14,7 +14,7 @@ import { defineComponent } from "vue";
 
 export default defineComponent({
   created() {
-    document.title = "Documents | Validity.Red";
+    document.title = "Documents | Validity";
   },
 });
 </script>

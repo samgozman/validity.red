@@ -64,7 +64,7 @@ pub mod calendar {
     pub fn create(calendar_events: &Vec<CalendarEntity>, tz: Tz) -> String {
         let mut calendar = ICalendar::new(
             "2.0",
-            "-//Validity.Red//Document expiration calendar 1.0//EN",
+            "-//validity.extr.app//Document expiration calendar 1.0//EN",
         );
 
         // TODO: Add refresh params to calendar:
@@ -147,7 +147,7 @@ pub mod calendar {
         event.push(Summary::new(calendar_event.document_title.clone()));
         event.push(Description::new(escape_text(format!(
             "{}\n\
-            Validity.Red",
+            validity.extr.app",
             calendar_event.document_title,
         ))));
 
@@ -188,7 +188,7 @@ pub mod calendar {
                 DTSTART:20210107T101320Z\r\n\
                 DTEND:20210107T111320Z\r\n\
                 SUMMARY:Document title\r\n\
-                DESCRIPTION:Document title\\nValidity.Red\r\n\
+                DESCRIPTION:Document title\\nvalidity.extr.app\r\n\
                 END:VEVENT\r\n\
             "
             .to_string();
@@ -217,14 +217,14 @@ pub mod calendar {
             let expected = "\
                 BEGIN:VCALENDAR\r\n\
                 VERSION:2.0\r\n\
-                PRODID:-//Validity.Red//Document expiration calendar 1.0//EN\r\n\
+                PRODID:-//validity.extr.app//Document expiration calendar 1.0//EN\r\n\
                 BEGIN:VEVENT\r\n\
                 UID:e533947d-6f40-4f4f-b614-ddf70534c576\r\n\
                 DTSTAMP:20210107T101320Z\r\n\
                 DTSTART:20210107T101320Z\r\n\
                 DTEND:20210107T111320Z\r\n\
                 SUMMARY:Document title\r\n\
-                DESCRIPTION:Document title\\nValidity.Red\r\n\
+                DESCRIPTION:Document title\\nvalidity.extr.app\r\n\
                 END:VEVENT\r\n\
                 END:VCALENDAR\r\n\
             "

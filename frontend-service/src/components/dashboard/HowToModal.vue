@@ -12,9 +12,9 @@ defineProps<{
     </h3>
     <p class="py-4">
       On this tip, you can see various examples of calendar subscriptions. The
-      easiest and most popular way to subscribe to Validity.Red is a Google
+      easiest and most popular way to subscribe to Validity is a Google
       Calendar. If all your devices synchronize their calendars through Google,
-      then after subscribing to Validity.Red, notifications about document
+      then after subscribing to Validity, notifications about document
       expiration dates will appear on all your devices.
     </p>
     <!-- MacOs how-to -->
@@ -36,7 +36,7 @@ defineProps<{
         </p>
         <img
           src="/img/howto/macos_01.webp"
-          alt="MacOs calendar - add new Validity.Red subscription"
+          alt="MacOs calendar - add new Validity subscription"
           class="w-full max-w-xl"
         />
         <p>
@@ -45,7 +45,7 @@ defineProps<{
         </p>
         <img
           src="/img/howto/macos_02.webp"
-          alt="MacOs calendar - edit subscription to Validity.Red"
+          alt="MacOs calendar - edit subscription to Validity"
           class="w-full max-w-xl"
         />
         <p>
@@ -57,7 +57,7 @@ defineProps<{
         </p>
         <img
           src="/img/howto/macos_03.webp"
-          alt="MacOs calendar - view Validity.Red notifications"
+          alt="MacOs calendar - view Validity notifications"
           class="w-full max-w-xl"
         />
       </div>
@@ -92,7 +92,7 @@ defineProps<{
         </p>
         <img
           src="/img/howto/ios_03.jpeg"
-          alt="IOS calendar - add new Validity.Red subscription"
+          alt="IOS calendar - add new Validity subscription"
           class="w-full max-w-[16rem]"
         />
         <p class="py-4">
@@ -100,7 +100,7 @@ defineProps<{
         </p>
         <img
           src="/img/howto/ios_04.jpeg"
-          alt="IOS calendar - add new Validity.Red subscription"
+          alt="IOS calendar - add new Validity subscription"
           class="w-full max-w-[16rem]"
         />
         <p class="py-4">
@@ -109,7 +109,7 @@ defineProps<{
         </p>
         <img
           src="/img/howto/ios_05.jpeg"
-          alt="IOS calendar - edit Validity.Red subscription options"
+          alt="IOS calendar - edit Validity subscription options"
           class="w-full max-w-[16rem]"
         />
         <p class="pt-4">
@@ -149,7 +149,7 @@ defineProps<{
         <p>In the dropdown menu choose "From URL"</p>
         <img
           src="/img/howto/google_02.webp"
-          alt="Google calendar - subscription to Validity.Red from url"
+          alt="Google calendar - subscription to Validity from url"
           class="w-full max-w-xl"
         />
         <p>
@@ -157,7 +157,7 @@ defineProps<{
         </p>
         <img
           src="/img/howto/google_03.webp"
-          alt="Google calendar - add Validity.Red subscription"
+          alt="Google calendar - add Validity subscription"
           class="w-full max-w-xl"
         />
         <p>
@@ -166,7 +166,7 @@ defineProps<{
         </p>
         <img
           src="/img/howto/google_04.webp"
-          alt="Google calendar - edit Validity.Red notifications"
+          alt="Google calendar - edit Validity notifications"
           class="w-full max-w-xl"
         />
         <p>

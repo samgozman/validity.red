@@ -15,11 +15,11 @@ import { defineComponent } from "vue";
 export default defineComponent({
   methods: {
     setDocumentTitle(title: string) {
-      document.title = title + " | Validity.Red";
+      document.title = title + " | Validity";
     },
   },
   created() {
-    document.title = "Document | Validity.Red";
+    document.title = "Document | Validity";
   },
 });
 </script>
