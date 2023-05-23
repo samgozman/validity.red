@@ -29,7 +29,7 @@ import { defineComponent } from "vue";
 
 export default defineComponent({
   created() {
-    document.title = "Page not found | Validity.Red";
+    document.title = "Page not found | Validity";
   },
 });
 </script>

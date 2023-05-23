@@ -15,7 +15,7 @@
               <img
                 src="/img/example.webp"
                 class="w-full"
-                alt="Validity.Red - manage expiration dates for your documents"
+                alt="Validity - manage expiration dates for your documents"
               />
             </div>
           </div>

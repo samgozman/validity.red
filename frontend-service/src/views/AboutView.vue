@@ -6,9 +6,9 @@ import { LogoGithub, BeerOutline } from "@vicons/ionicons5";
 <template>
   <StandardContainer>
     <article class="prose lg:prose-xl">
-      <h2 class="pt-6">About Validity.Red</h2>
+      <h2 class="pt-6">About Validity</h2>
       <p>
-        👋 Hi! My name is Sam, creator of the Validity.Red
+        👋 Hi! My name is Sam, creator of the Validity
         <a
           href="https://github.com/samgozman/validity.red"
           rel="noopener"
@@ -79,7 +79,7 @@ import { defineComponent } from "vue";
 
 export default defineComponent({
   created() {
-    document.title = "About | Validity.Red";
+    document.title = "About | Validity";
   },
 });
 </script>

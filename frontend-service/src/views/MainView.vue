@@ -161,7 +161,7 @@ import { state } from "@/state";
               us.
             </LeadingParagraph>
             <LeadingParagraph class="pb-6">
-              Join the <strong>Validity.Red</strong> and never forget to update
+              Join the <strong>Validity</strong> and never forget to update
               documents on time again!
             </LeadingParagraph>
             <RouterLink to="/register" class="btn btn-primary btn-wide btn-lg">
@@ -180,7 +180,7 @@ import { defineComponent } from "vue";
 export default defineComponent({
   created() {
     document.title =
-      "Validity.Red - manage expiration dates for your documents";
+      "Validity - manage expiration dates for your documents";
   },
 });
 </script>

@@ -109,7 +109,7 @@ import CalendarMonth from "@/components/calendar/CalendarMonth.vue";
   </div>
   <div class="card col-span-3 row-span-1 shadow-lg compact bg-base-100">
     <div class="flex-col sm:flex-row items-center card-body">
-      <p v-show="errorMsgs">Export Validity.Red calendar .ics file</p>
+      <p v-show="errorMsgs">Export Validity calendar .ics file</p>
       <span
         v-for:="error in errorMsgs"
         class="badge badge-error badge-outline w-full"
