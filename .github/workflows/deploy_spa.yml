@@ -40,10 +40,10 @@ jobs:
         run: rsync -r ./frontend-service/frontend_service.tar $SSH_CONNECTION:./
 
       - name: remove existing SPA files
-        run: ssh $SSH_CONNECTION "rm -r /srv/validityred/dist || true"
+        run: ssh $SSH_CONNECTION "rm -r /srv/validity/dist || true"
 
       - name: extract SPA files
-        run: ssh $SSH_CONNECTION "tar -xf ./frontend_service.tar -C /srv/validityred"
+        run: ssh $SSH_CONNECTION "tar -xf ./frontend_service.tar -C /srv/validity"
 
       # It will be available in the Actions tab for 90 days
       - name: Publish SPA as an artifact (optional)

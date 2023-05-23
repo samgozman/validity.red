@@ -28,8 +28,8 @@ write_files:
     permissions: '0755'
   - content: |
       #!/bin/bash
-      . /validityred/backup.sh >> /validityred/backup.log 2>&1
-    path: /etc/cron.daily/validityred-backup
+      . /validity/backup.sh >> /validity/backup.log 2>&1
+    path: /etc/cron.daily/validity-backup
     permissions: '0755'
   - content: |
       25 4    * * *   root    cd / && run-parts --report /etc/cron.daily
@@ -79,15 +79,15 @@ runcmd:
   - systemctl start nginx # start nginx
   - systemctl enable nginx # enable nginx on boot
   # Copy docker-compose.yml and scripts
-  - mkdir /validityred
-  - cd /validityred # Create project folder and copy compose & updater files
+  - mkdir /validity
+  - cd /validity # Create project folder and copy compose & updater files
   - curl -o docker-compose.yml https://raw.githubusercontent.com/samgozman/validity.red/main/deploy/docker-compose.yml
   - curl -o updater.sh https://raw.githubusercontent.com/samgozman/validity.red/main/deploy/updater.sh
   - curl -o backup.sh https://raw.githubusercontent.com/samgozman/validity.red/main/deploy/backup.sh
   - chmod +x backup.sh updater.sh
   # Create folder for static files
-  - mkdir /srv/validityred
-  - mkdir /srv/validityred/files
+  - mkdir /srv/validity
+  - mkdir /srv/validity/files
   # Install certbot
   - snap install core; snap refresh core
   - snap install --classic certbot
@@ -95,10 +95,10 @@ runcmd:
   # Create SSL certificate
   - |
     certbot certonly --noninteractive --agree-tos \
-      --cert-name validityred \
-      -d validity.red -d www.validity.red \
+      --cert-name validity \
+      -d validity.extr.app \
       -m sam@gozman.space \
-      --webroot -w /srv/validityred/files
+      --webroot -w /srv/validity/files
   - cd /
   # Download the final nginx config
   - curl -o nginx.conf https://raw.githubusercontent.com/samgozman/validity.red/main/deploy/nginx.conf
