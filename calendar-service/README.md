@@ -1,6 +1,6 @@
 # calendar-service
 
-This service is the calendar service for [Validity.Red](https://validity.red), written in [Rust](https://www.rust-lang.org/).
+This service is the calendar service for [Validity](https://validity.extr.app), written in [Rust](https://www.rust-lang.org/).
 It is used to generate and serve .ics calendar files with encrypted data.
 
 The calendar service is connected only to the gateway service via gRPC and Protobuf.

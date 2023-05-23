@@ -1,11 +1,11 @@
-# Validity.Red
+# Validity
 
 [![Unit tests](https://github.com/samgozman/validity.red/actions/workflows/unit_test.yml/badge.svg?branch=main)](https://github.com/samgozman/validity.red/actions/workflows/unit_test.yml)
 
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=samgozman_validity.red&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=samgozman_validity.red)
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/760a8bc3dd734e10b7b820cda8b6267f)](https://www.codacy.com/gh/samgozman/validity.red/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=samgozman/validity.red&amp;utm_campaign=Badge_Grade)
 
-[Validity.Red](https://validity.red) is a free web service for managing the expiration dates of documents (passports, travel cards, vaccinations, insurance, etc) and synchronizing them with your calendar. It is written in Go, TypeScript, Vue, and Rust.
+[Validity](https://validity.extr.app) is a free web service for managing the expiration dates of documents (passports, travel cards, vaccinations, insurance, etc) and synchronizing them with your calendar. It is written in Go, TypeScript, Vue, and Rust.
 
 ## Main features
 
@@ -39,7 +39,7 @@ graph LR
 
 ## Quick start into development
 
-To run the Validity.Red app locally, you will need to have the following dependencies installed on your system:
+To run the Validity app locally, you will need to have the following dependencies installed on your system:
 
 * Docker
 * Docker Compose
@@ -85,18 +85,18 @@ And thats it! For more information please read the documentation provided in eac
 
 ### Production environment
 
-Validity.Red deployment and automation relies on GitHub CI and Terraform. You can find out more in the [deployment section](https://github.com/samgozman/validity.red/tree/main/deploy).
+Validity deployment and automation relies on GitHub CI and Terraform. You can find out more in the [deployment section](https://github.com/samgozman/validity.red/tree/main/deploy).
 
 ### Contribution
 
-If you would like to contribute to the development of Validity.Red, please fork the repository and submit a pull request with your changes. We welcome any contributions that improve the service. You can also view the current project board [here](https://github.com/users/samgozman/projects/2).
+If you would like to contribute to the development of Validity, please fork the repository and submit a pull request with your changes. We welcome any contributions that improve the service. You can also view the current project board [here](https://github.com/users/samgozman/projects/2).
 
 You can also contribute by reporting bugs or suggesting new features. Please use the [GitHub issues](https://github.com/samgozman/validity.red/issues) for that.
 
 ### ❤️ Support the project
 
-This project is 100% open-source and is available for free. If you like it - you can support Validity.Red financially. Please look at [FUNDING.yml](https://github.com/samgozman/validity.red/blob/main/.github/FUNDING.yml) page.
+This project is 100% open-source and is available for free. If you like it - you can support Validity financially. Please look at [FUNDING.yml](https://github.com/samgozman/validity.red/blob/main/.github/FUNDING.yml) page.
 
 ### License
 
-Validity.Red is licensed under the MIT License.
+Validity is licensed under the MIT License.
