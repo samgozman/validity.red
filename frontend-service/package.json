@@ -24,7 +24,7 @@
     "@sentry/vite-plugin": "=0.3.0",
     "@tailwindcss/typography": "=0.5.8",
     "@types/node": "=18.15.11",
-    "@vitejs/plugin-vue": "=4.0.0",
+    "@vitejs/plugin-vue": "=4.2.3",
     "@vitejs/plugin-vue-jsx": "=3.0.0",
     "@vue/eslint-config-prettier": "=7.0.0",
     "@vue/eslint-config-typescript": "=11.0.2",
