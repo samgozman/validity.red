@@ -10,7 +10,7 @@ require (
 	google.golang.org/grpc v1.54.0
 	google.golang.org/protobuf v1.31.0
 	gorm.io/driver/postgres v1.4.6
-	gorm.io/gorm v1.25.2
+	gorm.io/gorm v1.25.3
 )
 
 require (
