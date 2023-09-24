@@ -3,7 +3,7 @@ module github.com/samgozman/validity.red/document
 go 1.19
 
 require (
-	github.com/getsentry/sentry-go v0.17.0
+	github.com/getsentry/sentry-go v0.24.1
 	github.com/google/uuid v1.3.1
 	google.golang.org/grpc v1.58.1
 	google.golang.org/protobuf v1.31.0
