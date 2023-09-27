@@ -1,6 +1,6 @@
 # Dependencies caching stage
 # Generate recipe file for dependencies by cargo-chef
-FROM rust:1.64-alpine3.16 AS planner
+FROM rust:1.72-alpine3.18 AS planner
 WORKDIR /usr/src/app
 RUN apk add musl-dev
 RUN cargo install cargo-chef
@@ -8,7 +8,7 @@ COPY . .
 RUN cargo chef prepare --recipe-path recipe.json
 
 # Build dependencies
-FROM rust:1.64-alpine3.16 AS cacher
+FROM rust:1.72-alpine3.18 AS cacher
 WORKDIR /usr/src/app
 RUN apk add musl-dev
 RUN cargo install cargo-chef
@@ -16,7 +16,7 @@ COPY --from=planner /usr/src/app/recipe.json recipe.json
 RUN cargo chef cook --release --recipe-path recipe.json
 
 # Build stage
-FROM rust:1.64-alpine3.16 as builder
+FROM rust:1.72-alpine3.18 as builder
 WORKDIR /usr/src/app
 RUN apk add build-base protoc protobuf-dev
 COPY --from=cacher /usr/src/app/target target
