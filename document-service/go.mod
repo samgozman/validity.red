@@ -1,6 +1,6 @@
 module github.com/samgozman/validity.red/document
 
-go 1.19
+go 1.21
 
 require (
 	github.com/getsentry/sentry-go v0.17.0

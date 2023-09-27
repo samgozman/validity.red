@@ -1,6 +1,6 @@
 module github.com/samgozman/validity.red/user
 
-go 1.19
+go 1.21
 
 require (
 	github.com/badoux/checkmail v1.2.1
