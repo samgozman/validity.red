@@ -10,8 +10,8 @@ import (
 	"time"
 
 	"github.com/getsentry/sentry-go"
-	"github.com/go-redis/redis/v8"
 	"github.com/kataras/hcaptcha"
+	"github.com/redis/go-redis/v9"
 	"github.com/samgozman/validity.red/broker/internal/mailersend"
 	"github.com/samgozman/validity.red/broker/internal/token"
 	"github.com/samgozman/validity.red/broker/proto/calendar"
