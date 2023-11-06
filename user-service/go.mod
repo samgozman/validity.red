@@ -5,7 +5,7 @@ go 1.21
 require (
 	github.com/badoux/checkmail v1.2.1
 	github.com/getsentry/sentry-go v0.24.1
-	github.com/google/uuid v1.3.1
+	github.com/google/uuid v1.4.0
 	golang.org/x/crypto v0.14.0
 	google.golang.org/grpc v1.58.2
 	google.golang.org/protobuf v1.31.0
