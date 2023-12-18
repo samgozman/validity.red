@@ -47,7 +47,7 @@ jobs:
 
       # It will be available in the Actions tab for 90 days
       - name: Publish SPA as an artifact (optional)
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: frontend_service
           path: ./frontend-service/frontend_service.tar
