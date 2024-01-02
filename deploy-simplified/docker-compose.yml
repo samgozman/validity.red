@@ -1,0 +1,53 @@
+version: '3.8'
+# Production environment for Validity.Red
+
+services:
+  gateway-service:
+    image: 'ghcr.io/samgozman/validity.red/gateway-service:latest'
+    restart: always
+    ports:
+      - "8080:80"
+    # env_file:
+    #   - ./config/gateway.env
+    networks:
+      - users-network
+      - documents-network
+      - calendars-network
+
+  user-service:
+    image: 'ghcr.io/samgozman/validity.red/user-service:latest'
+    restart: always
+    # env_file:
+    #   - ./config/users.env
+    ports:
+      - "50001:50001"
+    networks:
+      - users-network
+
+  document-service:
+    image: 'ghcr.io/samgozman/validity.red/document-service:latest'
+    restart: always
+    # env_file:
+    #   - ./config/documents.env
+    ports:
+      - "50002:50002"
+    networks:
+      - documents-network
+
+  calendar-service:
+    image: 'ghcr.io/samgozman/validity.red/calendar-service:latest'
+    restart: always
+    # env_file:
+    #   - ./config/calendars.env
+    volumes:
+      - ./calendars/data/:/data/
+    ports:
+      - "50051:50051"
+    networks:
+      - calendars-network
+
+networks:
+  gateway-network:
+  documents-network:
+  calendars-network:
+  users-network:
