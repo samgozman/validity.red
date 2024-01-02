@@ -19,6 +19,8 @@ jobs:
         working-directory: ./frontend-service
         run: npm ci
       - name: Build
+        env:
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }} # Used by sentryVitePlugin to upload source maps
         working-directory: ./frontend-service
         run: npm run build
 
