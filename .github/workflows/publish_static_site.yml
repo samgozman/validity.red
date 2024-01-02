@@ -29,5 +29,4 @@ jobs:
         if: github.ref == 'refs/heads/main'
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          working-directory: ./frontend-service
-          publish_dir: ./dist
+          publish_dir: ./frontend-service/dist
