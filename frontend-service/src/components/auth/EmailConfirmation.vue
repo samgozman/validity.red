@@ -41,6 +41,7 @@ export default defineComponent({
   },
   methods: {
     async verifyEmail() {
+      console.log("run verifyEmail");
       try {
         await AuthService.userVerifyEmail(this.$route.query.token as string);
         this.verified = true;

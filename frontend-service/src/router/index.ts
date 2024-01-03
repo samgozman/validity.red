@@ -84,13 +84,17 @@ const router = createRouter({
 });
 
 router.beforeEach(async (to) => {
+  console.log("auth guard");
   // Check for requiresAuth guard
   if (!to.meta.requiresAuth) return;
+
+  console.log("cookies:", document.cookie);
 
   // check if cookie is exists
   const cookie = document.cookie.match(
     new RegExp("(^| )" + "token" + "=([^;]+)")
   );
+  console.log("cookie matched:", cookie);
 
   // TODO: check that user object is exists as well
 
@@ -99,6 +103,7 @@ router.beforeEach(async (to) => {
     // Avoid an infinite redirect
     to.name !== "login"
   ) {
+    console.log("redirect to login");
     // redirect the user to the login page
     return { name: "login", query: { redirect: to.fullPath } };
   }
