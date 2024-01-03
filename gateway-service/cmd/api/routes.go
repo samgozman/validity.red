@@ -18,7 +18,7 @@ func (app *Config) routes() *gin.Engine {
 
 	engine.Use(cors.New(cors.Config{
 		// TODO: Set to validity.red domains
-		AllowOrigins:     []string{"https://*", "http://*"},
+		AllowOrigins:     []string{"*"},
 		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"},
 		AllowHeaders:     []string{"Authorization", "Content-Type", "sentry-trace", "baggage"},
 		AllowCredentials: true,
