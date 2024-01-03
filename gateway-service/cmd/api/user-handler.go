@@ -135,7 +135,7 @@ func (app *Config) userLogin(c *gin.Context) {
 	}
 
 	// write jwt token
-	c.SetSameSite(http.SameSiteLaxMode)
+	c.SetSameSite(http.SameSiteNoneMode)
 	c.SetCookie("token", token, app.options.JWTAuthTTL, "/", "", false, false)
 	c.JSON(http.StatusAccepted, struct {
 		CalendarID string `json:"calendarId"`
