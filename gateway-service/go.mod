@@ -3,7 +3,7 @@ module github.com/samgozman/validity.red/broker
 go 1.21
 
 require (
-	github.com/getsentry/sentry-go v0.24.1
+	github.com/getsentry/sentry-go v0.26.0
 	github.com/gin-contrib/cors v1.4.0
 	github.com/gin-gonic/gin v1.9.1
 	github.com/kataras/hcaptcha v0.0.2
