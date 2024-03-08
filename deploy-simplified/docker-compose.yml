@@ -4,7 +4,6 @@ version: '3.8'
 services:
   gateway-service:
     image: 'ghcr.io/samgozman/validity.red/gateway-service:latest'
-    restart: always
     ports:
       - "8080:80"
     # env_file:
@@ -16,7 +15,6 @@ services:
 
   user-service:
     image: 'ghcr.io/samgozman/validity.red/user-service:latest'
-    restart: always
     # env_file:
     #   - ./config/users.env
     ports:
@@ -26,7 +24,6 @@ services:
 
   document-service:
     image: 'ghcr.io/samgozman/validity.red/document-service:latest'
-    restart: always
     # env_file:
     #   - ./config/documents.env
     ports:
@@ -36,7 +33,6 @@ services:
 
   calendar-service:
     image: 'ghcr.io/samgozman/validity.red/calendar-service:latest'
-    restart: always
     # env_file:
     #   - ./config/calendars.env
     volumes:
